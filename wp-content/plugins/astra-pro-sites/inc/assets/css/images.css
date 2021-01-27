@@ -9,7 +9,7 @@
   font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+[class^="ast-icon-"], [class*=" ast-icon-"] {
     font-family: 'icomoon' !important;
     speak: none;
     font-style: normal;
@@ -21,11 +21,11 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-chevron-left:before {
+.ast-icon-chevron-left:before {
   content: "\e904";
 }
 
-.icon-search:before {
+.ast-icon-search:before {
   content: "\e900";
 }
 
@@ -127,6 +127,7 @@
     padding: 0;
     margin: 0;
     list-style-type: none;
+    align-items: center;
 }
 
 .ast-attachments-browser .ast-image__filter li {

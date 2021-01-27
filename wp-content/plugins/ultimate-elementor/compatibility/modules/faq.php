@@ -56,10 +56,10 @@ class FAQ extends WPML_Elementor_Module_With_Items {
 	 */
 	protected function get_title( $field ) {
 		if ( 'question' === $field ) {
-			return __( 'FAQ: Question/Title', 'uael' );
+			return __( 'FAQ Schema: Question/Title', 'uael' );
 		}
 		if ( 'answer' === $field ) {
-			return __( 'FAQ: Answer/Content', 'uael' );
+			return __( 'FAQ Schema: Answer/Content', 'uael' );
 		}
 		return '';
 	}

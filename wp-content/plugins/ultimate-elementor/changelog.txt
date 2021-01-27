@@ -1,3 +1,99 @@
+Version 1.29.0 - Wednesday, 20th January 2021.
+- New: Introduced WooCommerce Mini Cart widget.
+- Improvement: Compatibility with Elementor v3.1.0 - Soft deprecated functions updated.
+- Improvement: FAQ Schema - Added unique ID to the FAQ question field.
+- Improvement: User Registration Form - Added 'Phone' field.
+- Improvement: Woo - Add to Cart - Added support to default WooCommerce template.
+- Fix: Hide internal help links present on settings page if 'Display Help Links' box is unchecked.
+- Fix: Content Toggle - Switcher switching to content 2 on window back button.
+- Fix: FAQ Schema - Fixed schema not working on product category archive.
+- Fix: Marketing Button - Flare animation working according to column instead of widget.
+- Fix: Modal Popup - Fixed PHP notice for icon control.
+- Fix: Posts - Filterable tabs dropdown not closing on double click.
+
+Version 1.28.1 - Tuesday, 29th December 2020.
+- Improvement: Image Gallery - Added infinite gallery navigation ( loop ) option for lightbox.
+- Fix: Multi Buttons - Added support to custom link attributes.
+- Fix: Table - Added support to custom link attributes.
+
+Version 1.28.0 - Thursday, 17th December 2020.
+- New: Integrated Full Page Copy Paste option in Cross-Site Copy Paste Feature.
+- Improvement: Compatible with WordPress v5.6
+- Improvement: PHP Deprecated: Required parameters follows optional parameters in get meta markup function - Compatibility with PHP v8.0
+- Improvement: Navigation Menu - Added option to open submenu on click for Horizontal layout.
+- Improvement: Timeline - Added action hooks for layout customization.
+- Fix: Elementor install and activate notice issue on Multisite.
+- Fix: Google Map - Window scrolls down on close of InfoWindow on Chrome.
+- Fix: How-to Schema - Added 'alt' and 'title' attributes to steps images.
+- Fix: Image Gallery - 'Last Row Layout' hide causing the images overlapping on the existing images.
+- Fix: Posts - Filterable tab keyboard support issue with other keys than 'Tab' key.
+- Fix: User Registration Form - Allow registration of email ID with the same email prefix and different domain names.
+- Fix: Woo-Products - Exclude query not working with 'Sale' filter.
+
+Version 1.27.2 - Wednesday, 4th November 2020.
+- Improvement: Advanced Heading - Added HTML tag option for 'Line With Text'.
+- Improvement: Google Map - Added filter to pass extra cluster options.
+- Improvement: Navigation Menu - Added option to toggle menu item.
+- Improvement: Off-Canvas - Added option to hide sub-menu.
+- Improvement: Price List - Added item border radius option.
+- Fix: Advanced Heading - Dynamic content does not work.
+- Fix: Fancy Heading - Added RTL support to the effects.
+- Fix: FAQ Schema - FAQ Content not following HTML tag.
+- Fix: Info Box - Overall alignment option not working for the custom icons.
+- Fix: Info Box - Icon background hover color option not working.
+- Fix: Posts - 'Default Tab On Page Load' does not work with special characters.
+
+Version 1.27.1 - Wednesday, 7th October 2020.
+- Improvement: Advanced Heading - Added background text option.
+- Improvement: Advanced Heading - Added fill background image option.
+- Improvement: Advanced Heading - Added sub-heading position options.
+- Improvement: Dual Color Heading - Added background text option.
+- Improvement: Dual Color Heading - Added background fill option.
+- Improvement: Fancy Heading - Added more effects.
+- Improvement: Login Form - Added a filter to change 'Remember Me' text.
+- Improvement: Price Box - Added heading icon option.
+- Improvement: Price Box - Added tooltip option.
+- Improvement: Price Box - Added price position option.
+- Improvement: Table - Added option to change the 'Search' label.
+- Improvement: Woo - Products - Added Featured Flash options in Modern Skin.
+- Fix: FAQ Schema - Added accessibility attributes to question and answer.
+- Fix: Posts - Added accessibility attributes to links and filterable tabs.
+- Fix: Posts - 'Posts Per Page' affecting filterable tabs.
+- Fix: Timeline - Global color not getting applied to the content arrow.
+- Fix: User Registration Form - Added WordPress 5.5 password check compatibility.
+- Fix: Woo - Products - Variable product not getting added to the cart through quick view.
+
+Version 1.27.0 - Wednesday, 16th September 2020.
+- Improvement: Implemented CSS optimization techniques.
+- Improvement: Posts - Added box-shadow and border controls to all skins.
+- Improvement: Posts - Added image ratio option.
+- Improvement: Table of Contents - Added active color support.
+- Fix: SVG not rendering in few widgets.
+- Fix: FAQ - Error in global schema if the widget is deactivated.
+- Fix: Posts - Excluded empty categories from filterable tabs.
+- Fix: Posts - Removed anchor tag if the image is unlinked.
+- Fix: Timeline - Inline editing not working for the content.
+- Fix: User Registration Form - Translation issue with Poedit.
+
+Version 1.26.4 - Monday, 31st August 2020.
+- Fix: Info Box - Background color applying to icon in Normal style.
+- Fix: Woo - Add To Cart - Redirection not working after adding to cart.
+- Fix: Woo - Products - Pagination not working.
+
+Version 1.26.3 - Monday, 24th August 2020.
+- Improvement: Compatibility to Elementor 3.0.
+- Improvement: FAQ - Enable multiple schema on a page.
+- Fix: Caldera Forms Styler - Default radio buttons select style not working.
+- Fix: Contact Form 7 Styler - Fixed styling not applying to success/error message.
+- Fix: Hotspot - Fixed the PHP notice with PHP v7.4 and above.
+- Fix: Multi Buttons - SVG icon not rendering.
+- Fix: Navigation Menu - Added WPML support to saved sections in Mega Menu.
+- Fix: Navigation Menu - Conflict with Essential Addons Divider widget.
+- Fix: Price List - Fixed the PHP notice with PHP v7.4 and above.
+- Fix: Table Of Contents - Default offset not working.
+- Fix: Video -  Added alt attribute for custom thumbnail.
+- Fix: Woo - Products - Fixed variable product images not reflecting in quick view.
+
 Version 1.26.2 - Tuesday, 11th August 2020.
 - Improvement - Compatibility to WordPress 5.5.
 
@@ -89,7 +185,7 @@ Version 1.24.0 - Wednesday, 2nd April 2020.
 - New: Introduced Cross-Site Copy Paste feature.
 - Improvement: Navigation Menu - Changed the tablet breakpoint to 1024 in order to support iPad Pro.
 - Fix: Caldera Form Styler - Form fields CSS files not getting enqueued.
-- Fix: Info Box - Elementor Pro popup not working with infobox.
+- Fix: Info Box - Elementor Pro popup not working with Info Box.
 - Fix: Navigation Menu - Theme style link typography overriding menu link typography.
 
 Version 1.23.1 - Thursday, 12th March 2020.
@@ -168,7 +264,7 @@ Version 1.21.0 - Monday, 23rd December 2019
 - Improvement: Video - Added lightbox support.
 - Improvement: Content Toggle - Added support to open a specific toggle section from a remote link.
 - Improvement: Advanced Heading - Added WPML support to sub-heading text.
-- Improvement: Image Gallery - Added "uael-lightbox-content" filter to modify caption text in lightbox. 
+- Improvement: Image Gallery - Added "uael-lightbox-content" filter to modify caption text in lightbox.
 - Improvement: Login Form - Added an option to send an e-mail after a new user log in using social login.
 - Improvement: Login Form - Disable AJAX form submission option added.
 - Improvement: Login Form - Improved the authentication functionality.
@@ -191,7 +287,7 @@ Version 1.20.0 - Thursday, 14th November 2019
 - New: Introduced Login Form Widget.
 - Improvement: Advanced Heading - Added responsive support to heading margin.
 - Improvement: Countdown Timer - Added 'Reset' after expire action for Evergreen Timer.
-- Improvement: Countdown Timer - Added dynamic field support to days, hours & minutes field. 
+- Improvement: Countdown Timer - Added dynamic field support to days, hours & minutes field.
 - Improvement: Off - Canvas - Horizontal Position option for floating button/icon.
 - Improvement: Posts - Added category class to the posts.
 - Improvement: Table of Contents - Added responsive support for the scroll offset.
@@ -323,7 +419,7 @@ Version 1.13.0 - Tuesday, 25th June 2019
 - Fix: Off - Canvas - Push animation conflict with body width on the first page load.
 - Fix: Post - Image scale issue on hover.
 - Fix: Post - Offset issue with filterable tabs.
-- Fix: Post - Taxonomy badge issue with main query. 
+- Fix: Post - Taxonomy badge issue with main query.
 - Fix: Woo - Products - Issue with the regular price of variable products.
 
 Version 1.12.1 - Wednesday, 29th May 2019
@@ -332,7 +428,7 @@ Version 1.12.1 - Wednesday, 29th May 2019
 Version 1.12.0 - Monday, 20th May 2019
 - New: Introduced Particle Backgrounds for Elementor.
 - Improvement: Hotspot - Filter for Tooltip min & max width.
-- Improvement: Modal Popup - Added WPML compatibility to saved page content. 
+- Improvement: Modal Popup - Added WPML compatibility to saved page content.
 - Improvement: Post - Added WPML compatibility to post query.
 - Improvement: Post - News skin - Added an option to stack post content and image on mobile view.
 - Improvement: Table - Added dynamic field support to heading text.
@@ -373,7 +469,7 @@ Version 1.10.0 - Tuesday, 12th March 2019
 - Improvement: Video - Added WPML support to sticky info bar.
 - Improvement: Woo - Products - Added Products not found message field.
 - Fix: Caldera Form Styler - Fixed Caldera Forms minified JS issue.
-- Fix: Contact Form Styler - Fixed CF7 submit event JS issue.
+- Fix: Contact Form 7 Styler - Fixed CF7 submit event JS issue.
 - Fix: Hotspot - Fixed tooltip background color issue.
 - Fix: Post - Elementor v2.5.4 version compatibility added.
 

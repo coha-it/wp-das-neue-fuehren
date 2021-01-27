@@ -23,7 +23,7 @@ if ( empty( $post ) ) {
 <div class="uael-post-wrapper <?php echo wp_kses_post( $this->get_masonry_classes() ); ?> <?php echo ( $is_featured && 1 < $query->post_count ) ? 'uael-post-wrapper-featured' : ''; ?> <?php echo wp_kses_post( $this->get_category_name() ); ?>">
 	<div class="uael-post__bg-wrap">
 		<?php if ( 'yes' === $this->get_instance_value( 'link_complete_box' ) ) { ?>
-			<a href="<?php the_permalink(); ?>" target="<?php echo ( 'yes' === $this->get_instance_value( 'link_complete_box_tab' ) ) ? '_blank' : '_self'; ?>" class="uael-post__complete-box-overlay"></a>
+			<a href="<?php the_permalink(); ?>" target="<?php echo ( 'yes' === $this->get_instance_value( 'link_complete_box_tab' ) ) ? '_blank' : '_self'; ?>" class="uael-post__complete-box-overlay" aria-label="<?php esc_attr_e( 'Link Complete Box', 'uael' ); ?>"></a>
 		<?php } ?>
 
 		<?php do_action( 'uael_single_post_before_inner_wrap', get_the_ID(), $settings ); ?>

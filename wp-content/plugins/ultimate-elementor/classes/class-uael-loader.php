@@ -54,7 +54,7 @@ if ( ! class_exists( 'UAEL_Loader' ) ) {
 			define( 'UAEL_BASE', plugin_basename( UAEL_FILE ) );
 			define( 'UAEL_DIR', plugin_dir_path( UAEL_FILE ) );
 			define( 'UAEL_URL', plugins_url( '/', UAEL_FILE ) );
-			define( 'UAEL_VER', '1.26.2' );
+			define( 'UAEL_VER', '1.29.0' );
 			define( 'UAEL_MODULES_DIR', UAEL_DIR . 'modules/' );
 			define( 'UAEL_MODULES_URL', UAEL_URL . 'modules/' );
 			define( 'UAEL_SLUG', 'uae' );
@@ -74,7 +74,12 @@ if ( ! class_exists( 'UAEL_Loader' ) ) {
 			if ( ! did_action( 'elementor/loaded' ) ) {
 				/* TO DO */
 				add_action( 'admin_notices', array( $this, 'uael_fails_to_load' ) );
+				add_action( 'network_admin_notices', array( $this, 'uael_fails_to_load' ) );
 				return;
+			}
+
+			if ( ! defined( 'FS_CHMOD_FILE' ) ) {
+				define( 'FS_CHMOD_FILE', ( fileperms( ABSPATH . 'index.php' ) & 0777 | 0644 ) );
 			}
 
 			$this->load_textdomain();
@@ -86,7 +91,22 @@ if ( ! class_exists( 'UAEL_Loader' ) ) {
 			}
 
 			// BSF Analytics.
-			require_once UAEL_DIR . 'admin/bsf-analytics/class-bsf-analytics.php';
+			if ( ! class_exists( 'BSF_Analytics_Loader' ) ) {
+				require_once UAEL_DIR . 'admin/bsf-analytics/class-bsf-analytics-loader.php';
+			}
+
+			$bsf_analytics = BSF_Analytics_Loader::get_instance();
+
+			$bsf_analytics->set_entity(
+				array(
+					'bsf' => array(
+						'product_name'    => 'Ultimate Addons for Elementor',
+						'path'            => UAEL_DIR . 'admin/bsf-analytics',
+						'author'          => 'Brainstorm Force',
+						'time_to_display' => '+24 hours',
+					),
+				)
+			);
 		}
 
 		/**

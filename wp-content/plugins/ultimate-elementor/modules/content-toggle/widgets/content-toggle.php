@@ -9,7 +9,6 @@ namespace UltimateElementor\Modules\ContentToggle\Widgets;
 
 // Elementor Classes.
 use Elementor\Controls_Manager;
-use Elementor\Repeater;
 use Elementor\Scheme_Color;
 use Elementor\Group_Control_Image_Size;
 use Elementor\Group_Control_Box_Shadow;

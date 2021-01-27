@@ -109,7 +109,7 @@ class Countdown extends Common_Widget {
 	 * @since 1.14.0
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		// Content Tab.
 		$this->register_countdown_general_controls();

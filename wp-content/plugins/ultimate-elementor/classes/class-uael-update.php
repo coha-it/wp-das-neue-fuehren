@@ -5,6 +5,8 @@
  * @package UAEL
  */
 
+use UltimateElementor\Classes\UAEL_Helper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -66,6 +68,8 @@ if ( ! class_exists( 'UAEL_Update' ) ) :
 			if ( version_compare( $saved_version, UAEL_VER, '=' ) ) {
 				return;
 			}
+
+			UAEL_Helper::create_specific_stylesheet();
 
 			// Update auto saved version number.
 			update_option( 'uael-version', UAEL_VER );

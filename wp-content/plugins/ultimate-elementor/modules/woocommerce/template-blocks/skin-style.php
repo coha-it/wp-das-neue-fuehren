@@ -443,6 +443,12 @@ abstract class Skin_Style {
 					$exclude_ids = $settings['query_exclude_ids'];
 
 					$query_args['post__not_in'] = $exclude_ids;
+
+					// Exclude from on sale products.
+					if ( 'sale' === $settings['filter_by'] ) {
+
+						$query_args['post__in'] = array_diff( $query_args['post__in'], $query_args['post__not_in'] );
+					}
 				}
 
 				if ( 'yes' === $settings['query_exclude_current'] ) {

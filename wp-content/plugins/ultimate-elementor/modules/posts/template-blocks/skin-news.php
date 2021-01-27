@@ -48,6 +48,7 @@ class Skin_News extends Skin_Style {
 	public function render_featured_image() {
 
 		$settings = self::$settings;
+		$html_tag = 'span';
 
 		if ( 'none' === $this->get_instance_value( 'image_position' ) ) {
 			return;
@@ -71,25 +72,26 @@ class Skin_News extends Skin_Style {
 		do_action( 'uael_single_post_before_thumbnail', get_the_ID(), $settings );
 
 		if ( 'yes' === $this->get_instance_value( 'link_img' ) ) {
-			$href   = apply_filters( 'uael_single_post_link', get_the_permalink(), get_the_ID(), $settings );
 			$target = ( 'yes' === $this->get_instance_value( 'link_new_tab' ) ) ? '_blank' : '_self';
+			$href   = apply_filters( 'uael_single_post_link', get_the_permalink(), get_the_ID(), $settings );
+
 			$this->add_render_attribute( 'img_link' . get_the_ID(), 'target', $target );
-		} else {
-			$href = 'javascript:void(0);';
+			$this->add_render_attribute( 'img_link' . get_the_ID(), 'href', $href );
+
+			$html_tag = 'a';
 		}
 
-		$this->add_render_attribute( 'img_link' . get_the_ID(), 'href', $href );
 		$this->add_render_attribute( 'img_link' . get_the_ID(), 'title', get_the_title() );
 		$this->add_render_attribute( 'img_link' . get_the_ID(), 'style', "background-image: url('" . $thumbnail_url . "');" );
 		?>
 		<div class="uael-post__thumbnail">
-			<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'img_link' . get_the_ID() ) ); ?>>
+			<<?php echo esc_html( $html_tag ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( 'img_link' . get_the_ID() ) ); ?>>
 				<?php
 				if ( 'yes' === $this->get_instance_value( 'post_stack_on' ) ) {
 					echo wp_kses_post( $thumbnail_html );
 				}
 				?>
-				</a>
+				</<?php echo esc_html( $html_tag ); ?>>
 		</div>
 		<?php
 		do_action( 'uael_single_post_after_thumbnail', get_the_ID(), $settings );

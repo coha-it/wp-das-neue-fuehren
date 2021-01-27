@@ -28,6 +28,7 @@ $classes[]  = 'post-' . $wp_post_id;
 $wc_classes = esc_attr( implode( ' ', wc_product_post_class( $classes, $class, $wp_post_id ) ) );
 
 $sale_flash      = $this->get_instance_value( 'show_sale' );
+$featured_flash  = $this->get_instance_value( 'show_featured' );
 $quick_view_type = $this->get_instance_value( 'quick_view_type' );
 
 $out_of_stock        = get_post_meta( $wp_post_id, '_stock_status', true );
@@ -40,10 +41,28 @@ $out_of_stock_string = apply_filters( 'uael_woo_out_of_stock_string', __( 'Out o
 
 		echo '<div class="uael-woo-products-thumbnail-wrap">';
 
-		if ( 'yes' === $sale_flash ) {
+		if ( 'yes' === $sale_flash || 'yes' === $featured_flash ) {
 
-			echo '<div class="uael-flash-container">';
+			$double_flash = '';
+
+			if ( 'yes' === $sale_flash && 'yes' === $featured_flash ) {
+
+				if ( $product->is_on_sale() ) {
+					$double_flash = 'uael-double-flash';
+				}
+			}
+
+			echo '<div class="uael-flash-container ' . esc_attr( $double_flash ) . '">';
+
+
+			if ( 'yes' === $sale_flash ) {
 				include UAEL_MODULES_DIR . 'woocommerce/templates/loop/sale-flash.php';
+			}
+
+			if ( 'yes' === $featured_flash ) {
+				include UAEL_MODULES_DIR . 'woocommerce/templates/loop/featured-flash.php';
+			}
+
 			echo '</div>';
 		}
 

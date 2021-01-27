@@ -10,6 +10,7 @@ namespace UltimateElementor\Modules\Posts\Skins;
 use Elementor\Controls_Manager;
 use Elementor\Widget_Base;
 use Elementor\Scheme_Color;
+use Elementor\Group_Control_Border;
 use Elementor\Scheme_Typography;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Box_Shadow;
@@ -186,6 +187,14 @@ class Skin_Event extends Skin_Base {
 					'left'   => '30',
 					'unit'   => 'px',
 				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'     => 'content_border',
+				'selector' => '{{WRAPPER}} .uael-post__bg-wrap',
 			)
 		);
 

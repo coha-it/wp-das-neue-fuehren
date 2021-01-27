@@ -96,7 +96,7 @@ class Marketing_Button extends Common_Widget {
 	 * @since 1.10.0
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		// Content Tab.
 		$this->register_buttons_content_controls();
@@ -880,7 +880,7 @@ class Marketing_Button extends Common_Widget {
 	 * @since 1.10.0
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 }

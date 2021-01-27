@@ -35,6 +35,7 @@ if ( 'yes' === $settings['show_entries'] ) {
 
 if ( 'yes' === $settings['searchable'] ) {
 	$this->add_render_attribute( 'uael_table_id', 'data-searchable', $settings['searchable'] );
+	$this->add_render_attribute( 'uael_table_id', 'data-search_text', $settings['search_text'] );
 } else {
 	$this->add_render_attribute( 'uael_table_id', 'data-searchable', 'no' );
 }
@@ -85,7 +86,7 @@ $csv = $this->parse_csv();
 					if ( 'yes' === $settings['sortable'] && true === $first_row_h ) {
 						$this->add_render_attribute( 'icon_sort_' . $head['_id'], 'class', 'uael-sort-icon' );
 					}
-					if ( $head['head_image']['url'] ) {
+					if ( ! empty( $head['head_image']['url'] ) ) {
 						$this->add_render_attribute( 'uael_head_col_img' . $head['_id'], 'src', $head['head_image']['url'] );
 						$this->add_render_attribute( 'uael_head_col_img' . $head['_id'], 'class', 'uael-col-img--' . $settings['all_image_align'] );
 						$this->add_render_attribute( 'uael_head_col_img' . $head['_id'], 'title', get_the_title( $head['head_image']['id'] ) );
@@ -104,7 +105,7 @@ $csv = $this->parse_csv();
 										<?php $this->render_heading_icon( $head ); ?>
 									<?php } ?>
 								<?php } else { ?>
-										<?php if ( $head['head_image']['url'] ) { ?>
+										<?php if ( ! empty( $head['head_image']['url'] ) ) { ?>
 											<?php if ( 'left' === $settings['all_image_align'] ) { ?>
 											<img <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael_head_col_img' . esc_attr( $head['_id'] ) ) ); ?>>
 										<?php } ?>
@@ -119,7 +120,7 @@ $csv = $this->parse_csv();
 									<?php } ?>
 
 								<?php } else { ?>
-										<?php if ( $head['head_image']['url'] ) { ?>
+										<?php if ( ! empty( $head['head_image']['url'] ) ) { ?>
 											<?php if ( 'right' === $settings['all_image_align'] ) { ?>
 											<img <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael_head_col_img' . esc_attr( $head['_id'] ) ) ); ?>>
 										<?php } ?>
@@ -178,20 +179,14 @@ $csv = $this->parse_csv();
 					if ( 1 < $row['cell_row_span'] ) {
 						$this->add_render_attribute( 'uael_table_col' . $row['_id'], 'rowspan', $row['cell_row_span'] );
 					}
-					if ( $row['image']['url'] ) {
+					if ( ! empty( $row['image']['url'] ) ) {
 						$this->add_render_attribute( 'uael_col_img' . $row['_id'], 'src', $row['image']['url'] );
 						$this->add_render_attribute( 'uael_col_img' . $row['_id'], 'class', 'uael-col-img--' . $settings['all_image_align'] );
 						$this->add_render_attribute( 'uael_col_img' . $row['_id'], 'title', get_the_title( $row['image']['id'] ) );
 						$this->add_render_attribute( 'uael_col_img' . $row['_id'], 'alt', Control_Media::get_image_alt( $row['image'] ) );
 					}
 					if ( ! empty( $row['link']['url'] ) ) {
-						$this->add_render_attribute( 'col-link-' . $row['_id'], 'href', $row['link']['url'] );
-						if ( $row['link']['is_external'] ) {
-							$this->add_render_attribute( 'col-link-' . $row['_id'], 'target', '_blank' );
-						}
-						if ( $row['link']['nofollow'] ) {
-							$this->add_render_attribute( 'col-link-' . $row['_id'], 'rel', 'nofollow' );
-						}
+						$this->add_link_attributes( 'col-link-' . $row['_id'], $row['link'] );
 					}
 
 					if ( 'cell' === $row['content_type'] ) {
@@ -211,7 +206,7 @@ $csv = $this->parse_csv();
 											<?php $this->render_row_icon( $row ); ?>
 										<?php } ?>
 									<?php } else { ?>
-										<?php if ( $row['image']['url'] ) { ?>
+										<?php if ( ! empty( $row['image']['url'] ) ) { ?>
 											<?php if ( 'left' === $settings['all_image_align'] ) { ?>
 											<img <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael_col_img' . esc_attr( $row['_id'] ) ) ); ?>>
 										<?php } ?>
@@ -223,7 +218,7 @@ $csv = $this->parse_csv();
 											<?php $this->render_row_icon( $row ); ?>
 										<?php } ?>
 									<?php } else { ?>
-										<?php if ( $row['image']['url'] ) { ?>
+										<?php if ( ! empty( $row['image']['url'] ) ) { ?>
 											<?php if ( 'right' === $settings['all_image_align'] ) { ?>
 											<img <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael_col_img' . esc_attr( $row['_id'] ) ) ); ?>>
 										<?php } ?>

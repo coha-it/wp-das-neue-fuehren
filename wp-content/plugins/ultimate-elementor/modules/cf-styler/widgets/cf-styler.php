@@ -152,7 +152,7 @@ class CfStyler extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_general_content_controls();
 		$this->register_input_style_controls();
@@ -980,7 +980,7 @@ class CfStyler extends Common_Widget {
 						'type'      => Controls_Manager::COLOR,
 						'default'   => '',
 						'selectors' => array(
-							'{{WRAPPER}} .uael-cf7-style .wpcf7-mail-sent-ok' => 'color: {{VALUE}};',
+							'{{WRAPPER}} .uael-cf7-style .wpcf7-mail-sent-ok,{{WRAPPER}} .uael-cf7-style .wpcf7 form.sent .wpcf7-response-output' => 'color: {{VALUE}};',
 						),
 					)
 				);
@@ -992,7 +992,7 @@ class CfStyler extends Common_Widget {
 						'type'      => Controls_Manager::COLOR,
 						'default'   => '',
 						'selectors' => array(
-							'{{WRAPPER}} .uael-cf7-style .wpcf7-mail-sent-ok' => 'background-color: {{VALUE}};',
+							'{{WRAPPER}} .uael-cf7-style .wpcf7-mail-sent-ok,{{WRAPPER}} .uael-cf7-style .wpcf7 form.sent .wpcf7-response-output' => 'background-color: {{VALUE}};',
 						),
 					)
 				);
@@ -1007,7 +1007,7 @@ class CfStyler extends Common_Widget {
 							'cf7_valid_border_size!' => '',
 						),
 						'selectors' => array(
-							'{{WRAPPER}} .uael-cf7-style .wpcf7-mail-sent-ok' => 'border-color: {{VALUE}};',
+							'{{WRAPPER}} .uael-cf7-style .wpcf7-mail-sent-ok,{{WRAPPER}} .uael-cf7-style .wpcf7 form.sent .wpcf7-response-output' => 'border-color: {{VALUE}};',
 						),
 					)
 				);
@@ -1019,7 +1019,7 @@ class CfStyler extends Common_Widget {
 						'type'      => Controls_Manager::COLOR,
 						'default'   => '',
 						'selectors' => array(
-							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng,{{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing' => 'color: {{VALUE}};',
+							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng,{{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing,{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-response-output' => 'color: {{VALUE}};',
 						),
 					)
 				);
@@ -1031,7 +1031,7 @@ class CfStyler extends Common_Widget {
 						'type'      => Controls_Manager::COLOR,
 						'default'   => '',
 						'selectors' => array(
-							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng,{{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing' => 'background-color: {{VALUE}};',
+							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng,{{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing,{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-response-output' => 'background-color: {{VALUE}};',
 						),
 					)
 				);
@@ -1046,7 +1046,7 @@ class CfStyler extends Common_Widget {
 							'cf7_valid_border_size!' => '',
 						),
 						'selectors' => array(
-							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng,{{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing' => 'border-color: {{VALUE}};',
+							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng,{{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing,{{WRAPPER}} .uael-cf7-style .wpcf7 form.invalid .wpcf7-response-output,{{WRAPPER}} .uael-cf7-style .wpcf7 form.failed .wpcf7-response-output,{{WRAPPER}} .uael-cf7-style .wpcf7 form.aborted .wpcf7-response-output ,{{WRAPPER}} .uael-cf7-style .wpcf7 form.spam .wpcf7-response-output,{{WRAPPER}} .uael-cf7-style .wpcf7 form.unaccepted .wpcf7-response-output' => 'border-color: {{VALUE}};',
 						),
 					)
 				);
@@ -1065,7 +1065,7 @@ class CfStyler extends Common_Widget {
 							'unit'   => 'px',
 						),
 						'selectors'  => array(
-							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng,{{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; border-style: solid;',
+							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng,{{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing,{{WRAPPER}} .uael-cf7-style .wpcf7 form .wpcf7-response-output' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; border-style: solid;',
 						),
 					)
 				);
@@ -1077,7 +1077,7 @@ class CfStyler extends Common_Widget {
 						'type'       => Controls_Manager::DIMENSIONS,
 						'size_units' => array( 'px', 'em', '%' ),
 						'selectors'  => array(
-							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng, {{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng, {{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing,{{WRAPPER}} .uael-cf7-style .wpcf7 form .wpcf7-response-output' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						),
 					)
 				);
@@ -1089,7 +1089,7 @@ class CfStyler extends Common_Widget {
 						'type'       => Controls_Manager::DIMENSIONS,
 						'size_units' => array( 'px', 'em', '%' ),
 						'selectors'  => array(
-							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng, {{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							'{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng, {{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing,{{WRAPPER}} .uael-cf7-style .wpcf7 form .wpcf7-response-output' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						),
 					)
 				);
@@ -1099,7 +1099,7 @@ class CfStyler extends Common_Widget {
 					array(
 						'name'     => 'cf7_validation_typo',
 						'scheme'   => Scheme_Typography::TYPOGRAPHY_3,
-						'selector' => '{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng,{{WRAPPER}} .uael-cf7-style .wpcf7-mail-sent-ok,{{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing',
+						'selector' => '{{WRAPPER}} .uael-cf7-style .wpcf7 .wpcf7-validation-errors, {{WRAPPER}} .uael-cf7-style div.wpcf7-mail-sent-ng,{{WRAPPER}} .uael-cf7-style .wpcf7-mail-sent-ok,{{WRAPPER}} .uael-cf7-style .wpcf7-acceptance-missing,{{WRAPPER}} .uael-cf7-style .wpcf7 form .wpcf7-response-output',
 					)
 				);
 

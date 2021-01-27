@@ -460,7 +460,7 @@ class HowTo extends Common_Widget {
 					'label'       => __( 'Add Required Tools', 'uael' ),
 					'type'        => Controls_Manager::REPEATER,
 					'show_label'  => true,
-					'fields'      => array_values( $repeater->get_controls() ),
+					'fields'      => $repeater->get_controls(),
 					'title_field' => '{{{ tool_item_text }}}',
 					'default'     => array(
 						array(
@@ -563,7 +563,7 @@ class HowTo extends Common_Widget {
 					'label'       => __( 'Add Required Materials', 'uael' ),
 					'type'        => Controls_Manager::REPEATER,
 					'show_label'  => true,
-					'fields'      => array_values( $repeater->get_controls() ),
+					'fields'      => $repeater->get_controls(),
 					'title_field' => '{{{ supply_item_text }}}',
 					'default'     => array(
 						array(
@@ -678,7 +678,7 @@ class HowTo extends Common_Widget {
 					'label'       => __( 'Add Steps', 'uael' ),
 					'type'        => Controls_Manager::REPEATER,
 					'show_label'  => true,
-					'fields'      => array_values( $repeater->get_controls() ),
+					'fields'      => $repeater->get_controls(),
 					'title_field' => '{{{ steps_item_title }}}',
 					'default'     => array(
 						array(
@@ -1938,7 +1938,7 @@ class HowTo extends Common_Widget {
 							</div>
 							<?php if ( ! empty( $item['steps_item_image']['url'] ) ) { ?>
 								<div class="uael-howto-step-image-wrap">
-									<img class="uael-howto-step-image" src="<?php echo esc_url( $item['steps_item_image']['url'] ); ?>" />
+									<img class="uael-howto-step-image" src="<?php echo esc_url( $item['steps_item_image']['url'] ); ?>" alt="<?php echo esc_attr( Control_Media::get_image_alt( $item['steps_item_image'] ) ); ?>" title="<?php echo esc_attr( Control_Media::get_image_title( $item['steps_item_image'] ) ); ?>" />
 								</div>
 							<?php } ?>
 						</div>
@@ -2059,7 +2059,7 @@ class HowTo extends Common_Widget {
 	 * @since 1.23.0
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 

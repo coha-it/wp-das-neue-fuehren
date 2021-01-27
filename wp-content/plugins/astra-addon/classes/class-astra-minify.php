@@ -27,7 +27,7 @@ if ( ! class_exists( 'Astra_Minify' ) ) {
 		 * @access private
 		 * @var bool $_in_customizer_preview
 		 */
-		private static $astra_filesystem = null;
+		private static $astra_addon_filesystem = null;
 
 		/**
 		 * Directory Info
@@ -155,7 +155,7 @@ if ( ! class_exists( 'Astra_Minify' ) ) {
 					wp_enqueue_script( 'astra-addon-js', $js_url, self::get_dependent_js(), ASTRA_EXT_VER, true );
 				}
 
-				if ( ! function_exists( 'astra_filesystem' ) ) {
+				if ( ! function_exists( 'astra_addon_filesystem' ) ) {
 					wp_add_inline_style( 'astra-addon-css', apply_filters( 'astra_dynamic_css', '' ) );
 				}
 
@@ -171,7 +171,7 @@ if ( ! class_exists( 'Astra_Minify' ) ) {
 		 */
 		public static function load_filesystem() {
 
-			if ( null === self::$astra_filesystem ) {
+			if ( null === self::$astra_addon_filesystem ) {
 
 				global $wp_filesystem;
 				if ( empty( $wp_filesystem ) ) {
@@ -179,7 +179,7 @@ if ( ! class_exists( 'Astra_Minify' ) ) {
 					WP_Filesystem();
 				}
 
-				self::$astra_filesystem = $wp_filesystem;
+				self::$astra_addon_filesystem = $wp_filesystem;
 			}
 		}
 
@@ -438,7 +438,7 @@ if ( ! class_exists( 'Astra_Minify' ) ) {
 
 			if ( ! empty( $cache_dir['path'] ) && stristr( $cache_dir['path'], $dir_name ) ) {
 				$directory     = trailingslashit( $cache_dir['path'] );
-				$filelist      = (array) self::$astra_filesystem->dirlist( $directory, true );
+				$filelist      = (array) self::$astra_addon_filesystem->dirlist( $directory, true );
 				$delete_status = true;
 
 				foreach ( $filelist as $file ) {
@@ -457,7 +457,7 @@ if ( ! class_exists( 'Astra_Minify' ) ) {
 					$file = $directory . $file['name'];
 
 					if ( is_file( $file ) && file_exists( $file ) ) {
-						$delete_status = self::$astra_filesystem->delete( $file );
+						$delete_status = self::$astra_addon_filesystem->delete( $file );
 					}
 				}
 
@@ -720,7 +720,7 @@ if ( ! class_exists( 'Astra_Minify' ) ) {
 				foreach ( $css_files as $k => $file ) {
 
 					if ( ! empty( $file ) && file_exists( $file ) ) {
-						$css .= self::$astra_filesystem->get_contents(
+						$css .= self::$astra_addon_filesystem->get_contents(
 							$file,
 							FS_CHMOD_FILE
 						);
@@ -730,7 +730,7 @@ if ( ! class_exists( 'Astra_Minify' ) ) {
 
 			$css = apply_filters( 'astra_render_css', $css );
 
-			$status = self::$astra_filesystem->put_contents(
+			$status = self::$astra_addon_filesystem->put_contents(
 				$filepath,
 				$css,
 				FS_CHMOD_FILE
@@ -870,7 +870,7 @@ if ( ! class_exists( 'Astra_Minify' ) ) {
 				foreach ( $js_files as $k => $file ) {
 
 					if ( ! empty( $file ) && file_exists( $file ) ) {
-						$js .= self::$astra_filesystem->get_contents(
+						$js .= self::$astra_addon_filesystem->get_contents(
 							$file,
 							FS_CHMOD_FILE
 						);
@@ -880,7 +880,7 @@ if ( ! class_exists( 'Astra_Minify' ) ) {
 
 			$js = apply_filters( 'astra_render_js', $js );
 
-			$status = self::$astra_filesystem->put_contents(
+			$status = self::$astra_addon_filesystem->put_contents(
 				$filepath,
 				$js,
 				FS_CHMOD_FILE

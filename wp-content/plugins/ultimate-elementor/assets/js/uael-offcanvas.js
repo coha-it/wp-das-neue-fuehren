@@ -257,6 +257,9 @@
 
 			if ( 'undefined' == typeof $scope )
 				return;
+				
+			var id = $scope.data( 'id' );
+			var wrap_menu_item = $scope.find( '.uael-offcanvas-parent-wrapper' ).data( 'wrap-menu-item' );
 			
 			if ( $scope.hasClass('elementor-hidden-desktop') ) {
 	        	$scope.find( '.uael-offcanvas-parent-wrapper' ).addClass( 'uael-offcanvas-hide-desktop' );
@@ -271,6 +274,79 @@
 			}
 
 			$( document ).trigger( 'uael_offcanvas_init', [ $scope.data( 'id' ) ] );
+			
+			if( 'yes' == wrap_menu_item ) {
+
+				$scope.find( 'div.uael-offcanvas-has-submenu-container' ).removeClass( 'uael-offcanvas-sub-menu-active' );
+				// Wrap submenu JS.
+				$scope.find( '.sub-menu' ).each( function() {
+
+					var parent = $( this ).closest( '.menu-item' );
+		
+					$scope.find( parent ).addClass( 'uael-offcanvas-parent-has-child' );
+				});
+				
+				var submenu_container = $scope.find( '.uael-offcanvas-parent-has-child .uael-offcanvas-has-submenu-container a' );
+
+				submenu_container.attr( 'aria-haspopup', 'true' );
+				submenu_container.attr( 'aria-expanded', 'false' );
+				
+				// On parent menu link
+				$( '.elementor-element-' + id + ' div.uael-offcanvas-has-submenu-container' ).off( 'click' ).on( 'click', function( event ) {
+
+					var $this = $( this );
+
+					if( $( '.elementor-element-' + id ).hasClass( 'uael-off-canvas-link-redirect-child' ) ) {
+						
+						if( $this.hasClass( 'uael-offcanvas-sub-menu-active' ) ) {
+							
+							if( ! $this.next().hasClass( 'uael-offcanvas-sub-menu-open' ) ) {
+
+								event.preventDefault();
+								
+								$this.find( 'a' ).attr( 'aria-expanded', 'false' );
+								$this.removeClass( 'uael-offcanvas-sub-menu-active' );
+								$this.next().removeClass( 'uael-offcanvas-sub-menu-open' );
+							} else {	
+								
+								$this.find( 'a' ).attr( 'aria-expanded', 'false' );
+								$this.removeClass( 'uael-offcanvas-sub-menu-active' );
+								$this.next().removeClass( 'uael-offcanvas-sub-menu-open' );
+							}
+						} else {
+
+							event.preventDefault();
+							
+							$this.find( 'a' ).attr( 'aria-expanded', 'true' );
+							$this.addClass( 'uael-offcanvas-sub-menu-active' );
+							$this.next().addClass( 'uael-offcanvas-sub-menu-open' );
+						}
+					}
+					
+				});
+
+				// On icon click
+				$( '.elementor-element-' + id + ' .uael-offcanvas-menu-toggle' ).off( 'click keyup' ).on( 'click keyup', function( event ) {
+					
+					var $this = $( this );
+					var active_menu = $this.parent().parent();
+					var active_toggle = $this.parent();
+						
+					if( $this.parent().parent().hasClass( 'uael-offcanvas-menu-active' ) ) {
+			
+						event.preventDefault();
+						active_menu.removeClass( 'uael-offcanvas-menu-active' );
+						active_toggle.attr( 'aria-expanded', 'false' );
+					
+					} else {
+
+						event.preventDefault();
+						active_menu.addClass( 'uael-offcanvas-menu-active' );
+						active_toggle.attr( 'aria-expanded', 'true' );
+					}
+				});
+			}
+
 		};
 
 		$( window ).on( 'elementor/frontend/init', function () {

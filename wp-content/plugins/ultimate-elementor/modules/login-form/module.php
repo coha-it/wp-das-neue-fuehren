@@ -222,7 +222,7 @@ class Module extends Module_Base {
 
 			$verified_email = $this->get_user_email_facebook( $rest_data['data']['user_id'], $access_token );
 
-			if ( ( ! is_null( $data['email'] ) || isset( $data['email'] ) || ! empty( $data['email'] ) ) ) {
+			if ( array_key_exists( 'email', $data ) && ( ! is_null( $data['email'] ) || isset( $data['email'] ) || ! empty( $data['email'] ) ) ) {
 
 				if ( $data['email'] === $verified_email['email'] ) {
 					$email = sanitize_email( $verified_email['email'] );

@@ -192,6 +192,7 @@ class Skin_Style {
 		if ( 'no' === $settings['timeline_infinite'] ) {
 			return;
 		}
+
 		// Get current page number.
 		$paged       = $query_obj->get_paged();
 		$total_pages = $query->max_num_pages;
@@ -214,10 +215,12 @@ class Skin_Style {
 			);
 			$class = (
 					'yes' === $settings['timeline_infinite']
-				) ? 'style="display:none;"' : '';
+				) ? 'style=display:none;' : '';
+
+			$id = 'uael-timeline-' . self::$node_id;
 
 			?>
-			<nav class="uael-timeline-pagination" <?php echo esc_attr( $class ); ?> role="navigation" aria-label="<?php esc_attr_e( 'Pagination', 'uael' ); ?>">
+			<nav class="uael-timeline-pagination" id="<?php echo esc_attr( $id ); ?>" <?php echo esc_attr( $class ); ?> role="navigation" aria-label="<?php esc_attr_e( 'Pagination', 'uael' ); ?>">
 				<?php echo wp_kses_post( implode( PHP_EOL, $links ) ); ?>
 			</nav>
 			<?php
@@ -318,7 +321,7 @@ class Skin_Style {
 
 					$page_no = get_query_var( 'paged' );
 					if ( 'yes' === $settings['timeline_infinite'] && 0 !== $page_no ) {
-						if ( 0 !== $per_posts % 2 && 0 === $page_no % 2 ) {
+						if ( 0 !== (int) $per_posts % 2 && 0 === (int) $page_no % 2 ) {
 							$current_side = ( 0 === $count % 2 ) ? 'Right' : 'Left';
 						} else {
 							$current_side = ( 0 === $count % 2 ) ? 'Left' : 'Right';
@@ -575,7 +578,7 @@ class Skin_Style {
 
 		self::$settings = $settings;
 		$dynamic        = $dynamic;
-		$node_id        = $node_id;
+		self::$node_id  = $node_id;
 		$query_obj      = new Build_Post_Query( $settings, '' );
 		$query_obj->query_posts();
 		$query = $query_obj->get_query();

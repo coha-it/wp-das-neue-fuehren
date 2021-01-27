@@ -1,7 +1,7 @@
 <?php
 namespace WP_Rocket\Engine\Preload;
 
-use League\Container\ServiceProvider\AbstractServiceProvider;
+use WP_Rocket\Engine\Container\ServiceProvider\AbstractServiceProvider;
 
 /**
  * Service provider for the WP Rocket preload.
@@ -51,6 +51,7 @@ class ServiceProvider extends AbstractServiceProvider {
 
 		// Subscribers.
 		$options = $this->getContainer()->get( 'options' );
+
 		$this->getContainer()->share( 'preload_subscriber', 'WP_Rocket\Engine\Preload\PreloadSubscriber' )
 			->withArgument( $this->getContainer()->get( 'homepage_preload' ) )
 			->withArgument( $options );

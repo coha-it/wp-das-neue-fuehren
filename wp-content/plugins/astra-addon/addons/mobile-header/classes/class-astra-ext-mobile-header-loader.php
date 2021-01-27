@@ -323,12 +323,14 @@ if ( ! class_exists( 'Astra_Ext_Mobile_Header_Loader' ) ) {
 			/**
 			 * Sections
 			 */
-			require_once ASTRA_EXT_MOBILE_HEADER_DIR . 'classes/sections/class-astra-customizer-mobile-header-configs.php';
-
-			if ( Astra_Ext_Extension::is_active( 'header-sections' ) ) {
+			if ( astra_addon_existing_header_footer_configs() ) {
+				require_once ASTRA_EXT_MOBILE_HEADER_DIR . 'classes/sections/class-astra-customizer-mobile-header-configs.php';
 				require_once ASTRA_EXT_MOBILE_HEADER_DIR . 'classes/sections/class-astra-customizer-mobile-above-header-configs.php';
-				require_once ASTRA_EXT_MOBILE_HEADER_DIR . 'classes/sections/class-astra-customizer-mobile-below-header-configs.php';
+				if ( Astra_Ext_Extension::is_active( 'header-sections' ) ) {
+					require_once ASTRA_EXT_MOBILE_HEADER_DIR . 'classes/sections/class-astra-customizer-mobile-below-header-configs.php';
+				}
 			}
+
 		}
 
 		/**

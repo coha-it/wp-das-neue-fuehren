@@ -96,10 +96,10 @@ class Astra_Cache_Base {
 		$this->asset_type      = $this->asset_type();
 		$this->asset_query_var = $this->asset_query_var();
 		$this->asset_slug      = $this->asset_slug();
-		$this->uploads_dir     = astra_filesystem()->get_uploads_dir( $this->cache_dir );
+		$this->uploads_dir     = astra_addon_filesystem()->get_uploads_dir( $this->cache_dir );
 
 		// Create uploads directory.
-		astra_filesystem()->maybe_create_uploads_dir( $this->uploads_dir['path'] );
+		astra_addon_filesystem()->maybe_create_uploads_dir( $this->uploads_dir['path'] );
 	}
 
 	/**
@@ -230,7 +230,7 @@ class Astra_Cache_Base {
 
 		foreach ( $dynamic_css_files as $key => $value ) {
 			// Get file contents.
-			$get_contents = astra_filesystem()->get_contents( $value );
+			$get_contents = astra_addon_filesystem()->get_contents( $value );
 			if ( $get_contents ) {
 				$dynamic_css_data .= $get_contents;
 			}
@@ -254,7 +254,7 @@ class Astra_Cache_Base {
 		check_ajax_referer( 'astra-addon-module-nonce', 'nonce' );
 
 		$this->init_cache();
-		astra_filesystem()->reset_filesystem_access_status();
+		astra_addon_filesystem()->reset_filesystem_access_status();
 
 		$this->delete_cache_files( $cache_dir );
 	}
@@ -272,7 +272,7 @@ class Astra_Cache_Base {
 		}
 
 		$this->init_cache();
-		astra_filesystem()->reset_filesystem_access_status();
+		astra_addon_filesystem()->reset_filesystem_access_status();
 
 		$this->delete_cache_files( $cache_dir );
 	}
@@ -285,8 +285,8 @@ class Astra_Cache_Base {
 	 * @return void
 	 */
 	private function delete_cache_files( $cache_dir ) {
-		$cache_dir   = astra_filesystem()->get_uploads_dir( $cache_dir );
-		$cache_files = astra_filesystem()->get_filesystem()->dirlist( $cache_dir['path'], false, true );
+		$cache_dir   = astra_addon_filesystem()->get_uploads_dir( $cache_dir );
+		$cache_files = astra_addon_filesystem()->get_filesystem()->dirlist( $cache_dir['path'], false, true );
 
 		if ( is_array( $cache_files ) ) {
 
@@ -301,7 +301,7 @@ class Astra_Cache_Base {
 					continue;
 				}
 
-				astra_filesystem()->delete( trailingslashit( $cache_dir['path'] ) . $file['name'], true, 'f' );
+				astra_addon_filesystem()->delete( trailingslashit( $cache_dir['path'] ) . $file['name'], true, 'f' );
 			}
 		}
 	}
@@ -375,7 +375,7 @@ class Astra_Cache_Base {
 		$inline                = false;
 		$allow_file_generation = get_option( '_astra_file_generation', 'disable' );
 
-		if ( ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG ) || ! astra_filesystem()->can_access_filesystem()
+		if ( ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG ) || ! astra_addon_filesystem()->can_access_filesystem()
 			|| 'disable' === $allow_file_generation || is_customize_preview() ) {
 			$inline = true;
 		}
@@ -495,7 +495,7 @@ class Astra_Cache_Base {
 	 * @return void
 	 */
 	public function file_write( $style_data, $timestamp, $assets_info ) {
-		astra_filesystem()->put_contents( $assets_info['path'], $style_data );
+		astra_addon_filesystem()->put_contents( $assets_info['path'], $style_data );
 		$this->update_timestamp( $timestamp );
 	}
 }

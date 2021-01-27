@@ -10,6 +10,7 @@ namespace UltimateElementor\Modules\Posts\Skins;
 use Elementor\Controls_Manager;
 use Elementor\Widget_Base;
 use Elementor\Scheme_Color;
+use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 
 use UltimateElementor\Base\Common_Widget;
@@ -302,7 +303,13 @@ class Skin_Card extends Skin_Base {
 				),
 			)
 		);
-
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'     => 'content_border',
+				'selector' => '{{WRAPPER}} .uael-post__content-wrap',
+			)
+		);
 		$this->add_group_control(
 			Group_Control_Box_Shadow::get_type(),
 			array(

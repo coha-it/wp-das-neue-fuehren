@@ -1,20 +1,53 @@
 <?php
 namespace WP_Rocket\Engine\Optimization\GoogleFonts;
 
-use WP_Rocket\Engine\Optimization\Minify\AbstractMinifySubscriber;
+use WP_Rocket\Admin\Options_Data;
+use WP_Rocket\Event_Management\Subscriber_Interface;
 
 /**
  * Combine Google Fonts subscriber
  *
  * @since 3.1
- * @author Remy Perona
  */
-class Subscriber extends AbstractMinifySubscriber {
+class Subscriber implements Subscriber_Interface {
+	/**
+	 * Plugin options.
+	 *
+	 * @var Options_Data
+	 */
+	private $options;
+
+	/**
+	 * Combine instance.
+	 *
+	 * @var AbstractGFOptimization
+	 */
+	private $combine;
+
+	/**
+	 * CombineV2 instance.
+	 *
+	 * @var AbstractGFOptimization
+	 */
+	private $combine_v2;
+
+	/**
+	 * Instantiate the subscriber.
+	 *
+	 * @param AbstractGFOptimization $combine Combine instance.
+	 * @param AbstractGFOptimization $combine_v2 Combine V2 instance.
+	 * @param Options_Data           $options Options_Data instance.
+	 */
+	public function __construct( AbstractGFOptimization $combine, AbstractGFOptimization $combine_v2, Options_Data $options ) {
+		$this->combine    = $combine;
+		$this->combine_v2 = $combine_v2;
+		$this->options    = $options;
+	}
+
 	/**
 	 * Return an array of events that this subscriber wants to listen to.
 	 *
 	 * @since  3.1
-	 * @author Remy Perona
 	 *
 	 * @return array
 	 */
@@ -52,10 +85,10 @@ class Subscriber extends AbstractMinifySubscriber {
 	}
 
 	/**
-	 * Processes the HTML to combine found Google fonts
+	 * Processes the HTML to combine found Google fonts.
+	 * Handles both Google Fonts API v2 and v1.
 	 *
 	 * @since 3.1
-	 * @author Remy Perona
 	 *
 	 * @param string $html HTML content.
 	 * @return string
@@ -65,18 +98,22 @@ class Subscriber extends AbstractMinifySubscriber {
 			return $html;
 		}
 
-		$this->set_optimization_type( new Combine() );
-
-		return $this->optimize( $html );
+		// Combine Google Font API V2.
+		$html = $this->combine_v2->optimize( $html );
+		// Combine Google Font API V1.
+		return $this->combine->optimize( $html );
 	}
 
 	/**
 	 * Checks if files can combine found Google fonts.
 	 *
 	 * @since 3.1
-	 * @author Remy Perona
 	 */
 	protected function is_allowed() {
+		if ( rocket_bypass() ) {
+			return false;
+		}
+
 		return (bool) $this->options->get( 'minify_google_fonts', 0 );
 	}
 }

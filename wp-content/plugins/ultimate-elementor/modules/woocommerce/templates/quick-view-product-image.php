@@ -27,8 +27,8 @@ global $post, $product, $woocommerce;
 			)
 		);
 		echo sprintf(
-			'<li>%s</li>',
-			wp_kses_post( $image )
+			'<li class="woocommerce-product-gallery__image">%s</li>',
+			$image // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 
 		if ( $attachment_ids ) {

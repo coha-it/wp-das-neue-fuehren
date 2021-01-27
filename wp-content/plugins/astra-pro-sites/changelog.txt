@@ -1,3 +1,25 @@
+v2.4.0 - 30-December-2020
+- Improvement: Additional compatibility with WordPress 5.6.
+
+v2.3.9 - 9-December-2020
+- Improvement - Compatibility to WordPress 5.6.
+
+v2.3.8 - 23-October-2020
+- Fix: LearnDash grid CSS not loading after site import.
+
+v2.3.7 - 28-September-2020
+- Fix: Prefixed all Starter Templates Icon classes in order to avoid 3rd party conflicts.
+
+v2.3.6 - 23-September-2020
+- Improvement: Added the Pixabay images support for new post, pages, and custom post type screen.
+- Improvement: Better handling of notices in the case of sync process.
+
+v2.3.5 - 27-August-2020
+- Improvement: Added Safe Search checkbox for Pixabay Image Search.
+- Fix: Elementor 3.0.0 and above import compatibility.
+- Fix: Resolved hotlink issue with Single page import.
+- Fix: Resolved edit permission issue while importing on Elementor page.
+
 v2.3.4 - 13-August-2020
 - Improvement - Compatibility to WordPress 5.5.
 

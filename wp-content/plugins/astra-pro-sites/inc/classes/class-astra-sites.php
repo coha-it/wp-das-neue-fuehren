@@ -101,7 +101,7 @@ if ( ! class_exists( 'Astra_Sites' ) ) :
 
 			$this->includes();
 
-			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+			add_action( 'plugin_action_links_' . ASTRA_SITES_BASE, array( $this, 'action_links' ) );
 			add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue' ), 99 );
 			add_action( 'wp_enqueue_scripts', array( $this, 'image_search_scripts' ) );
@@ -227,7 +227,7 @@ if ( ! class_exists( 'Astra_Sites' ) ) :
 			// Verify Nonce.
 			check_ajax_referer( 'astra-sites', '_ajax_nonce' );
 
-			if ( ! current_user_can( 'customize' ) ) {
+			if ( ! current_user_can( 'edit_posts' ) ) {
 				wp_send_json_error( __( 'You are not allowed to perform this action', 'astra-sites' ) );
 			}
 
@@ -435,7 +435,8 @@ if ( ! class_exists( 'Astra_Sites' ) ) :
 			);
 
 			$new_page_id = wp_insert_post( $post_args );
-			$post_meta   = isset( $_POST['data']['post-meta'] ) ? $_POST['data']['post-meta'] : array();
+			update_post_meta( $new_page_id, '_astra_sites_enable_for_batch', true );
+			$post_meta = isset( $_POST['data']['post-meta'] ) ? $_POST['data']['post-meta'] : array();
 
 			if ( ! empty( $post_meta ) ) {
 				$this->import_template_meta( $new_page_id, $post_meta );
@@ -537,7 +538,9 @@ if ( ! class_exists( 'Astra_Sites' ) ) :
 			);
 
 			$new_page_id = wp_insert_post( $post_args );
-			$post_meta   = isset( $_POST['data']['post-meta'] ) ? $_POST['data']['post-meta'] : array();
+			update_post_meta( $new_page_id, '_astra_sites_enable_for_batch', true );
+
+			$post_meta = isset( $_POST['data']['post-meta'] ) ? $_POST['data']['post-meta'] : array();
 
 			if ( ! empty( $post_meta ) ) {
 				$this->import_post_meta( $new_page_id, $post_meta );
@@ -575,7 +578,7 @@ if ( ! class_exists( 'Astra_Sites' ) ) :
 			// Verify Nonce.
 			check_ajax_referer( 'astra-sites', '_ajax_nonce' );
 
-			if ( ! current_user_can( 'customize' ) ) {
+			if ( ! current_user_can( 'edit_posts' ) ) {
 				wp_send_json_error( __( 'You are not allowed to perform this action', 'astra-sites' ) );
 			}
 
@@ -900,16 +903,6 @@ if ( ! class_exists( 'Astra_Sites' ) ) :
 		}
 
 		/**
-		 * Admin Notices
-		 *
-		 * @since 1.0.5
-		 * @return void
-		 */
-		public function admin_notices() {
-			add_action( 'plugin_action_links_' . ASTRA_SITES_BASE, array( $this, 'action_links' ) );
-		}
-
-		/**
 		 * Show action links on the plugin screen.
 		 *
 		 * @param   mixed $links Plugin Action links.
@@ -1069,7 +1062,7 @@ if ( ! class_exists( 'Astra_Sites' ) ) :
 		public function admin_enqueue( $hook = '' ) {
 
 			// Image Search assets.
-			if ( 'post.php' === $hook || 'widgets.php' === $hook ) {
+			if ( 'post-new.php' === $hook || 'post.php' === $hook || 'widgets.php' === $hook ) {
 				$this->image_search_assets();
 			}
 
@@ -1228,15 +1221,18 @@ if ( ! class_exists( 'Astra_Sites' ) ) :
 			return array(
 				'xmlreader'            => array(
 					'title'   => esc_html__( 'XMLReader Support Missing', 'astra-sites' ),
-					'tooltip' => '<p>' . esc_html__( 'You\'re close to importing the template. To complete the process, enable XMLReader support on your website.', 'astra-sites' ) . '</p><p>' . esc_html__( 'You can get in touch with your server administrator to enable XMLReader support.', 'astra-sites' ) . '</p>',
+					/* translators: %s doc link. */
+					'tooltip' => '<p>' . esc_html__( 'You\'re close to importing the template. To complete the process, enable XMLReader support on your website..', 'astra-sites' ) . '</p><p>' . sprintf( __( 'Read an article <a href="%s" target="_blank">here</a> to resolve the issue.', 'astra-sites' ), 'https://wpastra.com/docs/xmlreader-missing/' ) . '</p>',
 				),
 				'curl'                 => array(
 					'title'   => esc_html__( 'cURL Support Missing', 'astra-sites' ),
-					'tooltip' => '<p>' . esc_html__( 'To run a smooth import, kindly enable cURL support on your website.', 'astra-sites' ) . '</p><p>' . esc_html__( 'You can get in touch with your server administrator to enable cURL support.', 'astra-sites' ) . '</p>',
+					/* translators: %s doc link. */
+					'tooltip' => '<p>' . esc_html__( 'To run a smooth import, kindly enable cURL support on your website.', 'astra-sites' ) . '</p><p>' . sprintf( __( 'Read an article <a href="%s" target="_blank">here</a> to resolve the issue.', 'astra-sites' ), 'https://wpastra.com/docs/curl-support-missing/' ) . '</p>',
 				),
 				'wp-debug'             => array(
 					'title'   => esc_html__( 'Disable Debug Mode', 'astra-sites' ),
-					'tooltip' => '<p>' . esc_html__( 'WordPress debug mode is currently enabled on your website. With this, any errors from third-party plugins might affect the import process.', 'astra-sites' ) . '</p><p>' . esc_html__( 'Kindly disable it to continue importing the Starter Template. To do so, you can add the following code into the wp-config.php file.', 'astra-sites' ) . '</p><p><code>define(\'WP_DEBUG\', false);</code></p>',
+					/* translators: %s doc link. */
+					'tooltip' => '<p>' . esc_html__( 'WordPress debug mode is currently enabled on your website. With this, any errors from third-party plugins might affect the import process.', 'astra-sites' ) . '</p><p>' . esc_html__( 'Kindly disable it to continue importing the Starter Template. To do so, you can add the following code into the wp-config.php file.', 'astra-sites' ) . '</p><p><code>define(\'WP_DEBUG\', false);</code></p><p>' . sprintf( __( 'Read an article <a href="%s" target="_blank">here</a> to resolve the issue.', 'astra-sites' ), 'https://wpastra.com/docs/disable-debug-mode/' ) . '</p>',
 				),
 				'update-available'     => array(
 					'title'   => esc_html__( 'Update Plugin', 'astra-sites' ),

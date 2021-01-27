@@ -51,7 +51,7 @@ abstract class Posts_Base extends Common_Widget {
 
 		return array(
 			'imagesloaded',
-			'jquery-slick',
+			'uael-slick',
 			'uael-isotope',
 			'uael-posts',
 			'uael-element-resize',

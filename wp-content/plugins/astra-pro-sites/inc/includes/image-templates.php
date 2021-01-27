@@ -59,6 +59,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 <script type="text/template" id="tmpl-ast-image-filters">
 	<div class="ast-image__filter-wrap">
 		<ul class="ast-image__filter">
+			<li class="ast-image__filter-safesearch">
+				<label><input type="checkbox" checked value="1" /><?php esc_html_e( 'SafeSearch', 'astra-sites' ); ?></label>
+			</li>
 			<li class="ast-image__filter-category">
 				<select>
 					<# for ( key in astraImages.pixabay_category ) { #>
@@ -113,7 +116,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <script type="text/template" id="tmpl-ast-image-go-back">
 	<span class="ast-image__go-back">
-		<i class="icon-chevron-left"></i>
+		<i class="ast-icon-chevron-left"></i>
 		<span class="ast-image__go-back-text"><?php esc_html_e( 'Back to Images', 'astra-sites' ); ?></span>
 	</span>
 </script>

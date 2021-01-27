@@ -261,16 +261,12 @@ class Nav_Menu extends Common_Widget {
 						array(
 							'name'     => 'item_type',
 							'operator' => '==',
-							'value'    => array(
-								'item_menu',
-							),
+							'value'    => 'item_menu',
 						),
 						array(
 							'name'     => 'menu_content_type',
 							'operator' => '==',
-							'value'    => array(
-								'sub_menu',
-							),
+							'value'    => 'sub_menu',
 						),
 					),
 				),
@@ -295,16 +291,12 @@ class Nav_Menu extends Common_Widget {
 						array(
 							'name'     => 'item_type',
 							'operator' => '==',
-							'value'    => array(
-								'item_menu',
-							),
+							'value'    => 'item_menu',
 						),
 						array(
 							'name'     => 'menu_content_type',
 							'operator' => '==',
-							'value'    => array(
-								'sub_menu',
-							),
+							'value'    => 'sub_menu',
 						),
 					),
 				),
@@ -408,7 +400,7 @@ class Nav_Menu extends Common_Widget {
 				'label'       => __( 'Menu Items', 'uael' ),
 				'type'        => Controls_Manager::REPEATER,
 				'show_label'  => true,
-				'fields'      => array_values( $repeater->get_controls() ),
+				'fields'      => $repeater->get_controls(),
 				'default'     => array(
 					array(
 						'item_type' => 'item_menu',
@@ -596,6 +588,24 @@ class Nav_Menu extends Common_Widget {
 			);
 
 			$this->add_control(
+				'show_submenu_on',
+				array(
+					'label'        => __( 'Show Submenu On', 'uael' ),
+					'type'         => Controls_Manager::SELECT,
+					'default'      => 'hover',
+					'options'      => array(
+						'hover' => __( 'Hover', 'uael' ),
+						'click' => __( 'Click', 'uael' ),
+					),
+					'condition'    => array(
+						'layout' => 'horizontal',
+					),
+					'prefix_class' => 'uael-submenu-open-',
+					'render_type'  => 'template',
+				)
+			);
+
+			$this->add_control(
 				'submenu_icon',
 				array(
 					'label'        => __( 'Submenu Icon', 'uael' ),
@@ -628,8 +638,24 @@ class Nav_Menu extends Common_Widget {
 					),
 					'prefix_class' => 'uael-submenu-animation-',
 					'condition'    => array(
-						'layout' => 'horizontal',
+						'layout'          => 'horizontal',
+						'show_submenu_on' => 'hover',
 					),
+				)
+			);
+
+			$this->add_control(
+				'link_redirect',
+				array(
+					'label'        => __( 'Action On Menu Click', 'uael' ),
+					'type'         => Controls_Manager::SELECT,
+					'default'      => 'child',
+					'description'  => __( 'For Horizontal layout, this will affect on the selected breakpoint.', 'uael' ),
+					'options'      => array(
+						'child'     => __( 'Open Submenu', 'uael' ),
+						'self_link' => __( 'Redirect To Self Link', 'uael' ),
+					),
+					'prefix_class' => 'uael-link-redirect-',
 				)
 			);
 
@@ -1946,7 +1972,7 @@ class Nav_Menu extends Common_Widget {
 							$output .= '<div ' . $this->get_render_attribute_string( 'menu-content-item' . $item['_id'] ) . '>';
 
 						if ( 'saved_rows' === $item['menu_content_type'] ) {
-							$saved_section_shortcode = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( $item['content_saved_rows'] );
+							$saved_section_shortcode = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( apply_filters( 'wpml_object_id', $item['content_saved_rows'], 'page' ) );
 							$output                 .= do_shortcode( $saved_section_shortcode );
 						} elseif ( 'saved_modules' === $item['menu_content_type'] ) {
 							$saved_widget_shortcode = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( $item['content_saved_widgets'] );
@@ -2122,8 +2148,6 @@ class Nav_Menu extends Common_Widget {
 			);
 
 			$this->add_render_attribute( 'uael-main-menu', 'class', 'uael-nav-menu-layout' );
-
-			$this->add_render_attribute( 'uael-main-menu', 'class', $settings['layout'] );
 
 			$this->add_render_attribute( 'uael-main-menu', 'data-layout', $settings['layout'] );
 

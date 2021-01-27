@@ -1556,6 +1556,7 @@ class Skin_Feed extends Skin_Base {
 			'link_new_tab',
 			array(
 				'condition' => array(
+					$this->get_control_id( 'link_img' ) => 'yes',
 					$this->get_control_id( 'image_position' ) => 'left',
 				),
 			)
@@ -1773,6 +1774,14 @@ class Skin_Feed extends Skin_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} .uael-post__content-wrap' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'     => 'content_border',
+				'selector' => '{{WRAPPER}} .uael-post__content-wrap',
 			)
 		);
 

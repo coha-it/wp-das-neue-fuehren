@@ -96,7 +96,7 @@ class Woo_Products extends Common_Widget {
 	 * @return array scripts.
 	 */
 	public function get_script_depends() {
-		return array( 'imagesloaded', 'jquery-slick', 'uael-woocommerce' );
+		return array( 'imagesloaded', 'uael-slick', 'uael-woocommerce' );
 	}
 
 	/**
@@ -106,6 +106,16 @@ class Woo_Products extends Common_Widget {
 	 * @access protected
 	 */
 	protected function _register_skins() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+		$this->register_skins();
+	}
+
+	/**
+	 * Register Woo-Products Skins.
+	 *
+	 * @since 1.29.0
+	 * @access protected
+	 */
+	public function register_skins() {
 		$this->add_skin( new Skins\Skin_Grid_Default( $this ) );
 		$this->add_skin( new Skins\Skin_Grid_Franko( $this ) );
 	}

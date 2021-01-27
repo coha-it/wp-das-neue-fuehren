@@ -62,6 +62,9 @@ class Skin_Grid_Franko extends Skin_Grid_Base {
 		/* Flash Notification Controls */
 		add_action( 'elementor/element/uael-woo-products/section_filter_field/after_section_end', array( $this, 'register_content_sale_controls' ) );
 		add_action( 'elementor/element/uael-woo-products/section_design_image/after_section_end', array( $this, 'register_style_sale_controls' ) );
+
+		add_action( 'elementor/element/uael-woo-products/section_filter_field/after_section_end', array( $this, 'register_content_featured_controls' ) );
+		add_action( 'elementor/element/uael-woo-products/section_design_image/after_section_end', array( $this, 'register_style_featured_controls' ) );
 	}
 
 	/**
@@ -894,6 +897,229 @@ class Skin_Grid_Franko extends Skin_Grid_Base {
 		$this->end_controls_section();
 	}
 
+		/**
+		 * Featured flash content controls.
+		 *
+		 * @since 1.27.1
+		 * @param Widget_Base $widget widget object.
+		 * @access public
+		 */
+	public function register_content_featured_controls( Widget_Base $widget ) {
+		$this->parent = $widget;
+
+		$this->start_controls_section(
+			'section_content_featured',
+			array(
+				'label' => __( 'Featured Flash', 'uael' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+
+			$this->add_control(
+				'show_featured',
+				array(
+					'label'        => __( 'Flash', 'uael' ),
+					'type'         => Controls_Manager::SWITCHER,
+					'label_on'     => __( 'Show', 'uael' ),
+					'label_off'    => __( 'Hide', 'uael' ),
+					'return_value' => 'yes',
+					'default'      => 'no',
+				)
+			);
+
+			$this->add_control(
+				'featured_flash_string',
+				array(
+					'label'     => __( 'Flash Content', 'uael' ),
+					'type'      => Controls_Manager::TEXT,
+					'default'   => __( 'New', 'uael' ),
+					'condition' => array(
+						$this->get_control_id( 'show_featured' ) => 'yes',
+					),
+				)
+			);
+		$this->end_controls_section();
+	}
+
+	/**
+	 * Register Style Flash Controls.
+	 *
+	 * @since 1.27.1
+	 * @param Widget_Base $widget widget object.
+	 * @access public
+	 */
+	public function register_style_featured_controls( Widget_Base $widget ) {
+
+		$this->parent = $widget;
+
+		$this->start_controls_section(
+			'section_design_flash_notification',
+			array(
+				'label'     => __( 'Featured Flash', 'uael' ),
+				'tab'       => Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					$this->get_control_id( 'show_featured' ) => 'yes',
+				),
+			)
+		);
+			$this->add_control(
+				'featured_flash_style',
+				array(
+					'label'        => __( 'Flash Style', 'uael' ),
+					'type'         => Controls_Manager::SELECT,
+					'options'      => array(
+						'circle' => __( 'Circle', 'uael' ),
+						'square' => __( 'Square', 'uael' ),
+						'custom' => __( 'Custom', 'uael' ),
+					),
+					'default'      => 'custom',
+					'condition'    => array(
+						$this->get_control_id( 'show_featured' ) => 'yes',
+					),
+					'prefix_class' => 'uael-featured-flash-',
+				)
+			);
+			$this->add_responsive_control(
+				'featured_flash_size',
+				array(
+					'label'      => __( 'Size', 'uael' ),
+					'type'       => Controls_Manager::SLIDER,
+					'size_units' => array( 'px', 'em' ),
+					'range'      => array(
+						'px' => array(
+							'min' => 20,
+							'max' => 200,
+						),
+						'em' => array(
+							'min' => 1,
+							'max' => 10,
+						),
+					),
+					'default'    => array(
+						'size' => 2,
+						'unit' => 'em',
+					),
+					'condition'  => array(
+						$this->get_control_id( 'show_featured' ) => 'yes',
+					),
+					'selectors'  => array(
+						'{{WRAPPER}} .uael-featured' => 'min-height: {{SIZE}}{{UNIT}}; min-width: {{SIZE}}{{UNIT}};line-height: {{SIZE}}{{UNIT}};',
+
+					),
+				)
+			);
+			$this->add_responsive_control(
+				'featured_flash_radius',
+				array(
+					'label'      => __( 'Rounded Corners', 'uael' ),
+					'type'       => Controls_Manager::DIMENSIONS,
+					'size_units' => array( 'px', '%' ),
+					'default'    => array(
+						'top'    => '',
+						'bottom' => '',
+						'left'   => '',
+						'right'  => '',
+						'unit'   => 'px',
+					),
+					'condition'  => array(
+						$this->get_control_id( 'show_featured' ) => 'yes',
+						$this->get_control_id( 'featured_flash_style' ) => 'custom',
+					),
+					'selectors'  => array(
+						'{{WRAPPER}} .uael-featured' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+				)
+			);
+			$this->add_responsive_control(
+				'featured_flash_padding',
+				array(
+					'label'      => __( 'Padding', 'uael' ),
+					'type'       => Controls_Manager::DIMENSIONS,
+					'size_units' => array( 'px', 'em', '%' ),
+					'selectors'  => array(
+						'{{WRAPPER}} .uael-featured' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+					'default'    => array(
+						'top'      => '2',
+						'bottom'   => '2',
+						'left'     => '10',
+						'right'    => '10',
+						'unit'     => 'px',
+						'isLinked' => false,
+					),
+					'condition'  => array(
+						$this->get_control_id( 'show_featured' ) => 'yes',
+						$this->get_control_id( 'featured_flash_style' ) => 'custom',
+					),
+				)
+			);
+			$this->add_responsive_control(
+				'featured_flash_margin',
+				array(
+					'label'      => __( 'Margin', 'uael' ),
+					'type'       => Controls_Manager::DIMENSIONS,
+					'size_units' => array( 'px', '%' ),
+					'default'    => array(
+						'top'    => '10',
+						'bottom' => '10',
+						'left'   => '10',
+						'right'  => '10',
+						'unit'   => 'px',
+					),
+					'selectors'  => array(
+						'{{WRAPPER}} .uael-featured-flash-wrap .uael-featured' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+					'condition'  => array(
+						$this->get_control_id( 'show_featured' ) => 'yes',
+					),
+				)
+			);
+			$this->add_control(
+				'featured_flash_color',
+				array(
+					'label'     => __( 'Color', 'uael' ),
+					'type'      => Controls_Manager::COLOR,
+					'selectors' => array(
+						'{{WRAPPER}} .uael-woocommerce .uael-featured' => 'color: {{VALUE}};',
+					),
+					'condition' => array(
+						$this->get_control_id( 'show_featured' ) => 'yes',
+					),
+				)
+			);
+
+			$this->add_control(
+				'featured_flash_bg_color',
+				array(
+					'label'     => __( 'Background Color', 'uael' ),
+					'type'      => Controls_Manager::COLOR,
+					'scheme'    => array(
+						'type'  => Scheme_Color::get_type(),
+						'value' => Scheme_Color::COLOR_2,
+					),
+					'selectors' => array(
+						'{{WRAPPER}} .uael-woocommerce .uael-featured' => 'background-color: {{VALUE}};',
+					),
+					'condition' => array(
+						$this->get_control_id( 'show_featured' ) => 'yes',
+					),
+				)
+			);
+
+			$this->add_group_control(
+				Group_Control_Typography::get_type(),
+				array(
+					'name'      => 'featured_flash_typography',
+					'scheme'    => Scheme_Typography::TYPOGRAPHY_3,
+					'selector'  => '{{WRAPPER}} .uael-woocommerce .uael-featured',
+					'condition' => array(
+						$this->get_control_id( 'show_featured' ) => 'yes',
+					),
+				)
+			);
+
+		$this->end_controls_section();
+	}
 	/**
 	 * Render Main HTML.
 	 *

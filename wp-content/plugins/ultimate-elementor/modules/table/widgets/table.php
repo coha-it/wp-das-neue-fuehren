@@ -97,7 +97,7 @@ class Table extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_header_content_controls();
 		$this->register_body_content_controls();
@@ -424,7 +424,7 @@ class Table extends Common_Widget {
 				array(
 					'type'        => Controls_Manager::REPEATER,
 					'show_label'  => true,
-					'fields'      => array_values( $repeater->get_controls() ),
+					'fields'      => $repeater->get_controls(),
 					'title_field' => '{{ header_content_type }}: {{{ heading_text }}}',
 					'default'     => array(
 						array(
@@ -779,7 +779,7 @@ class Table extends Common_Widget {
 						'cell_text'    => __( 'Row 3, Content 2', 'uael' ),
 					),
 				),
-				'fields'      => array_values( $repeater_content->get_controls() ),
+				'fields'      => $repeater_content->get_controls(),
 				'title_field' => '{{ content_type }}: {{{ cell_text }}}',
 			)
 		);
@@ -829,6 +829,22 @@ class Table extends Common_Widget {
 					'description'  => __( 'Search/filter table entries easily.', 'uael' ),
 					'return_value' => 'yes',
 					'default'      => 'no',
+				)
+			);
+
+			// Sort text.
+			$this->add_control(
+				'search_text',
+				array(
+					'label'     => __( 'Search Label', 'uael' ),
+					'type'      => Controls_Manager::TEXT,
+					'dynamic'   => array(
+						'active' => true,
+					),
+					'default'   => __( 'Search:', 'uael' ),
+					'condition' => array(
+						'searchable' => 'yes',
+					),
 				)
 			);
 

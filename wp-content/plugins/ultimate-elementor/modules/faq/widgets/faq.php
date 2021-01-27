@@ -1282,8 +1282,7 @@ class FAQ extends Common_Widget {
 		$output           = '';
 		switch ( $content_type ) {
 			case 'content':
-				global $wp_embed;
-				$output = '<span>' . wpautop( $wp_embed->autoembed( $key['answer'] ) ) . '</span>';
+				$output = '<span>' . $key['answer'] . '</span>';
 				break;
 			case 'saved_rows':
 				$output = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( apply_filters( 'wpml_object_id', $key['ct_saved_rows'], 'page' ) );
@@ -1313,15 +1312,15 @@ class FAQ extends Common_Widget {
 		$settings               = $this->get_settings_for_display();
 		$is_editor              = \Elementor\Plugin::instance()->editor->is_edit_mode();
 		$id_int                 = substr( $this->get_id_int(), 0, 3 );
-		$content_schema_warning = '0';
-
+		$content_schema_warning = 0;
+		$count                  = 1;
 		foreach ( $settings['tabs'] as $key ) {
 			if ( 'content' !== $key['faq_content_type'] ) {
-				$content_schema_warning = '1';
+				$content_schema_warning = 1;
 			}
 		}
 
-		if ( ( '1' === $content_schema_warning ) && ( true === $is_editor ) && ( 'yes' === $settings['schema_support'] ) ) {
+		if ( ( 1 === $content_schema_warning ) && ( true === $is_editor ) && ( 'yes' === $settings['schema_support'] ) ) {
 			?><span>
 				<?php
 				echo '<div class="elementor-alert elementor-alert-warning uael-warning">';
@@ -1381,58 +1380,31 @@ class FAQ extends Common_Widget {
 
 						if ( ! ( '' === $key['question'] || '' === $key['answer'] ) ) {
 							?>
-							<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael_faq_accordion_' . $key['_id'] ) ); ?>>
-								<div class= "uael-accordion-title" aria-expanded="false">                    
+							<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael_faq_accordion_' . $key['_id'] ) ); ?> role="tablist">
+								<div class= "uael-accordion-title" aria-expanded="false" role="tab">                    
 									<span class="uael-accordion-icon uael-accordion-icon-<?php echo esc_attr( $settings['icon_align'] ); ?>">
 										<span class="uael-accordion-icon-closed"><?php Icons_Manager::render_icon( $settings['selected_icon'] ); ?></span>
 										<span class="uael-accordion-icon-opened"><?php Icons_Manager::render_icon( $settings['selected_active_icon'] ); ?></span>
 									</span>
-									<<?php echo esc_html( $settings['heading_tag'] ); ?> class="uael-question-<?php echo esc_attr( $key['_id'] ); ?> uael-question-span" tabindex="0" ><?php echo wp_kses_post( $key['question'] ); ?></<?php echo esc_html( $settings['heading_tag'] ); ?>>
+									<<?php echo esc_html( $settings['heading_tag'] ); ?> class="uael-question-<?php echo esc_attr( $key['_id'] ); ?> uael-question-span" tabindex="0" id="uael-faq-<?php echo esc_attr( $count ); ?>"><?php echo wp_kses_post( $key['question'] ); ?></<?php echo esc_html( $settings['heading_tag'] ); ?>>
 								</div>
-								<div class="uael-accordion-content">
+								<div class="uael-accordion-content" role="tabpanel">
 									<span>
 									<?php
-									echo $this->get_modal_content( $key ); // phpcs:ignore
+									echo $this->get_modal_content( $key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 									?>
 									</span>
 								</div>
 							</div>
 							<?php
 						} else {
-							$content_schema_warning = '1';
+							$content_schema_warning = 1;
 						}
+						$count++;
 					}
 					?>
 				</div>
 			</div>
 			<?php
-			// schema logic.
-
-			if ( 'yes' === $settings['schema_support'] && ( '0' === $content_schema_warning ) ) {
-				$object_data = array();
-				$json_data   = array(
-					'@context' => 'https://schema.org',
-					'@type'    => 'FAQPage',
-				);
-				foreach ( $settings['tabs'] as $key ) {
-					$new_data = array(
-						'@type'          => 'Question',
-						'name'           => $key['question'],
-						'acceptedAnswer' =>
-						array(
-							'@type' => 'Answer',
-							'text'  => $key['answer'],
-						),
-					);
-					array_push( $object_data, $new_data );
-				}
-				$json_data['mainEntity'] = $object_data;
-				$encoded_data            = wp_json_encode( $json_data );
-				?>
-				<script type="application/ld+json">
-					<?php print_r( $encoded_data );  // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r ?>
-				</script>
-				<?php
-			}
 	}
 }

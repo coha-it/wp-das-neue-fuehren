@@ -2375,10 +2375,11 @@ class LoginForm extends Common_Widget {
 						</div>
 
 						<?php if ( 'yes' === $settings['show_remember_me'] ) { ?>
+							<?php $remember_me_text = apply_filters( 'uael_login_remember_me', __( 'Remember Me', 'uael' ) ); ?>
 							<div class="elementor-field-type-checkbox elementor-field-group elementor-column elementor-col-100 elementor-remember-me">
 								<label for="uael-login-remember-me">
 									<input type="checkbox" id="uael-login-remember-me" class="uael-login-form-remember" name="rememberme" value="forever">
-									<span class="uael-login-form-remember"><?php echo esc_attr__( 'Remember Me', 'uael' ); ?></span>
+									<span class="uael-login-form-remember"><?php echo esc_html( $remember_me_text ); ?></span>
 								</label>
 							</div>
 						<?php } ?>

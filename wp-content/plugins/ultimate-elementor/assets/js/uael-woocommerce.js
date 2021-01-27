@@ -18,7 +18,7 @@
 
 		$scope
 			.off( 'click', '.uael-quick-view-btn' )
-			.on( 'click', '.uael-quick-view-btn', function(e){
+			.on( 'click', '.uael-quick-view-btn', function( e ){
 				e.preventDefault();
 
 				var $this       = $(this);
@@ -40,7 +40,7 @@
 
 		$scope
 			.off( 'click', '.uael-quick-view-data' )
-			.on( 'click', '.uael-quick-view-data', function(e){
+			.on( 'click', '.uael-quick-view-data', function( e ){
 				e.preventDefault();
 				var $this       = $(this);
 				var	wrap 		= $this.closest('li.product');
@@ -69,7 +69,7 @@
 					action: 'uael_woo_quick_view',
 					product_id: product_id,
 					nonce: uael_wc_script.quick_view_nonce,
-				},				
+				},
 				dataType: 'html',
 				type: 'POST',
 				success: function (data) {
@@ -104,7 +104,7 @@
 				var_form.find('select').change();
 			}
 
-			uael_qv_content.imagesLoaded( function(e) {
+			uael_qv_content.imagesLoaded( function( e ) {
 
 				var image_slider_wrap = uael_qv_modal.find('.uael-qv-image-slider');
 
@@ -131,7 +131,7 @@
 		var uael_qv_close_modal = function() {
 
 			// Close box by click overlay
-			uael_qv_wrapper.on( 'click', function(e){
+			uael_qv_wrapper.on( 'click', function( e ){
 
 				if ( this === e.target ) {
 					uael_qv_close();
@@ -139,14 +139,14 @@
 			});
 
 			// Close box with esc key
-			$(document).keyup(function(e){
+			$(document).keyup(function( e ){
 				if( e.keyCode === 27 ) {
 					uael_qv_close();
 				}
 			});
 
 			// Close box by click close button
-			uael_qv_close_btn.on( 'click', function(e) {
+			uael_qv_close_btn.on( 'click', function( e ) {
 				e.preventDefault();
 				uael_qv_close();
 			});
@@ -163,31 +163,6 @@
 			}
 		};
 
-
-		/*var	ast_qv_center_modal = function() {
-
-			ast_qv_wrapper.css({
-				'width'     : '',
-				'height'    : ''
-			});
-
-			ast_qv_wrapper_w 	= ast_qv_wrapper.width(),
-			ast_qv_wrapper_h 	= ast_qv_wrapper.height();
-
-			var window_w = $(window).width(),
-				window_h = $(window).height(),
-				width    = ( ( window_w - 60 ) > ast_qv_wrapper_w ) ? ast_qv_wrapper_w : ( window_w - 60 ),
-				height   = ( ( window_h - 120 ) > ast_qv_wrapper_h ) ? ast_qv_wrapper_h : ( window_h - 120 );
-
-			ast_qv_wrapper.css({
-				'left' : (( window_w/2 ) - ( width/2 )),
-				'top' : (( window_h/2 ) - ( height/2 )),
-				'width'     : width + 'px',
-				'height'    : height + 'px'
-			});
-		};
-
-		*/
 		var uael_update_summary_height = function( update_css ) {
 			var quick_view = uael_qv_content,
 				img_height = quick_view.find( '.product .uael-qv-image-slider' ).first().height(),
@@ -245,7 +220,7 @@
 		uael_add_to_cart_ajax.prototype.onAddToCart = function( e ) {
 
 			e.preventDefault();
-			
+
 			var $form = $(this).closest('form');
 
 			// If the form inputs are invalid
@@ -259,7 +234,7 @@
 				variation_id = $('input[name="variation_id"]').val() || '';
 
 			// Set Quantity.
-			// 
+			//
 			// For grouped product quantity should be array instead of single value
 			// For that set the quantity as array for grouped product.
 			var quantity = $('input[name="quantity"]').val();
@@ -293,13 +268,7 @@
 					jQuery.ajax ({
 						url: uael_wc_script.ajax_url,
 						type:'POST',
-						data: {
-							action: 'uael_add_cart_single_product',
-							product_id : product_id,
-							variation_id: variation_id,
-							quantity: quantity,
-							nonce: uael_wc_script.add_cart_nonce,
-						},
+						data:'action=uael_add_cart_single_product&product_id=' + product_id  + '&nonce=' + uael_wc_script.add_cart_nonce + '&'+ cartFormData,
 						success:function(results) {
 							// Trigger event so themes can refresh other areas.
 							$( document.body ).trigger( 'wc_fragment_refresh' );
@@ -332,9 +301,9 @@
 				$(button).addClass( 'added' );
 
 				// View cart text.
-				if ( ! uael.is_cart && $(button).parent().find( '.added_to_cart' ).length === 0  && uael.is_single_product) {
-					$(button).after( ' <a href="' + uael.cart_url + '" class="added_to_cart wc-forward" title="' +
-						uael.view_cart + '">' + uael.view_cart + '</a>' );
+				if ( ! uael_wc_script.is_cart && $(button).parent().find( '.added_to_cart' ).length === 0  && uael_wc_script.is_single_product) {
+					$(button).after( ' <a href="' + uael_wc_script.cart_url + '" class="added_to_cart wc-forward" title="' +
+						uael_wc_script.view_cart + '">' + uael_wc_script.view_cart + '</a>' );
 				}
 
 
@@ -360,7 +329,6 @@
 		var style_add_to_cart = function() {
 
 			//fa-spinner
-
 			$( document.body )
 				.off( 'click', '.uael-product-actions .uael-add-to-cart-btn.product_type_simple' )
 				.off( 'uael_product_actions_added_to_cart' )
@@ -410,12 +378,6 @@
 			if ( $(button) ) {
 				$(button).removeClass( 'loading' );
 				$(button).addClass( 'added' );
-
-				// Show view cart notice.
-				/*if ( ! uael.is_cart && $(button).parent().find( '.added_to_cart' ).length === 0  && uael.is_single_product) {
-					$(button).after( ' <a href="' + uael.cart_url + '" class="added_to_cart wc-forward" title="' +
-						uael.view_cart + '">' + uael.view_cart + '</a>' );
-				}*/
 			}
 		};
 
@@ -472,27 +434,134 @@
 
 	}
 
+	var UAELAjaxAddToCart = function( $scope, $ ) {
+
+		$layout	= $scope.data( 'widget_type' );
+
+		if ( 'uael-woo-add-to-cart.default' !== $layout ) {
+			return;
+		}
+		var uael_atc_call = $scope.find( '.uael-add-to-cart' );
+	
+		var uael_ajax_add_to_cart = function() {
+			
+			$( document.body )
+				.off( 'click', '.uael-add-to-cart .single_add_to_cart_button' )
+				.off( 'uael_woo_added_to_cart' )
+				.on( 'click', '.uael-add-to-cart .single_add_to_cart_button', this.onAddToCart )
+				.on( 'uael_woo_added_to_cart', this.updateButton );
+		};
+
+		/**
+		 * Handle the add to cart event.
+		 */
+		uael_ajax_add_to_cart.prototype.onAddToCart = function( e ) {
+
+			e.preventDefault();
+			
+			var $form = $( this ).closest( 'form' );
+		
+			// If the form inputs are invalid
+			if( ! $form[0].checkValidity() ) {
+				$form[0].reportValidity();
+				return false;
+			}
+
+			var $thisbutton = $( this ),
+				product_id = $( this ).val(),
+				variation_id = $( 'input[name="variation_id"]' ).val() || '';
+
+			// Set Quantity.
+			// 
+			// For grouped product quantity should be array instead of single value
+			// For that set the quantity as array for grouped product.
+			var quantity = $( 'input[name="quantity"]' ).val();
+			if( $scope.find( '.woocommerce-grouped-product-list-item' ).length )
+			{
+				var quantities = $( 'input.qty' ),
+					quantity   = [];
+				$.each( quantities, function( index, val ) {
+
+					var name = $( this ).attr( 'name' );
+
+					name = name.replace( 'quantity[', '' );
+					name = name.replace( ']', '' );
+					name = parseInt( name );
+
+					if( $( this ).val() ) {
+						quantity[ name ] = $( this ).val();
+					}
+				});
+			}
+
+			var cartFormData = $form.serialize();
+
+			if ( $thisbutton.is( '.single_add_to_cart_button' ) ) {
+
+				$thisbutton.removeClass( 'added' );
+				$thisbutton.addClass( 'loading' );
+
+				// Ajax action.
+				jQuery.ajax ({
+					url: uael_wc_script.ajax_url,
+					type:'POST',
+					data:'action=uael_add_cart_single_product&product_id=' + product_id  + '&nonce=' + uael_wc_script.add_cart_nonce + '&'+ cartFormData,
+					success:function( results ) {
+						// Trigger event so themes can refresh other areas.
+						$( document.body ).trigger( 'wc_fragment_refresh' );
+						uael_atc_call.trigger( 'uael_woo_added_to_cart', [ $thisbutton ] );
+					}
+				});
+			}
+		};
+
+		/**
+		 * Update cart page elements after add to cart events.
+		 */
+		uael_ajax_add_to_cart.prototype.updateButton = function( e, button ) {
+			button = typeof button === 'undefined' ? false : button;
+
+			if ( $( button ) ) {
+				$( button ).removeClass( 'loading' );
+				$( button ).addClass( 'added' );
+			}
+		};
+		
+
+		/**
+		 * Init uael_ajax_add_to_cart.
+		 */
+		new uael_ajax_add_to_cart();
+	}
+
+	
 	/**
 	 * Function for Product Grid.
 	 *
 	 */
 	var WidgetUAELWooAddToCart = function( $scope, $ ) {
 
-		$('body').off('added_to_cart.uael_cart' ).on( 'added_to_cart.uael_cart', function(e, fragments, cart_hash, btn){
+		var enable_single_product_page = $scope.find( '.uael-add-to-cart' ).data( 'enable-feature' );
+		
+		$( 'body' ).off( 'added_to_cart.uael_cart' ).on( 'added_to_cart.uael_cart', function( e, fragments, cart_hash, btn ){
 
-			if ( btn.closest('.elementor-widget-uael-woo-add-to-cart').length > 0 ) {
+			if ( btn.closest( '.elementor-widget-uael-woo-add-to-cart' ).length > 0 ) {
 
-				if ( btn.hasClass('uael-redirect') ) {
+				if ( btn.hasClass( 'uael-redirect' ) ) {
 
-					setTimeout(function() {
+					setTimeout( function() {
 						// View cart text.
-						if ( ! uael.is_cart && btn.hasClass( 'added' ) ) {
-							window.location = uael.cart_url;
+						if ( ! uael_wc_script.is_cart && btn.hasClass( 'added' ) ) {
+							window.location = uael_wc_script.cart_url;
 						}
-					}, 200);
+					}, 200 );
 				}
 			}
 		});
+
+		if ( ! elementorFrontend.isEditMode() && 'yes' === enable_single_product_page ) {
+			UAELAjaxAddToCart( $scope, $ );
+		}
 	}
 
 	$( document )
@@ -556,11 +625,146 @@
 
 	} );
 
+	var WidgetUAELMiniCart = function($scope, $){
+
+		var miniCartButton   = $scope.find( '.uael-mc__btn' );
+		var cartBtnBehaviour = $scope.find( '.uael-mc__btn' ).data( 'behaviour' );
+		var modal_open = $scope.find( '.uael-mc-modal-wrap' );
+		var offcanvas_open = $scope.find( '.uael-mc-offcanvas-wrap' );
+		var dropdown_main = $scope.find( '.uael-mc-dropdown' );
+		var modal_main = $scope.find( '.uael-mc-modal' );
+		var offcanvas_main = $scope.find( '.uael-mc-offcanvas' );
+		var is_preview_enabled = $scope.hasClass( 'elementor-element-edit-mode' ) && $scope.hasClass( 'uael-mini-cart--preview-yes' );
+		var cart_dropdown_style = $scope.find( '.uael-mc' ).data( 'cart_dropdown' );
+
+		if( is_preview_enabled ){
+
+			dropdown_main.removeClass( 'uael-mc-dropdown-close' );
+
+			modal_open.removeClass( 'uael-mc-modal-wrap-close' );
+			modal_main.removeClass( 'uael-mc-modal-close' );
+
+			offcanvas_open.removeClass( 'uael-mc-offcanvas-wrap-close' );
+			offcanvas_main.removeClass( 'uael-mc-offcanvas-close' );
+		}
+
+		miniCartButton.on( 'click', function( e ) {
+
+			e.preventDefault();
+			if( 'click' === cartBtnBehaviour ) {
+
+				if ( 'dropdown' == cart_dropdown_style ) {
+
+					dropdown_main.toggleClass( 'uael-mc-dropdown-close' );
+					e.stopPropagation();
+				}
+			}
+
+			if( 'modal' == cart_dropdown_style ) {
+
+				modal_open.removeClass( 'uael-mc-modal-wrap-close' );
+				modal_main.removeClass( 'uael-mc-modal-close' );
+
+				$( document ).on( 'click', '.uael-mc-modal-wrap, .uael-mc-modal__close-btn', function() {
+
+					var $this = $( this ).closest( '.uael-mc' );
+
+					$this.find( '.uael-mc-modal-wrap' ).addClass( 'uael-mc-modal-wrap-close' );
+					$this.find( '.uael-mc-modal' ).addClass( 'uael-mc-modal-close' );
+				} );
+			}
+
+			if( 'offcanvas' == cart_dropdown_style ) {
+
+				offcanvas_open.removeClass( 'uael-mc-offcanvas-wrap-close' );
+				offcanvas_main.removeClass( 'uael-mc-offcanvas-close' );
+
+				$( document ).on( 'click', '.uael-mc-offcanvas-wrap, .uael-mc-offcanvas__close-btn', function() {
+
+					var $this = $( this ).closest( '.uael-mc' );
+
+					$this.find( '.uael-mc-offcanvas-wrap' ).addClass( 'uael-mc-offcanvas-wrap-close' );
+					$this.find( '.uael-mc-offcanvas' ).addClass( 'uael-mc-offcanvas-close' );
+				} );
+			}
+		});
+
+		if( 'hover' === cartBtnBehaviour ) {
+
+			if( ! is_preview_enabled ){
+
+				miniCartButton.hover( function( e ) {
+
+					e.preventDefault();
+					if( 'dropdown' == cart_dropdown_style ) {
+
+						dropdown_main.removeClass( 'uael-mc-dropdown-close' );
+					}
+				}, function( e ) {
+
+					e.preventDefault();
+					if( 'dropdown' == cart_dropdown_style ) {
+
+						dropdown_main.addClass( 'uael-mc-dropdown-close' );
+					}
+				});
+
+				dropdown_main.hover( function( e ) {
+
+					e.preventDefault();
+					dropdown_main.removeClass( 'uael-mc-dropdown-close' );
+				}, function( e ){
+
+					e.preventDefault();
+					dropdown_main.addClass( 'uael-mc-dropdown-close' );
+				});
+			}
+		}
+
+		$( document ).on( 'keyup', function( e ) {
+
+			if ( 27 == e.keyCode ) {
+
+				$( '.elementor-widget-uael-mini-cart' ).each( function() {
+
+					var $this = $( this );
+
+					$this.find( '.uael-mc-modal-wrap' ).addClass( 'uael-mc-modal-wrap-close' );
+					$this.find( '.uael-mc-modal' ).addClass( 'uael-mc-modal-close' );
+
+					$this.find( '.uael-mc-offcanvas-wrap' ).addClass( 'uael-mc-offcanvas-wrap-close' );
+					$this.find( '.uael-mc-offcanvas' ).addClass( 'uael-mc-offcanvas-close' );
+				} );
+			}
+		});
+
+		dropdown_main.on( 'click', function( e ) {
+
+			if( 'A' == e.target.nodeName && 'remove remove_from_cart_button' == $( e.target ).attr( 'class' ) ){
+
+				$( this ).removeClass( 'uael-mc-dropdown-close' );
+
+				return;
+			}
+			e.stopPropagation();
+		});
+
+		$( document ).on( 'click', function( e ) {
+
+			if( 'A' != e.target.nodeName && 'remove remove_from_cart_button' != $( e.target ).attr( 'class' ) ){
+
+				dropdown_main.addClass( 'uael-mc-dropdown-close' );
+				e.stopPropagation();
+			}
+		});
+	};
+
 	$( window ).on( 'elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/uael-woo-products.grid-default', WidgetUAELWooProducts);
 		elementorFrontend.hooks.addAction('frontend/element_ready/uael-woo-products.grid-franko', WidgetUAELWooProducts);
 		elementorFrontend.hooks.addAction('frontend/element_ready/uael-woo-add-to-cart.default', WidgetUAELWooAddToCart);
 		elementorFrontend.hooks.addAction('frontend/element_ready/uael-woo-categories.default', WidgetUAELWooCategories);
+		elementorFrontend.hooks.addAction( 'frontend/element_ready/uael-mini-cart.default', WidgetUAELMiniCart );
 	});
 
 

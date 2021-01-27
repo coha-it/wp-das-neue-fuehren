@@ -80,7 +80,7 @@ class Business_Hours extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_general_content_controls();
 		$this->register_helpful_information();
@@ -219,7 +219,7 @@ class Business_Hours extends Common_Widget {
 			'business_days_timings',
 			array(
 				'type'        => Controls_Manager::REPEATER,
-				'fields'      => array_values( $repeater->get_controls() ),
+				'fields'      => $repeater->get_controls(),
 				'default'     => array(
 					array(
 						'enter_day'  => __( 'Monday', 'uael' ),

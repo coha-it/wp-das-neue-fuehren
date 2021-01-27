@@ -94,7 +94,7 @@ class Image_Gallery extends Common_Widget {
 		return array(
 			'uael-isotope',
 			'imagesloaded',
-			'jquery-slick',
+			'uael-slick',
 			'uael-element-resize',
 			'uael-frontend-script',
 			'uael-fancybox',
@@ -143,7 +143,7 @@ class Image_Gallery extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_content_image_controls();
 		$this->register_content_grid_controls();
@@ -793,6 +793,21 @@ class Image_Gallery extends Common_Widget {
 				)
 			);
 
+			$this->add_control(
+				'lightbox_loop',
+				array(
+					'label'        => __( 'Loop', 'uael' ),
+					'type'         => Controls_Manager::SWITCHER,
+					'label_on'     => __( 'YES', 'uael' ),
+					'label_off'    => __( 'NO', 'uael' ),
+					'description'  => __( 'Enable infinite gallery navigation.', 'uael' ),
+					'return_value' => 'yes',
+					'default'      => 'no',
+					'condition'    => array(
+						'click_action' => 'lightbox',
+					),
+				)
+			);
 		$this->end_controls_section();
 	}
 
@@ -2035,13 +2050,14 @@ class Image_Gallery extends Common_Widget {
 	 */
 	protected function render_gallery_image( $images ) {
 
-		$settings       = $this->get_settings();
-		$gallery        = $images;
-		$img_size       = $settings['image_size'];
-		$new_gallery    = array();
-		$output         = '';
-		$cat_filter     = array();
-		$tab_responsive = ( 'yes' === $settings['tabs_dropdown'] ) ? ' uael-img-gallery-tabs-dropdown' : '';
+		$settings              = $this->get_settings();
+		$gallery               = $images;
+		$img_size              = $settings['image_size'];
+		$new_gallery           = array();
+		$output                = '';
+		$cat_filter            = array();
+		$tab_responsive        = ( 'yes' === $settings['tabs_dropdown'] ) ? ' uael-img-gallery-tabs-dropdown' : '';
+		$lightbox_gallery_loop = ( 'yes' === $settings['lightbox_loop'] ) ? true : false;
 
 		if ( ! is_array( $gallery ) ) {
 			return;
@@ -2275,8 +2291,9 @@ class Image_Gallery extends Common_Widget {
 			$this->add_render_attribute(
 				'grid-wrap',
 				array(
-					'class'                 => 'uael-image-lightbox-wrap',
-					'data-lightbox_actions' => wp_json_encode( $actions_arr ),
+					'class'                      => 'uael-image-lightbox-wrap',
+					'data-lightbox_actions'      => wp_json_encode( $actions_arr ),
+					'data-lightbox-gallery-loop' => $lightbox_gallery_loop,
 				)
 			);
 		}

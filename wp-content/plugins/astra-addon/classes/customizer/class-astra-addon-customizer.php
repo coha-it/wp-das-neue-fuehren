@@ -47,22 +47,6 @@ if ( ! class_exists( 'Astra_Addon_Customizer' ) ) :
 		public function __construct() {
 			add_action( 'customize_register', array( $this, 'customize_register' ) );
 			add_action( 'customize_register', array( $this, 'customize_register_new' ), 3 );
-			add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-		}
-
-		/**
-		 * Enqueue Admin Scripts
-		 *
-		 * @since 1.4.3
-		 */
-		public function enqueue_scripts() {
-			$file_rtl = ( is_rtl() ) ? '-rtl' : '';
-			$css_uri  = ASTRA_EXT_URI . 'classes/customizer/controls/responsive-background/';
-			$js_uri   = ASTRA_EXT_URI . 'classes/customizer/controls/responsive-background/';
-			wp_enqueue_style( 'responsive-background-style' . $file_rtl, $css_uri . 'responsive-background' . $file_rtl . '.css', null, ASTRA_EXT_VER );
-			wp_enqueue_script( 'responsive-background-script', $js_uri . 'responsive-background.js', array( 'astra-color-alpha' ), ASTRA_EXT_VER, true );
-
 		}
 
 		/**
@@ -91,30 +75,6 @@ if ( ! class_exists( 'Astra_Addon_Customizer' ) ) :
 				/**
 				 * Add Controls
 				 */
-
-				Astra_Customizer_Control_Base::add_control(
-					'ast-responsive-background',
-					array(
-						'callback'         => 'Astra_Control_Responsive_Background',
-						'santize_callback' => 'sanitize_responsive_background',
-					)
-				);
-
-				Astra_Customizer_Control_Base::add_control(
-					'ast-responsive-color',
-					array(
-						'callback'         => 'Astra_Control_Responsive_Color',
-						'santize_callback' => 'sanitize_responsive_color',
-					)
-				);
-
-				Astra_Customizer_Control_Base::add_control(
-					'ast-border',
-					array(
-						'callback'         => 'Astra_Control_Border',
-						'santize_callback' => 'sanitize_border',
-					)
-				);
 				Astra_Customizer_Control_Base::add_control(
 					'ast-customizer-refresh',
 					array(
@@ -125,7 +85,6 @@ if ( ! class_exists( 'Astra_Addon_Customizer' ) ) :
 			}
 
 			// Helper files.
-			require ASTRA_EXT_DIR . 'classes/customizer/controls/responsive-background/class-astra-control-responsive-background.php';
 			require ASTRA_EXT_DIR . 'classes/customizer/controls/class-astra-control-customizer-refresh.php';
 		}
 

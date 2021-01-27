@@ -125,7 +125,7 @@ class Timeline extends Common_Widget {
 	 * @since 1.5.2
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		// Content Tab.
 		$this->register_general_content_controls();
 		$this->register_timeline_content_controls();
@@ -920,45 +920,45 @@ class Timeline extends Common_Widget {
 					'type'      => Controls_Manager::COLOR,
 					'selectors' => array(
 						'{{WRAPPER}} {{CURRENT_ITEM}} .uael-events-inner-new' => 'background-color: {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--center {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--center {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'.rtl {{WRAPPER}}.uael-timeline--center {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'.rtl {{WRAPPER}}.uael-timeline--center {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'{{WRAPPER}}.uael-timeline--left {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--center {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--left {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--left {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--center {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--left {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'.rtl {{WRAPPER}}.uael-timeline--left {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--center {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--left {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'.rtl {{WRAPPER}}.uael-timeline--left {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--center {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--left {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right {{CURRENT_ITEM}} .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 					),
 					'condition' => array(
 						'timeline_content_advanced' => 'yes',
@@ -1053,7 +1053,7 @@ class Timeline extends Common_Widget {
 				'label'       => __( '&nbsp;', 'uael' ),
 				'type'        => Controls_Manager::REPEATER,
 				'show_label'  => true,
-				'fields'      => array_values( $repeater->get_controls() ),
+				'fields'      => $repeater->get_controls(),
 				'title_field' => '{{{ timeline_single_date }}}',
 				'default'     => array(
 					array(
@@ -1481,45 +1481,45 @@ class Timeline extends Common_Widget {
 					'selectors' => array(
 						'{{WRAPPER}} .uael-events-inner-new' => 'background-color: {{VALUE}};',
 
-						'{{WRAPPER}}.uael-timeline--center .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--right .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--right .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--center .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--right .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--right .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'.rtl {{WRAPPER}}.uael-timeline--center .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--right .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--right .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'.rtl {{WRAPPER}}.uael-timeline--center .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--right .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--right .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'{{WRAPPER}}.uael-timeline--left .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--center .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--left .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--left .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--center .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--left .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'.rtl {{WRAPPER}}.uael-timeline--left .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--center .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--left .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'.rtl {{WRAPPER}}.uael-timeline--left .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--center .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--left .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 					),
 				)
 			);
@@ -1663,39 +1663,39 @@ class Timeline extends Common_Widget {
 					'selectors' => array(
 						'{{WRAPPER}} .uael-timeline-main .in-view .uael-events-inner-new' => 'background-color: {{VALUE}};',
 
-						'{{WRAPPER}}.uael-timeline--center .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--center .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--left .in-view .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--right .in-view .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--center .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--center .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--left .in-view .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--right .in-view .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'.rtl {{WRAPPER}}.uael-timeline--center .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--center .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--left .in-view .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--right .in-view .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'.rtl {{WRAPPER}}.uael-timeline--center .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--center .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--left .in-view .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--right .in-view .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .in-view .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .in-view .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
 					),
 				)
@@ -1755,39 +1755,39 @@ class Timeline extends Common_Widget {
 					'selectors' => array(
 						'{{WRAPPER}} .uael-timeline-main .animate-border:hover .uael-events-inner-new' => 'background-color: {{VALUE}};',
 
-						'{{WRAPPER}}.uael-timeline--center div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--center div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--left div.uael-timeline-main .animate-border:hover .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}};',
-						'{{WRAPPER}}.uael-timeline--right div.uael-timeline-main .animate-border:hover .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--center div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--center div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--left div.uael-timeline-main .animate-border:hover .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'{{WRAPPER}}.uael-timeline--right div.uael-timeline-main .animate-border:hover .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'.rtl {{WRAPPER}}.uael-timeline--center div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--center div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--left div.uael-timeline-main .animate-border:hover .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'.rtl {{WRAPPER}}.uael-timeline--right div.uael-timeline-main .animate-border:hover .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'.rtl {{WRAPPER}}.uael-timeline--center div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--center div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--left div.uael-timeline-main .animate-border:hover .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'.rtl {{WRAPPER}}.uael-timeline--right div.uael-timeline-main .animate-border:hover .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(tablet){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
-						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-left: 13px solid {{VALUE}}; border-right: none;',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
+						'(mobile){{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-left-color: {{VALUE}};',
 
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(tablet).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-tablet .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
-						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-right: 13px solid {{VALUE}}; border-left: none;',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-right .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
+						'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right div.uael-timeline-main .animate-border:hover .uael-day-left .uael-timeline-arrow:after' => 'border-right-color: {{VALUE}};',
 					),
 				)
 			);

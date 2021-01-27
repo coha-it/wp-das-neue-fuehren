@@ -81,7 +81,7 @@ class Woo_Categories extends Common_Widget {
 	 * @return array scripts.
 	 */
 	public function get_script_depends() {
-		return array( 'imagesloaded', 'jquery-slick', 'uael-woocommerce' );
+		return array( 'imagesloaded', 'uael-slick', 'uael-woocommerce' );
 	}
 
 	/**

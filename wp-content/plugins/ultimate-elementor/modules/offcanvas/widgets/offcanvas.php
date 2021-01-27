@@ -92,13 +92,36 @@ class Offcanvas extends Common_Widget {
 	}
 
 	/**
+	 * Retrieve the menu index.
+	 *
+	 * Used to get index of menu index.
+	 *
+	 * @since 1.27.2
+	 * @access protected
+	 *
+	 * @return string menu index.
+	 */
+	protected function get_menu_index() {
+		return $this->menu_index++;
+	}
+
+	/**
+	 * Menu index.
+	 *
+	 * @access protected
+	 * @var $menu_index
+	 */
+	protected $menu_index = 1;
+
+	/**
 	 * Register canvas controls.
 	 *
 	 * @since 1.11.0
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->register_general_content_controls();
+		$this->register_menu_content_controls();
 		$this->register_display_offcanvas_controls();
 		$this->register_display_content_controls();
 		$this->register_close_controls();
@@ -233,6 +256,81 @@ class Offcanvas extends Common_Widget {
 				'default'   => '-1',
 				'condition' => array(
 					'content_type' => 'saved_modules',
+				),
+			)
+		);
+
+		$this->end_controls_section();
+	}
+
+	/**
+	 * Register menu content type controls.
+	 *
+	 * @since 1.27.2
+	 * @access protected
+	 */
+	protected function register_menu_content_controls() {
+
+		$this->start_controls_section(
+			'menu_content_type',
+			array(
+				'label'     => __( 'Menu', 'uael' ),
+				'condition' => array(
+					'content_type' => array( 'menu' ),
+				),
+			)
+		);
+
+		$this->add_control(
+			'wrap_the_submenu',
+			array(
+				'label'        => __( 'Hide Submenu Item', 'uael' ),
+				'description'  => __( 'Enable this option to hide/wrap submenu under respective parent menu item.', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'default'      => 'no',
+				'label_off'    => __( 'No', 'uael' ),
+				'label_on'     => __( 'Yes', 'uael' ),
+				'prefix_class' => 'uael-offcanvas-wrap-submenu-',
+				'condition'    => array(
+					'content_type' => array( 'menu' ),
+				),
+				'render_type'  => 'template',
+			)
+		);
+
+		$this->add_control(
+			'submenu_icon',
+			array(
+				'label'        => __( 'Submenu Trigger Icon', 'uael' ),
+				'type'         => Controls_Manager::SELECT,
+				'default'      => 'arrow',
+				'options'      => array(
+					'arrow'   => __( 'Arrow', 'uael' ),
+					'plus'    => __( 'Plus Sign', 'uael' ),
+					'classic' => __( 'Classic', 'uael' ),
+				),
+				'condition'    => array(
+					'content_type'     => 'menu',
+					'wrap_the_submenu' => 'yes',
+				),
+				'prefix_class' => 'uael-offcanvas-submenu-icon-',
+			)
+		);
+
+		$this->add_control(
+			'link_redirect',
+			array(
+				'label'        => __( 'Action On Menu Click', 'uael' ),
+				'type'         => Controls_Manager::SELECT,
+				'default'      => 'child',
+				'options'      => array(
+					'child'     => __( 'Open Submenu', 'uael' ),
+					'self_link' => __( 'Redirect To Self Link', 'uael' ),
+				),
+				'prefix_class' => 'uael-off-canvas-link-redirect-',
+				'condition'    => array(
+					'content_type'     => array( 'menu' ),
+					'wrap_the_submenu' => 'yes',
 				),
 			)
 		);
@@ -1297,6 +1395,16 @@ class Offcanvas extends Common_Widget {
 			)
 		);
 
+		$this->add_control(
+			'menu_heading',
+			array(
+				'label'     => __( 'Menu Item', 'uael' ),
+				'type'      => Controls_Manager::HEADING,
+				'condition' => array(
+					'content_type' => 'menu',
+				),
+			)
+		);
 			$this->add_group_control(
 				Group_Control_Typography::get_type(),
 				array(
@@ -1316,11 +1424,12 @@ class Offcanvas extends Common_Widget {
 					'type'       => Controls_Manager::DIMENSIONS,
 					'size_units' => array( 'px', '%' ),
 					'default'    => array(
-						'top'    => '5',
-						'bottom' => '5',
-						'left'   => '20',
-						'right'  => '20',
-						'unit'   => 'px',
+						'top'      => '5',
+						'bottom'   => '5',
+						'left'     => '20',
+						'right'    => '20',
+						'unit'     => 'px',
+						'isLinked' => false,
 					),
 					'selectors'  => array(
 						'{{WRAPPER}} .uael-offcanvas-menu .menu-item a' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -1399,6 +1508,136 @@ class Offcanvas extends Common_Widget {
 						),
 						'condition' => array(
 							'content_type' => 'menu',
+						),
+					)
+				);
+
+			$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+		$this->add_control(
+			'submenu_heading',
+			array(
+				'label'     => __( 'Submenu Item', 'uael' ),
+				'type'      => Controls_Manager::HEADING,
+				'separator' => 'before',
+				'condition' => array(
+					'content_type'     => 'menu',
+					'wrap_the_submenu' => 'yes',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'      => 'submenu_typography',
+				'scheme'    => Scheme_Typography::TYPOGRAPHY_1,
+				'selector'  => '{{WRAPPER}} .uael-offcanvas-menu .sub-menu',
+				'condition' => array(
+					'content_type'     => 'menu',
+					'wrap_the_submenu' => 'yes',
+				),
+			)
+		);
+		$this->add_responsive_control(
+			'submenu_padding',
+			array(
+				'label'      => __( 'Padding', 'uael' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'default'    => array(
+					'top'      => '5',
+					'bottom'   => '5',
+					'left'     => '20',
+					'right'    => '20',
+					'unit'     => 'px',
+					'isLinked' => false,
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-offcanvas-menu .sub-menu a' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'condition'  => array(
+					'content_type'     => 'menu',
+					'wrap_the_submenu' => 'yes',
+				),
+			)
+		);
+		$this->start_controls_tabs( 'tabs_style_submenu_item' );
+
+			$this->start_controls_tab(
+				'tab_submenu_item_normal',
+				array(
+					'label'     => __( 'Normal', 'uael' ),
+					'condition' => array(
+						'content_type'     => 'menu',
+						'wrap_the_submenu' => 'yes',
+					),
+				)
+			);
+			$this->add_control(
+				'submenu_item_color',
+				array(
+					'label'     => __( 'Text Color', 'uael' ),
+					'type'      => Controls_Manager::COLOR,
+					'scheme'    => array(
+						'type'  => Scheme_Color::get_type(),
+						'value' => Scheme_Color::COLOR_3,
+					),
+					'default'   => '',
+					'selectors' => array(
+						'{{WRAPPER}} .uael-offcanvas-menu .sub-menu a' => 'color: {{VALUE}}',
+					),
+					'condition' => array(
+						'content_type'     => 'menu',
+						'wrap_the_submenu' => 'yes',
+					),
+				)
+			);
+			$this->end_controls_tab();
+
+			$this->start_controls_tab(
+				'tab_submenu_item_hover',
+				array(
+					'label'     => __( 'Hover', 'uael' ),
+					'condition' => array(
+						'content_type'     => 'menu',
+						'wrap_the_submenu' => 'yes',
+					),
+				)
+			);
+
+				$this->add_control(
+					'submenu_item_color_hover',
+					array(
+						'label'     => __( 'Text Color', 'uael' ),
+						'type'      => Controls_Manager::COLOR,
+						'scheme'    => array(
+							'type'  => Scheme_Color::get_type(),
+							'value' => Scheme_Color::COLOR_4,
+						),
+						'selectors' => array(
+							'{{WRAPPER}} .uael-offcanvas-menu .sub-menu a:hover' => 'color: {{VALUE}}',
+						),
+						'condition' => array(
+							'content_type'     => 'menu',
+							'wrap_the_submenu' => 'yes',
+						),
+					)
+				);
+
+				$this->add_control(
+					'submenu_item_bgcolor_hover',
+					array(
+						'label'     => __( 'Background Color', 'uael' ),
+						'type'      => Controls_Manager::COLOR,
+						'selectors' => array(
+							'{{WRAPPER}} .uael-offcanvas-menu .sub-menu a:hover' => 'background-color: {{VALUE}}',
+						),
+						'condition' => array(
+							'content_type'     => 'menu',
+							'wrap_the_submenu' => 'yes',
 						),
 					)
 				);
@@ -1711,6 +1950,13 @@ class Offcanvas extends Common_Widget {
 				'container'   => '',
 			);
 
+			if ( 'yes' === $settings['wrap_the_submenu'] ) {
+				$menu_toggle_array = array(
+					'menu_id' => 'menu-' . $this->get_menu_index() . '-' . $this->get_id(),
+					'walker'  => new Menu_Walker(),
+				);
+				$args              = array_merge( $args, $menu_toggle_array );
+			}
 			$menu_html = wp_nav_menu( $args );
 
 			return $menu_html;
@@ -2064,6 +2310,7 @@ class Offcanvas extends Common_Widget {
 				'data-custom-id'        => $settings['offcanvas_custom_id'],
 
 				'data-canvas-width'     => $settings['offcanvas_width']['size'],
+				'data-wrap-menu-item'   => $settings['wrap_the_submenu'],
 			)
 		);
 
@@ -2164,7 +2411,7 @@ class Offcanvas extends Common_Widget {
 	 * @since 1.11.0
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 }

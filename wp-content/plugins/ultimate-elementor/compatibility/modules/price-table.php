@@ -42,6 +42,7 @@ class PriceTable extends WPML_Elementor_Module_With_Items {
 	public function get_fields() {
 		return array(
 			'item_text',
+			'tooltip_content',
 		);
 	}
 
@@ -56,6 +57,10 @@ class PriceTable extends WPML_Elementor_Module_With_Items {
 	protected function get_title( $field ) {
 		if ( 'item_text' === $field ) {
 			return __( 'Price Table: Feature Title', 'uael' );
+		}
+
+		if ( 'tooltip_content' === $field ) {
+			return __( 'Price Table: Tooltip Content', 'uael' );
 		}
 
 		return '';
@@ -74,6 +79,9 @@ class PriceTable extends WPML_Elementor_Module_With_Items {
 		switch ( $field ) {
 			case 'item_text':
 				return 'LINE';
+
+			case 'tooltip_content':
+				return 'VISUAL';
 
 			default:
 				return '';

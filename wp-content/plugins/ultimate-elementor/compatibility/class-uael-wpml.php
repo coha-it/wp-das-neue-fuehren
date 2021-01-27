@@ -107,6 +107,11 @@ class UAEL_Wpml {
 					'type'        => __( 'Advanced Heading : Photo URL', 'uael' ),
 					'editor_type' => 'LINK',
 				),
+				array(
+					'field'       => 'bg_text',
+					'type'        => __( 'Advanced Heading : Background Text', 'uael' ),
+					'editor_type' => 'LINE',
+				),
 			),
 		);
 		$widgets['uael-marketing-button']   = array(
@@ -151,6 +156,11 @@ class UAEL_Wpml {
 					'field'       => 'url',
 					'type'        => __( 'Dual Color Heading : Link', 'uael' ),
 					'editor_type' => 'LINK',
+				),
+				array(
+					'field'       => 'bg_text',
+					'type'        => __( 'Dual Color Heading : Background Text', 'uael' ),
+					'editor_type' => 'LINE',
 				),
 			),
 		);
@@ -293,7 +303,13 @@ class UAEL_Wpml {
 
 		$widgets['uael-table'] = array(
 			'conditions'        => array( 'widgetType' => 'uael-table' ),
-			'fields'            => array(),
+			'fields'            => array(
+				array(
+					'field'       => 'search_text',
+					'type'        => __( 'Table : Search Label', 'uael' ),
+					'editor_type' => 'LINE',
+				),
+			),
 			'integration-class' => '\UltimateElementor\Compatibility\WPML\Table',
 		);
 
@@ -813,6 +829,27 @@ class UAEL_Wpml {
 				array(
 					'field'       => 'form_desc',
 					'type'        => __( 'WP Fluent Forms Styler : Form Description', 'uael' ),
+					'editor_type' => 'LINE',
+				),
+			),
+		);
+
+		$widgets['uael-mini-cart'] = array(
+			'conditions' => array( 'widgetType' => 'uael-mini-cart' ),
+			'fields'     => array(
+				array(
+					'field'       => 'cart_title',
+					'type'        => __( 'Mini Cart : Cart Title', 'uael' ),
+					'editor_type' => 'LINE',
+				),
+				array(
+					'field'       => 'cart_message',
+					'type'        => __( 'Mini Cart : Cart Message', 'uael' ),
+					'editor_type' => 'AREA',
+				),
+				array(
+					'field'       => 'cart_button_text',
+					'type'        => __( 'Mini Cart : Text', 'uael' ),
 					'editor_type' => 'LINE',
 				),
 			),

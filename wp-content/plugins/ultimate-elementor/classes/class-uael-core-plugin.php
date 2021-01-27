@@ -143,6 +143,7 @@ class UAEL_Core_Plugin {
 
 			add_action( 'elementor/editor/after_enqueue_scripts', array( $this, 'enqueue_copy_paste_scripts' ), 11, 0 );
 			require_once UAEL_DIR . 'classes/class-uael-cross-domain-copy-paste.php';
+			add_action( 'elementor/preview/enqueue_scripts', array( $this, 'enqueue_fpcp_preview' ) );
 		}
 
 		if ( ! isset( self::$branding ) ) {
@@ -154,7 +155,6 @@ class UAEL_Core_Plugin {
 
 			add_filter( 'bsf_white_label_options', array( $this, 'uae_bsf_analytics_white_label' ) );
 		}
-
 	}
 
 	/**
@@ -282,6 +282,7 @@ class UAEL_Core_Plugin {
 			'invalid_username'   => __( 'Unknown username. Check again or try your email address.', 'uael' ),
 			'invalid_email'      => __( 'Unknown email address. Check again or try your username.', 'uael' ),
 			'logged_in_message'  => __( 'Thanks for logging in, ', 'uael' ),
+			'wp_version'         => version_compare( get_bloginfo( 'version' ), '5.4.99', '>=' ),
 		);
 		if ( isset( $map_options['language'] ) && '' !== $map_options['language'] ) {
 			$language = 'language=' . $map_options['language'];
@@ -365,7 +366,6 @@ class UAEL_Core_Plugin {
 			'uael-table',
 			'uael_table_script',
 			array(
-				'search_str'          => __( 'Search:', 'uael' ),
 				'table_not_found_str' => __( 'No matching records found', 'uael' ),
 				'table_length_string' => __( 'Show _MENU_ Entries', 'uael' ),
 			)
@@ -489,6 +489,13 @@ class UAEL_Core_Plugin {
 
 		$this->cdn_url = apply_filters( 'uael_cross_domain_cdn', 'https://brainstormforce.github.io/uae-cdcp/updated-index.html' );
 
+		// Check for required Compatible Elementor version.
+		if ( ! version_compare( ELEMENTOR_VERSION, '3.0.0', '>=' ) ) {
+			$elementor_old_compatibility = true;
+		} else {
+			$elementor_old_compatibility = false;
+		}
+
 		wp_enqueue_script(
 			'uael-cross-site-cp-helper',
 			UAEL_URL . 'assets/' . $folder . '/uael-cross-site-cp-helper' . $suffix . '.js',
@@ -509,15 +516,20 @@ class UAEL_Core_Plugin {
 			'uael-cross-domain',
 			'uael_cross_domain',
 			array(
-				'ajaxURL'           => admin_url( 'admin-ajax.php' ),
-				'nonce'             => wp_create_nonce( 'uael_process_import' ),
-				'widget_not_found'  => __( 'The widget type you are trying to paste is not available on this site.', 'uael' ),
+				'ajaxURL'             => admin_url( 'admin-ajax.php' ),
+				'nonce'               => wp_create_nonce( 'uael_process_import' ),
+				'widget_not_found'    => __( 'The widget type you are trying to paste is not available on this site.', 'uael' ),
 				/* translators: %s: html tags */
-				'uae_copy'          => sprintf( __( '%1s Copy', 'uael' ), $category ),
+				'uae_copy'            => sprintf( __( '%1s Copy', 'uael' ), $category ),
 				/* translators: %s: html tags */
-				'uae_paste'         => sprintf( __( '%1s Paste', 'uael' ), $category ),
-				'cross_domain_icon' => $cross_domain_icon,
-				'cross_domain_cdn'  => $this->cdn_url,
+				'uae_paste'           => sprintf( __( '%1s Paste', 'uael' ), $category ),
+				/* translators: %s: html tags */
+				'uae_copy_all'        => sprintf( __( '%1s Copy All', 'uael' ), $category ),
+				/* translators: %s: html tags */
+				'uae_paste_all'       => sprintf( __( '%1s Paste All', 'uael' ), $category ),
+				'cross_domain_icon'   => $cross_domain_icon,
+				'cross_domain_cdn'    => $this->cdn_url,
+				'elementorCompatible' => $elementor_old_compatibility,
 			)
 		);
 
@@ -564,6 +576,22 @@ class UAEL_Core_Plugin {
 		}
 
 		return $bsf_analytics_wl_arr;
+	}
+
+	/**
+	 * Load FPCP helper css in elementor editor preview screen.
+	 *
+	 * @since 1.28.0
+	 * @access public
+	 */
+	public function enqueue_fpcp_preview() {
+		wp_register_style(
+			'uael-fpcp-style',
+			UAEL_URL . 'editor-assets/css/fpcp-preview.css',
+			array(),
+			UAEL_VER
+		);
+		wp_enqueue_style( 'uael-fpcp-style' );
 	}
 }
 

@@ -15,7 +15,13 @@
 
 			pass_wrap.css( 'display', 'block' );
 
-			strength = wp.passwordStrength.meter( password, wp.passwordStrength.userInputBlacklist(), password );
+			if( uaelRegistration.wp_version ){
+				strength = wp.passwordStrength.meter( password, wp.passwordStrength.userInputDisallowedList(), password );				
+			} else {
+				strength = wp.passwordStrength.meter( password, wp.passwordStrength.userInputBlacklist(), password );
+			}
+
+			
 			switch ( strength ) {
 				case -1:
 					// pass_notice.html( pwsL10n.unknown ).css( 'color', '#cfcfcf' );

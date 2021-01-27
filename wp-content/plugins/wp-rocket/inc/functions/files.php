@@ -22,7 +22,7 @@ function rocket_generate_advanced_cache_file( $advanced_cache = null ) {
 	 * @param bool True (default) to go ahead with advanced cache file generation; false to stop generation.
 	 */
 	if ( ! (bool) apply_filters( 'rocket_generate_advanced_cache_file', true ) ) {
-		return;
+		return false;
 	}
 
 	static $done = false;
@@ -32,7 +32,7 @@ function rocket_generate_advanced_cache_file( $advanced_cache = null ) {
 	}
 
 	if ( $done ) {
-		return;
+		return false;
 	}
 	$done = true;
 
@@ -41,7 +41,7 @@ function rocket_generate_advanced_cache_file( $advanced_cache = null ) {
 		$advanced_cache = $container->get( 'advanced_cache' );
 	}
 
-	rocket_put_content(
+	return rocket_put_content(
 		rocket_get_constant( 'WP_CONTENT_DIR' ) . '/advanced-cache.php',
 		$advanced_cache->get_advanced_cache_content()
 	);
@@ -240,37 +240,52 @@ function rocket_delete_config_file() {
  */
 function rocket_init_cache_dir() {
 	global $is_apache;
+
+	$filesystem = rocket_direct_filesystem();
+
 	// Create cache folder if not exist.
-	if ( ! rocket_direct_filesystem()->is_dir( WP_ROCKET_CACHE_PATH ) ) {
+	if ( ! $filesystem->is_dir( WP_ROCKET_CACHE_PATH ) ) {
 		rocket_mkdir_p( WP_ROCKET_CACHE_PATH );
 	}
 
-	if ( ! rocket_direct_filesystem()->is_file( WP_ROCKET_CACHE_PATH . 'index.html' ) ) {
-		rocket_direct_filesystem()->touch( WP_ROCKET_CACHE_PATH . 'index.html' );
+	if ( ! $filesystem->is_file( WP_ROCKET_CACHE_PATH . 'index.html' ) ) {
+		$filesystem->touch( WP_ROCKET_CACHE_PATH . 'index.html' );
 	}
 
 	if ( $is_apache ) {
 		$htaccess_path = WP_ROCKET_CACHE_PATH . '.htaccess';
 
-		if ( ! rocket_direct_filesystem()->is_file( $htaccess_path ) ) {
-			rocket_direct_filesystem()->touch( $htaccess_path );
+		if ( ! $filesystem->is_file( $htaccess_path ) ) {
+			$filesystem->touch( $htaccess_path );
 			rocket_put_content( $htaccess_path, "<IfModule mod_autoindex.c>\nOptions -Indexes\n</IfModule>" );
 		}
 	}
 
 	// Create minify cache folder if not exist.
-	if ( ! rocket_direct_filesystem()->is_dir( WP_ROCKET_MINIFY_CACHE_PATH ) ) {
+	if ( ! $filesystem->is_dir( WP_ROCKET_MINIFY_CACHE_PATH ) ) {
 		rocket_mkdir_p( WP_ROCKET_MINIFY_CACHE_PATH );
 	}
 
+	if ( ! $filesystem->is_file( WP_ROCKET_MINIFY_CACHE_PATH . 'index.html' ) ) {
+		$filesystem->touch( WP_ROCKET_MINIFY_CACHE_PATH . 'index.html' );
+	}
+
 	// Create busting cache folder if not exist.
-	if ( ! rocket_direct_filesystem()->is_dir( WP_ROCKET_CACHE_BUSTING_PATH ) ) {
+	if ( ! $filesystem->is_dir( WP_ROCKET_CACHE_BUSTING_PATH ) ) {
 		rocket_mkdir_p( WP_ROCKET_CACHE_BUSTING_PATH );
 	}
 
+	if ( ! $filesystem->is_file( WP_ROCKET_CACHE_BUSTING_PATH . 'index.html' ) ) {
+		$filesystem->touch( WP_ROCKET_CACHE_BUSTING_PATH . 'index.html' );
+	}
+
 	// Create critical CSS folder if not exist.
-	if ( ! rocket_direct_filesystem()->is_dir( WP_ROCKET_CRITICAL_CSS_PATH ) ) {
+	if ( ! $filesystem->is_dir( WP_ROCKET_CRITICAL_CSS_PATH ) ) {
 		rocket_mkdir_p( WP_ROCKET_CRITICAL_CSS_PATH );
+	}
+
+	if ( ! $filesystem->is_file( WP_ROCKET_CRITICAL_CSS_PATH . 'index.html' ) ) {
+		$filesystem->touch( WP_ROCKET_CRITICAL_CSS_PATH . 'index.html' );
 	}
 }
 
@@ -282,9 +297,16 @@ function rocket_init_cache_dir() {
  * @return void
  */
 function rocket_init_config_dir() {
+	$filesystem = rocket_direct_filesystem();
+
 	// Create config domain folder if not exist.
-	if ( ! rocket_direct_filesystem()->is_dir( WP_ROCKET_CONFIG_PATH ) ) {
+	if ( ! $filesystem->is_dir( WP_ROCKET_CONFIG_PATH ) ) {
 		rocket_mkdir_p( WP_ROCKET_CONFIG_PATH );
+	}
+
+	// Initialize the config directory with index.html to prevent indexing.
+	if ( ! $filesystem->is_file( WP_ROCKET_CONFIG_PATH . 'index.html' ) ) {
+		$filesystem->touch( WP_ROCKET_CONFIG_PATH . 'index.html' );
 	}
 }
 
@@ -703,7 +725,7 @@ function rocket_clean_domain( $lang = '', $filesystem = null ) {
 	$urls = (array) apply_filters( 'rocket_clean_domain_urls', $urls, $lang );
 	$urls = array_filter( $urls );
 	if ( empty( $urls ) ) {
-		return;
+		return false;
 	}
 
 	/** This filter is documented in inc/front/htaccess.php */
@@ -760,6 +782,8 @@ function rocket_clean_domain( $lang = '', $filesystem = null ) {
 		 */
 		do_action( 'after_rocket_clean_domain', $root, $lang, $url ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
 	}
+
+	return true;
 }
 
 /**

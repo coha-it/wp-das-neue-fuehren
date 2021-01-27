@@ -17,7 +17,6 @@ use Elementor\Group_Control_Box_Shadow;
 use Elementor\Scheme_Typography;
 use Elementor\Scheme_Color;
 use Elementor\Group_Control_Image_Size;
-use Elementor\Repeater;
 use Elementor\Group_Control_Css_Filter;
 use Elementor\Group_Control_Text_Shadow;
 use Elementor\Plugin;
@@ -101,7 +100,7 @@ class Retina_Image extends Common_Widget {
 	 * @since 1.17.0
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_content_retina_image_controls();
 		$this->register_retina_image_styling_controls();
@@ -817,7 +816,7 @@ class Retina_Image extends Common_Widget {
 			?>
 				<div class="uael-retina-image-set">
 					<div class="uael-retina-image-container">
-						<img class="uael-retina-img <?php echo esc_attr( $class_animation ); ?>" src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_url( Control_Media::get_image_alt( $settings['retina_image'] ) ); ?>"srcset="<?php echo esc_url( $image_url ) . ' 1x,' . esc_url( $retina_image_url ) . ' 2x'; ?>"/>
+						<img class="uael-retina-img <?php echo esc_attr( $class_animation ); ?>" src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( Control_Media::get_image_alt( $settings['retina_image'] ) ); ?>"srcset="<?php echo esc_url( $image_url ) . ' 1x,' . esc_url( $retina_image_url ) . ' 2x'; ?>"/>
 					</div>
 				</div>
 			<?php if ( $link ) : ?>

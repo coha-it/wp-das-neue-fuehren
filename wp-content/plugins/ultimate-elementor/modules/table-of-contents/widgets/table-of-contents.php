@@ -9,7 +9,6 @@ namespace UltimateElementor\Modules\TableOfContents\Widgets;
 
 // Elementor Classes.
 use Elementor\Controls_Manager;
-use Elementor\Repeater;
 use Elementor\Utils;
 use Elementor\Group_Control_Typography;
 use Elementor\Scheme_Typography;
@@ -103,7 +102,7 @@ class Table_Of_Contents extends Common_Widget {
 	 * @since 1.19.0
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_table_of_contents_controls();
 		$this->register_heading_to_display_controls();
@@ -867,6 +866,25 @@ class Table_Of_Contents extends Common_Widget {
 					);
 
 				$this->end_controls_tab();
+				$this->start_controls_tab(
+					'content_active',
+					array(
+						'label' => __( 'Active', 'uael' ),
+					)
+				);
+
+					$this->add_control(
+						'content_active_color',
+						array(
+							'label'     => __( 'Text Color', 'uael' ),
+							'type'      => Controls_Manager::COLOR,
+							'selectors' => array(
+								'{{WRAPPER}} .uael-toc-content-wrapper a.uael-toc-active-heading' => 'color: {{VALUE}}',
+							),
+						)
+					);
+
+				$this->end_controls_tab();
 
 			$this->end_controls_tabs();
 
@@ -1096,7 +1114,7 @@ class Table_Of_Contents extends Common_Widget {
 	 * @since 1.19.0
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 }

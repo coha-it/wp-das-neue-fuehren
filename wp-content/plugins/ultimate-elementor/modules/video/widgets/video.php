@@ -99,7 +99,7 @@ class Video extends Common_Widget {
 	 * @since 1.3.2
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_video_content();
 		$this->register_overlay_content();
@@ -1845,7 +1845,6 @@ class Video extends Common_Widget {
 				$thumb = 'https://embedwistia-a.akamaihd.net/deliveries/' . $this->getStringBetween( $url, 'deliveries/', '?' );
 			}
 		}
-
 		return $thumb;
 	}
 
@@ -2064,7 +2063,6 @@ class Video extends Common_Widget {
 
 		$this->add_render_attribute( 'video-outer', 'class', 'uael-video__outer-wrap' );
 		$this->add_render_attribute( 'video-outer', 'class', $sticky_infobar );
-
 		$this->add_render_attribute( 'video-outer', 'data-device', $device );
 		$this->add_render_attribute( 'video-outer', 'data-vsticky', $sticky );
 
@@ -2078,8 +2076,10 @@ class Video extends Common_Widget {
 		$this->add_render_attribute( 'video-wrapper', 'data-src', $src );
 
 		$this->add_render_attribute( 'video-thumb', 'class', 'uael-video__thumb' );
+
 		$this->add_render_attribute( 'video-thumb', 'src', $this->get_video_thumb( $id ) );
 
+		$this->add_render_attribute( 'video-thumb', 'alt', Control_Media::get_image_alt( $settings['image_overlay'] ) );
 		$this->add_render_attribute( 'video-play', 'class', 'uael-video__play-icon' );
 
 		if ( 'default' === $settings['play_source'] ) {
@@ -2132,6 +2132,7 @@ class Video extends Common_Widget {
 		}
 
 		if ( 'yes' === $settings['lightbox'] ) {
+
 			$lightbox_options = array(
 				'type'         => 'video',
 				'videoType'    => $settings['video_type'],
@@ -2178,19 +2179,19 @@ class Video extends Common_Widget {
 				<?php } ?>
 			</div>
 		</div>
-		<?php
-		if ( 'youtube' === $settings['video_type'] && 'yes' === $settings['subscribe_bar'] ) {
-			$channel_name = ( '' !== $settings['subscribe_bar_channel_name'] ) ? $settings['subscribe_bar_channel_name'] : '';
+			<?php
+			if ( 'youtube' === $settings['video_type'] && 'yes' === $settings['subscribe_bar'] ) {
+				$channel_name = ( '' !== $settings['subscribe_bar_channel_name'] ) ? $settings['subscribe_bar_channel_name'] : '';
 
-			$channel_id = ( '' !== $settings['subscribe_bar_channel_id'] ) ? $settings['subscribe_bar_channel_id'] : '';
+				$channel_id = ( '' !== $settings['subscribe_bar_channel_id'] ) ? $settings['subscribe_bar_channel_id'] : '';
 
-			$channel_id = apply_filters( 'uael_video_default_channel_id', $channel_id, $settings );
+				$channel_id = apply_filters( 'uael_video_default_channel_id', $channel_id, $settings );
 
-			$youtube_text = ( '' !== $settings['subscribe_bar_channel_text'] ) ? $settings['subscribe_bar_channel_text'] : '';
+				$youtube_text = ( '' !== $settings['subscribe_bar_channel_text'] ) ? $settings['subscribe_bar_channel_text'] : '';
 
-			$subscriber_count = ( 'yes' === $settings['subscribe_count'] ) ? 'default' : 'hidden';
+				$subscriber_count = ( 'yes' === $settings['subscribe_count'] ) ? 'default' : 'hidden';
 
-			?>
+				?>
 			<div class="uael-subscribe-bar">
 				<div class="uael-subscribe-bar-prefix"><?php echo wp_kses_post( $youtube_text ); ?></div>
 				<div class="uael-subscribe-content">
@@ -2204,8 +2205,8 @@ class Video extends Common_Widget {
 					<?php } ?>
 				</div>
 			</div>
-			<?php
-		}
+				<?php
+			}
 	}
 
 	/**

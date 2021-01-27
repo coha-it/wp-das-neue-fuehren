@@ -66,6 +66,8 @@ class Skin_News extends Skin_Base {
 
 		add_action( 'elementor/element/uael-posts/news_section_cta_field/before_section_end', array( $this, 'register_update_cta_controls' ) );
 
+		add_action( 'elementor/element/uael-posts/news_section_design_blog/before_section_end', array( $this, 'update_blog_controls' ) );
+
 		add_action( 'elementor/element/uael-posts/news_section_image_field/before_section_end', array( $this, 'register_update_image_controls' ) );
 
 		add_action( 'elementor/element/uael-posts/news_section_general_field/before_section_end', array( $this, 'register_update_general_controls' ) );
@@ -1244,9 +1246,9 @@ class Skin_News extends Skin_Base {
 					$this->get_control_id( 'image_position' ) => array( 'left', 'right' ),
 				),
 				'selectors' => array(
-					'{{WRAPPER}} .uael-post__thumbnail:hover a,
+					'{{WRAPPER}} .uael-post__thumbnail:hover a,{{WRAPPER}} .uael-post__thumbnail:hover span,
 					{{WRAPPER}}.uael-post__news-stack-yes .uael-post__thumbnail:hover img,
-					{{WRAPPER}}.uael-post__link-complete-yes .uael-post__complete-box-overlay:hover + .uael-post__inner-wrap .uael-post__thumbnail a,
+					{{WRAPPER}}.uael-post__link-complete-yes .uael-post__complete-box-overlay:hover + .uael-post__inner-wrap .uael-post__thumbnail a,{{WRAPPER}}.uael-post__link-complete-yes .uael-post__complete-box-overlay:hover + .uael-post__inner-wrap .uael-post__thumbnail span,
 					{{WRAPPER}}.uael-post__link-complete-yes .uael-post__complete-box-overlay:hover + .uael-post__inner-wrap .uael-post__thumbnail img' => 'transform: scale({{SIZE}});',
 					'{{WRAPPER}}.uael-post__link-complete-yes .uael-post-wrapper-featured .uael-post__complete-box-overlay:hover + .uael-post__inner-wrap .uael-post__thumbnail img' => 'transform: translate(-50%,-50%) scale({{SIZE}});',
 				),
@@ -1260,9 +1262,9 @@ class Skin_News extends Skin_Base {
 					$this->get_control_id( 'image_position' ) => array( 'left', 'right' ),
 				),
 				'selectors' => array(
-					'{{WRAPPER}} .uael-post__thumbnail:hover a,
+					'{{WRAPPER}} .uael-post__thumbnail:hover a,{{WRAPPER}} .uael-post__thumbnail:hover span,
 					{{WRAPPER}}.uael-post__news-stack-yes .uael-post__thumbnail:hover img,
-					{{WRAPPER}}.uael-post__link-complete-yes .uael-post__complete-box-overlay:hover + .uael-post__inner-wrap .uael-post__thumbnail a,
+					{{WRAPPER}}.uael-post__link-complete-yes .uael-post__complete-box-overlay:hover + .uael-post__inner-wrap .uael-post__thumbnail a,{{WRAPPER}}.uael-post__link-complete-yes .uael-post__complete-box-overlay:hover + .uael-post__inner-wrap .uael-post__thumbnail span,
 					{{WRAPPER}}.uael-post__link-complete-yes .uael-post__complete-box-overlay:hover + .uael-post__inner-wrap .uael-post__thumbnail img' => 'opacity: {{SIZE}};',
 				),
 			)
@@ -1281,6 +1283,7 @@ class Skin_News extends Skin_Base {
 			'link_new_tab',
 			array(
 				'condition' => array(
+					$this->get_control_id( 'link_img' ) => 'yes',
 					$this->get_control_id( 'image_position' ) => array( 'left', 'right' ),
 				),
 			)
@@ -1361,6 +1364,7 @@ class Skin_News extends Skin_Base {
 				'mobile_default' => 1,
 				'min'            => 1,
 				'max'            => 8,
+				'description'    => __( 'Note: Number of columns <b>excludes</b> featured post.', 'uael' ),
 			)
 		);
 

@@ -82,7 +82,7 @@
 
 		$scope.on( 'click', '.uael-filters-dropdown-button', function(e) {
 			e.stopPropagation();
-			$tabs_dropdown.addClass( 'show-list' );
+			$tabs_dropdown.toggleClass( 'show-list' );
 		});
 
 		var layout = $scope.find( '.uael-post-grid' ).data( 'layout' ),
@@ -102,7 +102,7 @@
 			});
 		}
 
-		$scope.find( '.uael-post__header-filter' ).off( 'click' ).on( 'click', function() {
+		$scope.find( '.uael-post__header-filter' ).off( 'click' ).on( 'click', function(e) {
 			$this = $( this );
 			$this.siblings().removeClass( 'uael-filter__current' );
 			$this.addClass( 'uael-filter__current' );
@@ -132,6 +132,38 @@
 
 		});
 
+		$scope.find( '.uael-post__header-filter' ).off( 'keyup' ).on( 'keyup', function( e ) {
+			$this = $( this );
+			if ( 9 == e.keyCode ) {
+				$this.siblings().removeClass( 'uael-filter__current' );
+				$this.addClass( 'uael-filter__current' );
+
+				var filterValue = $this.attr( 'data-filter' );
+
+				if( '*' === filterValue ) {
+					filter_cat = $scope.find( '.uael-post-grid' ).data( 'filter-default' );
+				} else {
+					filter_cat = filterValue.substr(1);
+				}
+
+				if( $scope.find( '.uael-post-grid' ).data( 'default-filter' ) ){
+					var def_filter = $scope.find( '.uael-post-grid' ).data( 'default-filter' );
+				}
+				else{
+					var def_filter = $scope.find( '.uael-post-grid' ).data( 'filter-default' );
+				}
+
+				var str_text = $scope.find( '.uael-filter__current' ).text();
+				str_text = str_text.substring( def_filter.length, str_text.length );
+				$scope.find( '.uael-filters-dropdown-button' ).text( str_text );
+
+				count = 1;
+
+				_uaelPostAjax( $scope, $this );
+			}
+
+		});
+
 		if ( $scope.find( '.uael-post__header' ).children().length > 0 ) {
 
 			var default_filter = $scope.find( '.uael-post-grid' ).data( 'default-filter' );
@@ -139,21 +171,21 @@
 			var pattern        = new RegExp( "^[\\w\\-]+$" );
 			var cat_filter 	   = $scope.find( '.uael-post__header-filters' );
 
-			if( '' !== cat_id && pattern.test( cat_id ) ) {				
+			if( '' !== cat_id && pattern.test( cat_id ) ) {
 				$scope.find( '.uael-post__header-filter' ).each( function( key, value ) {
 					var current_filter = $( this ).attr('data-filter');
 					if ( cat_id == current_filter.split('.').join("") ) {
 						$( this ).trigger( 'click' );
+						$( this ).trigger( 'keyup' );
 					}
 				});
-			}				
-				
-			if ( 'undefined' != typeof default_filter && '' != default_filter ) {
+			}
 
+			if ( 'undefined' != typeof default_filter && '' != default_filter ) {
 				$scope.find( '.uael-post__header-filter' ).each( function( key, value ) {
-					
-					if ( default_filter == $( this ).html() ) {
+					if ( default_filter == $( this ).text() ) {
 						$( this ).trigger( 'click' );
+						$( this ).trigger( 'keyup' );
 					}
 				} );
 			}

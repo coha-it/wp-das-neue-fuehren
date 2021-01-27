@@ -99,7 +99,7 @@ class Video_Gallery extends Common_Widget {
 			'uael-frontend-script',
 			'uael-fancybox',
 			'imagesloaded',
-			'jquery-slick',
+			'uael-slick',
 			'uael-element-resize',
 		);
 	}
@@ -110,7 +110,7 @@ class Video_Gallery extends Common_Widget {
 	 * @since 1.5.0
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		// Content Tab.
 		$this->register_video_gallery_controls();
@@ -149,141 +149,172 @@ class Video_Gallery extends Common_Widget {
 
 			$wistia = apply_filters( 'uael_video_gallery_wistia_link', '<p><a href="https://pratikc.wistia.com/medias/gyvkfithw2?wvideo=gyvkfithw2"><img src="https://embedwistia-a.akamaihd.net/deliveries/53eec5fa72737e60aa36731b57b607a7c0636f52.webp?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=54bbffe0" width="400" height="225" style="width: 400px; height: 225px;"></a></p><p><a href="https://pratikc.wistia.com/medias/gyvkfithw2?wvideo=gyvkfithw2">Video Placeholder - Brainstorm Force - pratikc</a></p>' );
 
+			$repeater = new Repeater();
+
+			$repeater->add_control(
+				'type',
+				array(
+					'label'   => __( 'Video Type', 'uael' ),
+					'type'    => Controls_Manager::SELECT,
+					'default' => 'youtube',
+					'options' => array(
+						'youtube' => __( 'YouTube Video', 'uael' ),
+						'vimeo'   => __( 'Vimeo Video', 'uael' ),
+						'wistia'  => __( 'Wistia Video', 'uael' ),
+					),
+				)
+			);
+
+			$repeater->add_control(
+				'video_url',
+				array(
+					'label'       => __( 'Video URL', 'uael' ),
+					'type'        => Controls_Manager::TEXT,
+					'label_block' => true,
+					'dynamic'     => array(
+						'active'     => true,
+						'categories' => array(
+							TagsModule::POST_META_CATEGORY,
+							TagsModule::URL_CATEGORY,
+						),
+					),
+					'condition'   => array(
+						'type' => array( 'youtube', 'vimeo' ),
+					),
+				)
+			);
+
+			$repeater->add_control(
+				'youtube_link_doc',
+				array(
+					'type'            => Controls_Manager::RAW_HTML,
+					/* translators: %1$s doc link */
+					'raw'             => sprintf( __( '<b>Note:</b> Make sure you add the actual URL of the video and not the share URL.</br></br><b>Valid:</b>&nbsp;https://www.youtube.com/watch?v=HJRzUQMhJMQ</br><b>Invalid:</b>&nbsp;https://youtu.be/HJRzUQMhJMQ', 'uael' ) ),
+					'content_classes' => 'uael-editor-doc',
+					'condition'       => array(
+						'type' => 'youtube',
+					),
+					'separator'       => 'none',
+				)
+			);
+
+			$repeater->add_control(
+				'vimeo_link_doc',
+				array(
+					'type'            => Controls_Manager::RAW_HTML,
+					/* translators: %1$s doc link */
+					'raw'             => sprintf( __( '<b>Note:</b> Make sure you add the actual URL of the video and not the categorized URL.</br></br><b>Valid:</b>&nbsp;https://vimeo.com/274860274</br><b>Invalid:</b>&nbsp;https://vimeo.com/channels/staffpicks/274860274', 'uael' ) ),
+					'content_classes' => 'uael-editor-doc',
+					'condition'       => array(
+						'type' => 'vimeo',
+					),
+					'separator'       => 'none',
+				)
+			);
+
+			$repeater->add_control(
+				'wistia_url',
+				array(
+					'label'       => __( 'Link & Thumbnail Text', 'uael' ),
+					'description' => __( 'Go to your Wistia video, right click, "Copy Link & Thumbnail" and paste here.', 'uael' ),
+					'type'        => Controls_Manager::TEXT,
+					'label_block' => true,
+					'dynamic'     => array(
+						'active'     => true,
+						'categories' => array(
+							TagsModule::POST_META_CATEGORY,
+							TagsModule::URL_CATEGORY,
+						),
+					),
+					'condition'   => array(
+						'type' => 'wistia',
+					),
+				)
+			);
+
+			$repeater->add_control(
+				'title',
+				array(
+					'label'       => __( 'Caption', 'uael' ),
+					'type'        => Controls_Manager::TEXT,
+					'default'     => '',
+					'label_block' => true,
+					'dynamic'     => array(
+						'active' => true,
+					),
+					'title'       => __( 'This title will be visible on hover.', 'uael' ),
+				)
+			);
+
+			$repeater->add_control(
+				'tags',
+				array(
+					'label'       => __( 'Categories', 'uael' ),
+					'type'        => Controls_Manager::TEXT,
+					'default'     => '',
+					'label_block' => true,
+					'dynamic'     => array(
+						'active' => true,
+					),
+					'title'       => __( 'Add comma separated categories. These categories will be shown for filteration.', 'uael' ),
+				)
+			);
+
+			$repeater->add_control(
+				'yt_thumbnail_size',
+				array(
+					'label'     => __( 'Thumbnail Size', 'uael' ),
+					'type'      => Controls_Manager::SELECT,
+					'options'   => array(
+						'maxresdefault' => __( 'Maximum Resolution', 'uael' ),
+						'hqdefault'     => __( 'High Quality', 'uael' ),
+						'mqdefault'     => __( 'Medium Quality', 'uael' ),
+						'sddefault'     => __( 'Standard Quality', 'uael' ),
+					),
+					'default'   => 'hqdefault',
+					'condition' => array(
+						'type' => 'youtube',
+					),
+				)
+			);
+
+			$repeater->add_control(
+				'custom_placeholder',
+				array(
+					'label'        => __( 'Custom Thumbnail', 'uael' ),
+					'type'         => Controls_Manager::SWITCHER,
+					'default'      => '',
+					'label_on'     => __( 'Yes', 'uael' ),
+					'label_off'    => __( 'No', 'uael' ),
+					'return_value' => 'yes',
+				)
+			);
+
+			$repeater->add_control(
+				'placeholder_image',
+				array(
+					'label'       => __( 'Select Image', 'uael' ),
+					'type'        => Controls_Manager::MEDIA,
+					'default'     => array(
+						'url' => Utils::get_placeholder_image_src(),
+					),
+					'description' => __( 'This image will act as a placeholder image for the video.', 'uael' ),
+					'dynamic'     => array(
+						'active' => true,
+					),
+					'condition'   => array(
+						'custom_placeholder' => 'yes',
+					),
+				)
+			);
+
 			$this->add_control(
 				'gallery_items',
 				array(
 					'label'       => '',
 					'type'        => Controls_Manager::REPEATER,
 					'show_label'  => true,
-					'fields'      => array(
-						array(
-							'name'    => 'type',
-							'label'   => __( 'Video Type', 'uael' ),
-							'type'    => Controls_Manager::SELECT,
-							'default' => 'youtube',
-							'options' => array(
-								'youtube' => __( 'YouTube Video', 'uael' ),
-								'vimeo'   => __( 'Vimeo Video', 'uael' ),
-								'wistia'  => __( 'Wistia Video', 'uael' ),
-							),
-						),
-						array(
-							'name'        => 'video_url',
-							'label'       => __( 'Video URL', 'uael' ),
-							'type'        => Controls_Manager::TEXT,
-							'label_block' => true,
-							'dynamic'     => array(
-								'active'     => true,
-								'categories' => array(
-									TagsModule::POST_META_CATEGORY,
-									TagsModule::URL_CATEGORY,
-								),
-							),
-							'condition'   => array(
-								'type' => array( 'youtube', 'vimeo' ),
-							),
-						),
-						array(
-							'name'            => 'youtube_link_doc',
-							'type'            => Controls_Manager::RAW_HTML,
-							/* translators: %1$s doc link */
-							'raw'             => sprintf( __( '<b>Note:</b> Make sure you add the actual URL of the video and not the share URL.</br></br><b>Valid:</b>&nbsp;https://www.youtube.com/watch?v=HJRzUQMhJMQ</br><b>Invalid:</b>&nbsp;https://youtu.be/HJRzUQMhJMQ', 'uael' ) ),
-							'content_classes' => 'uael-editor-doc',
-							'condition'       => array(
-								'type' => 'youtube',
-							),
-							'separator'       => 'none',
-						),
-						array(
-							'name'            => 'vimeo_link_doc',
-							'type'            => Controls_Manager::RAW_HTML,
-							/* translators: %1$s doc link */
-							'raw'             => sprintf( __( '<b>Note:</b> Make sure you add the actual URL of the video and not the categorized URL.</br></br><b>Valid:</b>&nbsp;https://vimeo.com/274860274</br><b>Invalid:</b>&nbsp;https://vimeo.com/channels/staffpicks/274860274', 'uael' ) ),
-							'content_classes' => 'uael-editor-doc',
-							'condition'       => array(
-								'type' => 'vimeo',
-							),
-							'separator'       => 'none',
-						),
-						array(
-							'name'        => 'wistia_url',
-							'label'       => __( 'Link & Thumbnail Text', 'uael' ),
-							'description' => __( 'Go to your Wistia video, right click, "Copy Link & Thumbnail" and paste here.', 'uael' ),
-							'type'        => Controls_Manager::TEXT,
-							'label_block' => true,
-							'dynamic'     => array(
-								'active'     => true,
-								'categories' => array(
-									TagsModule::POST_META_CATEGORY,
-									TagsModule::URL_CATEGORY,
-								),
-							),
-							'condition'   => array(
-								'type' => 'wistia',
-							),
-						),
-						array(
-							'name'        => 'title',
-							'label'       => __( 'Caption', 'uael' ),
-							'type'        => Controls_Manager::TEXT,
-							'default'     => '',
-							'label_block' => true,
-							'dynamic'     => array(
-								'active' => true,
-							),
-							'title'       => __( 'This title will be visible on hover.', 'uael' ),
-						),
-						array(
-							'name'        => 'tags',
-							'label'       => __( 'Categories', 'uael' ),
-							'type'        => Controls_Manager::TEXT,
-							'default'     => '',
-							'label_block' => true,
-							'dynamic'     => array(
-								'active' => true,
-							),
-							'title'       => __( 'Add comma separated categories. These categories will be shown for filteration.', 'uael' ),
-						),
-						array(
-							'name'      => 'yt_thumbnail_size',
-							'label'     => __( 'Thumbnail Size', 'uael' ),
-							'type'      => Controls_Manager::SELECT,
-							'options'   => array(
-								'maxresdefault' => __( 'Maximum Resolution', 'uael' ),
-								'hqdefault'     => __( 'High Quality', 'uael' ),
-								'mqdefault'     => __( 'Medium Quality', 'uael' ),
-								'sddefault'     => __( 'Standard Quality', 'uael' ),
-							),
-							'default'   => 'hqdefault',
-							'condition' => array(
-								'type' => 'youtube',
-							),
-						),
-						array(
-							'name'         => 'custom_placeholder',
-							'label'        => __( 'Custom Thumbnail', 'uael' ),
-							'type'         => Controls_Manager::SWITCHER,
-							'default'      => '',
-							'label_on'     => __( 'Yes', 'uael' ),
-							'label_off'    => __( 'No', 'uael' ),
-							'return_value' => 'yes',
-						),
-						array(
-							'name'        => 'placeholder_image',
-							'label'       => __( 'Select Image', 'uael' ),
-							'type'        => Controls_Manager::MEDIA,
-							'default'     => array(
-								'url' => Utils::get_placeholder_image_src(),
-							),
-							'description' => __( 'This image will act as a placeholder image for the video.', 'uael' ),
-							'dynamic'     => array(
-								'active' => true,
-							),
-							'condition'   => array(
-								'custom_placeholder' => 'yes',
-							),
-						),
-					),
+					'fields'      => $repeater->get_controls(),
 					'default'     => array(
 						array(
 							'type'              => 'youtube',
@@ -2218,7 +2249,11 @@ class Video_Gallery extends Common_Widget {
 			?>
 			<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'grid-item' . $index ) ); ?>>
 
-				<div class="uael-video__gallery-iframe" style="background-image:url('<?php echo esc_url( $url['url'] ); ?>');">
+				<?php
+					$url = empty( $url['url'] ) ? '' : esc_url( $url['url'] );
+				?>
+
+				<div class="uael-video__gallery-iframe" style="background-image:url('<?php echo $url; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>');">
 					<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'video-container-link' . $index ) ); ?>>
 						<div class="uael-video__content-wrap">
 							<div class="uael-video__content">

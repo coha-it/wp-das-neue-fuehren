@@ -66,15 +66,17 @@ class Skin_Classic extends Skin_Style {
 			$href   = apply_filters( 'uael_single_post_link', get_the_permalink(), get_the_ID(), $settings );
 			$target = ( 'yes' === $this->get_instance_value( 'link_new_tab' ) ) ? '_blank' : '_self';
 			$this->add_render_attribute( 'img_link' . get_the_ID(), 'target', $target );
-		} else {
-			$href = 'javascript:void(0);';
 		}
 
 		$this->add_render_attribute( 'img_link' . get_the_ID(), 'href', $href );
 		$this->add_render_attribute( 'img_link' . get_the_ID(), 'title', get_the_title() );
 		?>
 		<div class="uael-post__thumbnail">
+			<?php if ( 'yes' === $this->get_instance_value( 'link_img' ) ) { ?>
 			<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'img_link' . get_the_ID() ) ); ?>><?php echo wp_kses_post( $thumbnail_html ); ?></a>
+		<?php } else { ?>
+				<?php echo wp_kses_post( $thumbnail_html ); ?>
+		<?php } ?>
 		</div>
 		<?php
 		do_action( 'uael_single_post_after_thumbnail', get_the_ID(), $settings );

@@ -251,15 +251,20 @@
 
         wrapper.find( '.uael-toc-list a' ).click( function () {
             
-            if( '' == scroll_offset ) {
+            if( '' == scroll_offset || 'undefined' == typeof scroll_offset ) {
                 $( 'html, body' ).animate( {
                     scrollTop: $( $.attr( this, 'href' ) ).offset().top-30
-                }, scroll_delay );
+                }, scroll_delay );        
             } else {
                 $( 'html, body' ).animate( {
                     scrollTop: $( $.attr( this, 'href' ) ).offset().top-(scroll_offset)
                 }, scroll_delay );
             }
+
+            // Add class to active heading.
+            $scope.find( '.uael-toc-list a' ).not( this ).removeClass( 'uael-toc-active-heading' );
+            $( this ).addClass( 'uael-toc-active-heading' );
+
             return false;
         });
 

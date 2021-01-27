@@ -277,6 +277,8 @@ class Module extends Module_Base {
 
 			$last_name = ( isset( $data['last_name'] ) && ! empty( $data['last_name'] ) ) ? sanitize_text_field( wp_unslash( $data['last_name'] ) ) : '';
 
+			$phone = ( isset( $data['phone'] ) && ! empty( $data['phone'] ) ) ? sanitize_text_field( wp_unslash( $data['phone'] ) ) : '';
+
 			if ( ! empty( $error ) ) {
 
 				// If there are items in our errors array, return those errors.
@@ -300,7 +302,9 @@ class Module extends Module_Base {
 						'last_name'       => isset( $last_name ) ? $last_name : '',
 						'user_registered' => gmdate( 'Y-m-d H:i:s' ),
 						'role'            => isset( $user_role ) ? $user_role : '',
-					)
+						'phone'           => isset( $phone ) ? $phone : '',
+					),
+					$data
 				);
 
 				$result = wp_insert_user( $user_args );
@@ -427,7 +431,7 @@ class Module extends Module_Base {
 			return $this->uael_create_username( $email, $suffix );
 		}
 
-		return $email_username;
+		return $username;
 	}
 
 }

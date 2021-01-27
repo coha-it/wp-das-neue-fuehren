@@ -75,6 +75,9 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 
 				// Enable/Disable file generation.
 				add_action( 'wp_ajax_astra_file_generation', array( $this, 'enable_disable_file_generation' ) );
+
+				// Admin enqueue script alpha color picker.
+				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_color_picker_scripts' ) );
 			}
 
 			add_action( 'init', array( $this, 'addons_action_hooks' ), 1 );
@@ -91,6 +94,9 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 			add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 			add_action( 'plugins_loaded', array( $this, 'common_plugin_dependent_files' ) );
 			add_action( 'wpml_loaded', array( $this, 'wpml_compatibility' ) );
+
+			// add compatibility for custom layouts with polylang plugin.
+			add_action( 'pll_init', array( $this, 'wpml_compatibility' ) );
 
 			// Astra Addon List filter.
 			add_filter( 'astra_addon_list', array( $this, 'astra_addon_list' ) );
@@ -114,6 +120,8 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 			add_action( 'admin_init', array( $this, 'redirect_addon_listing_page' ) );
 
 			add_action( 'enqueue_block_editor_assets', array( $this, 'addon_gutenberg_assets' ) );
+
+			add_filter( 'astra_svg_icons', array( $this, 'astra_addon_svg_icons' ), 1, 10 );
 		}
 
 		/**
@@ -474,7 +482,6 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 			return $actions;
 		}
 
-
 		/**
 		 * Admin Scripts
 		 */
@@ -520,18 +527,20 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 				return;
 			}
 
+			require_once ASTRA_EXT_DIR . 'classes/class-astra-addon-builder-loader.php';
+
 			require_once ASTRA_EXT_DIR . 'classes/astra-common-functions.php';
 
 			require_once ASTRA_EXT_DIR . 'classes/astra-common-dynamic-css.php';
 
-			if ( function_exists( 'astra_filesystem' ) ) {
+			if ( function_exists( 'astra_addon_filesystem' ) ) {
 				require_once ASTRA_EXT_DIR . 'classes/cache/class-astra-cache-base.php';
 				require_once ASTRA_EXT_DIR . 'classes/cache/class-astra-cache.php';
 			}
 
 			require_once ASTRA_EXT_DIR . 'classes/class-astra-minify.php';
 
-			if ( function_exists( 'astra_filesystem' ) ) {
+			if ( function_exists( 'astra_addon_filesystem' ) ) {
 				require_once ASTRA_EXT_DIR . 'classes/cache/class-astra-addon-cache.php';
 			}
 			require_once ASTRA_EXT_DIR . 'classes/class-astra-ext-model.php';
@@ -559,15 +568,18 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 			wp_enqueue_style( 'ast-ext-admin-settings', ASTRA_EXT_URI . 'admin/assets/css/customizer-controls.css', array(), ASTRA_EXT_VER );
 			wp_enqueue_script( 'ast-ext-admin-settings', ASTRA_EXT_URI . 'admin/assets/js/customizer-controls.js', array(), ASTRA_EXT_VER, false );
 
-			$show_deprecated_no_toggle_style = 'no-toggle' == astra_get_option( 'mobile-menu-style' ) ? true : false;
+			if ( function_exists( 'astra_get_option' ) ) {
+				$show_deprecated_no_toggle_style = 'no-toggle' == astra_get_option( 'mobile-menu-style' ) ? true : false;
 
-			wp_localize_script(
-				'ast-ext-admin-settings',
-				'astAdminLacalizeVars',
-				array(
-					'astra_no_toggle_menu_style_deprecate' => apply_filters( 'astra_no_toggle_menu_style_deprecate', $show_deprecated_no_toggle_style ),
-				)
-			);
+				wp_localize_script(
+					'ast-ext-admin-settings',
+					'astAdminLacalizeVars',
+					array(
+						'astra_no_toggle_menu_style_deprecate' => apply_filters( 'astra_no_toggle_menu_style_deprecate', $show_deprecated_no_toggle_style ),
+					)
+				);
+			}
+
 		}
 
 		/**
@@ -1079,7 +1091,7 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 		 */
 		public function astra_refresh_assets_files() {
 
-			if ( ! function_exists( 'astra_filesystem' ) ) {
+			if ( ! function_exists( 'astra_addon_filesystem' ) ) {
 				return;
 			}
 
@@ -1088,7 +1100,7 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 			$file_generation_message  = esc_html__( 'Enable this option to generate CSS files.', 'astra-addon' );
 			$file_generation_doc_link = esc_url( 'https://wpastra.com/astra-2-1/?utm_source=astra-pro-dashboard&utm_medium=astra-menu-page&utm_campaign=astra-pro-plugin' );
 
-			if ( astra_filesystem()->can_access_filesystem() ) {
+			if ( astra_addon_filesystem()->can_access_filesystem() ) {
 				$refresh_assets_button_text = esc_html__( 'Refresh', 'astra-addon' );
 				$refresh_assets_message     = esc_html__( 'Click on the \'Refresh\' button to regenerate CSS files.', 'astra-addon' );
 				$refresh_assets_doc_link    = esc_url( '#' );
@@ -1156,6 +1168,61 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 			<?php
 		}
 
+		/**
+		 * Register Scripts & Styles on admin_enqueue_scripts hook.
+		 * As we moved to React customizer so registering the 'astra-color-alpha' script in addon as there is no use of that script in theme (apperently it removed from theme).
+		 *
+		 * @since 2.7.0
+		 */
+		public function enqueue_color_picker_scripts() {
+
+			wp_register_script( 'astra-color-alpha', ASTRA_EXT_URI . 'admin/assets/js/wp-color-picker-alpha.js', array( 'jquery', 'wp-color-picker' ), ASTRA_EXT_VER, true );
+
+			/**
+			 * Localize wp-color-picker & wpColorPickerL10n.
+			 *
+			 * This is only needed in WordPress version >= 5.5 because wpColorPickerL10n has been removed.
+			 *
+			 * @see https://github.com/WordPress/WordPress/commit/7e7b70cd1ae5772229abb769d0823411112c748b
+			 *
+			 * This is should be removed once the issue is fixed from wp-color-picker-alpha repo.
+			 * @see https://github.com/kallookoo/wp-color-picker-alpha/issues/35
+			 *
+			 * @since 2.7.0
+			 */
+			if ( function_exists( 'astra_addon_wp_version_compare' ) && astra_addon_wp_version_compare( '5.4.99', '>=' ) ) {
+				// Localizing variables.
+				wp_localize_script(
+					'wp-color-picker',
+					'wpColorPickerL10n',
+					array(
+						'clear'            => __( 'Clear', 'astra-addon' ),
+						'clearAriaLabel'   => __( 'Clear color', 'astra-addon' ),
+						'defaultString'    => __( 'Default', 'astra-addon' ),
+						'defaultAriaLabel' => __( 'Select default color', 'astra-addon' ),
+						'pick'             => __( 'Select Color', 'astra-addon' ),
+						'defaultLabel'     => __( 'Color value', 'astra-addon' ),
+					)
+				);
+			}
+		}
+
+		/**
+		 * Load SVG Icon array from the JSON file.
+		 *
+		 * @param Array $svg_arr Array of svg icons.
+		 * @since 3.0.0
+		 * @return Array addon svg icons.
+		 */
+		public function astra_addon_svg_icons( $svg_arr = array() ) {
+
+			ob_start();
+			// Include SVGs Json file.
+			include_once ASTRA_EXT_DIR . 'assets/svg/svgs.json';
+			$svg_icon_arr  = json_decode( ob_get_clean(), true );
+			$ast_svg_icons = array_merge( $svg_arr, $svg_icon_arr );
+			return $ast_svg_icons;
+		}
 	}
 }
 

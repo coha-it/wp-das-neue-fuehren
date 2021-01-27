@@ -179,8 +179,13 @@ class Fancy_Heading extends Common_Widget {
 				'label'       => __( 'Select Effect', 'uael' ),
 				'type'        => Controls_Manager::SELECT,
 				'options'     => array(
-					'type'  => __( 'Type', 'uael' ),
-					'slide' => __( 'Slide', 'uael' ),
+					'type'       => __( 'Type', 'uael' ),
+					'slide'      => __( 'Slide Up', 'uael' ),
+					'slide_down' => __( 'Slide Down', 'uael' ),
+					'rotate'     => __( 'Rotate', 'uael' ),
+					'clip'       => __( 'Clip', 'uael' ),
+					'push'       => __( 'Push', 'uael' ),
+					'drop_in'    => __( 'Drop In', 'uael' ),
 				),
 				'default'     => 'type',
 				'label_block' => false,
@@ -210,7 +215,26 @@ class Fancy_Heading extends Common_Widget {
 				'return_value' => 'yes',
 				'default'      => 'no',
 				'condition'    => array(
-					'fancytext_effect_type' => 'type',
+					'fancytext_effect_type' => array( 'type', 'clip' ),
+				),
+			)
+		);
+
+		$this->add_control(
+			'clip_line_color',
+			array(
+				'label'     => __( 'Line Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'scheme'    => array(
+					'type'  => Scheme_Color::get_type(),
+					'value' => Scheme_Color::COLOR_4,
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .uael-clip-cursor-yes .uael-fancy-text-clip .uael-slide-main_ul::after' => 'background-color: {{VALUE}};',
+				),
+				'condition' => array(
+					'fancytext_effect_type'      => 'clip',
+					'fancytext_type_show_cursor' => 'yes',
 				),
 			)
 		);
@@ -296,6 +320,28 @@ class Fancy_Heading extends Common_Widget {
 			)
 		);
 		$this->add_control(
+			'fancytext_rotate_anim_speed',
+			array(
+				'label'       => __( 'Animation Speed (ms)', 'uael' ),
+				'type'        => Controls_Manager::SLIDER,
+				'size_units'  => array( 'ms' ),
+				'range'       => array(
+					'ms' => array(
+						'min' => 1,
+						'max' => 5000,
+					),
+				),
+				'default'     => array(
+					'size' => '2500',
+					'unit' => 'ms',
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'fancytext_effect_type!' => array( 'type', 'slide', 'clip' ),
+				),
+			)
+		);
+		$this->add_control(
 			'fancytext_slide_pause_time',
 			array(
 				'label'       => __( 'Pause Time (ms)', 'uael' ),
@@ -314,6 +360,50 @@ class Fancy_Heading extends Common_Widget {
 				'label_block' => true,
 				'condition'   => array(
 					'fancytext_effect_type' => 'slide',
+				),
+			)
+		);
+		$this->add_control(
+			'fancytext_clip_anim_speed',
+			array(
+				'label'       => __( 'Animation Speed (ms)', 'uael' ),
+				'type'        => Controls_Manager::SLIDER,
+				'size_units'  => array( 'ms' ),
+				'range'       => array(
+					'ms' => array(
+						'min' => 1,
+						'max' => 5000,
+					),
+				),
+				'default'     => array(
+					'size' => '600',
+					'unit' => 'ms',
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'fancytext_effect_type' => array( 'clip' ),
+				),
+			)
+		);
+		$this->add_control(
+			'fancytext_clip_pause_time',
+			array(
+				'label'       => __( 'Pause Time (ms)', 'uael' ),
+				'type'        => Controls_Manager::SLIDER,
+				'size_units'  => array( 'ms' ),
+				'range'       => array(
+					'ms' => array(
+						'min' => 1,
+						'max' => 5000,
+					),
+				),
+				'default'     => array(
+					'size' => '1500',
+					'unit' => 'ms',
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'fancytext_effect_type' => 'clip',
 				),
 			)
 		);
@@ -930,10 +1020,35 @@ class Fancy_Heading extends Common_Widget {
 					'data-strings'    => $fancy_data,
 				)
 			);
+		} else {
+			$speed = ( '' !== $settings['fancytext_rotate_anim_speed']['size'] ) ? $settings['fancytext_rotate_anim_speed']['size'] : 2500;
+
+			$this->add_render_attribute(
+				'fancy-text',
+				array(
+					'data-animation' => $effect_type,
+					'data-speed'     => $speed,
+				)
+			);
+
+			if ( 'clip' === $settings['fancytext_effect_type'] ) {
+				$clip_speed = ( '' !== $settings['fancytext_clip_anim_speed']['size'] ) ? $settings['fancytext_clip_anim_speed']['size'] : 600;
+				$pause_time = ( '' !== $settings['fancytext_clip_pause_time']['size'] ) ? $settings['fancytext_clip_pause_time']['size'] : 1500;
+
+				$this->add_render_attribute(
+					'fancy-text',
+					array(
+						'data-clip_speed' => $clip_speed,
+						'data-pause_time' => $pause_time,
+					)
+				);
+			}
 		}
 
-		$node_id = $this->get_id(); ?>
-		<div class="uael-module-content uael-fancy-text-node" <?php echo wp_kses_post( $this->get_render_attribute_string( 'fancy-text' ) ); ?>>
+		$node_id      = $this->get_id();
+		$cursor_class = ( 'yes' === $settings['fancytext_type_show_cursor'] ) ? 'uael-clip-cursor-yes' : '';
+		?>
+		<div class="uael-module-content uael-fancy-text-node <?php echo esc_attr( $cursor_class ); ?>" <?php echo wp_kses_post( $this->get_render_attribute_string( 'fancy-text' ) ); ?>>
 			<?php if ( ! empty( $settings['fancytext_effect_type'] ) ) { ?> 
 				<?php echo '<' . esc_attr( $settings['fancytext_title_tag'] ); ?> class="uael-fancy-text-wrap uael-fancy-text-<?php echo esc_attr( $settings['fancytext_effect_type'] ); ?>">
 					<?php if ( '' !== $dynamic_settings['fancytext_prefix'] ) { ?>
@@ -945,18 +1060,23 @@ class Fancy_Heading extends Common_Widget {
 						?>
 						<span class="uael-fancy-heading uael-fancy-text-main uael-typed-main-wrap "><span class="uael-typed-main"></span><span class="uael-text-holder">.</span></span>
 						<?php
-					} elseif ( 'slide' === $settings['fancytext_effect_type'] ) {
+					} else {
 							$order       = array( "\r\n", "\n", "\r", '<br/>', '<br>' );
 							$replace     = '|';
 							$str         = str_replace( $order, $replace, trim( $settings['fancytext'] ) );
 							$lines       = explode( '|', $str );
 							$count_lines = count( $lines );
 							$output      = '';
+							$count       = 0;
 						?>
 							<span class="uael-fancy-heading uael-fancy-text-main uael-slide-main uael-adjust-width">
 								<span class="uael-slide-main_ul">
 									<?php foreach ( $lines as $key => $line ) { ?>
-											<span class="uael-slide-block"><span class="uael-slide_text"><?php echo esc_attr( wp_strip_all_tags( $line ) ); ?></span>
+										<?php
+											$count++;
+											$dummy_class = ( 1 === $count && 'slide' !== $settings['fancytext_effect_type'] ) ? 'uael-active-heading' : '';
+										?>
+											<span <?php echo wp_kses_post( 'class="uael-slide-block ' . $dummy_class . '"' ); ?>><span class="uael-slide_text"><?php echo esc_attr( wp_strip_all_tags( $line ) ); ?></span>
 											</span>
 											<?php if ( 1 === $count_lines ) { ?>
 												<span class="uael-slide-block"><span class="uael-slide_text"><?php echo esc_attr( wp_strip_all_tags( $line ) ); ?></span></span>
@@ -1044,9 +1164,33 @@ class Fancy_Heading extends Common_Widget {
 					'data-strings'     		: fancy_data,
 				}
 			);
+		} else {
+			var speed = ( '' != settings.fancytext_rotate_anim_speed.size ) ? settings.fancytext_rotate_anim_speed.size : 2500;
+
+			view.addRenderAttribute(
+				'fancy-text',
+				{
+					'data-animation'  		: effect_type,
+					'data-speed'   			: speed,
+				}
+			);
+
+			if( 'clip' == settings.fancytext_effect_type ) {
+				var speed = ( '' != settings.fancytext_clip_anim_speed.size ) ? settings.fancytext_clip_anim_speed.size : 600;
+				var pause_time = ( '' != settings.fancytext_clip_pause_time.size ) ? settings.fancytext_clip_pause_time.size : 1500;
+
+				view.addRenderAttribute(
+					'fancy-text',
+					{
+						'data-clip_speed'  		: speed,
+						'data-pause_time'   : pause_time,
+					}
+				);
+			}
 		}
+		var cursor_class = ( 'yes' == settings.fancytext_type_show_cursor ) ? 'uael-clip-cursor-yes' : '';
 		#>
-			<div class="uael-module-content uael-fancy-text-node" {{{ view.getRenderAttributeString( 'fancy-text' ) }}}>
+			<div class="uael-module-content uael-fancy-text-node {{{ cursor_class }}}" {{{ view.getRenderAttributeString( 'fancy-text' ) }}}>
 				<# if ( '' != settings.fancytext_effect_type ) { #>
 					<{{{ settings.fancytext_title_tag }}} class="uael-fancy-text-wrap uael-fancy-text-{{{ settings.fancytext_effect_type }}}" >
 
@@ -1057,7 +1201,7 @@ class Fancy_Heading extends Common_Widget {
 							<# if ( 'type' == settings.fancytext_effect_type ) { #>
 								<span class="uael-fancy-heading uael-fancy-text-main uael-typed-main-wrap"><span class="uael-typed-main"></span><span class="uael-text-holder">.</span></span>
 							<# }
-							else if ( 'slide' == settings.fancytext_effect_type ) { #>
+							else { #>
 								<#
 								var str 	= settings.fancytext;
 								str 		= str.trim();
@@ -1065,12 +1209,16 @@ class Fancy_Heading extends Common_Widget {
 								var lines 	= str.split("|");
 								var count_lines = lines.length;
 								var output      = '';
+								var count       = 0;
 								#>
 								<span class="uael-fancy-heading uael-fancy-text-main uael-slide-main uael-adjust-width">
 									<span class="uael-slide-main_ul">
 										<#
 										lines.forEach(function(line){ #>
-											<span class="uael-slide-block"><span class="uael-slide_text">{{ line }}</span></span>
+											<# count++;
+												var dummy_class = ( count == 1 && 'slide' !== settings.fancytext_effect_type ) ? 'uael-slide-block uael-active-heading' : 'uael-slide-block'
+											#>
+											<span class="{{dummy_class}}"><span class="uael-slide_text">{{ line }}</span></span>
 
 											<# if ( 1 == count_lines ) { #>
 												<span class="uael-slide-block"><span class="uael-slide_text">{{ line }}</span></span>

@@ -110,6 +110,7 @@ class RegistrationForm extends Common_Widget {
 			'last_name'    => __( 'Last Name', 'uael' ),
 			'honeypot'     => __( 'Honeypot', 'uael' ),
 			'recaptcha_v3' => __( 'reCAPTCHA v3', 'uael' ),
+			'phone'        => __( 'Phone', 'uael' ),
 		);
 
 		$fields = apply_filters( 'uael_registration_form_fields', $fields );
@@ -315,8 +316,8 @@ class RegistrationForm extends Common_Widget {
 				'recaptcha_setting',
 				array(
 					'type'            => Controls_Manager::RAW_HTML,
-					/* translators: %s admin link */
-						'raw'         => sprintf( __( 'Please configure reCAPTCHA v3 setup from <a href="%s" target="_blank" rel="noopener">here</a>.', 'uael' ), $admin_link ),
+					/* translators: %1$s admin link */
+						'raw'         => sprintf( __( 'Please configure reCAPTCHA v3 setup from %1$s here %2$s.', 'uael' ), '<a href="' . $admin_link . '" target="_blank" rel="noopener">', '</a>' ),
 					'content_classes' => 'elementor-panel-alert elementor-panel-alert-warning',
 					'condition'       => array(
 						'field_type' => 'recaptcha_v3',
@@ -329,7 +330,7 @@ class RegistrationForm extends Common_Widget {
 				'fields_list',
 				array(
 					'type'        => Controls_Manager::REPEATER,
-					'fields'      => array_values( $repeater->get_controls() ),
+					'fields'      => $repeater->get_controls(),
 					'default'     => array(
 						array(
 							'field_type'  => 'user_name',
@@ -2166,6 +2167,7 @@ class RegistrationForm extends Common_Widget {
 		$is_last_name_exists    = 0;
 		$is_recaptcha_v3_exists = 0;
 		$is_honeypot_exists     = 0;
+		$is_phone_exists        = 0;
 
 		$integration_settings = UAEL_Helper::get_integrations_options();
 		$sitekey              = $integration_settings['recaptcha_v3_key'];
@@ -2423,6 +2425,7 @@ class RegistrationForm extends Common_Widget {
 												case 'first_name':
 												case 'last_name':
 												case 'confirm_pass':
+												case 'phone':
 													$this->add_render_attribute( 'input' . $item_index, 'class', 'elementor-field-textual' );
 													echo '<input size="1" ' . wp_kses_post( $this->get_render_attribute_string( 'input' . $item_index ) ) . '>';
 													break;
@@ -2437,6 +2440,8 @@ class RegistrationForm extends Common_Widget {
 													break;
 
 												default:
+													$this->add_render_attribute( 'input' . $item_index, 'class', 'elementor-field-textual' );
+													echo '<input size="1" ' . wp_kses_post( $this->get_render_attribute_string( 'input' . $item_index ) ) . '>';
 													break;
 
 											endswitch;

@@ -28,6 +28,13 @@ class UAEL_Helper {
 	/**
 	 * CSS files folder
 	 *
+	 * @var uael_debug
+	 */
+	private static $uae_debug = null;
+
+	/**
+	 * CSS files folder
+	 *
 	 * @var css_folder
 	 */
 	private static $css_folder = null;
@@ -169,6 +176,23 @@ class UAEL_Helper {
 	}
 
 	/**
+	 * Check is uae debug enabled.
+	 *
+	 * @since 1.27.0
+	 *
+	 * @return string The CSS suffix.
+	 */
+	public static function is_uae_debug() {
+
+		if ( null === self::$uae_debug ) {
+
+			self::$uae_debug = defined( 'UAE_DEBUG' ) && UAE_DEBUG;
+		}
+
+		return self::$uae_debug;
+	}
+
+	/**
 	 * Get CSS Folder.
 	 *
 	 * @since 0.0.1
@@ -179,7 +203,7 @@ class UAEL_Helper {
 
 		if ( null === self::$css_folder ) {
 
-			self::$css_folder = self::is_script_debug() ? 'css' : 'min-css';
+			self::$css_folder = self::is_uae_debug() ? 'css' : 'min-css';
 		}
 
 		return self::$css_folder;
@@ -196,7 +220,7 @@ class UAEL_Helper {
 
 		if ( null === self::$css_suffix ) {
 
-			self::$css_suffix = self::is_script_debug() ? '' : '.min';
+			self::$css_suffix = self::is_uae_debug() ? '' : '.min';
 		}
 
 		return self::$css_suffix;
@@ -1141,5 +1165,219 @@ class UAEL_Helper {
 		}
 
 		return self::${$template_type};
+	}
+
+	/**
+	 * Get Skin Specific Stylesheet
+	 *
+	 * @param string $saved_blocks widget name.
+	 * @param array  $combined array of stylesheets.
+	 * @since 1.27.0
+	 */
+	public static function get_active_skins_stylesheet( $saved_blocks, $combined ) {
+
+		$is_already_event        = false;
+		$is_already_posts_common = false;
+		$is_already_carousel     = false;
+		$folder                  = self::get_css_folder();
+		$suffix                  = self::get_css_suffix();
+
+		foreach ( UAEL_Config::get_post_skin_list() as $key => $skin ) {
+
+			$block_name = str_replace( 'uael/', '', $key );
+
+			if ( isset( $saved_blocks[ $block_name ] ) && 'disabled' === $saved_blocks[ $block_name ] ) {
+				continue;
+			}
+
+			$skin_css = substr( $skin['slug'], 5 );
+
+			$combined[ $skin['slug'] ] = array(
+				'path'     => 'assets/' . $folder . '/modules/' . $skin_css . $suffix . '.css',
+				'path-rtl' => 'assets/min-css/modules/' . $skin_css . '-rtl.min.css',
+				'dep'      => array(),
+			);
+		}
+
+		if ( ! $is_already_event ) {
+			$combined['uael-skin-event'] = array(
+				'path'     => 'assets/' . $folder . '/modules/skin-event' . $suffix . '.css',
+				'path-rtl' => 'assets/min-css/modules/skin-event-rtl.min.css',
+				'dep'      => array(),
+			);
+
+			$is_already_event = true;
+		}
+
+		if ( ! $is_already_posts_common ) {
+			$combined['uael-posts'] = array(
+				'path'     => 'assets/' . $folder . '/modules/post' . $suffix . '.css',
+				'path-rtl' => 'assets/min-css/modules/post-rtl.min.css',
+				'dep'      => array(),
+			);
+
+			$is_already_posts_common = true;
+		}
+
+		if ( ! $is_already_carousel ) {
+			$combined['uael-posts-carousel'] = array(
+				'path'     => 'assets/' . $folder . '/modules/post-carousel' . $suffix . '.css',
+				'path-rtl' => 'assets/min-css/modules/post-carousel-rtl.min.css',
+				'dep'      => array(),
+			);
+
+			$is_already_carousel = true;
+		}
+
+		return $combined;
+	}
+
+	/**
+	 * Get Specific Stylesheet
+	 *
+	 * @since 1.27.0
+	 */
+	public static function get_active_widget_stylesheet() {
+
+		$saved_blocks             = self::get_admin_settings_option( '_uael_widgets' );
+		$combined                 = array();
+		$is_already_heading       = false;
+		$is_already_buttons       = false;
+		$is_already_wc            = false;
+		$is_already_widget_common = false;
+		$is_already_fancybox      = false;
+		$folder                   = self::get_css_folder();
+		$suffix                   = self::get_css_suffix();
+
+		foreach ( UAEL_Config::$widget_list as $key => $block ) {
+
+			$block_name = str_replace( 'uael/', '', $key );
+
+			if ( isset( $saved_blocks[ $block_name ] ) && 'disabled' === $saved_blocks[ $block_name ] ) {
+				continue;
+			}
+
+			if ( 'uael-cross-domain-copy-paste' !== $block['slug'] && 'uael-retina-image' !== $block['slug'] ) {
+
+				if ( ! $is_already_widget_common ) {
+					$combined['uael-common'] = array(
+						'path'     => 'assets/' . $folder . '/modules/common' . $suffix . '.css',
+						'path-rtl' => 'assets/min-css/modules/common-rtl.min.css',
+						'dep'      => array(),
+					);
+
+					$is_already_widget_common = true;
+				}
+
+				if ( ! $is_already_fancybox ) {
+					$combined['uael-fancybox'] = array(
+						'path'     => 'assets/min-css/modules/jquery-fancybox.min.css',
+						'path-rtl' => 'assets/min-css/modules/jquery-fancybox-rtl.min.css',
+						'dep'      => array(),
+					);
+
+					$is_already_fancybox = true;
+				}
+			}
+
+			switch ( $block_name ) {
+				case 'Advanced_Heading':
+				case 'Dual_Heading':
+				case 'Fancy_Heading':
+					if ( ! $is_already_heading ) {
+						$combined['uael-heading'] = array(
+							'path'     => 'assets/' . $folder . '/modules/heading' . $suffix . '.css',
+							'path-rtl' => 'assets/min-css/modules/heading-rtl.min.css',
+							'dep'      => array(),
+						);
+
+						$is_already_heading = true;
+					}
+					break;
+				case 'Buttons':
+				case 'Marketing_Button':
+					if ( ! $is_already_buttons ) {
+						$combined['uael-buttons'] = array(
+							'path'     => 'assets/' . $folder . '/modules/buttons' . $suffix . '.css',
+							'path-rtl' => 'assets/min-css/modules/buttons-rtl.min.css',
+							'dep'      => array(),
+						);
+
+						$is_already_buttons = true;
+					}
+					break;
+				case 'Woo_Add_To_Cart':
+				case 'Woo_Categories':
+				case 'Woo_Products':
+				case 'Woo_Mini_Cart':
+					if ( ! $is_already_wc ) {
+						$combined['uael-woocommerce'] = array(
+							'path'     => 'assets/' . $folder . '/modules/uael-woocommerce' . $suffix . '.css',
+							'path-rtl' => 'assets/min-css/modules/uael-woocommerce-rtl.min.css',
+							'dep'      => array(),
+						);
+
+						$is_already_wc = true;
+					}
+					break;
+				case 'Posts':
+					$combined = self::get_active_skins_stylesheet( $saved_blocks, $combined );
+
+					break;
+				default:
+					if ( 'uael-cross-domain-copy-paste' !== $block['slug'] && 'uael-retina-image' !== $block['slug'] ) {
+
+						$block_css = substr( $block['slug'], 5 );
+
+						$combined[ $block['slug'] ] = array(
+							'path'     => 'assets/' . $folder . '/modules/' . $block_css . $suffix . '.css',
+							'path-rtl' => 'assets/min-css/modules/' . $block_css . '-rtl.min.css',
+							'dep'      => array(),
+						);
+					}
+
+					break;
+			}
+		}
+
+		return $combined;
+	}
+
+	/**
+	 * Generate dynamic combined min.css
+	 *
+	 * @since 1.27.0
+	 */
+	public static function create_specific_stylesheet() {
+
+		global $wp_filesystem;
+
+		if ( empty( $wp_filesystem ) ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
+		$combined = self::get_active_widget_stylesheet();
+
+		$combined_path     = plugin_dir_path( UAEL_FILE ) . 'assets/min-css/uael-frontend.min.css';
+		$combined_rtl_path = plugin_dir_path( UAEL_FILE ) . 'assets/min-css/uael-frontend-rtl.min.css';
+
+		wp_delete_file( $combined_path );
+		wp_delete_file( $combined_rtl_path );
+
+		$style     = '';
+		$rtl_style = '';
+
+		foreach ( $combined as $key => $c_block ) {
+
+			$path     = plugin_dir_path( UAEL_FILE ) . $c_block['path'];
+			$rtl_path = plugin_dir_path( UAEL_FILE ) . $c_block['path-rtl'];
+
+			$style     .= $wp_filesystem->get_contents( $path );
+			$rtl_style .= $wp_filesystem->get_contents( $rtl_path );
+
+		}
+		$wp_filesystem->put_contents( $combined_path, $style, FS_CHMOD_FILE );
+		$wp_filesystem->put_contents( $combined_rtl_path, $rtl_style, FS_CHMOD_FILE );
 	}
 }

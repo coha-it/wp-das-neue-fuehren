@@ -16,6 +16,7 @@ use Elementor\Scheme_Typography;
 use Elementor\Scheme_Color;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Repeater;
 
 // UltimateElementor Classes.
 use UltimateElementor\Base\Common_Widget;
@@ -114,81 +115,103 @@ if ( ! class_exists( 'Price_List' ) ) {
 				)
 			);
 
+				$repeater = new Repeater();
+
+				$repeater->add_control(
+					'title',
+					array(
+						'label'       => __( 'Title', 'uael' ),
+						'type'        => Controls_Manager::TEXT,
+						'dynamic'     => array(
+							'active' => true,
+						),
+						'default'     => '',
+						'label_block' => true,
+					)
+				);
+
+				$repeater->add_control(
+					'item_description',
+					array(
+						'label'   => __( 'Description', 'uael' ),
+						'type'    => Controls_Manager::TEXTAREA,
+						'default' => '',
+						'dynamic' => array(
+							'active' => true,
+						),
+					)
+				);
+
+				$repeater->add_control(
+					'price',
+					array(
+						'label'   => __( 'Price', 'uael' ),
+						'type'    => Controls_Manager::TEXT,
+						'default' => '',
+						'dynamic' => array(
+							'active' => true,
+						),
+					)
+				);
+
+				$repeater->add_control(
+					'has_discount',
+					array(
+						'label'        => __( 'Offering Discount?', 'uael' ),
+						'type'         => Controls_Manager::SWITCHER,
+						'default'      => 'no',
+						'label_on'     => __( 'Yes', 'uael' ),
+						'label_off'    => __( 'No', 'uael' ),
+						'return_value' => 'yes',
+					)
+				);
+
+				$repeater->add_control(
+					'original_price',
+					array(
+						'label'     => __( 'Original Price', 'uael' ),
+						'type'      => Controls_Manager::TEXT,
+						'default'   => '$100',
+						'dynamic'   => array(
+							'active' => true,
+						),
+						'condition' => array(
+							'has_discount' => 'yes',
+						),
+					)
+				);
+
+				$repeater->add_control(
+					'image',
+					array(
+						'label'   => __( 'Image', 'uael' ),
+						'type'    => Controls_Manager::MEDIA,
+						'default' => array(
+							'url' => Utils::get_placeholder_image_src(),
+						),
+						'dynamic' => array(
+							'active' => true,
+						),
+					)
+				);
+
+				$repeater->add_control(
+					'link',
+					array(
+						'label'   => __( 'Link', 'uael' ),
+						'type'    => Controls_Manager::URL,
+						'default' => array( 'url' => '#' ),
+						'dynamic' => array(
+							'active' => true,
+						),
+					)
+				);
+
 				$this->add_control(
 					'price_list',
 					array(
 						'type'        => Controls_Manager::REPEATER,
-						'fields'      => array(
-							array(
-								'name'        => 'title',
-								'label'       => __( 'Title', 'uael' ),
-								'type'        => Controls_Manager::TEXT,
-								'dynamic'     => array(
-									'active' => true,
-								),
-								'default'     => '',
-								'label_block' => true,
-							),
-							array(
-								'name'    => 'item_description',
-								'label'   => __( 'Description', 'uael' ),
-								'type'    => Controls_Manager::TEXTAREA,
-								'default' => '',
-								'dynamic' => array(
-									'active' => true,
-								),
-							),
-							array(
-								'name'    => 'price',
-								'label'   => __( 'Price', 'uael' ),
-								'type'    => Controls_Manager::TEXT,
-								'default' => '',
-								'dynamic' => array(
-									'active' => true,
-								),
-							),
-							array(
-								'name'         => 'has_discount',
-								'label'        => __( 'Offering Discount?', 'uael' ),
-								'type'         => Controls_Manager::SWITCHER,
-								'default'      => 'no',
-								'label_on'     => __( 'Yes', 'uael' ),
-								'label_off'    => __( 'No', 'uael' ),
-								'return_value' => 'yes',
-							),
-							array(
-								'name'      => 'original_price',
-								'label'     => __( 'Original Price', 'uael' ),
-								'type'      => Controls_Manager::TEXT,
-								'default'   => '$100',
-								'dynamic'   => array(
-									'active' => true,
-								),
-								'condition' => array(
-									'has_discount' => 'yes',
-								),
-							),
-							array(
-								'name'    => 'image',
-								'label'   => __( 'Image', 'uael' ),
-								'type'    => Controls_Manager::MEDIA,
-								'default' => array(
-									'url' => Utils::get_placeholder_image_src(),
-								),
-								'dynamic' => array(
-									'active' => true,
-								),
-							),
-							array(
-								'name'    => 'link',
-								'label'   => __( 'Link', 'uael' ),
-								'type'    => Controls_Manager::URL,
-								'default' => array( 'url' => '#' ),
-								'dynamic' => array(
-									'active' => true,
-								),
-							),
-						),
+						'fields'      => $repeater->get_controls(),
 						'default'     => array(
 							array(
 								'title'            => __( 'First Item', 'uael' ),
@@ -877,6 +900,18 @@ if ( ! class_exists( 'Price_List' ) ) {
 							)
 						);
 
+						$this->add_control(
+							'item_border_radius',
+							array(
+								'label'      => __( 'Border Radius', 'uael' ),
+								'type'       => Controls_Manager::DIMENSIONS,
+								'size_units' => array( 'px', '%' ),
+								'selectors'  => array(
+									'{{WRAPPER}} .uael-price-list-item' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+								),
+							)
+						);
+
 					$this->end_controls_tab();
 
 					$this->start_controls_tab(
@@ -1076,7 +1111,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 				$image_src = Group_Control_Image_Size::get_attachment_image_src( $image_id, 'image_size', $instance );
 			} else {
 				$image_src = wp_get_attachment_image_src( $image_id, $image_size );
-				$image_src = $image_src[0];
+				$image_src = ( false !== $image_src ) ? $image_src[0] : '';
 			}
 
 			if ( '' === $image_id ) {
@@ -1323,7 +1358,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 		 * @since 0.0.1
 		 * @access protected
 		 */
-		protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+		protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 			$this->content_template();
 		}
 	}

@@ -186,10 +186,10 @@ class Skin_Feed extends Skin_Style {
 
 		?>
 		<div class="uael-post__header-filters-wrap<?php echo esc_attr( $tab_responsive ); ?>">
-			<ul class="uael-post__header-filters">
+			<ul class="uael-post__header-filters" aria-label="<?php esc_attr_e( 'Taxonomy Filter', 'uael' ); ?>">
 				<li class="uael-post__header-filter uael-filter__current" data-filter="*"><?php echo wp_kses_post( $all_text ); ?></li>
 				<?php foreach ( $filters as $key => $value ) { ?>
-				<li class="uael-post__header-filter" data-filter="<?php echo '.' . esc_attr( $value->slug ); ?>"><?php echo esc_attr( $value->name ); ?></li>
+				<li class="uael-post__header-filter" data-filter="<?php echo '.' . esc_attr( $value->slug ); ?>" tabindex="0"><?php echo esc_attr( $value->name ); ?></li>
 				<?php } ?>
 			</ul>
 

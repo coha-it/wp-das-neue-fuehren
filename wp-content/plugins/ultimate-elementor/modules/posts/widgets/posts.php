@@ -83,7 +83,16 @@ class Posts extends Posts_Base {
 	 * @access protected
 	 */
 	protected function _register_skins() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+		$this->register_skins();
+	}
 
+	/**
+	 * Register Skins.
+	 *
+	 * @since 1.29.0
+	 * @access public
+	 */
+	public function register_skins() {
 		$this->add_skin( new Skins\Skin_Classic( $this ) );
 		$this->add_skin( new Skins\Skin_Event( $this ) );
 

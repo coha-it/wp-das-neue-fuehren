@@ -42,7 +42,7 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 	 * @since 1.7.0
 	 * @access protected
 	 */
-	protected function _register_controls_actions() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls_actions() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		add_action( 'elementor/element/uael-posts/section_filter_field/after_section_end', array( $this, 'register_sections' ) );
 
@@ -319,6 +319,53 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 					'options'     => UAEL_Posts_Helper::get_image_sizes(),
 					'condition'   => array(
 						$this->get_control_id( 'image_position' ) => array( 'top', 'background' ),
+					),
+				)
+			);
+
+			$this->add_control(
+				'thumbnail_img_ratio',
+				array(
+					'label'        => __( 'Image Ratio', 'uael' ),
+					'type'         => Controls_Manager::SWITCHER,
+					'default'      => '',
+					'label_on'     => __( 'Yes', 'uael' ),
+					'label_off'    => __( 'No', 'uael' ),
+					'return_value' => 'ratio',
+					'prefix_class' => 'uael-posts-thumbnail-',
+					'condition'    => array(
+						$this->get_control_id( 'image_position!' ) => 'none',
+					),
+				)
+			);
+
+			$this->add_responsive_control(
+				'thumbnail_img_ratio_size',
+				array(
+					'label'          => __( 'Size', 'uael' ),
+					'type'           => Controls_Manager::SLIDER,
+					'default'        => array(
+						'size' => 1,
+					),
+					'tablet_default' => array(
+						'size' => '',
+					),
+					'mobile_default' => array(
+						'size' => 1,
+					),
+					'range'          => array(
+						'px' => array(
+							'min'  => 0.1,
+							'max'  => 2,
+							'step' => 0.01,
+						),
+					),
+					'selectors'      => array(
+						'{{WRAPPER}} .uael-post__body .uael-post__thumbnail:not(.uael-post-wrapper__noimage)' => 'padding-bottom: calc( {{SIZE}} * 100% );',
+					),
+					'condition'      => array(
+						$this->get_control_id( 'image_position!' ) => 'none',
+						$this->get_control_id( 'thumbnail_img_ratio!' ) => '',
 					),
 				)
 			);

@@ -15,6 +15,7 @@ use Elementor\Group_Control_Typography;
 use Elementor\Scheme_Typography;
 use Elementor\Scheme_Color;
 use Elementor\Group_Control_Background;
+use Elementor\Utils;
 
 // UltimateElementor Classes.
 use UltimateElementor\Base\Common_Widget;
@@ -82,11 +83,12 @@ class Dual_Heading extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_heading_content_controls();
 		$this->register_general_content_controls();
 		$this->register_style_content_controls();
+		$this->register_bg_text_controls();
 		$this->register_helpful_information();
 	}
 
@@ -137,6 +139,18 @@ class Dual_Heading extends Common_Widget {
 					'active' => true,
 				),
 				'selector' => '{{WRAPPER}} .uael-dual-heading-text',
+			)
+		);
+		$this->add_control(
+			'bg_text',
+			array(
+
+				'label'    => __( 'Background Text', 'uael' ),
+				'type'     => Controls_Manager::TEXT,
+				'selector' => '{{WRAPPER}} .uael-heading-text',
+				'dynamic'  => array(
+					'active' => true,
+				),
 			)
 		);
 		$this->add_control(
@@ -226,25 +240,23 @@ class Dual_Heading extends Common_Widget {
 				'label_off'    => __( 'Inline', 'uael' ),
 				'return_value' => 'yes',
 				'default'      => 'no',
-				'prefix_class' => 'uael-stack-desktop-',
 			)
 		);
 		$this->add_control(
 			'heading_stack_on',
 			array(
-				'label'        => __( 'Responsive Support', 'uael' ),
-				'description'  => __( 'Choose on what breakpoint the heading will stack.', 'uael' ),
-				'type'         => Controls_Manager::SELECT,
-				'default'      => 'none',
-				'options'      => array(
+				'label'       => __( 'Responsive Support', 'uael' ),
+				'description' => __( 'Choose on what breakpoint the heading will stack.', 'uael' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'none',
+				'options'     => array(
 					'none'   => __( 'No', 'uael' ),
 					'tablet' => __( 'For Tablet & Mobile', 'uael' ),
 					'mobile' => __( 'For Mobile Only', 'uael' ),
 				),
-				'condition'    => array(
+				'condition'   => array(
 					'heading_layout!' => 'yes',
 				),
-				'prefix_class' => 'uael-heading-stack-',
 			)
 		);
 
@@ -267,12 +279,12 @@ class Dual_Heading extends Common_Widget {
 				'selectors'  => array(
 					'{{WRAPPER}} .uael-before-heading' => 'margin-right: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .uael-after-heading'  => 'margin-left: {{SIZE}}{{UNIT}};',
-					'{{WRAPPER}}.uael-stack-desktop-yes .uael-before-heading' => 'margin-bottom: {{SIZE}}{{UNIT}}; margin-right: 0px; display: inline-block;',
-					'{{WRAPPER}}.uael-stack-desktop-yes .uael-after-heading' => 'margin-top: {{SIZE}}{{UNIT}}; margin-left: 0px; display: inline-block;',
-					'(tablet){{WRAPPER}}.uael-heading-stack-tablet .uael-before-heading ' => 'margin-bottom: {{SIZE}}{{UNIT}}; margin-right: 0px; display: inline-block;',
-					'(tablet){{WRAPPER}}.uael-heading-stack-tablet .uael-after-heading ' => 'margin-top: {{SIZE}}{{UNIT}}; margin-left: 0px; display: inline-block;',
-					'(mobile){{WRAPPER}}.uael-heading-stack-mobile .uael-before-heading ' => 'margin-bottom: {{SIZE}}{{UNIT}}; margin-right: 0px; display: inline-block;',
-					'(mobile){{WRAPPER}}.uael-heading-stack-mobile .uael-after-heading ' => 'margin-top: {{SIZE}}{{UNIT}}; margin-left: 0px; display: inline-block;',
+					'{{WRAPPER}} .uael-stack-desktop-yes .uael-before-heading' => 'margin-bottom: {{SIZE}}{{UNIT}}; margin-right: 0px; display: inline-block;',
+					'{{WRAPPER}} .uael-stack-desktop-yes .uael-after-heading' => 'margin-top: {{SIZE}}{{UNIT}}; margin-left: 0px; display: inline-block;',
+					'(tablet){{WRAPPER}} .uael-heading-stack-tablet .uael-before-heading ' => 'margin-bottom: {{SIZE}}{{UNIT}}; margin-right: 0px; display: inline-block;',
+					'(tablet){{WRAPPER}} .uael-heading-stack-tablet .uael-after-heading ' => 'margin-top: {{SIZE}}{{UNIT}}; margin-left: 0px; display: inline-block;',
+					'(mobile){{WRAPPER}} .uael-heading-stack-mobile .uael-before-heading ' => 'margin-bottom: {{SIZE}}{{UNIT}}; margin-right: 0px; display: inline-block;',
+					'(mobile){{WRAPPER}} .uael-heading-stack-mobile .uael-after-heading ' => 'margin-top: {{SIZE}}{{UNIT}}; margin-left: 0px; display: inline-block;',
 				),
 			)
 		);
@@ -350,6 +362,7 @@ class Dual_Heading extends Common_Widget {
 				),
 			)
 		);
+
 		$this->add_responsive_control(
 			'heading_padding',
 			array(
@@ -385,6 +398,7 @@ class Dual_Heading extends Common_Widget {
 				),
 			)
 		);
+
 		$this->add_control(
 			'heading_border_radius',
 			array(
@@ -410,6 +424,38 @@ class Dual_Heading extends Common_Widget {
 				),
 			)
 		);
+
+		$this->add_control(
+			'normal_heading_bg',
+			array(
+				'label'        => __( 'Fill Background', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'uael' ),
+				'label_off'    => __( 'No', 'uael' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'separator'    => 'before',
+				'condition'    => array(
+					'heading_adv_options' => 'yes',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			array(
+				'name'      => 'heading_bg_color_fill',
+				'label'     => __( 'Background Color', 'uael' ),
+				'types'     => array( 'classic', 'gradient' ),
+				'selector'  => '{{WRAPPER}} .uael-dual-heading-fill-yes .uael-first-text,
+				{{WRAPPER}} .uael-dual-heading-fill-yes .uael-third-text',
+				'condition' => array(
+					'heading_adv_options' => 'yes',
+					'normal_heading_bg'   => 'yes',
+				),
+			)
+		);
+
 		$this->end_controls_tab();
 
 		$this->start_controls_tab(
@@ -464,6 +510,7 @@ class Dual_Heading extends Common_Widget {
 				),
 			)
 		);
+
 		$this->add_responsive_control(
 			'heading_highlight_padding',
 			array(
@@ -522,9 +569,147 @@ class Dual_Heading extends Common_Widget {
 				),
 			)
 		);
+
+		$this->add_control(
+			'highlight_heading_bg',
+			array(
+				'label'        => __( 'Fill Background', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'uael' ),
+				'label_off'    => __( 'No', 'uael' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'separator'    => 'before',
+				'condition'    => array(
+					'highlight_adv_options' => 'yes',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			array(
+				'name'      => 'highlight_bg_color_fill',
+				'label'     => __( 'Background Color', 'uael' ),
+				'types'     => array( 'classic', 'gradient' ),
+				'selector'  => '{{WRAPPER}} .uael-dual-heading-fill-yes.uael-dual-heading-text.uael-highlight-text',
+				'condition' => array(
+					'highlight_adv_options' => 'yes',
+					'highlight_heading_bg'  => 'yes',
+				),
+			)
+		);
+
 		$this->end_controls_tab();
 
 		$this->end_controls_tabs();
+
+		$this->end_controls_section();
+	}
+
+	/**
+	 * Register BG Text controls.
+	 *
+	 * @since 1.27.1
+	 * @access protected
+	 */
+	protected function register_bg_text_controls() {
+
+		$this->start_controls_section(
+			'bg_text_style',
+			array(
+				'label'     => __( 'Background Text', 'uael' ),
+				'tab'       => Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					'bg_text!' => '',
+				),
+			)
+		);
+
+			$this->add_control(
+				'bg_text_color',
+				array(
+					'label'     => __( 'Color', 'uael' ),
+					'type'      => Controls_Manager::COLOR,
+					'selectors' => array(
+						'{{WRAPPER}} .uael-dual-color-heading:before' => 'color: {{VALUE}}',
+					),
+					'default'   => '#352B2B70',
+				)
+			);
+
+			$this->add_group_control(
+				Group_Control_Typography::get_type(),
+				array(
+					'name'     => 'bg_text_typography',
+					'selector' => '{{WRAPPER}} .uael-dual-color-heading:before',
+					'scheme'   => Scheme_Typography::TYPOGRAPHY_3,
+				)
+			);
+
+			$this->add_control(
+				'background_offset_toggle',
+				array(
+					'label'        => __( 'Offset', 'uael' ),
+					'type'         => Controls_Manager::POPOVER_TOGGLE,
+					'label_off'    => __( 'None', 'uael' ),
+					'label_on'     => __( 'Custom', 'uael' ),
+					'return_value' => 'yes',
+				)
+			);
+
+			$this->start_popover();
+
+				$this->add_responsive_control(
+					'bg_text_horizontal_position',
+					array(
+						'label'      => __( 'Horizontal Position', 'uael' ),
+						'type'       => Controls_Manager::SLIDER,
+						'size_units' => array( 'px', '%' ),
+						'default'    => array(
+							'unit' => '%',
+						),
+						'range'      => array(
+							'%' => array(
+								'min' => -100,
+								'max' => 100,
+							),
+						),
+						'condition'  => array(
+							'background_offset_toggle' => 'yes',
+						),
+						'selectors'  => array(
+							'{{WRAPPER}} .uael-dual-color-heading:before' => 'left: {{SIZE}}{{UNIT}};right: unset;',
+							'body.rtl {{WRAPPER}} .uael-dual-color-heading:before' => 'right: {{SIZE}}{{UNIT}};left: unset;',
+						),
+					)
+				);
+
+				$this->add_responsive_control(
+					'bg_text_vertical_position',
+					array(
+						'label'      => __( 'Vertical Position', 'uael' ),
+						'type'       => Controls_Manager::SLIDER,
+						'size_units' => array( 'px', '%' ),
+						'default'    => array(
+							'unit' => '%',
+						),
+						'range'      => array(
+							'%' => array(
+								'min' => -100,
+								'max' => 200,
+							),
+						),
+						'condition'  => array(
+							'background_offset_toggle' => 'yes',
+						),
+						'selectors'  => array(
+							'{{WRAPPER}} .uael-dual-color-heading:before' => 'top: {{SIZE}}{{UNIT}};',
+						),
+					)
+				);
+
+			$this->end_popover();
 
 		$this->end_controls_section();
 	}
@@ -600,8 +785,29 @@ class Dual_Heading extends Common_Widget {
 			}
 			$link = $this->get_render_attribute_string( 'url' );
 		}
+
+		$this->add_render_attribute( 'uael-dual-heading', 'class', 'uael-module-content uael-dual-color-heading' );
+		if ( ! empty( $settings['bg_text'] ) ) {
+			$this->add_render_attribute( 'uael-dual-heading', 'data-bg_text', $settings['bg_text'] );
+		}
+
+		if ( 'yes' === $settings['normal_heading_bg'] ) {
+			$this->add_render_attribute( 'uael-dual-heading', 'class', 'uael-dual-heading-fill-yes' );
+		}
+
+		if ( 'yes' === $settings['highlight_heading_bg'] ) {
+			$this->add_render_attribute( 'uael-dual-heading-highlight-text', 'class', 'uael-dual-heading-fill-yes' );
+		}
+
+		$this->add_render_attribute( 'uael-dual-heading-highlight-text', 'class', 'elementor-inline-editing uael-dual-heading-text uael-highlight-text' );
+
+		if ( 'yes' === $settings['heading_layout'] ) {
+			$this->add_render_attribute( 'uael-dual-heading', 'class', 'uael-stack-desktop-yes' );
+		}
+
+		$this->add_render_attribute( 'uael-dual-heading', 'class', 'uael-heading-stack-' . $settings['heading_stack_on'] );
 		?>
-		<div class="uael-module-content uael-dual-color-heading">
+		<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael-dual-heading' ) ); ?>>
 			<<?php echo esc_attr( $settings['dual_tag_selection'] ); ?>>
 				<?php if ( ! empty( $settings['heading_link']['url'] ) ) { ?>
 					<a <?php echo wp_kses_post( $link ); ?> >
@@ -610,7 +816,7 @@ class Dual_Heading extends Common_Widget {
 						// Ignore the PHPCS warning about constant declaration.
 						// @codingStandardsIgnoreStart
 						?>
-						<span class="uael-before-heading"><span class="elementor-inline-editing uael-dual-heading-text uael-first-text" data-elementor-setting-key="before_heading_text" data-elementor-inline-editing-toolbar="basic"><?php echo $this->get_settings_for_display( 'before_heading_text'); ?></span></span><span class="uael-adv-heading-stack"><span class="elementor-inline-editing uael-dual-heading-text uael-highlight-text" data-elementor-setting-key="second_heading_text" data-elementor-inline-editing-toolbar="basic"><?php echo $this->get_settings_for_display( 'second_heading_text'); ?></span></span><?php if ( ! empty( $settings['after_heading_text'] ) ) { ?><span class="uael-after-heading"><span class="elementor-inline-editing uael-dual-heading-text uael-third-text" data-elementor-setting-key="after_heading_text" data-elementor-inline-editing-toolbar="basic"><?php echo $this->get_settings_for_display( 'after_heading_text'); ?></span></span><?php } ?>
+						<span class="uael-before-heading"><span class="elementor-inline-editing uael-dual-heading-text uael-first-text" data-elementor-setting-key="before_heading_text" data-elementor-inline-editing-toolbar="basic"><?php echo $this->get_settings_for_display( 'before_heading_text'); ?></span></span><span class="uael-adv-heading-stack"><span <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael-dual-heading-highlight-text' ) ); ?> data-elementor-setting-key="second_heading_text" data-elementor-inline-editing-toolbar="basic"><?php echo $this->get_settings_for_display( 'second_heading_text'); ?></span></span><?php if ( ! empty( $settings['after_heading_text'] ) ) { ?><span class="uael-after-heading"><span class="elementor-inline-editing uael-dual-heading-text uael-third-text" data-elementor-setting-key="after_heading_text" data-elementor-inline-editing-toolbar="basic"><?php echo $this->get_settings_for_display( 'after_heading_text'); ?></span></span><?php } ?>
 						<?php // @codingStandardsIgnoreEnd ?>
 				<?php if ( ! empty( $settings['heading_link']['url'] ) ) { ?>
 					</a>
@@ -632,12 +838,34 @@ class Dual_Heading extends Common_Widget {
 	 */
 	protected function content_template() {
 		?>
-		<div class="uael-module-content uael-dual-color-heading">
+		<#
+			view.addRenderAttribute( 'uael-dual-heading', 'class', 'uael-module-content uael-dual-color-heading' );
+			if ( '' != settings.bg_text ) {
+				view.addRenderAttribute( 'uael-dual-heading', 'data-bg_text', settings.bg_text );
+			}
+
+			if ( 'yes' === settings.normal_heading_bg ){
+				view.addRenderAttribute( 'uael-dual-heading', 'class', 'uael-dual-heading-fill-yes' );
+			}
+
+			if ( 'yes' === settings.highlight_heading_bg ){
+				view.addRenderAttribute( 'uael-dual-heading-highlight-text', 'class', 'uael-dual-heading-fill-yes' );
+			}
+
+			view.addRenderAttribute( 'uael-dual-heading-highlight-text', 'class', 'elementor-inline-editing uael-dual-heading-text uael-highlight-text' );
+
+			if( 'yes' == settings.heading_layout ){
+				view.addRenderAttribute( 'uael-dual-heading', 'class', 'uael-stack-desktop-yes' );
+			}
+
+			view.addRenderAttribute( 'uael-dual-heading', 'class', 'uael-heading-stack-' + settings.heading_stack_on );
+		#>
+		<div {{{ view.getRenderAttributeString( 'uael-dual-heading') }}} >
 			<{{ settings.dual_tag_selection }}>
 				<# if ( '' != settings.heading_link.url ) { #>
 					<a href= {{ settings.heading_link.url }}>
 				<# } #>
-				<span class="uael-before-heading"><span class="elementor-inline-editing uael-dual-heading-text uael-first-text" data-elementor-setting-key="before_heading_text" data-elementor-inline-editing-toolbar="basic">{{ settings.before_heading_text }}</span></span><span class="uael-adv-heading-stack"><span class="elementor-inline-editing uael-dual-heading-text uael-highlight-text" data-elementor-setting-key="second_heading_text" data-elementor-inline-editing-toolbar="basic">{{ settings.second_heading_text }}</span></span><# if ( '' != settings.after_heading_text ) { #><span class="uael-after-heading"><span class="elementor-inline-editing uael-dual-heading-text uael-third-text" data-elementor-setting-key="after_heading_text" data-elementor-inline-editing-toolbar="basic">{{ settings.after_heading_text }}</span></span>
+				<span class="uael-before-heading"><span class="elementor-inline-editing uael-dual-heading-text uael-first-text" data-elementor-setting-key="before_heading_text" data-elementor-inline-editing-toolbar="basic">{{ settings.before_heading_text }}</span></span><span class="uael-adv-heading-stack"><span {{{ view.getRenderAttributeString( 'uael-dual-heading-highlight-text') }}} data-elementor-setting-key="second_heading_text" data-elementor-inline-editing-toolbar="basic">{{ settings.second_heading_text }}</span></span><# if ( '' != settings.after_heading_text ) { #><span class="uael-after-heading"><span class="elementor-inline-editing uael-dual-heading-text uael-third-text" data-elementor-setting-key="after_heading_text" data-elementor-inline-editing-toolbar="basic">{{ settings.after_heading_text }}</span></span>
 				<# } #>
 				<# if ( '' !== settings.heading_link.url ) { #>
 					</a>
@@ -657,7 +885,7 @@ class Dual_Heading extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 }

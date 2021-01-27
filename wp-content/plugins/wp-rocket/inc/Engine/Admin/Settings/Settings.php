@@ -102,7 +102,6 @@ class Settings {
 	 * A setting section is a block containing settings fields.
 	 *
 	 * @since 3.0
-	 * @author Remy Perona
 	 *
 	 * @param array $settings_sections {
 	 *      Data to build the section.
@@ -127,7 +126,6 @@ class Settings {
 	 * Adds settings fields to the settings.
 	 *
 	 * @since 3.0
-	 * @author Remy Perona
 	 *
 	 * @param array $settings_fields {
 	 *      Data to build the section.
@@ -153,7 +151,6 @@ class Settings {
 	 * Adds hidden settings fields to the settings.
 	 *
 	 * @since 3.0
-	 * @author Remy Perona
 	 *
 	 * @param array $hidden_settings_fields {
 	 *      Data to build the section.
@@ -177,7 +174,6 @@ class Settings {
 	 * Returns the plugin settings
 	 *
 	 * @since 3.0
-	 * @author Remy Perona
 	 *
 	 * @return array
 	 */
@@ -189,7 +185,6 @@ class Settings {
 	 * Returns the plugin hidden settings
 	 *
 	 * @since 3.0
-	 * @author Remy Perona
 	 *
 	 * @return array
 	 */
@@ -201,15 +196,12 @@ class Settings {
 	 * Sanitizes the submitted values.
 	 *
 	 * @since 3.0
-	 * @author Remy Perona
 	 *
 	 * @param array $input Array of values submitted by the form.
 	 * @return array
 	 */
 	public function sanitize_callback( $input ) {
 		global $wp_settings_errors;
-
-		$input['do_beta'] = ! empty( $input['do_beta'] ) ? 1 : 0;
 
 		$input['cache_logged_user'] = ! empty( $input['cache_logged_user'] ) ? 1 : 0;
 
@@ -219,7 +211,6 @@ class Settings {
 		$input['do_caching_mobile_files'] = ! empty( $input['do_caching_mobile_files'] ) ? 1 : 0;
 
 		$input['minify_google_fonts'] = ! empty( $input['minify_google_fonts'] ) ? 1 : 0;
-		$input['minify_html']         = ! empty( $input['minify_html'] ) ? 1 : 0;
 
 		// Option : Minification CSS & JS.
 		$input['minify_css'] = ! empty( $input['minify_css'] ) ? 1 : 0;
@@ -228,13 +219,10 @@ class Settings {
 		$input['minify_concatenate_css'] = ! empty( $input['minify_concatenate_css'] ) ? 1 : 0;
 		$input['minify_concatenate_js']  = ! empty( $input['minify_concatenate_js'] ) ? 1 : 0;
 
-		$input['defer_all_js']      = ! empty( $input['defer_all_js'] ) ? 1 : 0;
-		$input['defer_all_js_safe'] = ! empty( $input['defer_all_js_safe'] ) ? 1 : 0;
-
-		// If Defer JS is deactivated, set Safe Mode for Jquery to active.
-		if ( 0 === $input['defer_all_js'] ) {
-			$input['defer_all_js_safe'] = 1;
-		}
+		$input['defer_all_js']     = ! empty( $input['defer_all_js'] ) ? 1 : 0;
+		$input['exclude_defer_js'] = ! empty( $input['exclude_defer_js'] ) ? rocket_sanitize_textarea_field( 'exclude_defer_js', $input['exclude_defer_js'] ) : [];
+		$input['delay_js']         = $this->sanitize_checkbox( $input, 'delay_js' );
+		$input['delay_js_scripts'] = ! empty( $input['delay_js_scripts'] ) ? rocket_sanitize_textarea_field( 'delay_js_scripts', $input['delay_js_scripts'] ) : [];
 
 		$input['embeds'] = ! empty( $input['embeds'] ) ? 1 : 0;
 		$input['emoji']  = ! empty( $input['emoji'] ) ? 1 : 0;
@@ -252,17 +240,11 @@ class Settings {
 		$input['purge_cron_interval'] = isset( $input['purge_cron_interval'] ) ? (int) $input['purge_cron_interval'] : $this->options->get( 'purge_cron_interval' );
 
 		$allowed_cron_units = [
-			'MINUTE_IN_SECONDS' => 1,
-			'HOUR_IN_SECONDS'   => 1,
-			'DAY_IN_SECONDS'    => 1,
+			'HOUR_IN_SECONDS' => 1,
+			'DAY_IN_SECONDS'  => 1,
 		];
 
 		$input['purge_cron_unit'] = isset( $input['purge_cron_unit'], $allowed_cron_units[ $input['purge_cron_unit'] ] ) ? $input['purge_cron_unit'] : $this->options->get( 'purge_cron_unit' );
-
-		// Force a minimum 10 minutes value for the purge interval.
-		if ( $input['purge_cron_interval'] < 10 && 'MINUTE_IN_SECONDS' === $input['purge_cron_unit'] ) {
-			$input['purge_cron_interval'] = 10;
-		}
 
 		// Option : Prefetch DNS requests.
 		$input['dns_prefetch'] = $this->sanitize_dns_prefetch( $input );
@@ -499,27 +481,32 @@ class Settings {
 
 		unset( $input['ignore'] );
 
-		return apply_filters( 'rocket_input_sanitize', $input );
+		/**
+		 * Filters the sanitized input before returning the array
+		 *
+		 * @param array    $input    Array of sanitized values after being submitted by the form.
+		 * @param Settings $settings Current class instance.
+		 */
+		return apply_filters( 'rocket_input_sanitize', $input, $this );
 	}
 
 	/**
 	 * Sanitizes the returned value of a checkbox
 	 *
 	 * @since 3.0
-	 * @author Remy Perona
 	 *
-	 * @param mixed $value Checkbox value.
+	 * @param array  $array Options array.
+	 * @param string $key   Array key to check.
 	 * @return int
 	 */
-	public function sanitize_checkbox( $value ) {
-		return isset( $value ) ? 1 : 0;
+	public function sanitize_checkbox( $array, $key ) {
+		return isset( $array[ $key ] ) && ! empty( $array[ $key ] ) ? 1 : 0;
 	}
 
 	/**
 	 * Sanitizes the DNS Prefetch sub-option value
 	 *
 	 * @since 3.5.1
-	 * @author Remy Perona
 	 *
 	 * @param array $input Array of values for the WP Rocket settings option.
 	 * @return array Sanitized array for the DNS Prefetch sub-option

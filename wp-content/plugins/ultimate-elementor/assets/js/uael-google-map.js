@@ -15,14 +15,16 @@
 			predefined_style 		= ( selector.data( 'predefined-style' ) != '' ) ? selector.data( 'predefined-style' ) : '',
 			info_window_size        = ( selector.data( 'max-width' ) != '' ) ? selector.data( 'max-width' ) : '',
 			m_cluster            	= ( selector.data( 'cluster' ) == 'yes' ) ? true : false,
+			cluster_attr            = selector.data( 'cluster-attr' ),
 			animate            		= selector.data( 'animate' ),
 			auto_center				= selector.data( 'auto-center' ),
 			map_options             = selector.data( 'map_options' ),
 			i                       = '',
 			bounds 					= new google.maps.LatLngBounds(),
 			marker_cluster 			= [],
-			device_size 			= elementorFrontend.getCurrentDeviceMode();
-
+			device_size 			= elementorFrontend.getCurrentDeviceMode(),
+			cluster_object;
+			
 		if( 'drop' == animate ) {
 			var animation = google.maps.Animation.DROP;
 		} else if( 'bounce' == animate ) {
@@ -192,7 +194,16 @@
 					google.maps.event.removeListener( listener );
 				});
 			}
-
+			var cluster_image = {
+				imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+			};
+			
+			if( cluster_attr == '' ) {
+				cluster_object = cluster_image;	
+			} else {
+                cluster_object = Object.assign( {}, cluster_image, cluster_attr );
+			}
+			
 			var cluster_listener = google.maps.event.addListener( map, "idle", function () {
 
 				if( 0 < marker_cluster.length && m_cluster ) {
@@ -200,11 +211,10 @@
 					var markerCluster = new MarkerClusterer(
 						map,
 						marker_cluster,
-						{
-							imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-						}
+						cluster_object
 					);
 				}
+				
 				google.maps.event.removeListener( cluster_listener );
 			});
 

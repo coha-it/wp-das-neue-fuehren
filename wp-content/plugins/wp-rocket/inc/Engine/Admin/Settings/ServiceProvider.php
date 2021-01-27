@@ -1,7 +1,7 @@
 <?php
 namespace WP_Rocket\Engine\Admin\Settings;
 
-use League\Container\ServiceProvider\AbstractServiceProvider;
+use WP_Rocket\Engine\Container\ServiceProvider\AbstractServiceProvider;
 
 /**
  * Service provider for the WP Rocket settings.
@@ -42,7 +42,8 @@ class ServiceProvider extends AbstractServiceProvider {
 			->withArgument( $this->getContainer()->get( 'settings' ) )
 			->withArgument( $this->getContainer()->get( 'settings_render' ) )
 			->withArgument( $this->getContainer()->get( 'beacon' ) )
-			->withArgument( $this->getContainer()->get( 'db_optimization' ) );
+			->withArgument( $this->getContainer()->get( 'db_optimization' ) )
+			->withArgument( $this->getContainer()->get( 'user_client' ) );
 		$this->getContainer()->share( 'settings_page_subscriber', 'WP_Rocket\Engine\Admin\Settings\Subscriber' )
 			->withArgument( $this->getContainer()->get( 'settings_page' ) );
 	}

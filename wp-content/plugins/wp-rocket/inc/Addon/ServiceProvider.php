@@ -1,7 +1,7 @@
 <?php
 namespace WP_Rocket\Addon;
 
-use League\Container\ServiceProvider\AbstractServiceProvider;
+use WP_Rocket\Engine\Container\ServiceProvider\AbstractServiceProvider;
 use WP_Rocket\Admin\Options_Data;
 
 /**
@@ -26,8 +26,6 @@ class ServiceProvider extends AbstractServiceProvider {
 		'facebook_tracking',
 		'google_tracking',
 		'sucuri_subscriber',
-		'varnish',
-		'varnish_subscriber',
 	];
 
 	/**
@@ -57,26 +55,8 @@ class ServiceProvider extends AbstractServiceProvider {
 		$this->getContainer()->share( 'sucuri_subscriber', 'WP_Rocket\Subscriber\Third_Party\Plugins\Security\Sucuri_Subscriber' )
 			->withArgument( $options );
 
-		// Varnish Addon.
-		$this->addon_varnish( $options );
-
 		// Cloudflare Addon.
 		$this->addon_cloudflare( $options );
-	}
-
-	/**
-	 * Adds Varnish Addon into the Container.
-	 *
-	 * @since 3.5
-	 *
-	 * @param Options_Data $options Instance of options.
-	 */
-	protected function addon_varnish( Options_Data $options ) {
-		$this->getContainer()->add( 'varnish', 'WP_Rocket\Addon\Varnish\Varnish' )
-			->withArgument( $options );
-		$this->getContainer()->share( 'varnish_subscriber', 'WP_Rocket\Addon\Varnish\Subscriber' )
-			->withArgument( $this->getContainer()->get( 'varnish' ) )
-			->withArgument( $options );
 	}
 
 	/**

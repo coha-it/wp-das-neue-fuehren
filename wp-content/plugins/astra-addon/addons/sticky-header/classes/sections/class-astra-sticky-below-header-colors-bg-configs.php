@@ -37,21 +37,32 @@ if ( ! class_exists( 'Astra_Sticky_Below_Header_Colors_Bg_Configs' ) ) {
 		public function register_configuration( $configurations, $wp_customize ) {
 
 			$defaults = Astra_Theme_Options::defaults();
-			$_config  = array(
+
+			$header_below_section        = 'section-sticky-header';
+			$header_below_color_priority = 115;
+			$context                     = Astra_Addon_Builder_Helper::$general_tab_config;
+
+			if ( Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) {
+
+				$header_below_section        = 'section-below-header-builder';
+				$header_below_color_priority = 90;
+				$context                     = Astra_Addon_Builder_Helper::$design_tab;
+			}
+
+			$_config = array(
 
 				array(
-					'name'       => 'sticky-below-header-bg-color-responsive',
+					'name'       => ASTRA_THEME_SETTINGS . '[sticky-below-header-bg-color-responsive]',
 					'default'    => $defaults['sticky-below-header-bg-color-responsive'],
-					'type'       => 'sub-control',
-					'priority'   => 6,
-					'parent'     => ASTRA_THEME_SETTINGS . '[sticky-header-below-header-colors]',
-					'section'    => 'section-sticky-header',
+					'type'       => 'control',
+					'priority'   => $header_below_color_priority,
+					'section'    => $header_below_section,
 					'transport'  => 'postMessage',
-					'required'   => array( ASTRA_THEME_SETTINGS . '[below-header-layout]', '!=', 'disabled' ),
 					'control'    => 'ast-responsive-color',
 					'title'      => __( 'Background Color', 'astra-addon' ),
 					'responsive' => true,
 					'rgba'       => true,
+					'context'    => $context,
 				),
 
 				/**
@@ -70,12 +81,18 @@ if ( ! class_exists( 'Astra_Sticky_Below_Header_Colors_Bg_Configs' ) ) {
 					'title'      => __( 'Link / Text Color', 'astra-addon' ),
 					'responsive' => true,
 					'rgba'       => true,
-					'required'   => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-2]', '==', 'menu' ),
+					'context'    => array(
+						'relation' => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-1]',
+							'operator' => '==',
+							'value'    => 'menu',
 						),
-						'operator'   => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-2]',
+							'operator' => '==',
+							'value'    => 'menu',
+						),
 					),
 				),
 				/**
@@ -94,13 +111,33 @@ if ( ! class_exists( 'Astra_Sticky_Below_Header_Colors_Bg_Configs' ) ) {
 					'title'      => __( 'Background Color', 'astra-addon' ),
 					'responsive' => true,
 					'rgba'       => true,
-					'required'   => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-2]', '==', 'menu' ),
+					'context'    => array(
+						'relation' => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-1]',
+							'operator' => '==',
+							'value'    => 'menu',
 						),
-						'operator'   => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-2]',
+							'operator' => '==',
+							'value'    => 'menu',
+						),
 					),
+				),
+
+				// Option: Divider.
+				array(
+					'name'     => 'divider-sticky-below-h-menu-colors',
+					'control'  => 'ast-divider',
+					'default'  => '',
+					'type'     => 'sub-control',
+					'parent'   => ASTRA_THEME_SETTINGS . '[sticky-header-below-menus-colors]',
+					'section'  => 'section-sticky-header',
+					'title'    => __( 'Active / Hover', 'astra-addon' ),
+					'tab'      => __( 'Hover', 'astra-addon' ),
+					'priority' => 5,
+					'settings' => array(),
 				),
 
 				/**
@@ -116,15 +153,21 @@ if ( ! class_exists( 'Astra_Sticky_Below_Header_Colors_Bg_Configs' ) ) {
 					'section'    => 'section-sticky-header',
 					'transport'  => 'postMessage',
 					'control'    => 'ast-responsive-color',
-					'title'      => __( 'Link Active / Hover Color', 'astra-addon' ),
+					'title'      => __( 'Link Color', 'astra-addon' ),
 					'responsive' => true,
 					'rgba'       => true,
-					'required'   => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-2]', '==', 'menu' ),
+					'context'    => array(
+						'relation' => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-1]',
+							'operator' => '==',
+							'value'    => 'menu',
 						),
-						'operator'   => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-2]',
+							'operator' => '==',
+							'value'    => 'menu',
+						),
 					),
 				),
 				/**
@@ -140,15 +183,21 @@ if ( ! class_exists( 'Astra_Sticky_Below_Header_Colors_Bg_Configs' ) ) {
 					'section'    => 'section-sticky-header',
 					'transport'  => 'postMessage',
 					'control'    => 'ast-responsive-color',
-					'title'      => __( 'Link Active / Hover Background Color', 'astra-addon' ),
+					'title'      => __( 'Link Background Color', 'astra-addon' ),
 					'responsive' => true,
 					'rgba'       => true,
-					'required'   => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-2]', '==', 'menu' ),
+					'context'    => array(
+						'relation' => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-1]',
+							'operator' => '==',
+							'value'    => 'menu',
 						),
-						'operator'   => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-2]',
+							'operator' => '==',
+							'value'    => 'menu',
+						),
 					),
 				),
 
@@ -168,12 +217,18 @@ if ( ! class_exists( 'Astra_Sticky_Below_Header_Colors_Bg_Configs' ) ) {
 					'title'      => __( 'Link / Text Color', 'astra-addon' ),
 					'responsive' => true,
 					'rgba'       => true,
-					'required'   => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-2]', '==', 'menu' ),
+					'context'    => array(
+						'relation' => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-1]',
+							'operator' => '==',
+							'value'    => 'menu',
 						),
-						'operator'   => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-2]',
+							'operator' => '==',
+							'value'    => 'menu',
+						),
 					),
 				),
 				/**
@@ -192,13 +247,33 @@ if ( ! class_exists( 'Astra_Sticky_Below_Header_Colors_Bg_Configs' ) ) {
 					'title'      => __( 'Background Color', 'astra-addon' ),
 					'responsive' => true,
 					'rgba'       => true,
-					'required'   => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-2]', '==', 'menu' ),
+					'context'    => array(
+						'relation' => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-1]',
+							'operator' => '==',
+							'value'    => 'menu',
 						),
-						'operator'   => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-2]',
+							'operator' => '==',
+							'value'    => 'menu',
+						),
 					),
+				),
+
+				// Option: Divider.
+				array(
+					'name'     => 'divider-sticky-below-submenu-h-menu-colors',
+					'control'  => 'ast-divider',
+					'default'  => '',
+					'type'     => 'sub-control',
+					'parent'   => ASTRA_THEME_SETTINGS . '[sticky-header-below-submenus-colors]',
+					'section'  => 'section-sticky-header',
+					'title'    => __( 'Active / Hover', 'astra-addon' ),
+					'tab'      => __( 'Hover', 'astra-addon' ),
+					'priority' => 5,
+					'settings' => array(),
 				),
 
 				/**
@@ -214,15 +289,21 @@ if ( ! class_exists( 'Astra_Sticky_Below_Header_Colors_Bg_Configs' ) ) {
 					'section'    => 'section-sticky-header',
 					'transport'  => 'postMessage',
 					'control'    => 'ast-responsive-color',
-					'title'      => __( 'Link Active / Hover Color', 'astra-addon' ),
+					'title'      => __( 'Link Color', 'astra-addon' ),
 					'responsive' => true,
 					'rgba'       => true,
-					'required'   => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-2]', '==', 'menu' ),
+					'context'    => array(
+						'relation' => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-1]',
+							'operator' => '==',
+							'value'    => 'menu',
 						),
-						'operator'   => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-2]',
+							'operator' => '==',
+							'value'    => 'menu',
+						),
 					),
 				),
 
@@ -239,15 +320,21 @@ if ( ! class_exists( 'Astra_Sticky_Below_Header_Colors_Bg_Configs' ) ) {
 					'section'    => 'section-sticky-header',
 					'transport'  => 'postMessage',
 					'control'    => 'ast-responsive-color',
-					'title'      => __( 'Link Active / Hover Background Color', 'astra-addon' ),
+					'title'      => __( 'Link Background Color', 'astra-addon' ),
 					'responsive' => true,
 					'rgba'       => true,
-					'required'   => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[below-header-section-2]', '==', 'menu' ),
+					'context'    => array(
+						'relation' => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-1]',
+							'operator' => '==',
+							'value'    => 'menu',
 						),
-						'operator'   => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-2]',
+							'operator' => '==',
+							'value'    => 'menu',
+						),
 					),
 				),
 

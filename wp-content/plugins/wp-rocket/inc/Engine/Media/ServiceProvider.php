@@ -1,7 +1,7 @@
 <?php
 namespace WP_Rocket\Engine\Media;
 
-use League\Container\ServiceProvider\AbstractServiceProvider;
+use WP_Rocket\Engine\Container\ServiceProvider\AbstractServiceProvider;
 
 /**
  * Service provider for Media module
@@ -24,6 +24,12 @@ class ServiceProvider extends AbstractServiceProvider {
 		'lazyload_image',
 		'lazyload_iframe',
 		'lazyload_subscriber',
+		'lazyload_admin_subscriber',
+		'embeds_subscriber',
+		'emojis_subscriber',
+		'image_dimensions',
+		'image_dimensions_subscriber',
+		'image_dimensions_admin_subscriber',
 	];
 
 	/**
@@ -34,13 +40,26 @@ class ServiceProvider extends AbstractServiceProvider {
 	 * @return void
 	 */
 	public function register() {
-		$this->getContainer()->add( 'lazyload_assets', 'RocketLazyload\Assets' );
-		$this->getContainer()->add( 'lazyload_image', 'RocketLazyload\Image' );
-		$this->getContainer()->add( 'lazyload_iframe', 'RocketLazyload\Iframe' );
-		$this->getContainer()->share( 'lazyload_subscriber', 'WP_Rocket\Engine\Media\LazyloadSubscriber' )
-			->withArgument( $this->getContainer()->get( 'options' ) )
+		$options = $this->getContainer()->get( 'options' );
+
+		$this->getContainer()->add( 'lazyload_assets', 'WP_Rocket\Dependencies\RocketLazyload\Assets' );
+		$this->getContainer()->add( 'lazyload_image', 'WP_Rocket\Dependencies\RocketLazyload\Image' );
+		$this->getContainer()->add( 'lazyload_iframe', 'WP_Rocket\Dependencies\RocketLazyload\Iframe' );
+		$this->getContainer()->share( 'lazyload_subscriber', 'WP_Rocket\Engine\Media\Lazyload\Subscriber' )
+			->withArgument( $options )
 			->withArgument( $this->getContainer()->get( 'lazyload_assets' ) )
 			->withArgument( $this->getContainer()->get( 'lazyload_image' ) )
 			->withArgument( $this->getContainer()->get( 'lazyload_iframe' ) );
+		$this->getContainer()->share( 'lazyload_admin_subscriber', 'WP_Rocket\Engine\Media\Lazyload\AdminSubscriber' );
+		$this->getContainer()->share( 'embeds_subscriber', 'WP_Rocket\Engine\Media\Embeds\EmbedsSubscriber' )
+			->withArgument( $options );
+		$this->getContainer()->share( 'emojis_subscriber', 'WP_Rocket\Engine\Media\Emojis\EmojisSubscriber' )
+			->withArgument( $options );
+		$this->getContainer()->add( 'image_dimensions', 'WP_Rocket\Engine\Media\ImageDimensions\ImageDimensions' )
+			->withArgument( $options );
+		$this->getContainer()->share( 'image_dimensions_subscriber', 'WP_Rocket\Engine\Media\ImageDimensions\Subscriber' )
+			->withArgument( $this->getContainer()->get( 'image_dimensions' ) );
+		$this->getContainer()->share( 'image_dimensions_admin_subscriber', 'WP_Rocket\Engine\Media\ImageDimensions\AdminSubscriber' )
+			->withArgument( $this->getContainer()->get( 'image_dimensions' ) );
 	}
 }

@@ -194,6 +194,11 @@
 					pause: pause,
 					mousePause: mousepause,
 			});
+		} else {	
+					
+			UAELEffects._animateHeadline( 
+				$( nodeclass ).find( '.uael-slide-main_ul' ), $this
+			);		
 		}
 	}
 
@@ -216,7 +221,7 @@
 		var delay 			= $this.data( 'delay' );
 		var animation		= $this.data( 'animation' );
 		var anim_duration 	= $this.data( 'animduration' );
-		var uaelclass		= 'uael-tooltip-wrap-' + id;
+		var uaelclass		= 'uael-tooltip-wrap-' + id + ' uael-hotspot-tooltip';
 		var zindex			= $this.data( 'zindex' );
 		var autoplay		= $this.data( 'autoplay' );
 		var repeat 			= $this.data( 'repeat' );
@@ -478,6 +483,62 @@
 		}
 
 	}
+
+	/**
+	 * Price Table Tooltip handler Function.
+	 *
+	 */
+	var WidgetUAELPriceTableHandler = function( $scope, $ ) {
+
+		if ( 'undefined' == typeof $scope ) {
+			return;
+		}	
+		
+		var id 				= $scope.data( 'id' );
+		var $this 			= $scope.find( '.uael-price-table-features-list' );
+		var side			= $this.data( 'side' );
+		var trigger			= $this.data( 'hotspottrigger' );
+		var arrow			= $this.data( 'arrow' );
+		var distance		= $this.data( 'distance' );
+		var delay 			= $this.data( 'delay' );
+		var animation		= $this.data( 'animation' );
+		var anim_duration 	= $this.data( 'animduration' );
+		var uaelclass		= 'uael-price-table-wrap-' + id;
+		var zindex			= $this.data( 'zindex' );
+		var length 			= $this.data( 'length' );		
+		var tooltip_maxwidth	= $this.data( 'tooltip-maxwidth' );
+		var tooltip_minwidth	= $this.data( 'tooltip-minwidth' );
+		var responsive = $this.data( 'tooltip-responsive' );
+		var enable_tooltip = $this.data( 'enable-tooltip' );
+
+		uaelclass += ' uael-price-table-tooltip uael-features-tooltip-hide-' + responsive;
+		$this.addClass( 'uael-features-tooltip-hide-' + responsive );
+		
+		// Declare & pass values to Tooltipster js function.
+		function tableTooltipsterCall( selector, triggerValue ) {
+			$( selector ).tooltipster({
+	        	theme: ['tooltipster-noir', 'tooltipster-noir-customized'],
+	        	minWidth: tooltip_minwidth,
+	        	maxWidth: tooltip_maxwidth,
+	        	side : side,
+	        	trigger : triggerValue,
+	        	arrow : arrow,
+	        	distance : distance,
+	        	delay : delay,
+	        	animation : animation,
+	        	zIndex : zindex,
+	        	interactive : true,
+	        	animationDuration : anim_duration,
+	        	uaelclass: uaelclass
+	        });
+		}
+
+		if( 'yes' === enable_tooltip ){
+			// Execute Tooltipster function
+			tableTooltipsterCall( '.uael-price-table-content-' + id, trigger );
+		}
+	}
+
 
 	/**
 	 * Before After Slider handler Function.
@@ -757,27 +818,19 @@
 
 		if ( post_selector.hasClass( 'uael-timeline-infinite-load' ) ) {
 
-			post_selector.infinitescroll(
-				{
-	                navSelector     : '.elementor-element-' + node_id + ' .uael-timeline-pagination',
-	                nextSelector    : '.elementor-element-' + node_id + ' .uael-timeline-pagination a.next',
-	                itemSelector    : '.elementor-element-' + node_id + ' .uael-timeline-field',
-	                prefill         : true,
-	                bufferPx        : 200,
-	                loading         : {
-						msgText         : 'Loading',
-						finishedMsg     : '',
-						img 			: uael_post_loader_script.post_loader,
-						speed           : 10,
-	                }
-	            },
-	            function( elements ) {
-		            elements = $( elements );
-		            window.addEventListener("load", uaelTimelineFunc);
-					window.addEventListener("resize", uaelTimelineFunc);
-					window.addEventListener("scroll", uaelTimelineFunc);
-		        }
-		    );
+			$( window ).scroll( function(){
+				$('.elementor-element-' + node_id + ' .uael-timeline-wrapper').jscroll({
+					loadingHtml: '<img src="' + uael_post_loader_script.post_loader + '" />',
+				    nextSelector: '#uael-timeline-' + node_id + ' a.next',
+				    contentSelector: '.elementor-element-' + node_id + ' .uael-timeline-main',
+				    callback: function() {
+			            window.addEventListener("load", uaelTimelineFunc);
+						window.addEventListener("resize", uaelTimelineFunc);
+						window.addEventListener("scroll", uaelTimelineFunc);
+			        }
+				}); 
+			});
+	
 		}
 	};
 
@@ -827,13 +880,16 @@
 			}			
 		}		
 		
-		if( rbs_switch.is( ':checked' ) ) {
-			rbs_section_1.hide();
-			rbs_section_2.show();
-		} else {
-			rbs_section_1.show();
-			rbs_section_2.hide();
-		}
+		setTimeout( function(){
+			
+			if( rbs_switch.is( ':checked' ) ) {
+				rbs_section_1.hide();
+				rbs_section_2.show();
+			} else {
+				rbs_section_1.show();
+				rbs_section_2.hide();
+			}
+		}, 100);
 
 		rbs_switch.on('click', function(e){
 	        rbs_section_1.toggle();
@@ -1072,7 +1128,8 @@
 		var img_gallery	 		= $scope.find('.uael-image-lightbox-wrap');
 		var lightbox_actions 	= [];
 		var fancybox_node_id 	= 'uael-fancybox-gallery-' + $scope.data( 'id' );
-
+		var lightbox_loop 		= img_gallery.data( 'lightbox-gallery-loop' );
+	
 		if( img_gallery.length > 0 ) {
 			lightbox_actions = JSON.parse( img_gallery.attr('data-lightbox_actions') );
 		}
@@ -1081,6 +1138,7 @@
 			buttons: lightbox_actions,
 			animationEffect: "fade",
 			baseClass: fancybox_node_id,
+			loop: lightbox_loop,
 		});
 
 		if ( $justified_selector.length > 0 ) {
@@ -1290,15 +1348,14 @@
 		_play: function( selector ) {
 
 			var iframe 		= $( "<iframe/>" );
-	        var vurl 		= selector.data( 'src' );
-
+			var vurl 		= selector.data( 'src' );
+		
 	        if ( 0 == selector.find( 'iframe' ).length ) {
 
 				iframe.attr( 'src', vurl );
 				iframe.attr( 'frameborder', '0' );
 				iframe.attr( 'allowfullscreen', '1' );
 				iframe.attr( 'allow', 'autoplay;encrypted-media;' );
-
 				selector.html( iframe );
 	        }
 
@@ -1306,6 +1363,91 @@
 		}
 	}
 
+	UAELEffects = {
+
+		_animateHeadline : function( $headlines, $widget_data ) {
+
+			$headlines.each( function() {
+
+        		var headline = $( this );
+        		var speed    = $widget_data.data( 'speed' );
+      
+      			setTimeout( function()
+	    			{ 
+	    				UAELEffects._hideWord ( headline.find( '.uael-active-heading' ), $widget_data ); 
+	      			}, 
+
+      			speed );
+	    	});
+		},
+
+		_hideWord : function ( $word, $widget_data ) {
+
+			var nextWord = UAELEffects._takeNext( $word );
+			var animation = $widget_data.data( 'animation' );
+			var speed = $widget_data.data( 'speed' );
+
+			if( 'clip' == animation ){
+
+				var clip_speed = $widget_data.data( 'clip_speed' );
+				var pause_time = $widget_data.data( 'pause_time' );
+
+				$word.parents( '.uael-slide-main_ul' ).animate(
+					{ width : '0px' }, 
+					clip_speed, function(){	
+						setTimeout( function(){
+
+							UAELEffects._switchWord( $word, nextWord );
+							UAELEffects._showWord( nextWord, $widget_data );
+
+						}, pause_time);
+					}
+				 );
+			} else {
+
+				UAELEffects._switchWord( $word, nextWord );
+
+				setTimeout( function()
+				   	{ 
+						UAELEffects._hideWord( nextWord, $widget_data ) 
+				   	}, 
+				speed );				
+			}		
+		},
+
+		_takeNext: function( $word ) {
+			return ( !$word.is( ':last-child' ) ) ? $word.next() : $word.parent().children().eq( 0 );
+		},
+
+		_switchWord: function( $oldWord, $newWord ) {
+
+			$oldWord.removeClass( 'uael-active-heading' ).addClass( 'uael-inactive-heading' );
+			$newWord.removeClass( 'uael-inactive-heading' ).addClass( 'uael-active-heading' );
+		},
+
+		_showWord: function( $word, $widget_data ) {
+
+			var animation = $widget_data.data( 'animation' );
+
+			if( 'clip' == animation ) {
+
+				var clip_speed = $widget_data.data( 'clip_speed' );
+				var pause_time = $widget_data.data( 'pause_time' );
+
+				$word.parents( '.uael-slide-main_ul' ).animate( 
+					{ 'width' : $word.width() + 3 }, 
+					clip_speed, 
+					function(){ 
+						setTimeout( function()
+							{ 
+								UAELEffects._hideWord( $word, $widget_data ) 
+							}, 
+						pause_time ); 
+					}
+				);
+			}
+		}
+	}
 
 	/*
 	 * Video handler Function.
@@ -1910,6 +2052,8 @@
 		elementorFrontend.hooks.addAction( 'frontend/element_ready/uael-faq.default', WidgetUAELFAQHandler );
 
 		elementorFrontend.hooks.addAction( 'frontend/element_ready/uael-ff-styler.default', WidgetUAELFFStylerHandler );
+
+		elementorFrontend.hooks.addAction( 'frontend/element_ready/uael-price-table.default', WidgetUAELPriceTableHandler );
 
 		if( isElEditMode ) {
 

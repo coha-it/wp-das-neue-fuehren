@@ -114,7 +114,7 @@ class Hotspot extends Common_Widget {
 	 * @since 1.9.0
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_image_content_controls();
 		$this->register_hotspot_content_controls();
@@ -456,7 +456,7 @@ class Hotspot extends Common_Widget {
 							),
 						),
 					),
-					'fields'      => array_values( $repeater->get_controls() ),
+					'fields'      => $repeater->get_controls(),
 					'title_field' => '{{{ text }}}',
 					'condition'   => array(
 						'image[url]!' => '',
@@ -979,7 +979,7 @@ class Hotspot extends Common_Widget {
 						'hotspot_tooltip_data' => 'yes',
 					),
 					'selectors'          => array(
-						'.tooltipster-base.tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .tooltipster-content' => 'max-height: {{SIZE}}px;',
+						'.tooltipster-base.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-hotspot-tooltip .tooltipster-content' => 'max-height: {{SIZE}}px;',
 					),
 					'frontend_available' => true,
 				)
@@ -1344,7 +1344,7 @@ class Hotspot extends Common_Widget {
 						),
 					),
 					'selectors' => array(
-						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .tooltipster-content' => 'text-align: {{VALUE}};',
+						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-hotspot-tooltip .tooltipster-content' => 'text-align: {{VALUE}};',
 					),
 				)
 			);
@@ -1354,7 +1354,7 @@ class Hotspot extends Common_Widget {
 				array(
 					'name'     => 'uael_tooltip_typography',
 					'label'    => __( 'Typography', 'uael' ),
-					'selector' => '.tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .tooltipster-content, .tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .uael-tour li a',
+					'selector' => '.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-hotspot-tooltip .tooltipster-content, .tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .uael-tour li a',
 				)
 			);
 
@@ -1365,7 +1365,7 @@ class Hotspot extends Common_Widget {
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '',
 					'selectors' => array(
-						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-tooltipster-active .tooltipster-content, .tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .uael-tour li a, .tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .uael-tour-active .uael-hotspot-end a' => 'color: {{VALUE}};',
+						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-tooltipster-active.uael-hotspot-tooltip .tooltipster-content, .tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .uael-tour li a, .tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .uael-tour-active .uael-hotspot-end a' => 'color: {{VALUE}};',
 					),
 				)
 			);
@@ -1377,11 +1377,11 @@ class Hotspot extends Common_Widget {
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '',
 					'selectors' => array(
-						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-tooltipster-active .tooltipster-box' => 'background-color: {{VALUE}};',
-						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.tooltipster-noir.tooltipster-bottom .tooltipster-arrow-background' => 'border-bottom-color: {{VALUE}};',
-						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.tooltipster-noir.tooltipster-left .tooltipster-arrow-background' => 'border-left-color: {{VALUE}};',
-						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.tooltipster-noir.tooltipster-right .tooltipster-arrow-background' => 'border-right-color: {{VALUE}};',
-						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.tooltipster-noir.tooltipster-top .tooltipster-arrow-background' => 'border-top-color: {{VALUE}};',
+						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-tooltipster-active.uael-hotspot-tooltip .tooltipster-box' => 'background-color: {{VALUE}};',
+						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-hotspot-tooltip.tooltipster-noir.tooltipster-bottom .tooltipster-arrow-background' => 'border-bottom-color: {{VALUE}};',
+						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-hotspot-tooltip.tooltipster-noir.tooltipster-left .tooltipster-arrow-background' => 'border-left-color: {{VALUE}};',
+						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-hotspot-tooltip.tooltipster-noir.tooltipster-right .tooltipster-arrow-background' => 'border-right-color: {{VALUE}};',
+						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-hotspot-tooltip.tooltipster-noir.tooltipster-top .tooltipster-arrow-background' => 'border-top-color: {{VALUE}};',
 					),
 				)
 			);
@@ -1400,7 +1400,7 @@ class Hotspot extends Common_Widget {
 						'unit'   => 'px',
 					),
 					'selectors'  => array(
-						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .tooltipster-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-hotspot-tooltip .tooltipster-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					),
 				)
 			);
@@ -1419,7 +1419,7 @@ class Hotspot extends Common_Widget {
 						'unit'   => 'px',
 					),
 					'selectors'  => array(
-						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .tooltipster-box' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+						'.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-hotspot-tooltip .tooltipster-box' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					),
 				)
 			);
@@ -1428,7 +1428,7 @@ class Hotspot extends Common_Widget {
 				Group_Control_Box_Shadow::get_type(),
 				array(
 					'name'      => 'uael_tooltip_shadow',
-					'selector'  => '.tooltipster-sidetip.uael-tooltip-wrap-{{ID}} .tooltipster-box',
+					'selector'  => '.tooltipster-sidetip.uael-tooltip-wrap-{{ID}}.uael-hotspot-tooltip .tooltipster-box',
 					'separator' => '',
 				)
 			);
@@ -1717,7 +1717,7 @@ class Hotspot extends Common_Widget {
 		$arrow            = $settings['arrow'];
 		$animation        = $settings['tooltip_anim'];
 		$zindex           = ( 'yes' === $settings['hotspot_tooltip_adv'] ) ? $settings['zindex'] : 99;
-		$interval_val     = $settings['tour_interval']['size'];
+		$interval_val     = empty( $settings['tour_interval']['size'] ) ? '' : $settings['tour_interval']['size'];
 		$delay            = 300;
 		$anim_duration    = ( 'yes' === $settings['hotspot_tooltip_adv'] ) ? $settings['anim_duration']['size'] : 350;
 		$distance         = ( '' !== $settings['distance']['size'] ) ? $settings['distance']['size'] : 6;
@@ -2190,7 +2190,7 @@ class Hotspot extends Common_Widget {
 	 * @since 1.9.0
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 }

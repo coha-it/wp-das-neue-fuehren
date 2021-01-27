@@ -222,7 +222,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 				<# if ( '' === type || 'site' === type ) { #>
 					<div class="favorite-action-wrap" data-favorite="{{favorite_class}}" title="{{favorite_title}}">
-						<i class="icon-heart"></i>
+						<i class="ast-icon-heart"></i>
 					</div>
 				<# } #>
 			</div>
@@ -311,7 +311,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</div>
 						<# if ( '' === type || 'site' === type ) { #>
 							<div class="favorite-action-wrap" data-favorite="{{favorite_class}}" title="{{favorite_title}}">
-								<i class="icon-heart"></i>
+								<i class="ast-icon-heart"></i>
 							</div>
 						<# } #>
 					</div>
@@ -372,7 +372,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</div>
 						<# if ( '' === type || 'site' === type ) { #>
 							<div class="favorite-action-wrap" data-favorite="{{favorite_class}}" title="{{favorite_title}}">
-								<i class="icon-heart"></i>
+								<i class="ast-icon-heart"></i>
 							</div>
 						<# } #>
 					</div>
@@ -621,9 +621,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 ?>
 <script type="text/template" id="tmpl-astra-sites-request-failed">
-	<p><?php esc_html_e( 'The import process interrupted!', 'astra-sites' ); ?></p>
 	<p><?php esc_html_e( 'Your website is facing a temporary issue connecting to the template server.', 'astra-sites' ); ?></p>
-	<p><?php esc_html_e( 'Please try again after some time.', 'astra-sites' ); ?></p>
+	<p>
+		<?php
+		/* translators: %s doc link. */
+		printf( __( 'Read an article <a href="%s" target="_blank">here</a> to resolve the issue.', 'astra-sites' ), 'https://wpastra.com/docs/import-process-interrupted/' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		?>
+	</p>
 </script>
 
 <?php

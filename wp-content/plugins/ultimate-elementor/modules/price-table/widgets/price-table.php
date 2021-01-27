@@ -80,18 +80,33 @@ class Price_Table extends Common_Widget {
 	}
 
 	/**
+	 * Retrieve the list of scripts the Price Table widget depended on.
+	 *
+	 * Used to set scripts dependencies required to run the widget.
+	 *
+	 * @since 1.27.1
+	 * @access public
+	 *
+	 * @return array Widget scripts dependencies.
+	 */
+	public function get_script_depends() {
+		return array( 'uael-frontend-script', 'uael-hotspot' );
+	}
+
+	/**
 	 * Register Price Table controls.
 	 *
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_general_controls();
 		$this->register_heading_controls();
 		$this->register_pricing_controls();
 		$this->register_sub_heading_controls();
 		$this->register_content_controls();
+		$this->register_tooltip_content_controls();
 		$this->register_cta_controls();
 		$this->register_separator_controls();
 		$this->register_ribbon_controls();
@@ -100,6 +115,7 @@ class Price_Table extends Common_Widget {
 		$this->register_pricing_style_controls();
 		$this->register_sub_heading_style_controls();
 		$this->register_content_style_controls();
+		$this->register_tooltip_style_controls();
 		$this->register_cta_style_controls();
 		$this->register_separator_style_controls();
 		$this->register_ribbon_style_controls();
@@ -128,9 +144,10 @@ class Price_Table extends Common_Widget {
 				'label_block' => false,
 				'default'     => '1',
 				'options'     => array(
-					'1' => 'Normal',
-					'2' => 'Features at Bottom',
-					'3' => 'Circular Background for Price',
+					'1' => __( 'Normal', 'uael' ),
+					'2' => __( 'Features at Bottom', 'uael' ),
+					'3' => __( 'Circular Background for Price', 'uael' ),
+					'4' => __( 'Pricing Above Call To Action', 'uael' ),
 				),
 			)
 		);
@@ -142,10 +159,10 @@ class Price_Table extends Common_Widget {
 				'type'         => Controls_Manager::SELECT,
 				'default'      => '',
 				'options'      => array(
-					''                => 'None',
-					'float'           => 'Float',
-					'sink'            => 'Sink',
-					'wobble-vertical' => 'Wobble Vertical',
+					''                => __( 'None', 'uael' ),
+					'float'           => __( 'Float', 'uael' ),
+					'sink'            => __( 'Sink', 'uael' ),
+					'wobble-vertical' => __( 'Wobble Vertical', 'uael' ),
 				),
 				'prefix_class' => 'elementor-animation-',
 			)
@@ -169,6 +186,14 @@ class Price_Table extends Common_Widget {
 			)
 		);
 
+		$this->add_control(
+			'heading_icon',
+			array(
+				'label'       => __( 'Icon', 'uael' ),
+				'type'        => Controls_Manager::ICONS,
+				'render_type' => 'template',
+			)
+		);
 		$this->add_control(
 			'heading',
 			array(
@@ -195,6 +220,7 @@ class Price_Table extends Common_Widget {
 				),
 			)
 		);
+
 		$this->end_controls_section();
 	}
 
@@ -372,8 +398,8 @@ class Price_Table extends Common_Widget {
 				'type'        => Controls_Manager::SELECT,
 				'label_block' => false,
 				'options'     => array(
-					'below'  => 'Below',
-					'beside' => 'Beside',
+					'below'  => __( 'Below', 'uael' ),
+					'beside' => __( 'Beside', 'uael' ),
 				),
 				'default'     => 'below',
 				'condition'   => array(
@@ -445,6 +471,18 @@ class Price_Table extends Common_Widget {
 				'label'   => __( 'Text', 'uael' ),
 				'type'    => Controls_Manager::TEXT,
 				'default' => __( 'Feature', 'uael' ),
+				'dynamic' => array(
+					'active' => true,
+				),
+			)
+		);
+
+		$repeater->add_control(
+			'tooltip_content',
+			array(
+				'label'   => __( 'Tooltip Content', 'uael' ),
+				'type'    => Controls_Manager::WYSIWYG,
+				'default' => __( 'This is a tooltip', 'uael' ),
 				'dynamic' => array(
 					'active' => true,
 				),
@@ -552,7 +590,7 @@ class Price_Table extends Common_Widget {
 			'features_list',
 			array(
 				'type'        => Controls_Manager::REPEATER,
-				'fields'      => array_values( $repeater->get_controls() ),
+				'fields'      => $repeater->get_controls(),
 				'default'     => array(
 					array(
 						'item_text'     => __( 'List of Features', 'uael' ),
@@ -579,6 +617,247 @@ class Price_Table extends Common_Widget {
 				'title_field' => '{{{ item_text }}}',
 			)
 		);
+
+		$this->end_controls_section();
+	}
+
+	/**
+	 * Register Hotspot Tooltip Controls.
+	 *
+	 * @since 1.27.1
+	 * @access protected
+	 */
+	protected function register_tooltip_content_controls() {
+		$this->start_controls_section(
+			'section_tooltip',
+			array(
+				'label' => __( 'Tooltip', 'uael' ),
+
+			)
+		);
+
+		$this->add_control(
+			'features_tooltip_data',
+			array(
+				'label'        => __( 'Enable Tooltip', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'default'      => 'no',
+				'label_on'     => __( 'Yes', 'uael' ),
+				'label_off'    => __( 'No', 'uael' ),
+				'return_value' => 'yes',
+			)
+		);
+
+			$this->add_control(
+				'position',
+				array(
+					'label'              => __( 'Position', 'uael' ),
+					'type'               => Controls_Manager::SELECT,
+					'default'            => 'top',
+					'options'            => array(
+						'top'    => __( 'Top', 'uael' ),
+						'bottom' => __( 'Bottom', 'uael' ),
+						'left'   => __( 'Left', 'uael' ),
+						'right'  => __( 'Right', 'uael' ),
+					),
+					'condition'          => array(
+						'features_tooltip_data' => 'yes',
+					),
+					'frontend_available' => true,
+				)
+			);
+
+			$this->add_control(
+				'trigger',
+				array(
+					'label'              => __( 'Display on', 'uael' ),
+					'type'               => Controls_Manager::SELECT,
+					'default'            => 'hover',
+					'options'            => array(
+						'hover' => __( 'Hover', 'uael' ),
+						'click' => __( 'Click', 'uael' ),
+					),
+					'condition'          => array(
+						'features_tooltip_data' => 'yes',
+					),
+					'frontend_available' => true,
+				)
+			);
+
+			$this->add_control(
+				'arrow',
+				array(
+					'label'     => __( 'Arrow', 'uael' ),
+					'type'      => Controls_Manager::SELECT,
+					'default'   => 'true',
+					'options'   => array(
+						'true'  => __( 'Show', 'uael' ),
+						'false' => __( 'Hide', 'uael' ),
+					),
+					'condition' => array(
+						'features_tooltip_data' => 'yes',
+					),
+				)
+			);
+
+			$this->add_control(
+				'distance',
+				array(
+					'label'       => __( 'Distance', 'uael' ),
+					'description' => __( 'The distance between the marker and the tooltip.', 'uael' ),
+					'type'        => Controls_Manager::SLIDER,
+					'default'     => array(
+						'size' => 6,
+						'unit' => 'px',
+					),
+					'range'       => array(
+						'px' => array(
+							'min' => 0,
+							'max' => 100,
+						),
+					),
+					'condition'   => array(
+						'features_tooltip_data' => 'yes',
+					),
+				)
+			);
+
+			$this->add_control(
+				'tooltip_anim',
+				array(
+					'label'     => __( 'Animation Type', 'uael' ),
+					'type'      => Controls_Manager::SELECT,
+					'default'   => 'fade',
+					'options'   => array(
+						'fade'  => __( 'Default', 'uael' ),
+						'grow'  => __( 'Grow', 'uael' ),
+						'swing' => __( 'Swing', 'uael' ),
+						'slide' => __( 'Slide', 'uael' ),
+						'fall'  => __( 'Fall', 'uael' ),
+					),
+					'condition' => array(
+						'features_tooltip_data' => 'yes',
+					),
+				)
+			);
+
+			$this->add_control(
+				'responsive_support',
+				array(
+					'label'       => __( 'Hide Tooltip On', 'uael' ),
+					'description' => __( 'Choose on what breakpoint the tooltip will be hidden.', 'uael' ),
+					'type'        => Controls_Manager::SELECT,
+					'default'     => 'none',
+					'options'     => array(
+						'none'   => __( 'None', 'uael' ),
+						'tablet' => __( 'Tablet & Mobile', 'uael' ),
+						'mobile' => __( 'Mobile', 'uael' ),
+					),
+					'condition'   => array(
+						'features_tooltip_data' => 'yes',
+					),
+					'render_type' => 'template',
+				)
+			);
+
+			$this->add_control(
+				'hotspot_tooltip_adv',
+				array(
+					'label'        => __( 'Advanced Settings', 'uael' ),
+					'type'         => Controls_Manager::SWITCHER,
+					'default'      => 'no',
+					'label_on'     => __( 'Yes', 'uael' ),
+					'label_off'    => __( 'No', 'uael' ),
+					'return_value' => 'yes',
+					'condition'    => array(
+						'features_tooltip_data' => 'yes',
+					),
+				)
+			);
+
+			$this->add_control(
+				'anim_duration',
+				array(
+					'label'              => __( 'Animation Duration', 'uael' ),
+					'type'               => Controls_Manager::SLIDER,
+					'range'              => array(
+						'px' => array(
+							'min' => 0,
+							'max' => 1000,
+						),
+					),
+					'default'            => array(
+						'size' => 350,
+						'unit' => 'px',
+					),
+					'condition'          => array(
+						'hotspot_tooltip_adv'   => 'yes',
+						'features_tooltip_data' => 'yes',
+					),
+					'frontend_available' => true,
+				)
+			);
+
+			$this->add_responsive_control(
+				'tooltip_width',
+				array(
+					'label'              => __( 'Width', 'uael' ),
+					'type'               => Controls_Manager::SLIDER,
+					'range'              => array(
+						'px' => array(
+							'min' => 0,
+							'max' => 1000,
+						),
+					),
+					'condition'          => array(
+						'hotspot_tooltip_adv'   => 'yes',
+						'features_tooltip_data' => 'yes',
+					),
+					'selectors'          => array(
+						'.tooltipster-base.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip .tooltipster-content' => 'width: {{SIZE}}px;',
+					),
+					'frontend_available' => true,
+				)
+			);
+
+			$this->add_responsive_control(
+				'tooltip_height',
+				array(
+					'label'              => __( 'Max Height', 'uael' ),
+					'description'        => __( 'Note: If Tooltip Content is large, a vertical scroll will appear. Set Max Height to manage the content window height.', 'uael' ),
+					'type'               => Controls_Manager::SLIDER,
+					'range'              => array(
+						'px' => array(
+							'min' => 0,
+							'max' => 1000,
+						),
+					),
+					'condition'          => array(
+						'hotspot_tooltip_adv'   => 'yes',
+						'features_tooltip_data' => 'yes',
+					),
+					'selectors'          => array(
+						'.tooltipster-base.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip .tooltipster-content' => 'max-height: {{SIZE}}px;',
+					),
+					'frontend_available' => true,
+				)
+			);
+
+			$this->add_control(
+				'zindex',
+				array(
+					'label'       => __( 'Z-Index', 'uael' ),
+					'description' => __( 'Note: Increase the z-index value if you are unable to see the tooltip. For example - 99, 999, 9999 ', 'uael' ),
+					'type'        => Controls_Manager::NUMBER,
+					'default'     => '99',
+					'min'         => -9999999,
+					'step'        => 1,
+					'condition'   => array(
+						'hotspot_tooltip_adv'   => 'yes',
+						'features_tooltip_data' => 'yes',
+					),
+				)
+			);
 
 		$this->end_controls_section();
 	}
@@ -877,10 +1156,155 @@ class Price_Table extends Common_Widget {
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%', 'em' ),
 				'selectors'  => array(
-					'{{WRAPPER}} .uael-pricing-style-3 .uael-pricing-heading-wrap, {{WRAPPER}} .uael-pricing-style-2 .uael-price-table-header, {{WRAPPER}} .uael-pricing-style-1 .uael-price-table-header' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} .uael-pricing-style-3 .uael-pricing-heading-wrap, {{WRAPPER}} .uael-pricing-style-2 .uael-price-table-header, {{WRAPPER}} .uael-pricing-style-1 .uael-price-table-header, {{WRAPPER}} .uael-pricing-style-4 .uael-price-table-header' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 			)
 		);
+		$this->add_control(
+			'heading_icon_style',
+			array(
+				'label'     => __( 'Icon', 'uael' ),
+				'type'      => Controls_Manager::HEADING,
+				'separator' => 'before',
+				'condition' => array(
+					'heading_icon[value]!' => '',
+				),
+			)
+		);
+		$this->add_control(
+			'heading_icon_size',
+			array(
+				'label'     => __( 'Size (px)', 'uael' ),
+				'type'      => Controls_Manager::SLIDER,
+				'default'   => array(
+					'size' => 40,
+				),
+				'range'     => array(
+					'px' => array(
+						'max' => 500,
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .uael-price-heading-icon i,
+					{{WRAPPER}} .uael-price-heading-icon svg' => 'font-size: {{SIZE}}px; width: {{SIZE}}px; height: {{SIZE}}px; line-height: {{SIZE}}px;',
+				),
+				'condition' => array(
+					'heading_icon[value]!' => '',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'heading_icon_padding',
+			array(
+				'label'      => __( 'Padding', 'uael' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', 'em', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-price-heading-icon' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'condition'  => array(
+					'heading_icon[value]!' => '',
+				),
+			)
+		);
+		$this->start_controls_tabs( 'icon_style' );
+
+			$this->start_controls_tab(
+				'heading_icon_normal',
+				array(
+					'label'     => __( 'Normal', 'uael' ),
+					'condition' => array(
+						'heading_icon[value]!' => '',
+					),
+				)
+			);
+				$this->add_control(
+					'heading_icon_color_normal',
+					array(
+						'label'     => __( 'Color', 'uael' ),
+						'type'      => Controls_Manager::COLOR,
+						'scheme'    => array(
+							'type'  => Scheme_Color::get_type(),
+							'value' => Scheme_Color::COLOR_3,
+						),
+						'default'   => '',
+						'selectors' => array(
+							'{{WRAPPER}} .uael-price-heading-icon i' => 'color: {{VALUE}};',
+							'{{WRAPPER}} .uael-price-heading-icon svg' => 'fill: {{VALUE}};',
+						),
+						'condition' => array(
+							'heading_icon[value]!' => '',
+						),
+					)
+				);
+
+				$this->add_control(
+					'heading_icon_background_color_normal',
+					array(
+						'label'     => __( 'Background Color', 'uael' ),
+						'type'      => Controls_Manager::COLOR,
+						'default'   => '',
+						'selectors' => array(
+							'{{WRAPPER}} .uael-price-heading-icon' => 'background: {{VALUE}};',
+						),
+						'condition' => array(
+							'heading_icon[value]!' => '',
+						),
+					)
+				);
+
+			$this->end_controls_tab();
+
+			$this->start_controls_tab(
+				'heading_icon_hover',
+				array(
+					'label'     => __( 'Hover', 'uael' ),
+					'condition' => array(
+						'heading_icon[value]!' => '',
+					),
+				)
+			);
+
+				$this->add_control(
+					'heading_icon_color_hover',
+					array(
+						'label'     => __( 'Color', 'uael' ),
+						'type'      => Controls_Manager::COLOR,
+						'scheme'    => array(
+							'type'  => Scheme_Color::get_type(),
+							'value' => Scheme_Color::COLOR_3,
+						),
+						'default'   => '',
+						'selectors' => array(
+							'{{WRAPPER}} .uael-price-heading-icon i:hover' => 'color: {{VALUE}};',
+							'{{WRAPPER}} .uael-price-heading-icon svg:hover' => 'fill: {{VALUE}};',
+						),
+						'condition' => array(
+							'heading_icon[value]!' => '',
+						),
+					)
+				);
+
+				$this->add_control(
+					'heading_icon_background_color_hover',
+					array(
+						'label'     => __( 'Background Color', 'uael' ),
+						'type'      => Controls_Manager::COLOR,
+						'default'   => '',
+						'selectors' => array(
+							'{{WRAPPER}} .uael-price-heading-icon:hover' => 'background: {{VALUE}};',
+						),
+						'condition' => array(
+							'heading_icon[value]!' => '',
+						),
+					)
+				);
+
+			$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
 		$this->add_control(
 			'heading_style',
 			array(
@@ -1090,7 +1514,7 @@ class Price_Table extends Common_Widget {
 				'label'     => __( 'Background Color', 'uael' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
-					'{{WRAPPER}} .uael-pricing-style-3 .uael-price-table-pricing, {{WRAPPER}} .uael-pricing-style-2 .uael-price-table-price-wrap, {{WRAPPER}} .uael-pricing-style-1 .uael-price-table-price-wrap' => 'background-color: {{VALUE}}',
+					'{{WRAPPER}} .uael-pricing-style-3 .uael-price-table-pricing, {{WRAPPER}} .uael-pricing-style-2 .uael-price-table-price-wrap, {{WRAPPER}} .uael-pricing-style-1 .uael-price-table-price-wrap, {{WRAPPER}} .uael-pricing-style-4 .uael-price-table-price-wrap' => 'background-color: {{VALUE}}',
 				),
 			)
 		);
@@ -2022,6 +2446,138 @@ class Price_Table extends Common_Widget {
 	}
 
 	/**
+	 * Register Hotspot General Controls.
+	 *
+	 * @since 1.27.1
+	 * @access protected
+	 */
+	protected function register_tooltip_style_controls() {
+
+		$this->start_controls_section(
+			'section_tooltip_style',
+			array(
+				'label'     => __( 'Tooltip', 'uael' ),
+				'tab'       => Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					'features_tooltip_data' => 'yes',
+				),
+			)
+		);
+
+			$this->add_control(
+				'uael_tooltip_align',
+				array(
+					'label'     => __( 'Text Alignment', 'uael' ),
+					'type'      => Controls_Manager::CHOOSE,
+					'options'   => array(
+						'left'   => array(
+							'title' => __( 'Left', 'uael' ),
+							'icon'  => 'fa fa-align-left',
+						),
+						'center' => array(
+							'title' => __( 'Center', 'uael' ),
+							'icon'  => 'fa fa-align-center',
+						),
+						'right'  => array(
+							'title' => __( 'Right', 'uael' ),
+							'icon'  => 'fa fa-align-right',
+						),
+					),
+					'selectors' => array(
+						'.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip .tooltipster-content' => 'text-align: {{VALUE}};',
+					),
+				)
+			);
+
+			$this->add_group_control(
+				Group_Control_Typography::get_type(),
+				array(
+					'name'     => 'uael_tooltip_typography',
+					'label'    => __( 'Typography', 'uael' ),
+					'selector' => '.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip .tooltipster-content',
+				)
+			);
+
+			$this->add_control(
+				'uael_tooltip_color',
+				array(
+					'label'     => __( 'Text Color', 'uael' ),
+					'type'      => Controls_Manager::COLOR,
+					'default'   => '',
+					'selectors' => array(
+						'.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-tooltipster-active.uael-price-table-tooltip .tooltipster-content' => 'color: {{VALUE}};',
+					),
+				)
+			);
+
+			$this->add_control(
+				'uael_tooltip_bgcolor',
+				array(
+					'label'     => __( 'Background Color', 'uael' ),
+					'type'      => Controls_Manager::COLOR,
+					'default'   => '',
+					'selectors' => array(
+						'.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-tooltipster-active.uael-price-table-tooltip .tooltipster-box' => 'background-color: {{VALUE}};',
+						'.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip.tooltipster-noir.tooltipster-bottom .tooltipster-arrow-background' => 'border-bottom-color: {{VALUE}};',
+						'.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip.tooltipster-noir.tooltipster-left .tooltipster-arrow-background' => 'border-left-color: {{VALUE}};',
+						'.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip.tooltipster-noir.tooltipster-right .tooltipster-arrow-background' => 'border-right-color: {{VALUE}};',
+						'.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip.tooltipster-noir.tooltipster-top .tooltipster-arrow-background' => 'border-top-color: {{VALUE}};',
+					),
+				)
+			);
+
+			$this->add_responsive_control(
+				'uael_tooltip_padding',
+				array(
+					'label'      => __( 'Padding', 'uael' ),
+					'type'       => Controls_Manager::DIMENSIONS,
+					'size_units' => array( 'px' ),
+					'default'    => array(
+						'top'    => '20',
+						'bottom' => '20',
+						'left'   => '20',
+						'right'  => '20',
+						'unit'   => 'px',
+					),
+					'selectors'  => array(
+						'.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip .tooltipster-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+				)
+			);
+
+			$this->add_responsive_control(
+				'uael_tooltip_radius',
+				array(
+					'label'      => __( 'Rounded Corners', 'uael' ),
+					'type'       => Controls_Manager::DIMENSIONS,
+					'size_units' => array( 'px', 'em', '%' ),
+					'default'    => array(
+						'top'    => '10',
+						'bottom' => '10',
+						'left'   => '10',
+						'right'  => '10',
+						'unit'   => 'px',
+					),
+					'selectors'  => array(
+						'.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip .tooltipster-box' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+				)
+			);
+
+			$this->add_group_control(
+				Group_Control_Box_Shadow::get_type(),
+				array(
+					'name'      => 'uael_tooltip_shadow',
+					'selector'  => '.tooltipster-sidetip.uael-price-table-wrap-{{ID}}.uael-price-table-tooltip .tooltipster-box',
+					'separator' => '',
+				)
+			);
+
+		$this->end_controls_section();
+	}
+
+
+	/**
 	 * Register Price Table CTA style Controls.
 	 *
 	 * @since 0.0.1
@@ -2614,6 +3170,58 @@ class Price_Table extends Common_Widget {
 	}
 
 	/**
+	 * Get Data Attributes.
+	 *
+	 * @since 1.27.1
+	 * @param array   $settings The settings array.
+	 * @param boolean $device specifies mobile devices.
+	 * @return string Data Attributes
+	 * @access public
+	 */
+	public function get_data_attrs( $settings, $device ) {
+
+		$marker_length = count( $settings['features_list'] );
+
+		$side          = $settings['position'];
+		$trigger       = '';
+		$arrow         = $settings['arrow'];
+		$animation     = $settings['tooltip_anim'];
+		$zindex        = ( 'yes' === $settings['hotspot_tooltip_adv'] ) ? $settings['zindex'] : 99;
+		$delay         = 300;
+		$anim_duration = ( 'yes' === $settings['hotspot_tooltip_adv'] ) ? $settings['anim_duration']['size'] : 350;
+		$distance      = ( isset( $settings['distance']['size'] ) && '' !== $settings['distance']['size'] ) ? $settings['distance']['size'] : 6;
+		$maxwidth      = 250;
+		$minwidth      = 0;
+
+		if ( true === $device ) {
+			$trigger = 'click';
+		} else {
+			$trigger = $settings['trigger'];
+		}
+
+		$maxwidth       = apply_filters( 'uael_tooltip_maxwidth', $maxwidth, $settings );
+		$minwidth       = apply_filters( 'uael_tooltip_minwidth', $minwidth, $settings );
+		$responsive     = $settings['responsive_support'];
+		$enable_tooltip = $settings['features_tooltip_data'];
+
+		$data_attr  = 'data-side="' . $side . '" ';
+		$data_attr .= 'data-hotspottrigger="' . $trigger . '" ';
+		$data_attr .= 'data-arrow="' . $arrow . '" ';
+		$data_attr .= 'data-distance="' . $distance . '" ';
+		$data_attr .= 'data-delay="' . $delay . '" ';
+		$data_attr .= 'data-animation="' . $animation . '" ';
+		$data_attr .= 'data-animduration="' . $anim_duration . '" ';
+		$data_attr .= 'data-zindex="' . $zindex . '" ';
+		$data_attr .= 'data-length="' . $marker_length . '" ';
+		$data_attr .= 'data-tooltip-maxwidth="' . $maxwidth . '" ';
+		$data_attr .= 'data-tooltip-minwidth="' . $minwidth . '" ';
+		$data_attr .= 'data-tooltip-responsive="' . $responsive . '" ';
+		$data_attr .= 'data-enable-tooltip="' . $enable_tooltip . '" ';
+
+		return $data_attr;
+	}
+
+	/**
 	 * Method render_button_icon
 	 *
 	 * @since 1.16.1
@@ -2793,6 +3401,25 @@ class Price_Table extends Common_Widget {
 	}
 
 	/**
+	 * Method render_heading_icon
+	 *
+	 * @since 1.27.1
+	 * @access public
+	 * @param object $settings for settings.
+	 */
+	public function render_heading_icon( $settings ) {
+		if ( ! empty( $settings['heading_icon']['value'] ) ) :
+			?>
+			<div class="uael-price-heading-icon">
+				<?php
+				\Elementor\Icons_Manager::render_icon( $settings['heading_icon'], array( 'aria-hidden' => 'true' ) );
+				?>
+			</div>
+			<?php
+		endif;
+	}
+
+	/**
 	 * Method render_subheading_text
 	 *
 	 * @since 0.0.1
@@ -2831,6 +3458,7 @@ class Price_Table extends Common_Widget {
 			if ( $settings['heading'] ) :
 				?>
 				<div class="uael-price-table-header">
+					<?php $this->render_heading_icon( $settings ); ?>
 					<?php $this->render_heading_text( $settings ); ?>
 				</div>
 				<?php
@@ -2840,6 +3468,7 @@ class Price_Table extends Common_Widget {
 				?>
 				<div class="uael-price-table-header">
 					<div class="uael-pricing-heading-wrap">
+						<?php $this->render_heading_icon( $settings ); ?>
 						<?php $this->render_heading_text( $settings ); ?>
 						<?php $this->render_subheading_text( $settings ); ?>
 					</div>
@@ -2929,15 +3558,29 @@ class Price_Table extends Common_Widget {
 	public function render_features( $settings ) {
 
 		if ( ! empty( $settings['features_list'] ) ) :
+			$node_id = $this->get_id();
+
+			$device = false;
+
+			$iphone  = ( false !== ( stripos( $_SERVER['HTTP_USER_AGENT'], 'iPhone' ) ) ? true : false );
+			$ipad    = ( false !== ( stripos( $_SERVER['HTTP_USER_AGENT'], 'iPad' ) ) ? true : false );
+			$android = ( false !== ( stripos( $_SERVER['HTTP_USER_AGENT'], 'Android' ) ) ? true : false );
+
+			if ( $iphone || $ipad || $android ) {
+				$device = true;
+			}
 			?>
-			<ul class="uael-price-table-features-list">
+			<ul class="uael-price-table-features-list" <?php echo $this->get_data_attrs( $settings, $device ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 				<?php foreach ( $settings['features_list'] as  $index => $item ) : ?>
 					<?php
-					$title_key = $this->get_repeater_setting_key( 'item_text', 'features_list', $index );
+					$title_key  = $this->get_repeater_setting_key( 'item_text', 'features_list', $index );
+					$content_id = $this->get_id() . '-' . $item['_id'];
+					$node_class = ! empty( $item['tooltip_content'] ) ? 'uael-price-table-feature-content uael-price-table-content-' . $node_id : 'uael-price-table-feature-content';
+
 					$this->add_inline_editing_attributes( $title_key, 'basic' );
 					?>
-					<li class="elementor-repeater-item-<?php echo esc_attr( $item['_id'] ); ?>">
-						<div class="uael-price-table-feature-content">
+					<li class="elementor-repeater-item-<?php echo esc_attr( $item['_id'] ); ?>"  >
+						<div class="<?php echo esc_attr( $node_class ); ?>"data-tooltip-content="<?php echo '#uael-tooltip-content-' . esc_attr( $content_id ); ?>">
 							<?php
 							if ( UAEL_Helper::is_elementor_updated() ) {
 
@@ -2980,6 +3623,23 @@ class Price_Table extends Common_Widget {
 							?>
 						</div>
 					</li>
+					<?php
+					if ( 'yes' === $settings['features_tooltip_data'] && ! empty( $item['tooltip_content'] ) ) {
+						$tooltip_data = $this->get_repeater_setting_key( 'tooltip_content', 'features_list', $index );
+
+						$this->add_render_attribute(
+							$tooltip_data,
+							array(
+								'class' => 'uael-features-text',
+								'id'    => 'uael-tooltip-content-' . $content_id,
+							)
+						);
+						?>
+						<span class="uael-tooltip-container">							
+							<span <?php echo wp_kses_post( $this->get_render_attribute_string( $tooltip_data ) ); ?>><?php echo wp_kses_post( $item['tooltip_content'] ); ?>
+							</span>
+						</span>
+					<?php } ?>	
 				<?php endforeach; ?>
 			</ul>
 			<?php
@@ -3092,6 +3752,49 @@ class Price_Table extends Common_Widget {
 	protected function content_template() {
 		?>
 		<#
+		function data_attributes() {
+			var side			= settings.position;
+			var trigger			= '';
+			var arrow			= settings.arrow;
+			var animation		= settings.tooltip_anim;
+			var zindex			= ( 'yes' == settings.hotspot_tooltip_adv ) ? settings.zindex : 99;
+			var delay			= 300;
+
+			var anim_duration			= ( 'yes' == settings.hotspot_tooltip_adv ) ? settings.anim_duration.size : 350;
+
+			var distance			= ( '' != settings.distance.size ) ? settings.distance.size : 6;
+
+			trigger = settings.trigger;
+
+			var responsive = settings.responsive_support;
+			var enable_tooltip = settings.features_tooltip_data;
+
+			var data_attr  = 'data-side="' + side + '" ';
+				data_attr += 'data-hotspottrigger="' + trigger + '" ';
+				data_attr += 'data-arrow="' + arrow + '" ';
+				data_attr += 'data-distance="' + distance + '" ';
+				data_attr += 'data-delay="' + delay + '" ';
+				data_attr += 'data-animation="' + animation + '" ';
+				data_attr += 'data-animduration="' + anim_duration + '" ';
+				data_attr += 'data-zindex="' + zindex + '" ';
+				data_attr += 'data-length="' + length + '" ';
+				data_attr += 'data-tooltip-responsive="' + responsive + '" ';
+				data_attr += 'data-enable-tooltip="' + enable_tooltip + '" ';
+			return data_attr;
+		}
+		#>
+		<#
+		function render_heading_icon() {
+			if ( '' != settings.heading_icon.value && settings.heading_icon.value ) {	
+				var headingIconsHTML = elementor.helpers.renderIcon( view, settings.heading_icon, { 'aria-hidden': true }, 'i' , 'object' );
+
+				#>
+					<div class="uael-price-heading-icon">
+						{{{ headingIconsHTML.value }}}
+					</div>
+				<#
+			}
+		}
 		function render_heading_text() {
 			if ( settings.heading ) {
 				if ( '' != settings.heading ) {
@@ -3105,23 +3808,21 @@ class Price_Table extends Common_Widget {
 			}
 		}
 		function render_subheading_text() {
-			if ( settings.sub_heading ) {
-				if ( '' != settings.sub_heading || '' != settings.sub_heading_style2 ) {
-				#>
-					<div class="uael-price-subheading-text">
+			if ( '' != settings.sub_heading || '2' == settings.pricetable_style && '' != settings.sub_heading_style2 ) {
+			#>
+				<div class="uael-price-subheading-text">
 
-						<# if ( '2' == settings.pricetable_style ) { #>
-							<{{ settings.sub_heading_tag_style2 }} class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading_style2" data-elementor-inline-editing-toolbar="basic">
-								{{{ settings.sub_heading_style2 }}}
-							</{{ settings.sub_heading_tag_style2 }}>
-						<# } else { #>
-							<{{ settings.sub_heading_tag }} class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading" data-elementor-inline-editing-toolbar="basic">
-								{{{ settings.sub_heading }}}
-							</{{ settings.sub_heading_tag }}>
-						<# } #>
-					</div>
-				<#
-				}
+					<# if ( '2' == settings.pricetable_style ) { #>
+						<{{ settings.sub_heading_tag_style2 }} class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading_style2" data-elementor-inline-editing-toolbar="basic">
+							{{{ settings.sub_heading_style2 }}}
+						</{{ settings.sub_heading_tag_style2 }}>
+					<# } else { #>
+						<{{ settings.sub_heading_tag }} class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading" data-elementor-inline-editing-toolbar="basic">
+							{{{ settings.sub_heading }}}
+						</{{ settings.sub_heading_tag }}>
+					<# } #>
+				</div>
+			<#
 			}
 		}
 
@@ -3131,6 +3832,7 @@ class Price_Table extends Common_Widget {
 				if ( settings.heading ) {
 					#>
 					<div class="uael-price-table-header">
+						<# render_heading_icon(); #>
 						<{{{ settings.heading_tag }}} class="uael-price-table-heading elementor-inline-editing" data-elementor-setting-key="heading" data-elementor-inline-editing-toolbar="basic">{{{ settings.heading }}}</{{{ settings.heading_tag }}}>
 					</div>
 					<#
@@ -3140,6 +3842,7 @@ class Price_Table extends Common_Widget {
 					#>
 					<div class="uael-price-table-header">
 						<div class="uael-pricing-heading-wrap">
+							<# render_heading_icon(); #>
 							<# render_heading_text(); #>
 							<# render_subheading_text(); #>
 						</div>
@@ -3231,11 +3934,16 @@ class Price_Table extends Common_Widget {
 
 		function render_features() {
 			var iconsHTML = {};
+			var param = data_attributes(); 
+			var node_id = view.$el.data('id');
+
 			if ( settings.features_list ) { #>
-				<ul class="uael-price-table-features-list">
-					<# _.each( settings.features_list, function( item, index ) { #>
+				<ul class="uael-price-table-features-list" {{{ param }}}>
+					<# _.each( settings.features_list, function( item, index ) { 
+						var node_class = ( '' != item.tooltip_content ) ? 'uael-price-table-feature-content uael-price-table-content-' +  node_id : 'uael-price-table-feature-content';
+					#>
 						<li class="elementor-repeater-item-{{ item._id }}">
-							<div class="uael-price-table-feature-content">
+							<div class="{{ node_class}} " data-tooltip-content="#uael-tooltip-content-{{ item._id }}">
 								<?php if ( UAEL_Helper::is_elementor_updated() ) { ?>
 									<# if ( item.item_icon || item.new_item_icon ) { #>
 										<# 
@@ -3259,6 +3967,11 @@ class Price_Table extends Common_Widget {
 								<# } #>
 							</div>
 						</li>
+						<# if ( 'yes' == settings.features_tooltip_data && '' != item.tooltip_content ) { #>
+							<span class="uael-tooltip-container">					
+								<span class="uael-features-text" id="uael-tooltip-content-{{ item._id }}">{{{ item.tooltip_content }}}</span>
+							</span>
+							<# } #>
 					<# } ); #>
 				</ul>
 			<# }
@@ -3443,6 +4156,16 @@ class Price_Table extends Common_Widget {
 				</div>
 				<# render_ribbon(); #>
 			</div>
+		<# } else if( '4' == settings.pricetable_style ) { #>
+			<div class="uael-module-content uael-price-table-container uael-pricing-style-{{ settings.pricetable_style }}">
+				<div class="uael-price-table">
+					<# render_style_header(); #>
+					<# render_features(); #>
+					<# render_price(); #>
+					<# render_cta(); #>
+				</div>
+				<# render_ribbon(); #>
+			</div>
 		<# }
 
 		#>
@@ -3459,7 +4182,7 @@ class Price_Table extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 }

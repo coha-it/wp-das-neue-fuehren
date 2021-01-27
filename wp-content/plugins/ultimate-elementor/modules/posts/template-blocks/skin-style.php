@@ -252,6 +252,23 @@ abstract class Skin_Style {
 	}
 
 	/**
+	 * Get no image class.
+	 *
+	 * Returns the no image class.
+	 *
+	 * @since 1.27.0
+	 * @access public
+	 */
+	public function get_thumbnail_no_image_class() {
+
+		if ( 'none' === $this->get_instance_value( 'image_position' ) ) {
+			return 'uael-post-wrapper__noimage';
+		}
+
+		return ( ! get_the_post_thumbnail_url() ) ? 'uael-post-wrapper__noimage' : '';
+	}
+
+	/**
 	 * Get featured image.
 	 *
 	 * Returns the featured image HTML wrap.
@@ -286,17 +303,20 @@ abstract class Skin_Style {
 		if ( 'yes' === $this->get_instance_value( 'link_img' ) ) {
 			$href   = apply_filters( 'uael_single_post_link', get_the_permalink(), get_the_ID(), $settings );
 			$target = ( 'yes' === $this->get_instance_value( 'link_new_tab' ) ) ? '_blank' : '_self';
+			$this->add_render_attribute( 'img_link' . get_the_ID(), 'href', $href );
 			$this->add_render_attribute( 'img_link' . get_the_ID(), 'target', $target );
-		} else {
-			$href = 'javascript:void(0);';
 		}
 
-		$this->add_render_attribute( 'img_link' . get_the_ID(), 'href', $href );
 		$this->add_render_attribute( 'img_link' . get_the_ID(), 'title', get_the_title() );
 		?>
 		<div class="uael-post__thumbnail">
+			<?php if ( $this->get_instance_value( 'link_img' ) ) { ?>
+
 			<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'img_link' . get_the_ID() ) ); ?>><?php echo wp_kses_post( $thumbnail_html ); ?></a>
-			<?php
+			<?php } else { ?>
+				<?php echo wp_kses_post( $thumbnail_html ); ?>
+				<?php
+			}
 			if ( 'background' !== $this->get_instance_value( 'image_position' ) ) {
 				$this->render_terms( 'media' );
 			}
@@ -605,9 +625,9 @@ abstract class Skin_Style {
 		$link_meta = apply_filters( 'uael_link_taxomony_badge', $this->get_instance_value( 'link_meta' ) );
 
 		if ( 'yes' === $link_meta ) {
-			$format = '<a href="%2$s" class="uael-listing__terms-link">%1$s</a>';
+			$format = ' <a href="%2$s" class="uael-listing__terms-link" id="uael-post-term-%3$s" aria-labelledby="uael-post-term-%3$s">%1$s</a>';
 		} else {
-			$format = '<span class="uael-listing__terms-link">%1$s</span>';
+			$format = ' <span class="uael-listing__terms-link">%1$s</span>';
 		}
 
 		$result = '';
@@ -631,12 +651,13 @@ abstract class Skin_Style {
 		}
 
 		foreach ( $terms as $term ) {
-			$result .= sprintf( $format, $term->name, get_term_link( (int) $term->term_id ) );
+			$term_name = $term->name;
+			$result   .= sprintf( $format, $term->name, get_term_link( (int) $term->term_id ), strtolower( $term_name ) );
 		}
 
 		do_action( 'uael_single_post_before_content_terms', get_the_ID(), $settings );
 
-		printf( '<span class="uael-post__terms-meta uael-post__terms-meta-%s">%s</span>', esc_attr( $prefix ), wp_kses_post( $result ) );
+		printf( '<span class="uael-post__terms-meta uael-post__terms-meta-%s">%s</span>', esc_attr( $prefix ), $result );//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		do_action( 'uael_single_post_after_content_terms', get_the_ID(), $settings );
 	}
@@ -686,7 +707,7 @@ abstract class Skin_Style {
 		$link_meta = apply_filters( 'uael_link_taxomony_badge', $this->get_instance_value( 'link_meta' ) );
 
 		if ( 'yes' === $link_meta ) {
-			$format = '<a href="%2$s" class="uael-listing__terms-link">%1$s</a>';
+			$format = '<a href="%2$s" class="uael-listing__terms-link" id="uael-post-term-%3$s" aria-labelledby="uael-post-term-%3$s">%1$s</a>';
 		} else {
 			$format = '<span class="uael-listing__terms-link">%1$s</span>';
 		}
@@ -715,11 +736,12 @@ abstract class Skin_Style {
 		}
 
 		foreach ( $terms as $term ) {
-			$result .= sprintf( $format, $term->name, get_term_link( (int) $term->term_id ) );
+			$term_name = $term->name;
+			$result   .= sprintf( $format, $term->name, get_term_link( (int) $term->term_id ), strtolower( $term_name ) );
 		}
 		do_action( 'uael_single_post_before_terms', get_the_ID(), $settings );
 
-		printf( '<span class="uael-post__terms">%s</span>', wp_kses_post( $result ) );
+		printf( '<span class="uael-post__terms">%s</span>', $result );//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		do_action( 'uael_single_post_after_terms', get_the_ID(), $settings );
 	}
@@ -812,12 +834,13 @@ abstract class Skin_Style {
 			$this->add_render_attribute(
 				'cta_link' . get_the_ID(),
 				array(
-					'class'  => array(
+					'class'           => array(
 						'uael-post__read-more',
 						'elementor-button',
 					),
-					'href'   => apply_filters( 'uael_single_post_link', get_the_permalink(), get_the_ID(), $settings ),
-					'target' => ( 'yes' === $this->get_instance_value( 'cta_new_tab' ) ) ? '_blank' : '_self',
+					'href'            => apply_filters( 'uael_single_post_link', get_the_permalink(), get_the_ID(), $settings ),
+					'target'          => ( 'yes' === $this->get_instance_value( 'cta_new_tab' ) ) ? '_blank' : '_self',
+					'aria-labelledby' => 'uael-post-' . get_the_ID(),
 				)
 			);
 
@@ -851,7 +874,7 @@ abstract class Skin_Style {
 							</span>						
 						<?php } ?>
 
-						<span class="elementor-button-text"><?php echo wp_kses_post( apply_filters( 'uael_post_cta_text', $this->get_instance_value( 'cta_text' ), get_the_ID(), $settings ) ); ?></span>
+						<span class="elementor-button-text" id=<?php echo esc_attr( 'uael-post-' . get_the_ID() ); ?>><?php echo wp_kses_post( apply_filters( 'uael_post_cta_text', $this->get_instance_value( 'cta_text' ), get_the_ID(), $settings ) ); ?></span>
 					</span>
 				</a>
 			<?php
@@ -1235,10 +1258,10 @@ abstract class Skin_Style {
 
 		?>
 		<div class="uael-post__header-filters-wrap<?php echo esc_attr( $tab_responsive ); ?>">
-			<ul class="uael-post__header-filters">
+			<ul class="uael-post__header-filters" aria-label="<?php esc_attr_e( 'Taxonomy Filter', 'uael' ); ?>">
 				<li class="uael-post__header-filter uael-filter__current" data-filter="*"><?php echo wp_kses_post( $all_text ); ?></li>
 				<?php foreach ( $filters as $key => $value ) { ?>
-				<li class="uael-post__header-filter" data-filter="<?php echo '.' . esc_attr( $value->slug ); ?>"><?php echo esc_attr( $value->name ); ?></li>
+				<li class="uael-post__header-filter" data-filter="<?php echo '.' . esc_attr( $value->slug ); ?>" tabindex="0"><?php echo esc_attr( $value->name ); ?></li>
 				<?php } ?>
 			</ul>
 

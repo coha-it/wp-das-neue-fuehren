@@ -467,3 +467,52 @@ function astra_addon_get_mobile_breakpoint( $min = '', $max = '' ) {
 
 	return absint( $header_breakpoint );
 }
+
+/**
+ * Is Astra Addon existing header footer configs enable.
+ *
+ * @since 2.7.0
+ *
+ * @return boolean true/false.
+ */
+function astra_addon_existing_header_footer_configs() {
+	return apply_filters( 'astra_addon_existing_header_footer_configs', true );
+}
+
+/*
+ * BSF Analytics.
+ */
+if ( ! class_exists( 'BSF_Analytics_Loader' ) ) {
+	require_once ASTRA_EXT_DIR . 'admin/bsf-analytics/class-bsf-analytics-loader.php';
+}
+
+$bsf_analytics = BSF_Analytics_Loader::get_instance();
+
+$bsf_analytics->set_entity(
+	array(
+		'bsf' => array(
+			'product_name'    => 'Astra Pro',
+			'path'            => ASTRA_EXT_DIR . 'admin/bsf-analytics',
+			'author'          => 'Brainstorm Force',
+			'time_to_display' => '+24 hours',
+		),
+	)
+);
+
+/**
+ * Pass addon specific stats to BSF analytics.
+ *
+ * @since 2.6.4
+ * @param array $default_stats Default stats array.
+ * @return array $default_stats Default stats with addon specific stats array.
+ */
+function astra_add_addon_specific_stats( $default_stats ) {
+	$default_stats['astra_settings'] = array(
+		'astra-addon-version' => ASTRA_EXT_VER,
+		'astra-theme-version' => ASTRA_THEME_VERSION,
+		'breadcrumb-position' => astra_get_option( 'breadcrumb-position', false ),
+	);
+	return $default_stats;
+}
+
+add_filter( 'bsf_core_stats', 'astra_add_addon_specific_stats' );

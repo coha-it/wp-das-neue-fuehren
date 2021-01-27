@@ -40,10 +40,10 @@ $this->add_render_attribute( 'line-inner', 'class', 'uael-timeline__line__inner'
 
 				$heading_setting_key = $this->get_repeater_setting_key( 'timeline_single_heading', 'timelines', $index );
 				$this->add_render_attribute( $heading_setting_key, 'class', 'uael-timeline-heading' );
-				$this->add_inline_editing_attributes( $heading_setting_key, 'advanced' );
+				$this->add_inline_editing_attributes( $heading_setting_key, 'none' );
 
 
-				$content_setting_key = $this->get_repeater_setting_key( 'timeline_heading_content', 'timelines', $index );
+				$content_setting_key = $this->get_repeater_setting_key( 'timeline_single_content', 'timelines', $index );
 				$this->add_render_attribute( $content_setting_key, 'class', 'uael-timeline-desc-content' );
 				$this->add_inline_editing_attributes( $content_setting_key, 'advanced' );
 
@@ -158,7 +158,8 @@ $this->add_render_attribute( 'line-inner', 'class', 'uael-timeline__line__inner'
 											<div class="uael-timeline-date-hide uael-date-inner"><div class="inner-date-new"><p <?php echo wp_kses_post( $this->get_render_attribute_string( $date_setting_key ) ); ?>><?php echo esc_attr( $item['timeline_single_date'] ); ?></p></div>
 											</div>
 										<?php } ?>
-										<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'timeline_content' . esc_attr( $item['_id'] ) ) ); ?>>	
+										<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'timeline_content' . esc_attr( $item['_id'] ) ) ); ?>>
+											<?php do_action( 'uael_timeline_above_heading', $item ); ?>	
 											<?php
 											if ( '' !== $item['timeline_single_heading'] ) {
 												?>
@@ -166,11 +167,14 @@ $this->add_render_attribute( 'line-inner', 'class', 'uael-timeline__line__inner'
 												<<?php echo esc_attr( $settings['timeline_heading_tag'] ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( $heading_setting_key ) ); ?>><?php echo $this->parse_text_editor( $item['timeline_single_heading'] ); ?></<?php echo esc_attr( $settings['timeline_heading_tag'] ); ?>> <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 											</div>
 											<?php } ?>
+											<?php do_action( 'uael_timeline_below_heading', $item ); ?>
+											<?php do_action( 'uael_timeline_above_content', $item ); ?>
 											<?php
 											if ( '' !== $item['timeline_single_content'] ) {
 												?>
 												<div <?php echo wp_kses_post( $this->get_render_attribute_string( $content_setting_key ) ); ?>><?php echo $this->parse_text_editor( $item['timeline_single_content'] ); ?></div> <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 											<?php } ?>
+											<?php do_action( 'uael_timeline_below_content', $item ); ?>
 										</div>
 										<div class="uael-timeline-arrow"></div>
 									</div>

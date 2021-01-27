@@ -13,6 +13,7 @@ use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Scheme_Typography;
+use Elementor\Repeater;
 
 // UltimateElementor Classes.
 use UltimateElementor\Base\Common_Widget;
@@ -96,7 +97,7 @@ class GoogleMap extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_addresses_controls();
 		$this->register_layout_controls();
@@ -139,6 +140,144 @@ class GoogleMap extends Common_Widget {
 			);
 		}
 
+		$repeater = new Repeater();
+
+		$repeater->add_control(
+			'latitude',
+			array(
+				'label'       => __( 'Latitude', 'uael' ),
+				'description' => sprintf( '<a href="https://www.latlong.net/" target="_blank">%1$s</a> %2$s', __( 'Click here', 'uael' ), __( 'to find Latitude of your location', 'uael' ) ),
+				'type'        => Controls_Manager::TEXT,
+				'default'     => '',
+				'label_block' => true,
+				'dynamic'     => array(
+					'active' => true,
+				),
+			)
+		);
+
+		$repeater->add_control(
+			'longitude',
+			array(
+				'label'       => __( 'Longitude', 'uael' ),
+				'description' => sprintf( '<a href="https://www.latlong.net/" target="_blank">%1$s</a> %2$s', __( 'Click here', 'uael' ), __( 'to find Longitude of your location', 'uael' ) ),
+				'type'        => Controls_Manager::TEXT,
+				'default'     => '',
+				'label_block' => true,
+				'dynamic'     => array(
+					'active' => true,
+				),
+			)
+		);
+
+		$repeater->add_control(
+			'map_title',
+			array(
+				'label'       => __( 'Address Title', 'uael' ),
+				'type'        => Controls_Manager::TEXT,
+				'default'     => '',
+				'label_block' => true,
+				'dynamic'     => array(
+					'active' => true,
+				),
+			)
+		);
+
+		$repeater->add_control(
+			'marker_infowindow',
+			array(
+				'label'       => __( 'Display Info Window', 'uael' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'none',
+				'label_block' => true,
+				'options'     => array(
+					'none'  => __( 'None', 'uael' ),
+					'click' => __( 'On Mouse Click', 'uael' ),
+					'load'  => __( 'On Page Load', 'uael' ),
+				),
+			)
+		);
+
+		$repeater->add_control(
+			'map_description',
+			array(
+				'label'       => __( 'Address Information', 'uael' ),
+				'type'        => Controls_Manager::TEXTAREA,
+				'label_block' => true,
+				'conditions'  => array(
+					'terms' => array(
+						array(
+							'name'     => 'marker_infowindow',
+							'operator' => '!=',
+							'value'    => 'none',
+						),
+					),
+				),
+				'dynamic'     => array(
+					'active' => true,
+				),
+			)
+		);
+
+		$repeater->add_control(
+			'marker_icon_type',
+			array(
+				'label'   => __( 'Marker Icon', 'uael' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'default',
+				'options' => array(
+					'default' => __( 'Default', 'uael' ),
+					'custom'  => __( 'Custom', 'uael' ),
+				),
+			)
+		);
+
+		$repeater->add_control(
+			'marker_icon',
+			array(
+				'label'      => __( 'Select Marker', 'uael' ),
+				'type'       => Controls_Manager::MEDIA,
+				'conditions' => array(
+					'terms' => array(
+						array(
+							'name'     => 'marker_icon_type',
+							'operator' => '==',
+							'value'    => 'custom',
+						),
+					),
+				),
+			)
+		);
+
+		$repeater->add_control(
+			'custom_marker_size',
+			array(
+				'label'       => __( 'Marker Size', 'uael' ),
+				'type'        => Controls_Manager::SLIDER,
+				'size_units'  => array( 'px' ),
+				'description' => __( 'Note: If you want to retain the image original size, then set the Marker Size as blank.', 'uael' ),
+				'default'     => array(
+					'size' => 30,
+					'unit' => 'px',
+				),
+				'range'       => array(
+					'px' => array(
+						'min' => 5,
+						'max' => 100,
+					),
+				),
+				'conditions'  => array(
+					'terms' => array(
+						array(
+							'name'     => 'marker_icon_type',
+							'operator' => '==',
+							'value'    => 'custom',
+						),
+					),
+				),
+			)
+		);
+
 			$this->add_control(
 				'addresses',
 				array(
@@ -152,120 +291,7 @@ class GoogleMap extends Common_Widget {
 							'map_description' => '',
 						),
 					),
-					'fields'      => array(
-						array(
-							'name'        => 'latitude',
-							'label'       => __( 'Latitude', 'uael' ),
-							'description' => sprintf( '<a href="https://www.latlong.net/" target="_blank">%1$s</a> %2$s', __( 'Click here', 'uael' ), __( 'to find Latitude of your location', 'uael' ) ),
-							'type'        => Controls_Manager::TEXT,
-							'default'     => '',
-							'label_block' => true,
-							'dynamic'     => array(
-								'active' => true,
-							),
-						),
-						array(
-							'name'        => 'longitude',
-							'label'       => __( 'Longitude', 'uael' ),
-							'description' => sprintf( '<a href="https://www.latlong.net/" target="_blank">%1$s</a> %2$s', __( 'Click here', 'uael' ), __( 'to find Longitude of your location', 'uael' ) ),
-							'type'        => Controls_Manager::TEXT,
-							'default'     => '',
-							'label_block' => true,
-							'dynamic'     => array(
-								'active' => true,
-							),
-						),
-						array(
-							'name'        => 'map_title',
-							'label'       => __( 'Address Title', 'uael' ),
-							'type'        => Controls_Manager::TEXT,
-							'default'     => '',
-							'label_block' => true,
-							'dynamic'     => array(
-								'active' => true,
-							),
-						),
-						array(
-							'name'        => 'marker_infowindow',
-							'label'       => __( 'Display Info Window', 'uael' ),
-							'type'        => Controls_Manager::SELECT,
-							'default'     => 'none',
-							'label_block' => true,
-							'options'     => array(
-								'none'  => __( 'None', 'uael' ),
-								'click' => __( 'On Mouse Click', 'uael' ),
-								'load'  => __( 'On Page Load', 'uael' ),
-							),
-						),
-						array(
-							'name'        => 'map_description',
-							'label'       => __( 'Address Information', 'uael' ),
-							'type'        => Controls_Manager::TEXTAREA,
-							'label_block' => true,
-							'conditions'  => array(
-								'terms' => array(
-									array(
-										'name'     => 'marker_infowindow',
-										'operator' => '!=',
-										'value'    => 'none',
-									),
-								),
-							),
-							'dynamic'     => array(
-								'active' => true,
-							),
-						),
-						array(
-							'name'    => 'marker_icon_type',
-							'label'   => __( 'Marker Icon', 'uael' ),
-							'type'    => Controls_Manager::SELECT,
-							'default' => 'default',
-							'options' => array(
-								'default' => __( 'Default', 'uael' ),
-								'custom'  => __( 'Custom', 'uael' ),
-							),
-						),
-						array(
-							'name'       => 'marker_icon',
-							'label'      => __( 'Select Marker', 'uael' ),
-							'type'       => Controls_Manager::MEDIA,
-							'conditions' => array(
-								'terms' => array(
-									array(
-										'name'     => 'marker_icon_type',
-										'operator' => '==',
-										'value'    => 'custom',
-									),
-								),
-							),
-						),
-						array(
-							'name'        => 'custom_marker_size',
-							'label'       => __( 'Marker Size', 'uael' ),
-							'type'        => Controls_Manager::SLIDER,
-							'size_units'  => array( 'px' ),
-							'description' => __( 'Note: If you want to retain the image original size, then set the Marker Size as blank.', 'uael' ),
-							'default'     => array(
-								'size' => 30,
-								'unit' => 'px',
-							),
-							'range'       => array(
-								'px' => array(
-									'min' => 5,
-									'max' => 100,
-								),
-							),
-							'conditions'  => array(
-								'terms' => array(
-									array(
-										'name'     => 'marker_icon_type',
-										'operator' => '==',
-										'value'    => 'custom',
-									),
-								),
-							),
-						),
-					),
+					'fields'      => $repeater->get_controls(),
 					'title_field' => '<i class="fa fa-map-marker"></i> {{{ map_title }}}',
 				)
 			);
@@ -770,20 +796,23 @@ class GoogleMap extends Common_Widget {
 
 		ob_start();
 
-		$map_options = $this->get_map_options();
-		$locations   = $this->get_locations();
+		$map_options     = $this->get_map_options();
+		$locations       = $this->get_locations();
+		$cluster_options = array();
+		$cluster_attrs   = apply_filters( 'uael_cluster_options', $cluster_options );
 
 		$this->add_render_attribute(
 			'google-map',
 			array(
-				'id'               => 'uael-google-map-' . esc_attr( $this->get_id() ),
-				'class'            => 'uael-google-map',
-				'data-map_options' => wp_json_encode( $map_options ),
-				'data-cluster'     => $settings['cluster'],
-				'data-max-width'   => $settings['info_window_size']['size'],
-				'data-locations'   => wp_json_encode( $locations ),
-				'data-animate'     => $settings['animate'],
-				'data-auto-center' => $settings['auto_center'],
+				'id'                => 'uael-google-map-' . esc_attr( $this->get_id() ),
+				'class'             => 'uael-google-map',
+				'data-map_options'  => wp_json_encode( $map_options ),
+				'data-cluster'      => $settings['cluster'],
+				'data-cluster-attr' => wp_json_encode( $cluster_attrs ),
+				'data-max-width'    => $settings['info_window_size']['size'],
+				'data-locations'    => wp_json_encode( $locations ),
+				'data-animate'      => $settings['animate'],
+				'data-auto-center'  => $settings['auto_center'],
 			)
 		);
 
@@ -874,6 +903,8 @@ class GoogleMap extends Common_Widget {
 
 		var map_options = get_map_options( settings );
 		var locations 	= get_locations( settings );
+		var cluster_parameter = [];
+		var cluster_attrs = cluster_parameter;
 
 		view.addRenderAttribute(
 			'google-map',
@@ -881,6 +912,7 @@ class GoogleMap extends Common_Widget {
 				'class' : 'uael-google-map',
 				'data-map_options' : JSON.stringify( map_options ),
 				'data-cluster' : settings.cluster,
+				'data-cluster-attr': JSON.stringify( cluster_attrs ),
 				'data-max-width' : settings.info_window_size.size,
 				'data-locations' : JSON.stringify( locations ),
 				'data-animate'   : settings.animate,
@@ -919,7 +951,7 @@ class GoogleMap extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 

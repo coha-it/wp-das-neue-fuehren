@@ -101,7 +101,7 @@ class Modal_Popup extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_general_content_controls();
 		$this->register_modal_popup_content_controls();
@@ -2347,7 +2347,7 @@ class Modal_Popup extends Common_Widget {
 				$youtube_is_new   = ! isset( $settings['youtube_play_icon'] );
 
 				if ( $youtube_is_new || $youtube_migrated ) {
-					$play_icon = $settings['new_youtube_play_icon']['value'];
+					$play_icon = isset( $settings['new_youtube_play_icon']['value'] ) ? $settings['new_youtube_play_icon']['value'] : '';
 				} else {
 					$play_icon = $settings['youtube_play_icon'];
 				}
@@ -2644,7 +2644,7 @@ class Modal_Popup extends Common_Widget {
 			}
 			?>
 			<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'action-wrap' ) ); ?>>
-				<?php echo wp_kses_post( $inner_html ); ?>
+				<?php echo $inner_html;//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</div>
 
 			<?php
@@ -2841,7 +2841,7 @@ class Modal_Popup extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 }

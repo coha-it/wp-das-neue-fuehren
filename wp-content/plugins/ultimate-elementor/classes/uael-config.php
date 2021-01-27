@@ -157,6 +157,7 @@ class UAEL_Config {
 					'icon'      => 'uael-icon-retina-image-1',
 					'title_url' => '#',
 					'default'   => true,
+
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/retina-image/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
 				'Infobox'           => array(
@@ -412,7 +413,7 @@ class UAEL_Config {
 				),
 				'FAQ'               => array(
 					'slug'      => 'uael-faq',
-					'title'     => __( 'FAQ', 'uael' ),
+					'title'     => __( 'FAQ Schema', 'uael' ),
 					'keywords'  => array( 'uael', 'faq', 'schema', 'question', 'answer', 'accordion', 'toggle' ),
 					'icon'      => 'uael-icon-faq-2',
 					'title_url' => '#',
@@ -436,6 +437,15 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/features/cross-site-copy-paste/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+				),
+				'Woo_Mini_Cart'     => array(
+					'slug'      => 'uael-mini-cart',
+					'title'     => __( 'Woo - Mini Cart', 'uael' ),
+					'keywords'  => array( 'woo', 'woocommerce', 'cart', 'mini', 'minicart' ),
+					'icon'      => 'uael-icon-uae-mini-cart-01',
+					'title_url' => '#',
+					'default'   => true,
+					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/woo-mini-cart/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
 			);
 		}
@@ -500,11 +510,6 @@ class UAEL_Config {
 				'dep'       => array( 'jquery' ),
 				'in_footer' => true,
 			),
-			'uael-cookie-lib'        => array(
-				'path'      => 'assets/' . $folder . '/js_cookie' . $suffix . '.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
 			'uael-modal-popup'       => array(
 				'path'      => 'assets/' . $folder . '/uael-modal-popup' . $suffix . '.js',
 				'dep'       => array( 'jquery', 'uael-cookie-lib' ),
@@ -515,33 +520,8 @@ class UAEL_Config {
 				'dep'       => array( 'jquery' ),
 				'in_footer' => true,
 			),
-			'uael-twenty-twenty'     => array(
-				'path'      => 'assets/' . $folder . '/jquery_twentytwenty' . $suffix . '.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
-			'uael-move'              => array(
-				'path'      => 'assets/' . $folder . '/jquery_event_move' . $suffix . '.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
-			'uael-fancytext-typed'   => array(
-				'path'      => 'assets/' . $folder . '/typed' . $suffix . '.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
-			'uael-fancytext-slidev'  => array(
-				'path'      => 'assets/' . $folder . '/rvticker' . $suffix . '.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
 			'uael-google-maps'       => array(
 				'path'      => 'assets/' . $folder . '/uael-google-map' . $suffix . '.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
-			'uael-hotspot'           => array(
-				'path'      => 'assets/' . $folder . '/tooltipster' . $suffix . '.js',
 				'dep'       => array( 'jquery' ),
 				'in_footer' => true,
 			),
@@ -555,18 +535,8 @@ class UAEL_Config {
 				'dep'       => array( 'jquery', 'imagesloaded' ),
 				'in_footer' => true,
 			),
-			'uael-isotope'           => array(
-				'path'      => 'assets/js/isotope.pkgd.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
 			'uael-woocommerce'       => array(
 				'path'      => 'assets/' . $folder . '/uael-woocommerce' . $suffix . '.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
-			'uael-datatable'         => array(
-				'path'      => 'assets/js/jquery.datatables.min.js',
 				'dep'       => array( 'jquery' ),
 				'in_footer' => true,
 			),
@@ -580,24 +550,74 @@ class UAEL_Config {
 				'dep'       => array( 'jquery' ),
 				'in_footer' => true,
 			),
-			'uael-particles'         => array(
-				'path'      => 'assets/' . $folder . '/uael-particles' . $suffix . '.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
 			'uael-registration'      => array(
 				'path'      => 'assets/' . $folder . '/uael-registration' . $suffix . '.js',
 				'dep'       => array( 'jquery' ),
 				'in_footer' => true,
 			),
+			'uael-countdown'         => array(
+				'path'      => 'assets/' . $folder . '/uael-countdown' . $suffix . '.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
+			'uael-nav-menu'          => array(
+				'path'      => 'assets/' . $folder . '/uael-nav-menu' . $suffix . '.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
+			'uael-faq'               => array(
+				'path'      => 'assets/' . $folder . '/uael-faq' . $suffix . '.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
+			'uael-particles'         => array(
+				'path'      => 'assets/' . $folder . '/uael-particles' . $suffix . '.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
 			/* Libraries */
-			'uael-element-resize'    => array(
-				'path'      => 'assets/lib/jquery-element-resize/jquery_resize.min.js',
+			'uael-hotspot'           => array(
+				'path'      => 'assets/lib/tooltipster/tooltipster.min.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
+			'uael-datatable'         => array(
+				'path'      => 'assets/lib/jquery-datatables/jquery.datatables.min.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
+			'uael-twenty-twenty'     => array(
+				'path'      => 'assets/lib/jquery-twentytwenty/jquery_twentytwenty.min.js',
 				'dep'       => array( 'jquery' ),
 				'in_footer' => true,
 			),
 			'uael-isotope'           => array(
 				'path'      => 'assets/lib/isotope/isotope.min.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
+			'uael-move'              => array(
+				'path'      => 'assets/lib/jquery-event-move/jquery_event_move.min.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
+			'uael-fancytext-typed'   => array(
+				'path'      => 'assets/lib/typed/typed.min.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
+			'uael-fancytext-slidev'  => array(
+				'path'      => 'assets/lib/rvticker/rvticker.min.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
+			'uael-cookie-lib'        => array(
+				'path'      => 'assets/lib/js-cookie/js_cookie.min.js',
+				'dep'       => array( 'jquery' ),
+				'in_footer' => true,
+			),
+			'uael-element-resize'    => array(
+				'path'      => 'assets/lib/jquery-element-resize/jquery_resize.min.js',
 				'dep'       => array( 'jquery' ),
 				'in_footer' => true,
 			),
@@ -616,18 +636,8 @@ class UAEL_Config {
 				'dep'       => array( 'jquery', 'uael-frontend-script' ),
 				'in_footer' => true,
 			),
-			'uael-countdown'         => array(
-				'path'      => 'assets/' . $folder . '/uael-countdown' . $suffix . '.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
-			'uael-nav-menu'          => array(
-				'path'      => 'assets/' . $folder . '/uael-nav-menu' . $suffix . '.js',
-				'dep'       => array( 'jquery' ),
-				'in_footer' => true,
-			),
-			'uael-faq'               => array(
-				'path'      => 'assets/' . $folder . '/uael-faq' . $suffix . '.js',
+			'uael-slick'             => array(
+				'path'      => 'assets/lib/slick/slick.min.js',
 				'dep'       => array( 'jquery' ),
 				'in_footer' => true,
 			),
@@ -643,199 +653,19 @@ class UAEL_Config {
 	 * @since 0.0.1
 	 */
 	public static function get_widget_style() {
-		$folder = UAEL_Helper::get_css_folder();
-		$suffix = UAEL_Helper::get_css_suffix();
 
-		if ( UAEL_Helper::is_script_debug() ) {
-			$css_files = array(
-				'uael-info-box'          => array(
-					'path' => 'assets/css/modules/info-box.css',
-					'dep'  => array(),
-				),
-				'uael-heading'           => array(
-					'path' => 'assets/css/modules/heading.css',
-					'dep'  => array(),
-				),
-				'uael-ba-slider'         => array(
-					'path' => 'assets/css/modules/ba-slider.css',
-					'dep'  => array(),
-				),
-				'uael-buttons'           => array(
-					'path' => 'assets/css/modules/buttons.css',
-					'dep'  => array(),
-				),
-				'uael-modal-popup'       => array(
-					'path' => 'assets/css/modules/modal-popup.css',
-					'dep'  => array(),
-				),
-				'uael-offcanvas'         => array(
-					'path' => 'assets/css/modules/offcanvas.css',
-					'dep'  => array(),
-				),
-				'uael-content-toggle'    => array(
-					'path' => 'assets/css/modules/content-toggle.css',
-					'dep'  => array(),
-				),
-				'uael-caf-styler'        => array(
-					'path' => 'assets/css/modules/caf-styler.css',
-					'dep'  => array(),
-				),
-				'uael-business-hours'    => array(
-					'path' => 'assets/css/modules/business-hours.css',
-					'dep'  => array(),
-				),
-				'uael-cf7-styler'        => array(
-					'path' => 'assets/css/modules/cf-styler.css',
-					'dep'  => array(),
-				),
-				'uael-gf-styler'         => array(
-					'path' => 'assets/css/modules/gform-styler.css',
-					'dep'  => array(),
-				),
-				'uael-hotspot'           => array(
-					'path' => 'assets/css/modules/hotspot.css',
-					'dep'  => array(),
-				),
-				'uael-post'              => array(
-					'path' => 'assets/css/modules/post.css',
-					'dep'  => array(),
-				),
-				'uael-post-card'         => array(
-					'path' => 'assets/css/modules/post-card.css',
-					'dep'  => array(),
-				),
-				'uael-post-event'        => array(
-					'path' => 'assets/css/modules/post-event.css',
-					'dep'  => array(),
-				),
-				'uael-post-feed'         => array(
-					'path' => 'assets/css/modules/post-feed.css',
-					'dep'  => array(),
-				),
-				'uael-post-news'         => array(
-					'path' => 'assets/css/modules/post-news.css',
-					'dep'  => array(),
-				),
-				'uael-post-carousel'     => array(
-					'path' => 'assets/css/modules/post-carousel.css',
-					'dep'  => array(),
-				),
-				'uael-post-business'     => array(
-					'path' => 'assets/css/modules/post-business.css',
-					'dep'  => array(),
-				),
-				'uael-video-gallery'     => array(
-					'path' => 'assets/css/modules/video-gallery.css',
-					'dep'  => array(),
-				),
-				'uael-fancybox'          => array(
-					'path' => 'assets/css/modules/jquery.fancybox.min.css',
-					'dep'  => array(),
-				),
-				'uael-price-list'        => array(
-					'path' => 'assets/css/modules/price-list.css',
-					'dep'  => array(),
-				),
-				'uael-price-table'       => array(
-					'path' => 'assets/css/modules/price-table.css',
-					'dep'  => array(),
-				),
-				'uael-table'             => array(
-					'path' => 'assets/css/modules/table.css',
-					'dep'  => array(),
-				),
-				'uael-table-of-contents' => array(
-					'path' => 'assets/css/modules/table-of-contents.css',
-					'dep'  => array(),
-				),
-				'uael-image-gallery'     => array(
-					'path' => 'assets/css/modules/image-gallery.css',
-					'dep'  => array(),
-				),
-				'uael-common'            => array(
-					'path' => 'assets/css/modules/common.css',
-					'dep'  => array(),
-				),
-				'uael-timeline'          => array(
-					'path' => 'assets/css/modules/timeline.css',
-					'dep'  => array(),
-				),
-				'uael-video'             => array(
-					'path' => 'assets/css/modules/video.css',
-					'dep'  => array(),
-				),
-				'uael-team-member'       => array(
-					'path' => 'assets/css/modules/team-member.css',
-					'dep'  => array(),
-				),
-				'uael-wpf-styler'        => array(
-					'path' => 'assets/css/modules/wpf-styler.css',
-					'dep'  => array(),
-				),
-				'uael-countdown'         => array(
-					'path' => 'assets/css/modules/countdown.css',
-					'dep'  => array(),
-				),
-				'uael-business-reviews'  => array(
-					'path' => 'assets/css/modules/business-reviews.css',
-					'dep'  => array(),
-				),
-				'uael-particles'         => array(
-					'path' => 'assets/css/modules/particles.css',
-					'dep'  => array(),
-				),
-				'uael-registration-form' => array(
-					'path' => 'assets/css/modules/registration-form.css',
-					'dep'  => array(),
-				),
-				'uael-google-maps'       => array(
-					'path' => 'assets/css/modules/google-map.css',
-					'dep'  => array(),
-				),
-				'uael-login-form'        => array(
-					'path' => 'assets/css/modules/login-form.css',
-					'dep'  => array(),
-				),
-				'uael-how-to'            => array(
-					'path' => 'assets/css/modules/how-to.css',
-					'dep'  => array(),
-				),
-				'uael-nav-menu'          => array(
-					'path' => 'assets/css/modules/nav-menu.css',
-					'dep'  => array(),
-				),
-				'uael-faq'               => array(
-					'path' => 'assets/css/modules/uael-faq.css',
-					'dep'  => array(),
-				),
-				'uael-ff-styler'         => array(
-					'path' => 'assets/css/modules/ff-styler.css',
-					'dep'  => array(),
-				),
-			);
+		$is_rtl = is_rtl();
+
+		if ( ( defined( 'UAE_DEBUG' ) && UAE_DEBUG ) ) {
+			$css_files = UAEL_Helper::get_active_widget_stylesheet();
 		} else {
+			$path = $is_rtl ? 'assets/min-css/uael-frontend-rtl.min.css' : 'assets/min-css/uael-frontend.min.css';
+
 			$css_files = array(
 				'uael-frontend' => array(
-					'path' => 'assets/min-css/uael-frontend.min.css',
+					'path' => $path,
 					'dep'  => array(),
 				),
-			);
-		}
-
-		if ( is_rtl() ) {
-			$css_files = array(
-				'uael-frontend' => array(
-					// This is autogenerated rtl file.
-					'path' => 'assets/min-css/uael-frontend-rtl.min.css',
-					'dep'  => array(),
-				),
-			);
-		}
-
-		if ( class_exists( 'WooCommerce' ) ) {
-			$css_files['uael-woocommerce'] = array(
-				'path' => 'assets/' . $folder . '/uael-woocommerce' . $suffix . '.css',
-				'dep'  => array(),
 			);
 		}
 

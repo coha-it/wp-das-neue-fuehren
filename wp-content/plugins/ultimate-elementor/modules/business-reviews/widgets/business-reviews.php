@@ -92,7 +92,7 @@ class Business_Reviews extends Common_Widget {
 	public function get_script_depends() {
 		return array(
 			'uael-business-reviews',
-			'jquery-slick',
+			'uael-slick',
 		);
 	}
 
@@ -103,6 +103,16 @@ class Business_Reviews extends Common_Widget {
 	 * @access public
 	 */
 	public function _register_skins() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+		$this->register_skins();
+	}
+
+	/**
+	 * Register Skins.
+	 *
+	 * @since 1.29.0
+	 * @access public
+	 */
+	public function register_skins() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->add_skin( new Skins\Skin_Default( $this ) );
 		$this->add_skin( new Skins\Skin_Card( $this ) );
 		$this->add_skin( new Skins\Skin_Bubble( $this ) );
@@ -114,7 +124,7 @@ class Business_Reviews extends Common_Widget {
 	 * @since 1.13.0
 	 * @access public
 	 */
-	public function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	public function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_general_controls();
 		$this->register_content_grid_controls();

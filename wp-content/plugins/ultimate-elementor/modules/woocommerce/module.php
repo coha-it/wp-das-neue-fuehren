@@ -55,6 +55,7 @@ class Module extends Module_Base {
 			'Woo_Add_To_Cart',
 			'Woo_Categories',
 			'Woo_Products',
+			'Woo_Mini_Cart',
 		);
 	}
 
@@ -264,7 +265,11 @@ class Module extends Module_Base {
 		$quantity     = isset( $_POST['quantity'] ) ? sanitize_text_field( $_POST['quantity'] ) : 0;
 
 		if ( $variation_id ) {
-			WC()->cart->add_to_cart( $product_id, $quantity, $variation_id );
+			add_action( 'wp_loaded', array( 'WC_Form_Handler', 'add_to_cart_action' ), 20 );
+
+			if ( is_callable( array( 'WC_AJAX', 'get_refreshed_fragments' ) ) ) {
+				home_url() . \WC_Ajax::get_refreshed_fragments();
+			}
 		} else {
 			WC()->cart->add_to_cart( $product_id, $quantity );
 		}
@@ -301,6 +306,67 @@ class Module extends Module_Base {
 
 		add_action( 'wp_ajax_uael_get_products', array( $this, 'uael_get_products' ) );
 		add_action( 'wp_ajax_nopriv_uael_get_products', array( $this, 'uael_get_products' ) );
+
+		add_filter(
+			'woocommerce_add_to_cart_fragments',
+			function ( $fragments ) {
+				$fragments['div.uael-mc__btn-badge'] = '<div class="uael-mc__btn-badge">' . WC()->cart->get_cart_contents_count() . '</div>';
+
+				$fragments['span.uael-mc__btn-subtotal'] = '<span class="uael-mc__btn-subtotal">' . WC()->cart->get_cart_subtotal() . '</span>';
+
+				$fragments['div.uael-mc-dropdown__header-badge'] = '<div class="uael-mc-dropdown__header-badge">' . WC()->cart->get_cart_contents_count() . '</div>';
+
+				$fragments['span.uael-mc-dropdown__header-text'] = '<span class="uael-mc-dropdown__header-text">' . __( 'Subtotal: ', 'uael' ) . WC()->cart->get_cart_subtotal() . '</span>';
+
+				$fragments['div.uael-mc-modal__header-badge'] = '<div class="uael-mc-modal__header-badge">' . WC()->cart->get_cart_contents_count() . '</div>';
+
+				$fragments['span.uael-mc-modal__header-text'] = '<span class="uael-mc-modal__header-text">' . __( 'Subtotal: ', 'uael' ) . WC()->cart->get_cart_subtotal() . '</span>';
+
+				$fragments['div.uael-mc-offcanvas__header-badge'] = '<div class="uael-mc-offcanvas__header-badge">' . WC()->cart->get_cart_contents_count() . '</div>';
+
+				$fragments['span.uael-mc-offcanvas__header-text'] = '<span class="uael-mc-offcanvas__header-text">' . __( 'Subtotal: ', 'uael' ) . WC()->cart->get_cart_subtotal() . '</span>';
+
+				ob_start();
+				?>
+				<div class="uael-mc-dropdown__items">
+					<?php echo woocommerce_mini_cart();//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				</div>
+				<?php
+				$fragments['div.uael-mc-dropdown__items'] = ob_get_clean();
+				return $fragments;
+
+			}
+		);
+
+		add_filter(
+			'woocommerce_add_to_cart_fragments',
+			function ( $fragments ) {
+				ob_start();
+				?>
+				<div class="uael-mc-modal__items">
+					<?php echo woocommerce_mini_cart();//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				</div>
+				<?php
+				$fragments['div.uael-mc-modal__items'] = ob_get_clean();
+				return $fragments;
+
+			}
+		);
+
+		add_filter(
+			'woocommerce_add_to_cart_fragments',
+			function ( $fragments ) {
+				ob_start();
+				?>
+				<div class="uael-mc-offcanvas__items">
+					<?php echo woocommerce_mini_cart();//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				</div>
+				<?php
+				$fragments['div.uael-mc-offcanvas__items'] = ob_get_clean();
+				return $fragments;
+
+			}
+		);
 	}
 
 	/**
@@ -318,7 +384,7 @@ class Module extends Module_Base {
 		$style_id  = $_POST['skin'];
 
 		$elementor = \Elementor\Plugin::$instance;
-		$meta      = $elementor->db->get_plain_editor( $post_id );
+		$meta      = $elementor->documents->get( $post_id )->get_elements_data();
 
 		$widget_data = $this->find_element_recursive( $meta, $widget_id );
 

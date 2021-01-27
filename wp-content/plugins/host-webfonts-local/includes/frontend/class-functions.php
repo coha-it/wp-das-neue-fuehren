@@ -14,208 +14,207 @@
  * @url      : https://daan.dev
  * * * * * * * * * * * * * * * * * * * */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 class OMGF_Frontend_Functions
 {
-    const OMGF_STYLE_HANDLE = 'omgf-fonts';
-
-    /** @var OMGF_DB */
-    private $db;
-
-    /** @var string */
-    private $stylesheet_file;
-
-    /** @var string */
-    private $stylesheet_url;
-
-    /** @var bool $do_optimize */
-    private $do_optimize;
-
-    /**
-     * OMGF_Frontend_Functions constructor.
-     */
-    public function __construct()
-    {
-        $this->stylesheet_file = OMGF_FONTS_DIR . '/' . OMGF_FILENAME;
-        $this->stylesheet_url  = OMGF_FONTS_URL . '/' . OMGF_FILENAME;
-        $this->do_optimize     = $this->maybe_optimize_fonts();
-
-        // @formatter:off
-        add_action('wp_print_styles', [$this, 'is_remove_google_fonts_enabled'], PHP_INT_MAX - 1000);
-
-        if (file_exists($this->stylesheet_file)) {
-            add_action('wp_enqueue_scripts', [$this, 'enqueue_stylesheet'], OMGF_ENQUEUE_ORDER);
-        }
-
-        if (OMGF_AUTO_DETECT_ENABLED) {
-            add_action('wp_print_styles', [$this, 'auto_detect_fonts'], PHP_INT_MAX - 10000);
-        }
-
-        $this->db = new OMGF_DB();
-        // Needs to be loaded before stylesheet.
-        add_action('wp_head', [$this, 'preload_fonts'], 1);
-        // @formatter:on
-    }
-
-    /**
-     * Check if the Remove Google Fonts option is enabled.
-     */
-    public function is_remove_google_fonts_enabled()
-    {
-        if (!$this->do_optimize) {
-            return;
-        }
-
-        if (OMGF_REMOVE_GFONTS == 'on' && !is_admin()) {
-            // @formatter:off
-            add_action('wp_print_styles', [$this, 'remove_google_fonts'], PHP_INT_MAX - 500);
-            // Theme: Enfold
-            add_filter('avf_output_google_webfonts_script', function() { return false; });
-            // @formatter:on
-        }
-    }
-
-    /**
-     * Should we optimize for logged in editors/administrators?
-     *
-     * @return bool
-     */
-    private function maybe_optimize_fonts()
-    {
-        if (!OMGF_OPTIMIZE_EDIT_ROLES && current_user_can('edit_pages')) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Automatically dequeues any stylesheets loaded from fonts.gstatic.com or
-     * fonts.googleapis.com. Also checks for stylesheets dependant on Google Fonts and
-     * re-enqueues and registers them.
-     */
-    public function remove_google_fonts()
-    {
-        if (apply_filters('omgf_pro_auto_remove_enabled', false)) {
-            return;
-        }
-
-        global $wp_styles;
-
-        $registered = $wp_styles->registered;
-
-        $fonts = $this->detect_registered_google_fonts($registered);
-
-        $dependencies = array_filter(
-            $registered, function ($contents) use ($fonts) {
-            return !empty(array_intersect(array_keys($fonts), $contents->deps))
-                   && $contents->handle !== 'wp-block-editor';
-            }
-        );
-
-        foreach ($fonts as $font) {
-            wp_deregister_style($font->handle);
-            wp_dequeue_style($font->handle);
-        }
-
-        foreach ($dependencies as $dependency) {
-            $deps = array_diff($dependency->deps, array_keys($fonts));
-            wp_deregister_style($dependency->handle);
-            wp_dequeue_style($dependency->handle);
-
-            wp_register_style($dependency->handle, $dependency->src, $deps + [ 'omgf-fonts' ]);
-            wp_enqueue_style($dependency->handle, $dependency->src, $deps + [ 'omgf-fonts' ]);
-        }
-    }
-
-    /**
-     * @param $registered_styles
-     *
-     * @return array
-     */
-    private function detect_registered_google_fonts($registered_styles)
-    {
-        return array_filter(
-            $registered_styles,
-            function ($contents) {
-                return strpos($contents->src, 'fonts.googleapis.com/css') !== false
-                       || strpos($contents->src, 'fonts.gstatic.com') !== false;
-            }
-        );
-    }
-
-    /**
-     * Once the stylesheet is generated. We can enqueue it.
-     */
-    public function enqueue_stylesheet()
-    {
-        if (!$this->do_optimize) {
-            return;
-        }
-
-        if (OMGF_WEB_FONT_LOADER) {
-            $this->get_template('web-font-loader');
-        } else {
-            wp_enqueue_style(self::OMGF_STYLE_HANDLE, OMGF_FONTS_URL . '/' . OMGF_FILENAME, array(), (OMGF_REMOVE_VERSION ? null : OMGF_STATIC_VERSION));
-        }
-    }
-
-    /**
-     * @param $name
-     */
-    public function get_template($name)
-    {
-        include OMGF_PLUGIN_DIR . 'templates/frontend-' . $name . '.phtml';
-    }
-
-    /**
-     * Saves the used Google Fonts in the database, so it can be used by auto-detection.
-     */
-    public function auto_detect_fonts()
-    {
-        if (apply_filters('omgf_pro_auto_detect_enabled', false)) {
-            return;
-        }
-
-        global $wp_styles;
-
-        $registered = $wp_styles->registered;
-
-        $fonts = $this->detect_registered_google_fonts($registered);
-
-        foreach ($fonts as $font) {
-            $google_fonts_src[] = $font->src;
-        }
-
-        update_option(OMGF_Admin_Settings::OMGF_SETTING_DETECTED_FONTS, json_encode($google_fonts_src));
-    }
-
-    /**
-     * Collect and render preload fonts in wp_head().
-     */
-    public function preload_fonts()
-    {
-        if (!$this->do_optimize) {
-            return;
-        }
-
-        $preload_fonts = $this->db->get_preload_fonts();
-
-        if (!$preload_fonts) {
-            return;
-        }
-
-        foreach ($preload_fonts as $font) {
-            $font_urls[] = array_values(array_filter((array) $font, function ($properties) {
-                return strpos($properties, 'woff2_local') !== false;
-            }, ARRAY_FILTER_USE_KEY));
-        }
-
-        $urls = array_reduce($font_urls, 'array_merge', []);
-
-        foreach ($urls as $url) {
-            echo "<link rel='preload' href='$url' as='font' type='font/" . pathinfo($url, PATHINFO_EXTENSION) . "' crossorigin />\n";
-        }
-    }
+	const OMGF_STYLE_HANDLE = 'omgf-fonts';
+	
+	/** @var bool $do_optimize */
+	private $do_optimize;
+	
+	/**
+	 * OMGF_Frontend_Functions constructor.
+	 */
+	public function __construct () {
+		$this->do_optimize = $this->maybe_optimize_fonts();
+		
+		add_filter( 'content_url', [ $this, 'rewrite_url' ], 10, 2 );
+		add_action( 'wp_head', [ $this, 'add_preloads' ], 3 );
+		add_action( 'wp_print_styles', [ $this, 'process_fonts' ], PHP_INT_MAX - 1000 );
+	}
+	
+	/**
+	 * Should we optimize for logged in editors/administrators?
+	 *
+	 * @return bool
+	 */
+	private function maybe_optimize_fonts () {
+		if ( ! OMGF_OPTIMIZE_EDIT_ROLES && current_user_can( 'edit_pages' ) ) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * @param $url
+	 * @param $path
+	 *
+	 * @return mixed
+	 */
+	public function rewrite_url ( $url, $path ) {
+		/**
+		 * Exit early if this isn't requested by OMGF.
+		 */
+		if ( strpos( $url, OMGF_CACHE_PATH ) === false ) {
+			return $url;
+		}
+		
+		/**
+		 * If Relative URLs is enabled, overwrite URL with Path and continue execution.
+		 */
+		if ( OMGF_RELATIVE_URL ) {
+			$content_dir = str_replace( site_url(), '', content_url() );
+			
+			$url = $content_dir . $path;
+		}
+		
+		if ( OMGF_CDN_URL ) {
+			$url = str_replace( site_url(), OMGF_CDN_URL, $url );
+		}
+		
+		if ( OMGF_CACHE_URI ) {
+			$url = str_replace( OMGF_CACHE_PATH, OMGF_CACHE_URI, $url );
+		}
+		
+		return $url;
+	}
+	
+	/**
+	 * TODO: When setting all preloads at once (different stylesheet handles) combined with unloads, not all URLs are rewritten with their cache keys properly.
+	 *       When configured handle by handle, it works fine. PHP multi-threading issues?
+	 */
+	public function add_preloads () {
+		$preloaded_fonts = omgf_init()::preloaded_fonts();
+		
+		if ( ! $preloaded_fonts ) {
+			return;
+		}
+		
+		$stylesheets = omgf_init()::optimized_fonts();
+		
+		foreach ( $stylesheets as $stylesheet => $fonts ) {
+			foreach ( $fonts as $font ) {
+				$preloads_stylesheet = $preloaded_fonts [ $stylesheet ] ?? [];
+				
+				if ( ! in_array( $font->id, array_keys( $preloads_stylesheet ) ) ) {
+					continue;
+				}
+				
+				$font_id          = $font->id;
+				$preload_variants = array_filter(
+					$font->variants,
+					function ( $variant ) use ( $preloads_stylesheet, $font_id ) {
+						return in_array( $variant->id, $preloads_stylesheet[ $font_id ] );
+					}
+				);
+				
+				foreach ( $preload_variants as $variant ) {
+					$url = $variant->woff2;
+					echo "<link id='omgf-preload' rel='preload' href='$url' as='font' type='font/woff2' crossorigin />\n";
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Check if the Remove Google Fonts option is enabled.
+	 */
+	public function process_fonts () {
+		if ( ! $this->do_optimize ) {
+			return;
+		}
+		
+		if ( is_admin() ) {
+			return;
+		}
+		
+		if ( apply_filters( 'omgf_pro_advanced_processing_enabled', false ) ) {
+			return;
+		}
+		
+		switch ( OMGF_FONT_PROCESSING ) {
+			case 'remove':
+				add_action( 'wp_print_styles', [ $this, 'remove_registered_fonts' ], PHP_INT_MAX - 500 );
+				break;
+			default:
+				add_action( 'wp_print_styles', [ $this, 'replace_registered_fonts' ], PHP_INT_MAX - 500 );
+		}
+	}
+	
+	/**
+	 * This function contains a nice little hack, to avoid messing with potential dependency issues. We simply set the source to an empty string!
+	 */
+	public function remove_registered_fonts () {
+		global $wp_styles;
+		
+		$registered = $wp_styles->registered;
+		$fonts      = apply_filters( 'omgf_auto_remove', $this->detect_registered_google_fonts( $registered ) );
+		
+		foreach ( $fonts as $handle => $font ) {
+			$wp_styles->registered [ $handle ]->src = '';
+		}
+	}
+	
+	/**
+	 * Retrieve stylesheets from Google Fonts' API and modify the stylesheet for local storage.
+	 */
+	public function replace_registered_fonts () {
+		global $wp_styles;
+		
+		$registered           = $wp_styles->registered;
+		$fonts                = apply_filters( 'omgf_auto_replace', $this->detect_registered_google_fonts( $registered ) );
+		$unloaded_stylesheets = omgf_init()::unloaded_stylesheets();
+		$unloaded_fonts       = omgf_init()::unloaded_fonts();
+		
+		foreach ( $fonts as $handle => $font ) {
+			// If this stylesheet has been marked for unload, empty the src and skip out early.
+			if ( in_array( $handle, $unloaded_stylesheets ) ) {
+				$wp_styles->registered[ $handle ]->src = '';
+				
+				continue;
+			}
+			
+			$updated_handle = $handle;
+			
+			if ( $unloaded_fonts ) {
+				$updated_handle = omgf_init()::get_cache_key($handle);
+			}
+			
+			$cached_file = OMGF_CACHE_PATH . '/' . $updated_handle . "/$updated_handle.css";
+			
+			if ( file_exists( WP_CONTENT_DIR . $cached_file ) ) {
+				$wp_styles->registered[ $handle ]->src = content_url( $cached_file );
+				
+				continue;
+			}
+			
+			if ( OMGF_OPTIMIZATION_MODE == 'auto' || ( OMGF_OPTIMIZATION_MODE == 'manual' && isset( $_GET['omgf_optimize'] ) ) ) {
+				$api_url  = str_replace( [ 'http:', 'https:' ], '', site_url( '/wp-json/omgf/v1/download/' ) );
+				$protocol = '';
+				
+				if ( substr( $font->src, 0, 2 ) == '//' ) {
+					$protocol = 'https:';
+				}
+				
+				$wp_styles->registered[ $handle ]->src = $protocol . str_replace( '//fonts.googleapis.com/', $api_url, $font->src ) . "&handle=$updated_handle&original_handle=$handle";
+			}
+		}
+	}
+	
+	/**
+	 * @param $registered_styles
+	 *
+	 * @return array
+	 */
+	private function detect_registered_google_fonts ( $registered_styles ) {
+		return array_filter(
+			$registered_styles,
+			function ( $contents ) {
+				return strpos( $contents->src, 'fonts.googleapis.com/css' ) !== false
+				       || strpos( $contents->src, 'fonts.gstatic.com' ) !== false;
+			}
+		);
+	}
 }

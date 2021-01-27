@@ -14,6 +14,7 @@ use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Background;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
+use UltimateElementor\Base\Module_Base;
 use Elementor\Modules\DynamicTags\Module as TagsModule;
 
 use UltimateElementor\Base\Common_Widget;
@@ -102,6 +103,8 @@ class Woo_Add_To_Cart extends Common_Widget {
 		$this->register_content_button_controls();
 		/* Button Style */
 		$this->register_style_button_controls();
+		$this->register_quantity_style_controls();
+		$this->register_variation_style_controls();
 		$this->register_helpful_information();
 	}
 
@@ -126,6 +129,9 @@ class Woo_Add_To_Cart extends Common_Widget {
 					'label'     => __( 'Select Product', 'uael' ),
 					'type'      => 'uael-query-posts',
 					'post_type' => 'product',
+					'condition' => array(
+						'enable_single_product_page!' => 'yes',
+					),
 				)
 			);
 
@@ -141,6 +147,9 @@ class Woo_Add_To_Cart extends Common_Widget {
 					'label_off'    => __( 'No', 'uael' ),
 					'return_value' => 'yes',
 					'default'      => '',
+					'condition'    => array(
+						'enable_single_product_page!' => 'yes',
+					),
 				)
 			);
 
@@ -153,7 +162,8 @@ class Woo_Add_To_Cart extends Common_Widget {
 						'active' => true,
 					),
 					'condition' => array(
-						'dynamic_product' => 'yes',
+						'dynamic_product'             => 'yes',
+						'enable_single_product_page!' => 'yes',
 					),
 				)
 			);
@@ -161,11 +171,25 @@ class Woo_Add_To_Cart extends Common_Widget {
 		}
 
 			$this->add_control(
+				'enable_single_product_page',
+				array(
+					'label'        => __( 'Use Default WooCommerce Template', 'uael' ),
+					'type'         => Controls_Manager::SWITCHER,
+					'return_value' => 'yes',
+					'default'      => '',
+					'description'  => __( 'Enable this to use the Add To Cart default template by WooCommerce', 'uael' ),
+				)
+			);
+
+			$this->add_control(
 				'quantity',
 				array(
-					'label'   => __( 'Quantity', 'uael' ),
-					'type'    => Controls_Manager::NUMBER,
-					'default' => 1,
+					'label'     => __( 'Quantity', 'uael' ),
+					'type'      => Controls_Manager::NUMBER,
+					'default'   => 1,
+					'condition' => array(
+						'enable_single_product_page!' => 'yes',
+					),
 				)
 			);
 
@@ -177,6 +201,9 @@ class Woo_Add_To_Cart extends Common_Widget {
 					'return_value' => 'yes',
 					'default'      => '',
 					'description'  => __( 'Enable this option to redirect cart page after the product gets added to cart', 'uael' ),
+					'condition'    => array(
+						'enable_single_product_page!' => 'yes',
+					),
 				)
 			);
 
@@ -200,11 +227,14 @@ class Woo_Add_To_Cart extends Common_Widget {
 			$this->add_control(
 				'btn_text',
 				array(
-					'label'   => __( 'Text', 'uael' ),
-					'type'    => Controls_Manager::TEXT,
-					'default' => __( 'Add to cart', 'uael' ),
-					'dynamic' => array(
+					'label'     => __( 'Text', 'uael' ),
+					'type'      => Controls_Manager::TEXT,
+					'default'   => __( 'Add to cart', 'uael' ),
+					'dynamic'   => array(
 						'active' => true,
+					),
+					'condition' => array(
+						'enable_single_product_page!' => 'yes',
 					),
 				)
 			);
@@ -238,15 +268,18 @@ class Woo_Add_To_Cart extends Common_Widget {
 			$this->add_control(
 				'btn_size',
 				array(
-					'label'   => __( 'Size', 'uael' ),
-					'type'    => Controls_Manager::SELECT,
-					'default' => 'sm',
-					'options' => array(
+					'label'     => __( 'Size', 'uael' ),
+					'type'      => Controls_Manager::SELECT,
+					'default'   => 'sm',
+					'options'   => array(
 						'xs' => __( 'Extra Small', 'uael' ),
 						'sm' => __( 'Small', 'uael' ),
 						'md' => __( 'Medium', 'uael' ),
 						'lg' => __( 'Large', 'uael' ),
 						'xl' => __( 'Extra Large', 'uael' ),
+					),
+					'condition' => array(
+						'enable_single_product_page!' => 'yes',
 					),
 				)
 			);
@@ -258,6 +291,9 @@ class Woo_Add_To_Cart extends Common_Widget {
 					'size_units' => array( 'px', 'em', '%' ),
 					'selectors'  => array(
 						'{{WRAPPER}} .elementor-button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+					'condition'  => array(
+						'enable_single_product_page!' => 'yes',
 					),
 				)
 			);
@@ -274,15 +310,21 @@ class Woo_Add_To_Cart extends Common_Widget {
 						'value'   => 'fa fa-shopping-cart',
 						'library' => 'fa-solid',
 					),
+					'condition'        => array(
+						'enable_single_product_page!' => 'yes',
+					),
 				)
 			);
 		} else {
 			$this->add_control(
 				'btn_icon',
 				array(
-					'label'   => __( 'Icon', 'uael' ),
-					'type'    => Controls_Manager::ICON,
-					'default' => 'fa fa-shopping-cart',
+					'label'     => __( 'Icon', 'uael' ),
+					'type'      => Controls_Manager::ICON,
+					'default'   => 'fa fa-shopping-cart',
+					'condition' => array(
+						'enable_single_product_page!' => 'yes',
+					),
 				)
 			);
 		}
@@ -297,12 +339,17 @@ class Woo_Add_To_Cart extends Common_Widget {
 						'right' => __( 'After', 'uael' ),
 					),
 					'conditions' => array(
-						'relation' => 'or',
+						'relation' => 'and',
 						'terms'    => array(
 							array(
 								'name'     => UAEL_Helper::get_new_icon_name( 'btn_icon' ),
 								'operator' => '!=',
 								'value'    => '',
+							),
+							array(
+								'name'     => 'enable_single_product_page',
+								'operator' => '!=',
+								'value'    => 'yes',
 							),
 						),
 					),
@@ -319,14 +366,20 @@ class Woo_Add_To_Cart extends Common_Widget {
 						),
 					),
 					'conditions' => array(
-						'relation' => 'or',
+						'relation' => 'and',
 						'terms'    => array(
 							array(
 								'name'     => UAEL_Helper::get_new_icon_name( 'btn_icon' ),
 								'operator' => '!=',
 								'value'    => '',
 							),
+							array(
+								'name'     => 'enable_single_product_page',
+								'operator' => '!=',
+								'value'    => 'yes',
+							),
 						),
+
 					),
 					'selectors'  => array(
 						'{{WRAPPER}} .elementor-align-icon-right' => 'margin-left: {{SIZE}}{{UNIT}};',
@@ -357,7 +410,7 @@ class Woo_Add_To_Cart extends Common_Widget {
 			Group_Control_Typography::get_type(),
 			array(
 				'name'     => 'button_typography',
-				'selector' => '{{WRAPPER}} .uael-button',
+				'selector' => '{{WRAPPER}} .uael-button,{{WRAPPER}} .uael-add-to-cart button',
 				'scheme'   => Scheme_Typography::TYPOGRAPHY_4,
 			)
 		);
@@ -377,7 +430,7 @@ class Woo_Add_To_Cart extends Common_Widget {
 						'label'     => __( 'Text Color', 'uael' ),
 						'type'      => Controls_Manager::COLOR,
 						'selectors' => array(
-							'{{WRAPPER}} .uael-button' => 'color: {{VALUE}};',
+							'{{WRAPPER}} .uael-button,{{WRAPPER}} .uael-add-to-cart button' => 'color: {{VALUE}};',
 						),
 					)
 				);
@@ -388,7 +441,7 @@ class Woo_Add_To_Cart extends Common_Widget {
 						'name'           => 'button_background_color',
 						'label'          => __( 'Background Color', 'uael' ),
 						'types'          => array( 'classic', 'gradient' ),
-						'selector'       => '{{WRAPPER}} .uael-button',
+						'selector'       => '{{WRAPPER}} .uael-button,{{WRAPPER}} .uael-add-to-cart button',
 						'fields_options' => array(
 							'color' => array(
 								'scheme' => array(
@@ -406,7 +459,7 @@ class Woo_Add_To_Cart extends Common_Widget {
 						'name'        => 'button_border',
 						'placeholder' => '',
 						'default'     => '',
-						'selector'    => '{{WRAPPER}} .uael-button',
+						'selector'    => '{{WRAPPER}} .uael-button,{{WRAPPER}} .uael-add-to-cart button',
 					)
 				);
 
@@ -417,7 +470,22 @@ class Woo_Add_To_Cart extends Common_Widget {
 						'type'       => Controls_Manager::DIMENSIONS,
 						'size_units' => array( 'px', '%' ),
 						'selectors'  => array(
-							'{{WRAPPER}} .uael-button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							'{{WRAPPER}} .uael-button,{{WRAPPER}} .uael-add-to-cart button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+						),
+					)
+				);
+
+				$this->add_responsive_control(
+					'btn_atc_padding',
+					array(
+						'label'      => __( 'Padding', 'uael' ),
+						'type'       => Controls_Manager::DIMENSIONS,
+						'size_units' => array( 'px', 'em', '%' ),
+						'selectors'  => array(
+							'.woocommerce {{WRAPPER}} .uael-add-to-cart form.cart .button.single_add_to_cart_button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+						),
+						'condition'  => array(
+							'enable_single_product_page' => 'yes',
 						),
 					)
 				);
@@ -426,7 +494,7 @@ class Woo_Add_To_Cart extends Common_Widget {
 					Group_Control_Box_Shadow::get_type(),
 					array(
 						'name'     => 'button_box_shadow',
-						'selector' => '{{WRAPPER}} .uael-button',
+						'selector' => '{{WRAPPER}} .uael-button,{{WRAPPER}} .uael-add-to-cart button',
 					)
 				);
 
@@ -441,6 +509,9 @@ class Woo_Add_To_Cart extends Common_Widget {
 						'scheme'    => array(
 							'type'  => Scheme_Color::get_type(),
 							'value' => Scheme_Color::COLOR_4,
+						),
+						'condition' => array(
+							'enable_single_product_page!' => 'yes',
 						),
 					)
 				);
@@ -459,7 +530,7 @@ class Woo_Add_To_Cart extends Common_Widget {
 						'label'     => __( 'Text Hover Color', 'uael' ),
 						'type'      => Controls_Manager::COLOR,
 						'selectors' => array(
-							'{{WRAPPER}} .uael-button:focus, {{WRAPPER}} .uael-button:hover' => 'color: {{VALUE}};',
+							'{{WRAPPER}} .uael-button:focus, {{WRAPPER}} .uael-button:hover,{{WRAPPER}} .uael-add-to-cart button:hover' => 'color: {{VALUE}};',
 						),
 					)
 				);
@@ -470,7 +541,7 @@ class Woo_Add_To_Cart extends Common_Widget {
 						'name'           => 'button_background_hover_color',
 						'label'          => __( 'Background Color', 'uael' ),
 						'types'          => array( 'classic', 'gradient' ),
-						'selector'       => '{{WRAPPER}} .uael-button:focus, {{WRAPPER}} .uael-button:hover',
+						'selector'       => '{{WRAPPER}} .uael-button:focus, {{WRAPPER}} .uael-button:hover,{{WRAPPER}} .uael-add-to-cart button:hover',
 						'fields_options' => array(
 							'color' => array(
 								'scheme' => array(
@@ -495,7 +566,7 @@ class Woo_Add_To_Cart extends Common_Widget {
 							'button_border_border!' => '',
 						),
 						'selectors' => array(
-							'{{WRAPPER}} .uael-button:focus, {{WRAPPER}} .uael-button:hover' => 'border-color: {{VALUE}};',
+							'{{WRAPPER}} .uael-button:focus, {{WRAPPER}} .uael-button:hover,{{WRAPPER}} .uael-add-to-cart button:hover' => 'border-color: {{VALUE}};',
 						),
 					)
 				);
@@ -503,8 +574,11 @@ class Woo_Add_To_Cart extends Common_Widget {
 				$this->add_control(
 					'hover_animation',
 					array(
-						'label' => __( 'Hover Animation', 'uael' ),
-						'type'  => Controls_Manager::HOVER_ANIMATION,
+						'label'     => __( 'Hover Animation', 'uael' ),
+						'type'      => Controls_Manager::HOVER_ANIMATION,
+						'condition' => array(
+							'enable_single_product_page!' => 'yes',
+						),
 					)
 				);
 
@@ -520,9 +594,22 @@ class Woo_Add_To_Cart extends Common_Widget {
 							'type'  => Scheme_Color::get_type(),
 							'value' => Scheme_Color::COLOR_3,
 						),
+						'condition' => array(
+							'enable_single_product_page!' => 'yes',
+						),
 					)
 				);
 
+				$this->add_group_control(
+					Group_Control_Box_Shadow::get_type(),
+					array(
+						'name'      => 'button_hover_box_shadow',
+						'selector'  => '{{WRAPPER}} .uael-button,{{WRAPPER}} .uael-add-to-cart button:hover',
+						'condition' => array(
+							'enable_single_product_page' => 'yes',
+						),
+					)
+				);
 			$this->end_controls_tab();
 
 		$this->end_controls_tabs();
@@ -530,6 +617,333 @@ class Woo_Add_To_Cart extends Common_Widget {
 		$this->end_controls_section();
 	}
 
+	/**
+	 * Register Style Button Controls.
+	 *
+	 * @since 1.29.0
+	 * @access protected
+	 */
+	protected function register_quantity_style_controls() {
+		$this->start_controls_section(
+			'section_atc_quantity_style',
+			array(
+				'label'     => __( 'Quantity', 'uael' ),
+				'tab'       => Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					'enable_single_product_page' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'spacing',
+			array(
+				'label'      => __( 'Spacing', 'uael' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', 'em' ),
+				'selectors'  => array(
+					'body:not(.rtl) {{WRAPPER}} .uael-add-to-cart .quantity + .button' => 'margin-left: {{SIZE}}{{UNIT}}',
+					'body.rtl {{WRAPPER}} .uael-add-to-cart .quantity + .button' => 'margin-right: {{SIZE}}{{UNIT}}',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'quantity_typography',
+				'selector' => '{{WRAPPER}} .uael-add-to-cart .quantity .qty',
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'     => 'quantity_border',
+				'selector' => '{{WRAPPER}} .uael-add-to-cart .quantity .qty',
+				'exclude'  => array( 'color' ),
+			)
+		);
+
+		$this->add_control(
+			'quantity_border_radius',
+			array(
+				'label'     => __( 'Border Radius', 'uael' ),
+				'type'      => Controls_Manager::DIMENSIONS,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-add-to-cart .quantity .qty' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'quantity_padding',
+			array(
+				'label'      => __( 'Padding', 'uael' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', 'em' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-add-to-cart .quantity .qty' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->start_controls_tabs( 'quantity_style_tabs' );
+
+		$this->start_controls_tab(
+			'quantity_style_normal',
+			array(
+				'label' => __( 'Normal', 'uael' ),
+			)
+		);
+
+		$this->add_control(
+			'quantity_text_color',
+			array(
+				'label'     => __( 'Text Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-add-to-cart .quantity .qty' => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'quantity_bg_color',
+			array(
+				'label'     => __( 'Background Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-add-to-cart .quantity .qty' => 'background-color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'quantity_border_color',
+			array(
+				'label'     => __( 'Border Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-add-to-cart .quantity .qty' => 'border-color: {{VALUE}}',
+				),
+				'condition' => array(
+					'enable_single_product_page' => 'yes',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			array(
+				'name'     => 'quantity_box_shadow',
+				'selector' => '{{WRAPPER}} .uael-add-to-cart .quantity .qty',
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'quantity_style_focus',
+			array(
+				'label' => __( 'Focus', 'uael' ),
+			)
+		);
+
+		$this->add_control(
+			'quantity_text_color_focus',
+			array(
+				'label'     => __( 'Text Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-add-to-cart .quantity .qty:focus' => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'quantity_bg_color_focus',
+			array(
+				'label'     => __( 'Background Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-add-to-cart .quantity .qty:focus' => 'background-color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'quantity_border_color_focus',
+			array(
+				'label'     => __( 'Border Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-add-to-cart .quantity .qty:focus' => 'border-color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'quantity_transition',
+			array(
+				'label'     => __( 'Transition Duration', 'uael' ),
+				'type'      => Controls_Manager::SLIDER,
+				'default'   => array(
+					'size' => 0.2,
+				),
+				'range'     => array(
+					'px' => array(
+						'max'  => 2,
+						'step' => 0.1,
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .uael-add-to-cart .quantity .qty' => 'transition: all {{SIZE}}s',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+		$this->end_controls_section();
+	}
+	/**
+	 * Register Style Button Controls.
+	 *
+	 * @since 1.29.0
+	 * @access protected
+	 */
+	protected function register_variation_style_controls() {
+		$this->start_controls_section(
+			'section_atc_variations_style',
+			array(
+				'label'     => __( 'Variations', 'uael' ),
+				'tab'       => Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					'enable_single_product_page' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'variations_width',
+			array(
+				'label'      => __( 'Width', 'uael' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( '%' ),
+				'default'    => array(
+					'unit' => '%',
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-add-to-cart form.cart .variations' => 'width: {{SIZE}}{{UNIT}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'variations_spacing',
+			array(
+				'label'     => __( 'Spacing', 'uael' ),
+				'type'      => Controls_Manager::SLIDER,
+				'selectors' => array(
+					'.woocommerce {{WRAPPER}} .uael-add-to-cart form.cart .variations' => 'margin-bottom: {{SIZE}}{{UNIT}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'heading_variations_label_style',
+			array(
+				'label'     => __( 'Label', 'uael' ),
+				'type'      => Controls_Manager::HEADING,
+				'separator' => 'before',
+			)
+		);
+
+		$this->add_control(
+			'variations_label_color_focus',
+			array(
+				'label'     => __( 'Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'.woocommerce {{WRAPPER}} .uael-add-to-cart form.cart table.variations label' => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'variations_label_typography',
+				'selector' => '.woocommerce {{WRAPPER}} .uael-add-to-cart form.cart table.variations label',
+			)
+		);
+
+		$this->add_control(
+			'heading_variations_select_style',
+			array(
+				'label'     => __( 'Select field', 'uael' ),
+				'type'      => Controls_Manager::HEADING,
+				'separator' => 'before',
+			)
+		);
+
+		$this->add_control(
+			'variations_select_color',
+			array(
+				'label'     => __( 'Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'.woocommerce {{WRAPPER}} .uael-add-to-cart form.cart table.variations td.value select' => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'variations_select_bg_color',
+			array(
+				'label'     => __( 'Background Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'.woocommerce {{WRAPPER}} .uael-add-to-cart form.cart table.variations td.value select' => 'background-color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'variations_select_border_color',
+			array(
+				'label'     => __( 'Border Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'.woocommerce {{WRAPPER}} .uael-add-to-cart form.cart table.variations td.value select' => 'border: 1px solid {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'variations_select_typography',
+				'selector' => '.woocommerce {{WRAPPER}} .uael-add-to-cart form.cart table.variations td.value select, .woocommerce div.product.elementor{{WRAPPER}} .uael-add-to-cart form.cart table.variations td.value:before',
+			)
+		);
+
+		$this->add_control(
+			'variations_select_border_radius',
+			array(
+				'label'     => __( 'Border Radius', 'uael' ),
+				'type'      => Controls_Manager::SLIDER,
+				'selectors' => array(
+					'.woocommerce {{WRAPPER}} .uael-add-to-cart form.cart table.variations td.value select' => 'border-radius: {{SIZE}}{{UNIT}}',
+				),
+			)
+		);
+
+		$this->end_controls_section();
+	}
 	/**
 	 * Helpful Information.
 	 *
@@ -588,7 +1002,32 @@ class Woo_Add_To_Cart extends Common_Widget {
 
 		$product = ! empty( $product_data ) && in_array( $product_data->post_type, array( 'product', 'product_variation' ), true ) ? wc_setup_product_data( $product_data ) : false;
 
-		if ( $product ) {
+		if ( 'yes' === $settings['enable_single_product_page'] ) {
+
+			if ( ! is_product() ) { ?>
+				<span class='uael-add-to-cart-error-message'>
+				<?php
+					echo '<div class="elementor-alert elementor-alert-warning">';
+					echo esc_attr__( 'Please enable the option on Single Product Page.', 'uael' );
+					echo '</div>';
+				?>
+				</span>
+				<?php
+			} else {
+				global $product;
+				$product = wc_get_product();
+
+				if ( empty( $product ) ) {
+					return;
+				}
+
+				?>
+				<div class="uael-add-to-cart" data-enable-feature="<?php echo wp_kses_post( $settings['enable_single_product_page'] ); ?>">
+					<?php woocommerce_template_single_add_to_cart(); ?>
+				</div>
+				<?php
+			}
+		} elseif ( $product ) {
 
 			$product_id   = $product->get_id();
 			$product_type = $product->get_type();

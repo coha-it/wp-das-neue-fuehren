@@ -39,70 +39,8 @@ if ( ! class_exists( 'Astra_Nav_Menu_Above_Header_Colors' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option: Above Header Megamenu Styling
-				 */
-				array(
-					'name'      => ASTRA_THEME_SETTINGS . '[above-header-megamenu-colors]',
-					'default'   => astra_get_option( 'above-header-megamenu-colors' ),
-					'type'      => 'control',
-					'control'   => 'ast-settings-group',
-					'title'     => __( 'Mega Menu Column Heading', 'astra-addon' ),
-					'section'   => 'section-above-header',
-					'transport' => 'postMessage',
-					'priority'  => 131,
-					'required'  => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[above-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[above-header-section-2]', '==', 'menu' ),
-						),
-						'operator'   => 'OR',
-					),
-				),
-
-				// Option: Megamenu Heading Color.
-				array(
-					'type'      => 'sub-control',
-					'control'   => 'ast-color',
-					'transport' => 'postMessage',
-					'name'      => 'above-header-megamenu-heading-color',
-					'parent'    => ASTRA_THEME_SETTINGS . '[above-header-megamenu-colors]',
-					'section'   => 'section-above-header',
-					'default'   => astra_get_option( 'above-header-megamenu-heading-color' ),
-					'title'     => __( 'Color', 'astra-addon' ),
-					'tab'       => __( 'Normal', 'astra-addon' ),
-				),
-
-				// Option: Megamenu Heading Hover Color.
-				array(
-					'type'      => 'sub-control',
-					'control'   => 'ast-color',
-					'section'   => 'section-above-header',
-					'transport' => 'postMessage',
-					'name'      => 'above-header-megamenu-heading-h-color',
-					'parent'    => ASTRA_THEME_SETTINGS . '[above-header-megamenu-colors]',
-					'default'   => astra_get_option( 'above-header-megamenu-heading-h-color' ),
-					'title'     => __( 'Color', 'astra-addon' ),
-					'tab'       => __( 'Hover', 'astra-addon' ),
-				),
-
-				/**
 				 * Sticky Above Header Colors
 				 */
-
-				/**
-				 * Option: Sticky Header Above Menu Color Group
-				 */
-				array(
-					'name'            => ASTRA_THEME_SETTINGS . '[sticky-header-above-mega-menus-colors]',
-					'default'         => astra_get_option( 'sticky-header-above-mega-menus-colors' ),
-					'type'            => 'control',
-					'control'         => 'ast-settings-group',
-					'title'           => __( 'Mega Menu Column Heading', 'astra-addon' ),
-					'section'         => 'section-sticky-header',
-					'transport'       => 'postMessage',
-					'priority'        => 70,
-					'active_callback' => 'Astra_Sticky_Header_Configs::is_header_section_active',
-				),
 
 				// Option: Megamenu Heading Color.
 				array(
@@ -116,12 +54,18 @@ if ( ! class_exists( 'Astra_Nav_Menu_Above_Header_Colors' ) ) {
 					'name'      => 'sticky-above-header-megamenu-heading-color',
 					'default'   => astra_get_option( 'sticky-above-header-megamenu-heading-color' ),
 					'title'     => __( 'Color', 'astra-addon' ),
-					'required'  => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[above-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[above-header-section-2]', '==', 'menu' ),
+					'context'   => array(
+						'relation' => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[above-header-section-1]',
+							'operator' => '==',
+							'value'    => 'menu',
 						),
-						'operator'   => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[above-header-section-2]',
+							'operator' => '==',
+							'value'    => 'menu',
+						),
 					),
 				),
 
@@ -137,16 +81,45 @@ if ( ! class_exists( 'Astra_Nav_Menu_Above_Header_Colors' ) ) {
 					'name'      => 'sticky-above-header-megamenu-heading-h-color',
 					'default'   => astra_get_option( 'sticky-above-header-megamenu-heading-h-color' ),
 					'title'     => __( 'Color', 'astra-addon' ),
-					'required'  => array(
-						'conditions' => array(
-							array( ASTRA_THEME_SETTINGS . '[above-header-section-1]', '==', 'menu' ),
-							array( ASTRA_THEME_SETTINGS . '[above-header-section-2]', '==', 'menu' ),
+					'context'   => array(
+						'relation' => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[above-header-section-1]',
+							'operator' => '==',
+							'value'    => 'menu',
 						),
-						'operator'   => 'OR',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[above-header-section-2]',
+							'operator' => '==',
+							'value'    => 'menu',
+						),
 					),
 				),
 
 			);
+
+			if ( is_callable( 'Astra_Sticky_Header_Configs::is_header_section_active' ) && Astra_Sticky_Header_Configs::is_header_section_active() && ! Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) {
+
+				$_new_config = array(
+					/**
+					 * Option: Sticky Header Above Menu Color Group
+					 */
+					array(
+						'name'      => ASTRA_THEME_SETTINGS . '[sticky-header-above-mega-menus-colors]',
+						'default'   => astra_get_option( 'sticky-header-above-mega-menus-colors' ),
+						'type'      => 'control',
+						'control'   => 'ast-settings-group',
+						'title'     => __( 'Mega Menu Column Heading', 'astra-addon' ),
+						'section'   => 'section-sticky-header',
+						'transport' => 'postMessage',
+						'priority'  => 70,
+						'context'   => Astra_Addon_Builder_Helper::$is_header_footer_builder_active ?
+							Astra_Addon_Builder_Helper::$design_tab : Astra_Addon_Builder_Helper::$general_tab,
+					),
+				);
+
+				$_configs = array_merge( $_configs, $_new_config );
+			}
 
 			$configurations = array_merge( $configurations, $_configs );
 

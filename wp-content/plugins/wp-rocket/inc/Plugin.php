@@ -3,7 +3,7 @@
 namespace WP_Rocket;
 
 use Imagify_Partner;
-use League\Container\Container;
+use WP_Rocket\Engine\Container\Container;
 use WP_Rocket\Admin\Options;
 use WP_Rocket\Event_Management\Event_Manager;
 use WP_Rocket\ThirdParty\Hostings\HostResolver;
@@ -100,11 +100,14 @@ class Plugin {
 		$this->options = $this->container->get( 'options' );
 
 		$this->container->addServiceProvider( 'WP_Rocket\ServiceProvider\Database' );
+		$this->container->addServiceProvider( 'WP_Rocket\Engine\Support\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\Admin\Beacon\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\CDN\RocketCDN\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\Cache\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\CriticalPath\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\HealthCheck\ServiceProvider' );
+		$this->container->addServiceProvider( 'WP_Rocket\Engine\Media\ServiceProvider' );
+		$this->container->addServiceProvider( 'WP_Rocket\Engine\Optimization\DeferJS\ServiceProvider' );
 
 		$this->is_valid_key = rocket_valid_key();
 
@@ -157,6 +160,7 @@ class Plugin {
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\Admin\Settings\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\Admin\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\Optimization\AdminServiceProvider' );
+		$this->container->addServiceProvider( 'WP_Rocket\Engine\License\ServiceProvider' );
 
 		return [
 			'beacon',
@@ -170,6 +174,11 @@ class Plugin {
 			'health_check',
 			'minify_css_admin_subscriber',
 			'admin_cache_subscriber',
+			'google_fonts_admin_subscriber',
+			'license_subscriber',
+			'image_dimensions_admin_subscriber',
+			'defer_js_admin_subscriber',
+			'lazyload_admin_subscriber',
 		];
 	}
 
@@ -181,18 +190,20 @@ class Plugin {
 	 * @return array array of subscribers.
 	 */
 	private function init_valid_key_subscribers() {
-		$this->container->addServiceProvider( 'WP_Rocket\Engine\Media\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\Optimization\ServiceProvider' );
 
 		$subscribers = [
 			'buffer_subscriber',
 			'ie_conditionals_subscriber',
-			'minify_html_subscriber',
 			'combine_google_fonts_subscriber',
 			'minify_css_subscriber',
 			'minify_js_subscriber',
 			'cache_dynamic_resource',
-			'dequeue_jquery_migrate_subscriber',
+			'embeds_subscriber',
+			'emojis_subscriber',
+			'delay_js_subscriber',
+			'image_dimensions_subscriber',
+			'defer_js_subscriber',
 		];
 
 		// Don't insert the LazyLoad file if Rocket LazyLoad is activated.
@@ -213,12 +224,16 @@ class Plugin {
 	private function init_common_subscribers() {
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\Capabilities\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Addon\ServiceProvider' );
+		$this->container->addServiceProvider( 'WP_Rocket\Addon\Varnish\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\Preload\ServiceProvider' );
+		$this->container->addServiceProvider( 'WP_Rocket\Engine\Preload\Links\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\Engine\CDN\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\ServiceProvider\Common_Subscribers' );
 		$this->container->addServiceProvider( 'WP_Rocket\ThirdParty\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\ThirdParty\Hostings\ServiceProvider' );
 		$this->container->addServiceProvider( 'WP_Rocket\ServiceProvider\Updater_Subscribers' );
+		$this->container->addServiceProvider( 'WP_Rocket\Engine\Optimization\DelayJS\ServiceProvider' );
+		$this->container->addServiceProvider( 'WP_Rocket\Engine\Heartbeat\ServiceProvider' );
 
 		$common_subscribers = [
 			'cdn_subscriber',
@@ -240,6 +255,7 @@ class Plugin {
 			'syntaxhighlighter_subscriber',
 			'elementor_subscriber',
 			'bridge_subscriber',
+			'avada_subscriber',
 			'ngg_subscriber',
 			'smush_subscriber',
 			'cache_dir_size_check',
@@ -256,7 +272,12 @@ class Plugin {
 			'rest_cpcss_subscriber',
 			'simple_custom_css',
 			'pdfembedder',
+			'delay_js_admin_subscriber',
 			'divi',
+			'preload_links_admin_subscriber',
+			'preload_links_subscriber',
+			'support_subscriber',
+			'mod_pagespeed',
 		];
 
 		$host_type = HostResolver::get_host_service();

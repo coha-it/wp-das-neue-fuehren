@@ -617,6 +617,7 @@ if ( ! class_exists( 'UAEL_Admin' ) ) {
 
 			// Update widgets.
 			UAEL_Helper::update_admin_settings_option( '_uael_widgets', $widgets );
+			UAEL_Helper::create_specific_stylesheet();
 
 			wp_send_json( $module_id );
 		}
@@ -635,6 +636,7 @@ if ( ! class_exists( 'UAEL_Admin' ) ) {
 
 			// Update widgets.
 			UAEL_Helper::update_admin_settings_option( '_uael_widgets', $widgets );
+			UAEL_Helper::create_specific_stylesheet();
 
 			wp_send_json( $module_id );
 		}
@@ -662,6 +664,7 @@ if ( ! class_exists( 'UAEL_Admin' ) ) {
 
 			// Update new_extensions.
 			UAEL_Helper::update_admin_settings_option( '_uael_widgets', $new_widgets );
+			UAEL_Helper::create_specific_stylesheet();
 
 			echo 'success';
 
@@ -691,6 +694,7 @@ if ( ! class_exists( 'UAEL_Admin' ) ) {
 
 			// Update new_extensions.
 			UAEL_Helper::update_admin_settings_option( '_uael_widgets', $new_widgets );
+			UAEL_Helper::create_specific_stylesheet();
 
 			echo 'success';
 
@@ -719,6 +723,7 @@ if ( ! class_exists( 'UAEL_Admin' ) ) {
 
 			// Update new_extensions.
 			UAEL_Helper::update_admin_settings_option( '_uael_widgets', $new_widgets );
+			UAEL_Helper::create_specific_stylesheet();
 
 			echo 'success';
 
@@ -747,6 +752,7 @@ if ( ! class_exists( 'UAEL_Admin' ) ) {
 
 			// Update new_extensions.
 			UAEL_Helper::update_admin_settings_option( '_uael_widgets', $new_widgets );
+			UAEL_Helper::create_specific_stylesheet();
 
 			echo 'success';
 

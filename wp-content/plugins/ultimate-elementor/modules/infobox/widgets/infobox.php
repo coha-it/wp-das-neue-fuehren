@@ -86,7 +86,7 @@ class Infobox extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->register_general_content_controls();
 		$this->register_imgicon_content_controls();
@@ -647,8 +647,7 @@ class Infobox extends Common_Widget {
 						'infobox_imgicon_style!'  => 'normal',
 					),
 					'selectors' => array(
-						'{{WRAPPER}} .uael-icon-wrap .uael-icon, {{WRAPPER}} .uael-image .uael-image-content img' => 'background-color: {{VALUE}};',
-						'{{WRAPPER}} .uael-imgicon-style-normal .uael-icon-wrap .uael-icon, {{WRAPPER}} .uael-imgicon-style-normal .uael-image .uael-image-content img' => 'background: none;',
+						'{{WRAPPER}} .uael-infobox:not(.uael-imgicon-style-normal) .uael-icon-wrap .uael-icon, {{WRAPPER}} .uael-infobox:not(.uael-imgicon-style-normal) .uael-image .uael-image-content img' => 'background-color: {{VALUE}};',
 					),
 				)
 			);
@@ -865,7 +864,7 @@ class Infobox extends Common_Widget {
 							'infobox_imgicon_style!'  => 'normal',
 						),
 						'selectors' => array(
-							'{{WRAPPER}} .uael-icon-wrap .uael-icon:hover, {{WRAPPER}} .uael-image-content img:hover, {{WRAPPER}} .uael-infobox-link-type-module .uael-infobox-module-link:hover ~ .uael-infobox-content .uael-imgicon-wrap .uael-icon, {{WRAPPER}} .uael-infobox-link-type-module .uael-infobox-module-link:hover ~ .uael-imgicon-wrap .uael-icon, {{WRAPPER}} .uael-infobox-link-type-module .uael-infobox-module-link:hover ~ .uael-image .uael-image-content img, {{WRAPPER}} .uael-infobox-link-type-module .uael-infobox-module-link:hover ~ .uael-imgicon-wrap img' => 'background-color: {{VALUE}};',
+							'{{WRAPPER}} .uael-icon-wrap .uael-icon:hover, {{WRAPPER}} .uael-image-content img:hover, {{WRAPPER}} .uael-infobox-link-type-module .uael-infobox-module-link:hover ~ .uael-infobox-content .uael-imgicon-wrap .uael-icon, {{WRAPPER}} .uael-infobox-link-type-module .uael-infobox-module-link:hover ~ .uael-imgicon-wrap .uael-icon, {{WRAPPER}} .uael-infobox-link-type-module .uael-infobox-module-link:hover ~ .uael-image .uael-image-content img, {{WRAPPER}} .uael-infobox-link-type-module .uael-infobox-module-link:hover ~ .uael-imgicon-wrap img,{{WRAPPER}} .uael-infobox:not(.uael-imgicon-style-normal) .uael-icon-wrap .uael-icon:hover,{{WRAPPER}} .uael-infobox:not(.uael-imgicon-style-normal) .uael-image .uael-image-content img:hover' => 'background-color: {{VALUE}};',
 						),
 					)
 				);
@@ -2772,7 +2771,7 @@ class Infobox extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 }

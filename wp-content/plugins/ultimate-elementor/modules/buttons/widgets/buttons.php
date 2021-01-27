@@ -99,7 +99,7 @@ class Buttons extends Common_Widget {
 	 * @since 0.0.1
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		// Content Tab.
 		$this->register_buttons_content_controls();
@@ -404,7 +404,7 @@ class Buttons extends Common_Widget {
 					'label'       => __( 'Buttons', 'uael' ),
 					'type'        => Controls_Manager::REPEATER,
 					'show_label'  => true,
-					'fields'      => array_values( $repeater->get_controls() ),
+					'fields'      => $repeater->get_controls(),
 					'title_field' => '{{{ text }}}',
 					'default'     => array(
 						array(
@@ -854,16 +854,8 @@ class Buttons extends Common_Widget {
 					}
 
 					if ( ! empty( $button['link']['url'] ) ) {
-						$this->add_render_attribute( 'button_' . $i, 'href', $button['link']['url'] );
+						$this->add_link_attributes( 'button_' . $i, $button['link'] );
 						$this->add_render_attribute( 'button_' . $i, 'class', 'elementor-button-link' );
-
-						if ( $button['link']['is_external'] ) {
-							$this->add_render_attribute( 'button_' . $i, 'target', '_blank' );
-						}
-
-						if ( $button['link']['nofollow'] ) {
-							$this->add_render_attribute( 'button_' . $i, 'rel', 'nofollow' );
-						}
 					}
 
 					if ( $settings['hover_animation'] ) {
@@ -880,7 +872,7 @@ class Buttons extends Common_Widget {
 		</div>
 		<?php
 		$html = ob_get_clean();
-		echo wp_kses_post( $html );
+		echo $html; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**

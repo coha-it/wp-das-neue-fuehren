@@ -22,7 +22,7 @@
 
 		//Search entries
 		var search_entry = $( '.elementor-element-' + node_id + ' #' + uael_table_id[0].id ).data( 'searchable' );
-
+		
 		if ( 'yes' == search_entry ) {
 			searchable = true;
 		}
@@ -43,7 +43,7 @@
 			sortable = true;
 		}
 
-		var search_string = uael_table_script.search_str;
+		var search_string = $( '.elementor-element-' + node_id + ' #' + uael_table_id[0].id ).data( 'search_text' ) || '';
 		var length_string = uael_table_script.table_length_string;
 		var no_record_found_string = uael_table_script.table_not_found_str;
 

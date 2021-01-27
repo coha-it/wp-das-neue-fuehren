@@ -45,16 +45,21 @@ if ( isset( $settings['yelp_api'] ) && ! empty( $settings['yelp_api'] ) ) {
 											<label for="uael-integration-google-api-key" class="uael-integration-heading"><?php esc_attr_e( 'Google Map API Key', 'uael' ); ?></label>
 											<p class="install-help uael-p"><strong><?php esc_attr_e( 'Note:', 'uael' ); ?></strong>
 											<?php
+											esc_attr_e( 'This setting is required if you wish to use Google Map in your website.', 'uael' );
+
+											if ( UAEL_Helper::is_internal_links() ) {
+
 												$a_tag_open  = '<a target="_blank" rel="noopener" href="' . esc_url( UAEL_DOMAIN . 'docs/create-google-map-api-key/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin' ) . '">';
 												$a_tag_close = '</a>';
 
 												printf(
 													/* translators: %1$s: a tag open. */
-													esc_attr__( 'This setting is required if you wish to use Google Map in your website. Need help to get Google map API key? Read %1$s this article %2$s.', 'uael' ),
+													esc_attr__( ' Need help to get Google map API key? Read %1$s this article %2$s.', 'uael' ),
 													wp_kses_post( $a_tag_open ),
 													wp_kses_post( $a_tag_close )
 												);
-												?>
+											}
+											?>
 											</p>
 											<input type="text" name="uael_integration[google_api]" id="uael-integration-google-api-key" class="placeholder placeholder-active" value="<?php echo esc_attr( $settings['google_api'] ); ?>">
 										</div>
@@ -69,15 +74,19 @@ if ( isset( $settings['yelp_api'] ) && ! empty( $settings['yelp_api'] ) ) {
 											<p class="install-help uael-p"><strong><?php esc_attr_e( 'Note:', 'uael' ); ?></strong>  <?php esc_attr_e( 'This setting sets localization language to google map. The language affects the names of controls, copyright notices, driving directions, and control labels.', 'uael' ); ?></p>
 											<p class="uael-p">
 											<?php
+											if ( UAEL_Helper::is_internal_links() ) {
+
 												$a_tag_open  = '<a href="' . esc_url( UAEL_DOMAIN . 'docs/how-to-display-uaels-google-maps-widget-in-your-local-language/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin' ) . '" target="_blank" rel="noopener">';
 												$a_tag_close = '</a>';
+
 												printf(
 													/* translators: %1$s: a tag open. */
 													esc_attr__( 'Need help to understand this feature? Read %1$s this article %2$s.', 'uael' ),
 													wp_kses_post( $a_tag_open ),
 													wp_kses_post( $a_tag_close )
 												);
-												?>
+											}
+											?>
 											</p>
 											<select name="uael_integration[language]" id="uael-integration-google-language" class="placeholder placeholder-active">
 												<option value=""><?php esc_attr_e( 'Default', 'uael' ); ?></option>
@@ -103,16 +112,21 @@ if ( isset( $settings['yelp_api'] ) && ! empty( $settings['yelp_api'] ) ) {
 											<label for="uael-integration-google-places-key" class="uael-integration-heading"><?php esc_attr_e( 'Business Reviews - Google Places API Key', 'uael' ); ?></label>
 											<p class="install-help uael-p"><strong><?php esc_attr_e( 'Note:', 'uael' ); ?></strong>
 											<?php
+											esc_attr_e( 'This setting is required if you wish to use Google Places Reviews in your website.', 'uael' );
+
+											if ( UAEL_Helper::is_internal_links() ) {
+
 												$a_tag_open  = '<a target="_blank" rel="noopener" href="' . esc_url( UAEL_DOMAIN . 'docs/get-google-places-api-key/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin' ) . '">';
 												$a_tag_close = '</a>';
 
 												printf(
 													/* translators: %1$s: a tag open. */
-													esc_attr__( 'This setting is required if you wish to use Google Places Reviews in your website. Need help to get Google Places API key? Read %1$s this article %2$s.', 'uael' ),
+													esc_attr__( ' Need help to get Google Places API key? Read %1$s this article %2$s.', 'uael' ),
 													wp_kses_post( $a_tag_open ),
 													wp_kses_post( $a_tag_close )
 												);
-												?>
+											}
+											?>
 											</p>
 											<p class="uael-billing-acc-warning">
 												<span class="dashicons dashicons-warning"></span>
@@ -173,16 +187,21 @@ if ( isset( $settings['yelp_api'] ) && ! empty( $settings['yelp_api'] ) ) {
 											<label for="uael-integration-yelp-api-key" class="uael-integration-heading"><?php esc_attr_e( 'Business Reviews - Yelp API Key', 'uael' ); ?></label>
 											<p class="install-help uael-p"><strong><?php esc_attr_e( 'Note:', 'uael' ); ?></strong>
 											<?php
+											esc_attr_e( 'This setting is required if you wish to use Yelp Reviews in your website.', 'uael' );
+
+											if ( UAEL_Helper::is_internal_links() ) {
+
 												$a_tag_open  = '<a target="_blank" rel="noopener" href="' . esc_url( UAEL_DOMAIN . 'docs/get-yelp-api-key/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin' ) . '">';
 												$a_tag_close = '</a>';
 
 												printf(
 													/* translators: %1$s: a tag open. */
-													esc_attr__( 'This setting is required if you wish to use Yelp Reviews in your website. Need help to get Yelp API key? Read %1$s this article %2$s.', 'uael' ),
+													esc_attr__( ' Need help to get Yelp API key? Read %1$s this article %2$s.', 'uael' ),
 													wp_kses_post( $a_tag_open ),
 													wp_kses_post( $a_tag_close )
 												);
-												?>
+											}
+											?>
 											</p>
 											<input type="text" name="uael_integration[yelp_api]" id="uael-integration-yelp-api-key" class="placeholder placeholder-active" value="<?php echo esc_attr( $settings['yelp_api'] ); ?>">
 											<?php if ( 'yes' === $yelp_status && $is_saved ) { ?>
@@ -216,6 +235,8 @@ if ( isset( $settings['yelp_api'] ) && ! empty( $settings['yelp_api'] ) ) {
 											</p>
 											<p class="install-help uael-p">
 											<?php
+											if ( UAEL_Helper::is_internal_links() ) {
+
 												$a_tag_open  = '<a target="_blank" rel="noopener" href="' . esc_url( UAEL_DOMAIN . 'docs/user-registration-form-with-recaptcha/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin' ) . '">';
 												$a_tag_close = '</a>';
 
@@ -225,7 +246,8 @@ if ( isset( $settings['yelp_api'] ) && ! empty( $settings['yelp_api'] ) ) {
 													wp_kses_post( $a_tag_open ),
 													wp_kses_post( $a_tag_close )
 												);
-												?>
+											}
+											?>
 											</p>
 											<label for="uael-recaptcha-v3-key" class="uael-integration-heading"><?php esc_attr_e( 'Site key', 'uael' ); ?></label>
 											<input type="text" name="uael_integration[recaptcha_v3_key]" id="uael-recaptcha-v3-key" class="placeholder placeholder-active" value="<?php echo esc_attr( $settings['recaptcha_v3_key'] ); ?>">
@@ -252,16 +274,21 @@ if ( isset( $settings['yelp_api'] ) && ! empty( $settings['yelp_api'] ) ) {
 											<label class="uael-integration-heading"><?php esc_attr_e( 'Login Form - Google Client ID', 'uael' ); ?></label>
 											<p class="install-help uael-p"><strong><?php esc_attr_e( 'Note:', 'uael' ); ?></strong>
 											<?php
+											esc_attr_e( 'This setting is required if you wish to use Login with Google in your website.', 'uael' );
+
+											if ( UAEL_Helper::is_internal_links() ) {
+
 												$a_tag_open  = '<a target="_blank" rel="noopener" href="' . esc_url( UAEL_DOMAIN . 'docs/create-google-client-id-for-login-form-widget/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin' ) . '">';
 												$a_tag_close = '</a>';
 
 												printf(
 													/* translators: %1$s: a tag open. */
-													esc_attr__( 'This setting is required if you wish to use Login with Google in your website. Need help to get Google Client ID? Read %1$s this article %2$s.', 'uael' ),
+													esc_attr__( ' Read %1$s this article %2$s.', 'uael' ),
 													wp_kses_post( $a_tag_open ),
 													wp_kses_post( $a_tag_close )
 												);
-												?>
+											}
+											?>
 											</p>
 											<label for="uael-google-client-id" class="uael-integration-heading"><?php esc_attr_e( 'Google Client ID', 'uael' ); ?></label>
 											<input type="text" name="uael_integration[google_client_id]" id="uael-google-client-id" class="placeholder placeholder-active" value="<?php echo esc_attr( $settings['google_client_id'] ); ?>">
@@ -277,16 +304,21 @@ if ( isset( $settings['yelp_api'] ) && ! empty( $settings['yelp_api'] ) ) {
 											<label class="uael-integration-heading"><?php esc_attr_e( 'Login Form - Facebook App Details', 'uael' ); ?></label>
 											<p class="install-help uael-p"><strong><?php esc_attr_e( 'Note:', 'uael' ); ?></strong>
 											<?php
+											esc_attr_e( 'This setting is required if you wish to use Login with Facebook in your website.', 'uael' );
+
+											if ( UAEL_Helper::is_internal_links() ) {
+
 												$a_tag_open  = '<a target="_blank" rel="noopener" href="' . esc_url( UAEL_DOMAIN . 'docs/create-facebook-app-id-for-login-form-widget/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin' ) . '">';
 												$a_tag_close = '</a>';
 
 												printf(
 													/* translators: %1$s: a tag open. */
-													esc_attr__( 'This setting is required if you wish to use Login with Facebook in your website. Need help to get Facebook App Details? Read %1$s this article %2$s.', 'uael' ),
+													esc_attr__( ' Need help to get Facebook App Details? Read %1$s this article %2$s.', 'uael' ),
 													wp_kses_post( $a_tag_open ),
 													wp_kses_post( $a_tag_close )
 												);
-												?>
+											}
+											?>
 											</p>
 											<label for="uael-facebook-app-id" class="uael-integration-heading"><?php esc_attr_e( 'Facebook App ID', 'uael' ); ?></label>
 											<input type="text" name="uael_integration[facebook_app_id]" id="uael-facebook-app-id" class="placeholder placeholder-active" value="<?php echo esc_attr( $settings['facebook_app_id'] ); ?>">

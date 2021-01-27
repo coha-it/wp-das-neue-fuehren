@@ -87,7 +87,7 @@ class Team_Member extends Common_Widget {
 	 * @since 1.16.0
 	 * @access protected
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->render_team_member_content_control();
 		$this->register_content_separator();
@@ -1139,7 +1139,8 @@ class Team_Member extends Common_Widget {
 				),
 
 				'selectors' => array(
-					'{{WRAPPER}} .elementor-social-icon:not(:hover) i, {{WRAPPER}} .elementor-social-icon:not(:hover) svg' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .elementor-social-icon:not(:hover) i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .elementor-social-icon:not(:hover) svg' => 'fill: {{VALUE}};',
 				),
 			)
 		);
@@ -1181,7 +1182,8 @@ class Team_Member extends Common_Widget {
 				),
 
 				'selectors' => array(
-					'{{WRAPPER}} .elementor-social-icon:hover i, {{WRAPPER}} .elementor-social-icon:hover svg' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .elementor-social-icon:hover i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .elementor-social-icon:hover svg' => 'fill: {{VALUE}};',
 				),
 			)
 		);
@@ -1774,7 +1776,7 @@ class Team_Member extends Common_Widget {
 	 * @since 1.16.0
 	 * @access protected
 	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore 
+	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->content_template();
 	}
 }
