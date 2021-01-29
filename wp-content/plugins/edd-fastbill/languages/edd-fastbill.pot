@@ -1,0 +1,223 @@
+# Copyright (C) 2016 Easy Digital Downloads - FastBill Integration
+# This file is distributed under the same license as the Easy Digital Downloads - FastBill Integration package.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: EDD - FastBill\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-09 22:36+0100\n"
+"PO-Revision-Date: 2016-12-07 00:33+0100\n"
+"Last-Translator: Markus Drubba <kontakt@markusdrubba.de>\n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;"
+"_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: includes/fastbill-functions.php:32
+msgid "Invalid FastBill credentials supplied"
+msgstr ""
+
+#: includes/fastbill-functions.php:166
+msgid "There was an error creating this customer in FastBill:"
+msgstr ""
+
+#: includes/fastbill-functions.php:167 includes/fastbill-functions.php:219 includes/fastbill-functions.php:385
+#: includes/fastbill-functions.php:442 includes/fastbill-functions.php:497 includes/fastbill-functions.php:551
+#: includes/fastbill-functions.php:606 includes/fastbill-functions.php:639 includes/fastbill-functions.php:646
+#: includes/fastbill-functions.php:683 includes/fastbill-functions.php:738 includes/fastbill-functions.php:791
+msgid "Error: "
+msgstr ""
+
+#: includes/fastbill-functions.php:218
+msgid "There was an error looking up this customer in FastBill:"
+msgstr ""
+
+#: includes/fastbill-functions.php:282
+msgid "Discount used: "
+msgstr ""
+
+#: includes/fastbill-functions.php:315
+msgid "renewal"
+msgstr ""
+
+#: includes/fastbill-functions.php:384
+msgid "There was an error adding the invocie to FastBill:"
+msgstr ""
+
+#: includes/fastbill-functions.php:441 includes/fastbill-functions.php:496
+msgid "There was an error completing invoice in FastBill:"
+msgstr ""
+
+#: includes/fastbill-functions.php:550
+msgid "There was an error canceling an invoice in FastBill:"
+msgstr ""
+
+#: includes/fastbill-functions.php:605
+msgid "There was an error deleting an invoice in FastBill:"
+msgstr ""
+
+#: includes/fastbill-functions.php:682
+msgid "There was an error sending an invoice via FastBill:"
+msgstr ""
+
+#: includes/fastbill-functions.php:737
+msgid "There was an error creating a payment in FastBill:"
+msgstr ""
+
+#: includes/fastbill-functions.php:790
+msgid "There was an error when receiving templates from FastBill:"
+msgstr ""
+
+#: includes/frontend-functions.php:18 includes/frontend-functions.php:75
+msgid "Invoice"
+msgstr ""
+
+#: includes/frontend-functions.php:48 includes/frontend-functions.php:77 includes/payment-history.php:33
+#: includes/template-tags.php:50
+msgid "Download Invoice"
+msgstr ""
+
+#: includes/payment-history.php:28 includes/payment-history.php:177
+msgid "Set invoice link"
+msgstr ""
+
+#: includes/payment-history.php:62
+msgid "Resend invoice"
+msgstr ""
+
+#: includes/payment-history.php:148
+msgid "The invoice link could not be generated."
+msgstr ""
+
+#: includes/payment-history.php:151
+msgid "The invoice link was generated."
+msgstr ""
+
+#: includes/payment-history.php:155
+msgid "The invoice could not be sent."
+msgstr ""
+
+#: includes/payment-history.php:159
+msgid "The invoice was sent."
+msgstr ""
+
+#: includes/register-settings.php:13
+msgid "FastBill"
+msgstr ""
+
+#: includes/register-settings.php:33
+msgid "FastBill Settings"
+msgstr ""
+
+#: includes/register-settings.php:39
+msgid "FastBill Email"
+msgstr ""
+
+#: includes/register-settings.php:44
+msgid "FastBill API Key"
+msgstr ""
+
+#: includes/register-settings.php:49
+msgid "Direct payment invoice template"
+msgstr ""
+
+#: includes/register-settings.php:50 includes/register-settings.php:58
+msgid "Choose invoice template. If you edit a Template in FastBill, you have to reassign it here."
+msgstr ""
+
+#: includes/register-settings.php:57
+msgid "Advance payment invoice template"
+msgstr ""
+
+#: includes/register-settings.php:65
+msgid "Send invoice"
+msgstr ""
+
+#: includes/register-settings.php:66
+msgid "Send invoice to customer via email (is sent via FastBill)"
+msgstr ""
+
+#: includes/register-settings.php:71
+msgid "Online invoice"
+msgstr ""
+
+#: includes/register-settings.php:72
+msgid ""
+"I activated the online invoice functionalty within my Fastbill account to accessing the generated invoice."
+msgstr ""
+
+#: includes/register-settings.php:77
+msgid ""
+"For <em>advance payment</em> methods it's sometimes needed to send the invoice to the custumer before he/"
+"she can process the payment. In the following settings you can activate those payment gateways that are not "
+"sending the money directly to your account (like PayPal does)."
+msgstr ""
+
+#: includes/register-settings.php:82
+msgid "Advance payment gateways"
+msgstr ""
+
+#: includes/register-settings.php:94
+msgid "FastBill Customer Fields"
+msgstr ""
+
+#: includes/register-settings.php:120
+msgid "Debug mode"
+msgstr ""
+
+#: includes/register-settings.php:121
+msgid "Write debug logs into the database."
+msgstr ""
+
+#: includes/register-settings.php:127
+msgid "Reset debug entries"
+msgstr ""
+
+#: includes/register-settings.php:128
+msgid "Remove debug logs from database."
+msgstr ""
+
+#: includes/register-settings.php:189
+msgid "Organization"
+msgstr ""
+
+#: includes/register-settings.php:190
+msgid "If set by customer, than Business"
+msgstr ""
+
+#: includes/register-settings.php:193
+msgid "Salutation"
+msgstr ""
+
+#: includes/register-settings.php:194
+msgid "Use Herr, Hr., Hr, Mister, Mr, Mr. & Frau, Fr., Fr, Misses, Miss, Mrs."
+msgstr ""
+
+#: includes/register-settings.php:196
+msgid "Phone"
+msgstr ""
+
+#: includes/register-settings.php:197
+msgid "Fax"
+msgstr ""
+
+#: includes/register-settings.php:198
+msgid "Mobile"
+msgstr ""
+
+#: includes/register-settings.php:212
+msgid "Default"
+msgstr ""
+
+#: includes/template-tags.php:28
+msgid "Creates a link to the downloadable Fastbill invoice"
+msgstr ""

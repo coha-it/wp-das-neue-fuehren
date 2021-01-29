@@ -2,8 +2,8 @@
 Contributors: DaanvandenBergh
 Tags: google, fonts, gdpr, cache, speed, preload, font-display, webfonts, subsets, remove, minimize, external, requests
 Requires at least: 4.6
-Tested up to: 5.5
-Stable tag: 4.2.4
+Tested up to: 5.6
+Stable tag: 4.2.5
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -29,7 +29,7 @@ In *Automatic* Mode, OMGF runs silently in the background and captures any reque
 
 When the fonts are downloaded and the stylesheet is generated, it rewrites every URL (pointing to fonts.googleapis.com or fonts.gstatic.com) to the locally hosted variant.
 
-Please keep in mind that, although I try to make the configuration of this plugin as easy as possible, the concept of locally hosting a file or optimizing Google Fonts for *Pagespeed Insights* or *GT Metrix* has proven to be confusing for some people. If you're not sure of what your doing, please consult a SEO expert or Webdeveloper to help you with the configuration of this plugin or [hire me to do it for you](https://ffwp.dev/wordpress/omgf-expert-configuration/).
+Please keep in mind that, although I try to make the configuration of this plugin as easy as possible, the concept of locally hosting a file or optimizing Google Fonts for *Pagespeed Insights* or *GT Metrix* has proven to be confusing for some people. If you're not sure of what your doing, please consult a SEO expert or Webdeveloper to help you with the configuration of this plugin or [hire me to do it for you](https://ffw.press/wordpress/omgf-expert-configuration/).
 
 = Features =
 - Automatically replace registered/enqueued Google Fonts in wp_head() with local copies,
@@ -49,7 +49,7 @@ Everything in the free version, plus:
 - Reduce loading time and page size, by forcing the used subset(s) for all Google Fonts requests,
 - Remove Resource Hints (preload, preconnect, dns-prefetch) pointing to fonts.googleapis.com or fonts.gstatic.com.
 
-*[Purchase OMGF Pro](https://ffwp.dev/wordpress/omgf-pro/) | [Documentation](https://ffwp.dev/docs/omgf-pro/) | [Tested Plugins & Themes](https://ffwp.dev/docs/omgf-pro/troubleshooting/compatibility/)*
+*[Purchase OMGF Pro](https://ffw.press/wordpress/omgf-pro/) | [Documentation](https://ffw.press/docs/omgf-pro/) | [Tested Plugins & Themes](https://ffw.press/docs/omgf-pro/troubleshooting/compatibility/)*
 
 == Installation ==
 
@@ -81,7 +81,7 @@ This could be for several reasons:
 
 = Does this plugin remove resource hints, e.g. preconnect, preload or dns-prefetch? =
 
-No, to automatically remove resource hints pointing to fonts.googleapis.com or fonts.gstatic.com, [upgrade to OMGF Pro](https://ffwp.dev/wordpress/omgf-pro/).
+No, to automatically remove resource hints pointing to fonts.googleapis.com or fonts.gstatic.com, [upgrade to OMGF Pro](https://ffw.press/wordpress/omgf-pro/).
 
 = Can I serve the fonts from my CDN? =
 
@@ -89,7 +89,7 @@ Yes, you can. Enter the url of your CDN and empty OMGF's cache directory.
 
 = I have Google Fonts Processing set to Replace/Remove but the fonts from fonts.gstatic.com|fonts.googleapis.com are still loaded. What's going on? =
 
-The free version of OMGF removes any fonts that are loaded in the conventional way: wp_enqueue_scripts(). If it doesn't work for you, you're theme or plugins using other methods to load Google Fonts, e.g. in the footer, WebFont Loader, etc. [Upgrade to OMGF Pro](https://ffwp.dev/wordpress/omgf-pro/) to automatically replace these fonts with a locally hosted version.
+The free version of OMGF removes any fonts that are loaded in the conventional way: wp_enqueue_scripts(). If it doesn't work for you, you're theme or plugins using other methods to load Google Fonts, e.g. in the footer, WebFont Loader, etc. [Upgrade to OMGF Pro](https://ffw.press/wordpress/omgf-pro/) to automatically replace these fonts with a locally hosted version.
 
 = Does this plugin edit template files? =
 
@@ -97,7 +97,7 @@ No, it does not. It creates a CSS Stylesheet which will be automatically added t
 
 = The stylesheet isn't loaded? What's going on? =
 
-The free version of OMGF enqueues the stylesheet into WordPress' head using wp_enqueue_scripts(). If the stylesheet isn't loaded, this probably means your theme isn't implementing wp_head() correctly. [Upgrade to OMGF Pro](https://ffwp.dev/wordpress/omgf-pro/) to automatically add the stylesheet into WordPress' head.
+The free version of OMGF enqueues the stylesheet into WordPress' head using wp_enqueue_scripts(). If the stylesheet isn't loaded, this probably means your theme isn't implementing wp_head() correctly. [Upgrade to OMGF Pro](https://ffw.press/wordpress/omgf-pro/) to automatically add the stylesheet into WordPress' head.
 
 = Does this plugin support Multi Site? I'm getting CORS errors! =
 
@@ -121,6 +121,13 @@ No, not yet. But I will definitely try to make it compatible in the future!
 4. Advanced Settings. Change these to make OMGF work with your configuration (if needed). The default settings will suffice for most configurations.
 
 == Changelog ==
+
+= 4.2.5 | January 27th, 2021 =
+* Improved compatibility with WordPress subdirectory installs.
+* Implemented some actions/filters needed for upcoming release of OMGF Additional Fonts.
+* Fixed duplicate preload ID's issue.
+* Fixed some notices/warnings.
+* Minor UX improvements.
 
 = 4.2.4 | December 8th, 2020 =
 * Cache keys are now fixed values instead of dynamically generated. This fixes the bug where preloads wouldn't load properly when combined with unloaded fonts of the same stylesheet.
