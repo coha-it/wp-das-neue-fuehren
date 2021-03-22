@@ -5,7 +5,7 @@ UpdraftPlus Addon: s3-enhanced:Amazon S3, enhanced
 Description: Adds enhanced capabilities for Amazon S3 users
 Version: 1.7
 Shop: /shop/s3-enhanced/
-RequiresPHP: 5.3.3
+RequiresPHP: 5.5
 Latest Change: 1.14.2
 */
 // @codingStandardsIgnoreEnd

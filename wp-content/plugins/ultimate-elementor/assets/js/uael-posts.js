@@ -76,7 +76,7 @@
 			return;
 		}
 
-		$('html').click(function() {
+		$( 'html' ).on( 'click', function() {
 			$tabs_dropdown.removeClass( 'show-list' );
 		});
 
@@ -208,7 +208,7 @@
 			} );
 
 
-			$( window ).resize(function() {
+			$( window ).on( 'resize',function() {
 				$( "#log" ).append( "<div>Handler for .resize() called.</div>" );
 			});
 		}
@@ -221,7 +221,7 @@
 
 			var windowHeight50 = jQuery( window ).outerHeight() / 1.25;
 
-			$( window ).scroll( function () {
+			$( window ).on( 'scroll', function () {
 
 				if( elementorFrontend.isEditMode() ) {
 					loader.show();
@@ -295,7 +295,7 @@
 		}
 	} );
 
-	$( 'body' ).delegate( '.uael-grid-pagination .page-numbers', 'click', function( e ) {
+	$( 'body' ).on( 'click', '.uael-grid-pagination .page-numbers', function( e ) {
 
 		$scope = $( this ).closest( '.elementor-widget-uael-posts' );
 

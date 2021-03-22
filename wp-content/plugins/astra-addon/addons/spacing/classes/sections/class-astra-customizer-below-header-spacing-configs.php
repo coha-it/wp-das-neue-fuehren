@@ -50,9 +50,8 @@ if ( ! class_exists( 'Astra_Customizer_Below_Header_Spacing_Configs' ) ) {
 					'name'     => ASTRA_THEME_SETTINGS . '[below-header-spacing-divider]',
 					'section'  => 'section-below-header',
 					'type'     => 'control',
-					'control'  => 'ast-heading',
-					'title'    => __( 'Spacing', 'astra-addon' ),
-					'priority' => 150,
+					'control'  => 'ast-divider',
+					'priority' => 155,
 					'settings' => array(),
 					'context'  => array(
 						array(
@@ -67,28 +66,45 @@ if ( ! class_exists( 'Astra_Customizer_Below_Header_Spacing_Configs' ) ) {
 				 * Option - Below Header Space
 				 */
 				array(
-					'name'           => ASTRA_THEME_SETTINGS . '[below-header-spacing]',
-					'default'        => astra_get_option( 'below-header-spacing' ),
-					'type'           => 'control',
-					'control'        => 'ast-responsive-spacing',
-					'transport'      => 'postMessage',
-					'section'        => 'section-below-header',
-					'priority'       => 155,
-					'title'          => __( 'Header Space', 'astra-addon' ),
-					'context'        => array(
+					'name'              => ASTRA_THEME_SETTINGS . '[below-header-spacing]',
+					'default'           => astra_get_option( 'below-header-spacing' ),
+					'type'              => 'control',
+					'control'           => 'ast-responsive-spacing',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_responsive_spacing' ),
+					'transport'         => 'postMessage',
+					'section'           => 'section-below-header',
+					'priority'          => 155,
+					'title'             => __( 'Header Space', 'astra-addon' ),
+					'context'           => array(
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
 							'operator' => '!=',
 							'value'    => 'disabled',
 						),
 					),
-					'linked_choices' => true,
-					'unit_choices'   => array( 'px', 'em', '%' ),
-					'choices'        => array(
+					'linked_choices'    => true,
+					'unit_choices'      => array( 'px', 'em', '%' ),
+					'choices'           => array(
 						'top'    => __( 'Top', 'astra-addon' ),
 						'right'  => __( 'Right', 'astra-addon' ),
 						'bottom' => __( 'Bottom', 'astra-addon' ),
 						'left'   => __( 'Left', 'astra-addon' ),
+					),
+				),
+
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[below-header-spacing-after-divider]',
+					'section'  => 'section-below-header',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'priority' => 155,
+					'settings' => array(),
+					'context'  => array(
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
+							'operator' => '!=',
+							'value'    => 'disabled',
+						),
 					),
 				),
 
@@ -96,16 +112,17 @@ if ( ! class_exists( 'Astra_Customizer_Below_Header_Spacing_Configs' ) ) {
 				 * Option - Below Header Menu Space
 				 */
 				array(
-					'name'           => ASTRA_THEME_SETTINGS . '[below-header-menu-spacing]',
-					'default'        => astra_get_option( 'below-header-menu-spacing' ),
-					'type'           => 'control',
-					'control'        => 'ast-responsive-spacing',
-					'transport'      => 'postMessage',
-					'section'        => 'section-below-header',
-					'priority'       => 160,
-					'title'          => __( 'Menu Space', 'astra-addon' ),
+					'name'              => ASTRA_THEME_SETTINGS . '[below-header-menu-spacing]',
+					'default'           => astra_get_option( 'below-header-menu-spacing' ),
+					'type'              => 'control',
+					'control'           => 'ast-responsive-spacing',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_responsive_spacing' ),
+					'transport'         => 'postMessage',
+					'section'           => 'section-below-header',
+					'priority'          => 160,
+					'title'             => __( 'Menu Space', 'astra-addon' ),
 
-					'context'        => array(
+					'context'           => array(
 						'relation' => 'AND',
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
@@ -127,9 +144,9 @@ if ( ! class_exists( 'Astra_Customizer_Below_Header_Spacing_Configs' ) ) {
 						),
 					),
 
-					'linked_choices' => true,
-					'unit_choices'   => array( 'px', 'em', '%' ),
-					'choices'        => array(
+					'linked_choices'    => true,
+					'unit_choices'      => array( 'px', 'em', '%' ),
+					'choices'           => array(
 						'top'    => __( 'Top', 'astra-addon' ),
 						'right'  => __( 'Right', 'astra-addon' ),
 						'bottom' => __( 'Bottom', 'astra-addon' ),
@@ -137,19 +154,14 @@ if ( ! class_exists( 'Astra_Customizer_Below_Header_Spacing_Configs' ) ) {
 					),
 				),
 
-				/**
-				 * Option - Below Header Subenu Space
-				 */
 				array(
-					'name'           => ASTRA_THEME_SETTINGS . '[below-header-submenu-spacing]',
-					'default'        => astra_get_option( 'below-header-submenu-spacing' ),
-					'type'           => 'control',
-					'transport'      => 'postMessage',
-					'control'        => 'ast-responsive-spacing',
-					'section'        => 'section-below-header',
-					'priority'       => 165,
-					'title'          => __( 'Submenu Space', 'astra-addon' ),
-					'context'        => array(
+					'name'     => ASTRA_THEME_SETTINGS . '[below-header-menu-spacing-divider]',
+					'section'  => 'section-below-header',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'priority' => 160,
+					'settings' => array(),
+					'context'  => array(
 						'relation' => 'AND',
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
@@ -170,13 +182,79 @@ if ( ! class_exists( 'Astra_Customizer_Below_Header_Spacing_Configs' ) ) {
 							),
 						),
 					),
-					'linked_choices' => true,
-					'unit_choices'   => array( 'px', 'em', '%' ),
-					'choices'        => array(
+				),
+
+				/**
+				 * Option - Below Header Subenu Space
+				 */
+				array(
+					'name'              => ASTRA_THEME_SETTINGS . '[below-header-submenu-spacing]',
+					'default'           => astra_get_option( 'below-header-submenu-spacing' ),
+					'type'              => 'control',
+					'transport'         => 'postMessage',
+					'control'           => 'ast-responsive-spacing',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_responsive_spacing' ),
+					'section'           => 'section-below-header',
+					'priority'          => 165,
+					'title'             => __( 'Submenu Space', 'astra-addon' ),
+					'context'           => array(
+						'relation' => 'AND',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
+							'operator' => '!=',
+							'value'    => 'disabled',
+						),
+						array(
+							'relation' => 'OR',
+							array(
+								'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-1]',
+								'operator' => '==',
+								'value'    => 'menu',
+							),
+							array(
+								'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-2]',
+								'operator' => '==',
+								'value'    => 'menu',
+							),
+						),
+					),
+					'linked_choices'    => true,
+					'unit_choices'      => array( 'px', 'em', '%' ),
+					'choices'           => array(
 						'top'    => __( 'Top', 'astra-addon' ),
 						'right'  => __( 'Right', 'astra-addon' ),
 						'bottom' => __( 'Bottom', 'astra-addon' ),
 						'left'   => __( 'Left', 'astra-addon' ),
+					),
+				),
+
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[below-header-submenu-spacing-divider]',
+					'section'  => 'section-below-header',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'priority' => 165,
+					'settings' => array(),
+					'context'  => array(
+						'relation' => 'AND',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
+							'operator' => '!=',
+							'value'    => 'disabled',
+						),
+						array(
+							'relation' => 'OR',
+							array(
+								'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-1]',
+								'operator' => '==',
+								'value'    => 'menu',
+							),
+							array(
+								'setting'  => ASTRA_THEME_SETTINGS . '[below-header-section-2]',
+								'operator' => '==',
+								'value'    => 'menu',
+							),
+						),
 					),
 				),
 			);

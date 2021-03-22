@@ -13,7 +13,8 @@
 		var wrapper = $scope.find('.elementor-widget-uael-nav-menu ');		
 		var layout = $( '.elementor-element-' + id + ' .uael-nav-menu' ).data( 'layout' );
 		var flyout_data = $( '.uael-flyout-wrapper' ).data( 'flyout-class' );
-
+		var url = window.location.href;
+		var custom_menu = $scope.find( '.uael-nav-menu-custom li' );
 		var saved_content = $scope.find( '.saved-content' );
 
 		$( 'div.uael-has-submenu-container' ).removeClass( 'sub-menu-active' );
@@ -80,10 +81,24 @@
 			});
 		}	
 
-		$( window ).resize(function(){
+		custom_menu.each( function(){
+			var $this = $( this );
+			var href = $this.find( 'a' ).attr( 'href' );
+			if( url == href ){
+			   var parentClass = $this.parent( 'ul' ).hasClass( 'sub-menu' );
+			   if( parentClass ) {
+				$this.addClass( 'custom-submenu-active' );
+				$this.parents( '.uael-nav-menu-custom li' ).addClass( 'custom-menu-active' );
+			   }else {
+				$this.addClass( 'custom-menu-active' );
+			   }
+			}
+		});
+
+		$( window ).on( 'resize', function(){
 
 			_sizeCal( id ); 
-
+			
 			if( 'horizontal' !== layout ) {
 
 				_eventClick( id );

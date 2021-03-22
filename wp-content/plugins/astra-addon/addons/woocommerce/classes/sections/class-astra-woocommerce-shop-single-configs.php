@@ -56,6 +56,18 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 				),
 
 				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[single-product-gallery-layout-divider]',
+					'type'     => 'control',
+					'section'  => 'section-woo-shop-single',
+					'control'  => 'ast-divider',
+					'priority' => 5,
+					'settings' => array(),
+				),
+
+				/**
 				 * Option: Product Image Width
 				 */
 				array(
@@ -91,14 +103,15 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 				 * Option: Single Post Meta
 				 */
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[single-product-structure]',
-					'default'  => astra_get_option( 'single-product-structure' ),
-					'type'     => 'control',
-					'control'  => 'ast-sortable',
-					'section'  => 'section-woo-shop-single',
-					'title'    => __( 'Single Product Structure', 'astra-addon' ),
-					'priority' => 15,
-					'choices'  => array(
+					'name'              => ASTRA_THEME_SETTINGS . '[single-product-structure]',
+					'default'           => astra_get_option( 'single-product-structure' ),
+					'type'              => 'control',
+					'control'           => 'ast-sortable',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_multi_choices' ),
+					'section'           => 'section-woo-shop-single',
+					'title'             => __( 'Single Product Structure', 'astra-addon' ),
+					'priority'          => 15,
+					'choices'           => array(
 						'title'      => __( 'Title', 'astra-addon' ),
 						'price'      => __( 'Price', 'astra-addon' ),
 						'ratings'    => __( 'Ratings', 'astra-addon' ),
@@ -106,6 +119,30 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 						'short_desc' => __( 'Short Description', 'astra-addon' ),
 						'meta'       => __( 'Meta', 'astra-addon' ),
 					),
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[single-product-structure-divider]',
+					'type'     => 'control',
+					'section'  => 'section-woo-shop-single',
+					'control'  => 'ast-divider',
+					'priority' => 15,
+					'settings' => array(),
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[single-product-breadcrumb-disable-divider]',
+					'type'     => 'control',
+					'section'  => 'section-woo-shop-single',
+					'control'  => 'ast-divider',
+					'priority' => 16,
+					'settings' => array(),
 				),
 
 				/**
@@ -118,7 +155,19 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 					'section'  => 'section-woo-shop-single',
 					'title'    => __( 'Enable Ajax Add To Cart', 'astra-addon' ),
 					'priority' => 18,
-					'control'  => 'checkbox',
+					'control'  => Astra_Theme_Extension::$switch_control,
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[single-product-ajax-add-to-cart-divider]',
+					'type'     => 'control',
+					'section'  => 'section-woo-shop-single',
+					'control'  => 'ast-divider',
+					'priority' => 18,
+					'settings' => array(),
 				),
 
 				/**
@@ -131,7 +180,19 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 					'section'  => 'section-woo-shop-single',
 					'title'    => __( 'Enable Image Zoom Effect', 'astra-addon' ),
 					'priority' => 18,
-					'control'  => 'checkbox',
+					'control'  => Astra_Theme_Extension::$switch_control,
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[single-product-image-zoom-effect-divider]',
+					'type'     => 'control',
+					'section'  => 'section-woo-shop-single',
+					'control'  => 'ast-divider',
+					'priority' => 18,
+					'settings' => array(),
 				),
 
 				/**
@@ -158,6 +219,18 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 				 * Option: Divider
 				 */
 				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[single-product-nav-style-divider]',
+					'type'     => 'control',
+					'section'  => 'section-woo-shop-single',
+					'control'  => 'ast-divider',
+					'priority' => 20,
+					'settings' => array(),
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
 					'name'     => ASTRA_THEME_SETTINGS . '[single-product-tabs-divider]',
 					'section'  => 'section-woo-shop-single',
 					'title'    => __( 'Product Description Tabs', 'astra-addon' ),
@@ -176,7 +249,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 					'type'     => 'control',
 					'section'  => 'section-woo-shop-single',
 					'title'    => __( 'Display Product Tabs', 'astra-addon' ),
-					'control'  => 'checkbox',
+					'control'  => Astra_Theme_Extension::$switch_control,
 					'priority' => 30,
 				),
 
@@ -190,7 +263,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 					'section'  => 'section-woo-shop-single',
 					'title'    => __( 'Layout', 'astra-addon' ),
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[single-product-tabs-display]',
 							'operator' => '==',
@@ -203,6 +276,18 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 						'horizontal' => __( 'Horizontal', 'astra-addon' ),
 						'vertical'   => __( 'Vertical', 'astra-addon' ),
 					),
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[single-product-tabs-layout-divider]',
+					'type'     => 'control',
+					'section'  => 'section-woo-shop-single',
+					'control'  => 'ast-divider',
+					'priority' => 35,
+					'settings' => array(),
 				),
 
 				/**
@@ -227,7 +312,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 					'type'     => 'control',
 					'section'  => 'section-woo-shop-single',
 					'title'    => __( 'Display Related Products', 'astra-addon' ),
-					'control'  => 'checkbox',
+					'control'  => Astra_Theme_Extension::$switch_control,
 					'priority' => 60,
 				),
 
@@ -240,7 +325,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 					'type'     => 'control',
 					'section'  => 'section-woo-shop-single',
 					'title'    => __( 'Display Up Sells', 'astra-addon' ),
-					'control'  => 'checkbox',
+					'control'  => Astra_Theme_Extension::$switch_control,
 					'priority' => 65,
 				),
 
@@ -248,18 +333,19 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 				 * Option: Related Product Columns
 				 */
 				array(
-					'name'        => ASTRA_THEME_SETTINGS . '[single-product-related-upsell-grid]',
-					'default'     => array(
+					'name'              => ASTRA_THEME_SETTINGS . '[single-product-related-upsell-grid]',
+					'default'           => array(
 						'desktop' => 4,
 						'tablet'  => 3,
 						'mobile'  => 2,
 					),
-					'type'        => 'control',
-					'transport'   => 'postMessage',
-					'control'     => 'ast-responsive-slider',
-					'section'     => 'section-woo-shop-single',
-					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+					'type'              => 'control',
+					'transport'         => 'postMessage',
+					'control'           => 'ast-responsive-slider',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_responsive_slider' ),
+					'section'           => 'section-woo-shop-single',
+					'context'           => array(
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[single-product-related-display]',
 							'operator' => '==',
@@ -271,9 +357,9 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 							'value'    => true,
 						),
 					),
-					'priority'    => 70,
-					'title'       => __( 'Columns', 'astra-addon' ),
-					'input_attrs' => array(
+					'priority'          => 70,
+					'title'             => __( 'Columns', 'astra-addon' ),
+					'input_attrs'       => array(
 						'step' => 1,
 						'min'  => 1,
 						'max'  => 6,
@@ -290,7 +376,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Configs' ) ) {
 					'section'  => 'section-woo-shop-single',
 					'title'    => __( 'No. of Related Product', 'astra-addon' ),
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[single-product-related-display]',
 							'operator' => '==',

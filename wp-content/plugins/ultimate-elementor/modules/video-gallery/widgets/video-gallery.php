@@ -112,6 +112,17 @@ class Video_Gallery extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register Buttons controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		// Content Tab.
 		$this->register_video_gallery_controls();
 		$this->register_video_general_controls();
@@ -161,6 +172,62 @@ class Video_Gallery extends Common_Widget {
 						'youtube' => __( 'YouTube Video', 'uael' ),
 						'vimeo'   => __( 'Vimeo Video', 'uael' ),
 						'wistia'  => __( 'Wistia Video', 'uael' ),
+						'hosted'  => __( 'Self Hosted', 'uael' ),
+					),
+				)
+			);
+
+			$repeater->add_control(
+				'insert_url',
+				array(
+					'label'     => __( 'External URL', 'uael' ),
+					'type'      => Controls_Manager::SWITCHER,
+					'condition' => array(
+						'type' => 'hosted',
+					),
+				)
+			);
+
+			$repeater->add_control(
+				'hosted_url',
+				array(
+					'label'      => __( 'Choose File', 'uael' ),
+					'type'       => Controls_Manager::MEDIA,
+					'dynamic'    => array(
+						'active'     => true,
+						'categories' => array(
+							TagsModule::MEDIA_CATEGORY,
+						),
+					),
+					'media_type' => 'video',
+					'condition'  => array(
+						'type'       => 'hosted',
+						'insert_url' => '',
+					),
+				)
+			);
+
+			$repeater->add_control(
+				'external_url',
+				array(
+					'label'        => __( 'URL', 'uael' ),
+					'type'         => Controls_Manager::URL,
+					'autocomplete' => false,
+					'options'      => false,
+					'label_block'  => true,
+					'show_label'   => false,
+					'dynamic'      => array(
+						'active'     => true,
+						'categories' => array(
+							TagsModule::POST_META_CATEGORY,
+							TagsModule::URL_CATEGORY,
+						),
+					),
+					'media_type'   => 'video',
+					'placeholder'  => __( 'Enter your URL', 'uael' ),
+					'condition'    => array(
+						'type'       => 'hosted',
+						'insert_url' => 'yes',
 					),
 				)
 			);
@@ -287,6 +354,9 @@ class Video_Gallery extends Common_Widget {
 					'label_on'     => __( 'Yes', 'uael' ),
 					'label_off'    => __( 'No', 'uael' ),
 					'return_value' => 'yes',
+					'condition'    => array(
+						'type!' => 'hosted',
+					),
 				)
 			);
 
@@ -302,8 +372,30 @@ class Video_Gallery extends Common_Widget {
 					'dynamic'     => array(
 						'active' => true,
 					),
-					'condition'   => array(
-						'custom_placeholder' => 'yes',
+					'conditions'  => array(
+						'relation' => 'or',
+						'terms'    => array(
+							array(
+								'relation' => 'and',
+								'terms'    => array(
+									array(
+										'name'     => 'type',
+										'operator' => '!=',
+										'value'    => 'hosted',
+									),
+									array(
+										'name'     => 'custom_placeholder',
+										'operator' => '==',
+										'value'    => 'yes',
+									),
+								),
+							),
+							array(
+								'name'     => 'type',
+								'operator' => '==',
+								'value'    => 'hosted',
+							),
+						),
 					),
 				)
 			);
@@ -358,6 +450,7 @@ class Video_Gallery extends Common_Widget {
 							'tags'              => 'Wistia',
 							'placeholder_image' => '',
 						),
+
 					),
 					'title_field' => '{{{ title }}}',
 				)
@@ -2062,7 +2155,7 @@ class Video_Gallery extends Common_Widget {
 			$vid_id = $this->getStringBetween( $video_url, 'wvideo=', '"' );
 		}
 
-		if ( 'yes' === $item['custom_placeholder'] ) {
+		if ( ( 'yes' === $item['custom_placeholder'] && 'hosted' !== $item['type'] ) || 'hosted' === $item['type'] ) {
 
 			$url = $item['placeholder_image']['url'];
 		} else {
@@ -2153,7 +2246,6 @@ class Video_Gallery extends Common_Widget {
 		}
 	}
 
-
 	/**
 	 * Render Gallery Data.
 	 *
@@ -2184,6 +2276,14 @@ class Video_Gallery extends Common_Widget {
 			$url = $this->get_placeholder_image( $item );
 
 			$video_url = $item['video_url'];
+
+			if ( 'hosted' === $item['type'] ) {
+				if ( ! empty( $item['insert_url'] ) ) {
+					$video_url = $item['external_url']['url'];
+				} else {
+					$video_url = $item['hosted_url']['url'];
+				}
+			}
 
 			if ( 'wistia' === $item['type'] ) {
 				$wistia_id = $this->getStringBetween( $item['wistia_url'], 'wvideo=', '"' );
@@ -2233,47 +2333,57 @@ class Video_Gallery extends Common_Widget {
 			if ( 'inline' !== $settings['click_action'] ) {
 
 				$this->add_render_attribute( 'video-container-link' . $index, 'data-fancybox', 'uael-video-gallery-' . $this->get_id() );
+
 			} else {
 
-				if ( 'youtube' === $item['type'] ) {
-					$vurl = 'https://www.youtube.com/embed/' . $url['video_id'] . '?autoplay=1&version=3&enablejsapi=1';
-				} elseif ( 'vimeo' === $item['type'] ) {
-					$vurl = 'https://player.vimeo.com/video/' . $url['video_id'] . '?autoplay=1&version=3&enablejsapi=1';
-				} elseif ( 'wistia' === $item['type'] ) {
-					$vurl = $video_url . '?&autoplay=1';
+				switch ( $item['type'] ) {
+					case 'youtube':
+						$vurl = 'https://www.youtube.com/embed/' . $url['video_id'] . '?autoplay=1&version=3&enablejsapi=1';
+						break;
+
+					case 'vimeo':
+						$vurl = 'https://player.vimeo.com/video/' . $url['video_id'] . '?autoplay=1&version=3&enablejsapi=1';
+						break;
+
+					case 'wistia':
+					case 'hosted':
+						$vurl = $video_url . '?&autoplay=1';
+						break;
+
+					default:
+						break;
 				}
 
 				$this->add_render_attribute( 'video-container-link' . $index, 'data-url', $vurl );
 			}
-
 			?>
-			<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'grid-item' . $index ) ); ?>>
+				<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'grid-item' . $index ) ); ?>>
 
-				<?php
-					$url = empty( $url['url'] ) ? '' : esc_url( $url['url'] );
-				?>
+					<?php
+						$url = empty( $url['url'] ) ? '' : esc_url( $url['url'] );
+					?>
 
-				<div class="uael-video__gallery-iframe" style="background-image:url('<?php echo $url; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>');">
-					<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'video-container-link' . $index ) ); ?>>
-						<div class="uael-video__content-wrap">
-							<div class="uael-video__content">
+					<div class="uael-video__gallery-iframe" style="background-image:url('<?php echo $url; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>');">
+						<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'video-container-link' . $index ) ); ?>>
+							<div class="uael-video__content-wrap">
+								<div class="uael-video__content">
 
-								<?php $this->get_caption( $item ); ?>
+									<?php $this->get_caption( $item ); ?>
 
-								<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'video-grid-item' . $index ) ); ?>>
-									<?php $this->get_play_button(); ?>
+									<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'video-grid-item' . $index ) ); ?>>
+										<?php $this->get_play_button(); ?>
+									</div>
+
+									<?php $this->get_tag( $item ); ?>
+
 								</div>
-
-								<?php $this->get_tag( $item ); ?>
-
 							</div>
-						</div>
-					</a>
+						</a>
+					</div>
+					<div class="uael-vg__overlay"></div>
+					<?php do_action( 'uael_video_gallery_after_video', $item, $settings ); ?>
 				</div>
-				<div class="uael-vg__overlay"></div>
-				<?php do_action( 'uael_video_gallery_after_video', $item, $settings ); ?>
-			</div>
-			<?php
+				<?php
 		}
 
 	}

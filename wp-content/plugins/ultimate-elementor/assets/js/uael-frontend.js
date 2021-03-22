@@ -410,7 +410,7 @@
 					$(this).addClass( 'open' );
 				    if( 'yes' == autoplay ) {
 						$(this).css( "pointer-events", "visible" );
-						$( '.uael-hotspot-main-' + id + '.open' ).hover( function(){
+						$( '.uael-hotspot-main-' + id + '.open' ).on( 'mouseenter mouseleave', function(){
 							hoverFlag = true;
 						}, function(){
 							hoverFlag = false;
@@ -575,7 +575,7 @@
 	            }
 	        );
 
-	        $( window ).resize( function( e ) {
+	        $( window ).on( 'resize', function( e ) {
 	        	UAELBASlider( $scope );
 	        } );
 		} );
@@ -1002,7 +1002,7 @@
 			} 
 		}
 
-		$('html').click(function() {
+		$( 'html' ).on( 'click', function() {
 			$tabs_dropdown.removeClass( 'show-list' );
 		});
 
@@ -1154,7 +1154,7 @@
 			});
 		}
 
-		$('html').click(function() {
+		$('html').on('click', function() {
 			$tabs_dropdown.removeClass( 'show-list' );
 		});
 
@@ -1345,11 +1345,11 @@
 		 *
 		 */
 
-		_play: function( selector ) {
+		_play: function( selector,outer_wrap ) {
 
 			var iframe 		= $( "<iframe/>" );
 			var vurl 		= selector.data( 'src' );
-		
+			
 	        if ( 0 == selector.find( 'iframe' ).length ) {
 
 				iframe.attr( 'src', vurl );
@@ -1357,6 +1357,16 @@
 				iframe.attr( 'allowfullscreen', '1' );
 				iframe.attr( 'allow', 'autoplay;encrypted-media;' );
 				selector.html( iframe );
+				if( outer_wrap.hasClass( 'uael-video-type-hosted' ) ) {
+					var hosted_video_html = JSON.parse( outer_wrap.data( 'hosted-html' ) );
+					iframe.on( 'load', function() {
+						var hosted_video_iframe = iframe.contents().find( 'body' );
+						hosted_video_iframe.html( hosted_video_html );
+						iframe.contents().find( 'video' ).css( {"width":"100%", "height":"100%"} );
+						iframe.contents().find( 'video' ).attr( 'autoplay','autoplay' );
+					});
+				}
+
 	        }
 
 	        selector.closest( '.uael-video__outer-wrap' ).find( '.uael-vimeo-wrap' ).hide();
@@ -1479,14 +1489,14 @@
 			var selector = $( this ).find( '.uael-video__play' );
 
 			if( ! is_lightbox ) {
-				UAELVideo._play( selector );
+				UAELVideo._play( selector, outer_wrap );
 			}
 
 		});
 
 		if( ( '1' == outer_wrap.data( 'autoplay' ) || true == outer_wrap.data( 'device' ) ) && ( ! is_lightbox ) ) {
 
-			UAELVideo._play( $scope.find( '.uael-video__play' ) );
+			UAELVideo._play( $scope.find( '.uael-video__play' ), outer_wrap );
 		}
 
 		if( 'yes' == outer_wrap.data( 'vsticky' ) ) {
@@ -1518,7 +1528,7 @@
 			checkScroll();
 
 			window.addEventListener( "scroll", checkScroll );
-			$( window ).resize( function( e ) {
+			$( window ).on( 'resize', function( e ) {
 	        	checkResize( uael_waypoint );
 	        } );
 

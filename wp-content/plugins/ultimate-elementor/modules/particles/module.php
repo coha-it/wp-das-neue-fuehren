@@ -101,7 +101,7 @@ class Module extends Module_Base {
 	protected function add_actions() {
 
 		// Enqueue scripts.
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_footer', array( $this, 'enqueue_scripts' ) );
 		add_action( 'elementor/element/after_section_end', array( $this, 'register_controls' ), 10, 3 );
 
 		add_action( 'elementor/section/print_template', array( $this, '_print_template' ), 10, 2 );
@@ -121,7 +121,7 @@ class Module extends Module_Base {
 	 */
 	public function enqueue_scripts() {
 
-		if ( ( true === \Elementor\Plugin::$instance->db->is_built_with_elementor( get_the_ID() ) ) || ( function_exists( 'elementor_location_exits' ) && ( elementor_location_exits( 'archive', true ) || elementor_location_exits( 'single', true ) ) ) ) {
+		if ( ( true === \Elementor\Plugin::$instance->frontend->has_elementor_in_page() ) || ( true === \Elementor\Plugin::$instance->db->is_built_with_elementor( get_the_ID() ) ) || ( function_exists( 'elementor_location_exits' ) && ( elementor_location_exits( 'archive', true ) || elementor_location_exits( 'single', true ) ) ) ) {
 					wp_add_inline_script(
 						'elementor-frontend',
 						'window.scope_array = [];

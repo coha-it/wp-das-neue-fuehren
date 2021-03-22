@@ -398,11 +398,11 @@ class UpdraftPlus_Addons_RemoteStorage_backblaze extends UpdraftPlus_RemoteStora
 	/**
 	 * Delete an indicated file from remote storage
 	 *
-	 * @param String $file - the file (basename) to delete
+	 * @param Array $files - the files (basename) to delete
 	 *
 	 * @return Boolean - success/failure status of the delete operation. Throwing exception is also permitted.
 	 */
-	public function do_delete($file) {
+	public function do_delete($files) {
 	
 		$opts = $this->options;
 
@@ -411,10 +411,22 @@ class UpdraftPlus_Addons_RemoteStorage_backblaze extends UpdraftPlus_RemoteStora
 		$backup_path = empty($opts['backup_path']) ? '' : trailingslashit($opts['backup_path']);
 		
 		try {
-			$result = $storage->deleteFile(array(
-				'FileName'   => $backup_path.$file,
-				'BucketName' => $opts['bucket_name'],
-			));
+			if (count($files) > 1) {
+				$multipleFiles = array();
+				foreach ($files as $file) {
+					$multipleFiles[] = array(
+						'FileName'   => $backup_path.$file,
+						'BucketName' => $opts['bucket_name']
+					);
+				}
+				$result = $storage->deleteMultipleFiles($multipleFiles, $opts['bucket_name']);
+			} else {
+				$fileName = $files[0];
+				$result = $storage->deleteFile(array(
+					'FileName'   => $backup_path.$fileName,
+					'BucketName' => $opts['bucket_name'],
+				));
+			}
 		} catch (UpdraftPlus_Backblaze_NotFoundException $e) {
 			$this->log("$file: file not found (so likely already deleted)");
 			return true;
@@ -564,7 +576,7 @@ class UpdraftPlus_Addons_RemoteStorage_backblaze extends UpdraftPlus_RemoteStora
 	 */
 	public function get_supported_features() {
 		// This options format is handled via only accessing options via $this->get_options()
-		return array('multi_options', 'config_templates', 'multi_storage', 'conditional_logic');
+		return array('multi_options', 'config_templates', 'multi_storage', 'conditional_logic', 'multi_delete');
 	}
 	
 	/**

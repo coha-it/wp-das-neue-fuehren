@@ -59,8 +59,8 @@ if ( ! class_exists( 'Astra_Customizer_Adv_Search_Below_Header' ) ) {
 						'search-box'   => __( 'Search Box', 'astra-addon' ),
 					),
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$is_header_footer_builder_active ?
-						Astra_Addon_Builder_Helper::$design_tab_config : Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->is_header_footer_builder_active ?
+						astra_addon_builder_helper()->design_tab_config : astra_addon_builder_helper()->general_tab_config,
 						'relation' => 'AND',
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
@@ -91,7 +91,7 @@ if ( ! class_exists( 'Astra_Customizer_Adv_Search_Below_Header' ) ) {
 						'search-box'   => __( 'Search Box', 'astra-addon' ),
 					),
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
 							'operator' => '==',

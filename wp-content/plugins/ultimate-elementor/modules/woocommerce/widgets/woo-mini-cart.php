@@ -97,6 +97,16 @@ class Woo_Mini_Cart extends Common_Widget {
 	 * @access protected
 	 */
 	protected function _register_controls() { //phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+		$this->register_controls();
+	}
+
+	/**
+	 * Register Mini Cart controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
 		/* General cart controls */
 		$this->register_content_general_controls();
 
@@ -217,6 +227,22 @@ class Woo_Mini_Cart extends Common_Widget {
 					'cart_btn_style!' => 'text',
 				),
 				'separator'    => 'before',
+			)
+		);
+
+		$this->add_control(
+			'hide_empty_badge',
+			array(
+				'label'        => __( 'Hide Empty Badge', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'uael' ),
+				'label_off'    => __( 'No', 'uael' ),
+				'return_value' => 'yes',
+				'prefix_class' => 'uael-mc__btn-badge-empty-hide-',
+				'condition'    => array(
+					'show_badge'      => 'yes',
+					'cart_btn_style!' => 'text',
+				),
 			)
 		);
 
@@ -2559,8 +2585,10 @@ class Woo_Mini_Cart extends Common_Widget {
 	 * @access public
 	 * @param string $style Cart Style.
 	 * @param array  $settings Widget settings.
+	 * @param string $cart_count Cart content count.
+	 * @param string $cart_subtotal Cart subtotal.
 	 */
-	public function get_modal_offcanvas_markup( $style, $settings ) {
+	public function get_modal_offcanvas_markup( $style, $settings, $cart_count, $cart_subtotal ) {
 		?>
 		<div class="uael-mc-<?php echo esc_attr( $style ); ?>-wrap uael-mc-<?php echo esc_attr( $style ); ?>-wrap-close"></div>
 		<div class="uael-mc-<?php echo esc_attr( $style ); ?> uael-mc-<?php echo esc_attr( $style ); ?>-close">
@@ -2584,13 +2612,13 @@ class Woo_Mini_Cart extends Common_Widget {
 						?>
 					</div>
 					<div class="uael-mc-<?php echo esc_attr( $style ); ?>__header-badge">
-						<?php echo esc_html( WC()->cart->get_cart_contents_count() ); ?>
+						<?php echo esc_html( $cart_count ); ?>
 					</div>
 				</div>
 				<span class="uael-mc-<?php echo esc_attr( $style ); ?>__header-text">
 					<?php
 					esc_attr_e( 'Subtotal: ', 'uael' );
-					echo wp_kses_post( WC()->cart->get_cart_subtotal() );
+					echo wp_kses_post( $cart_subtotal );
 					?>
 				</span>
 			</div>
@@ -2624,6 +2652,9 @@ class Woo_Mini_Cart extends Common_Widget {
 		$id        = $this->get_id();
 		$is_editor = \Elementor\Plugin::instance()->editor->is_edit_mode();
 
+		$cart_count    = WC()->cart->get_cart_contents_count();
+		$cart_subtotal = WC()->cart->get_cart_subtotal();
+
 		$this->add_render_attribute(
 			'cart_btn_behaviour',
 			array(
@@ -2650,7 +2681,7 @@ class Woo_Mini_Cart extends Common_Widget {
 							<?php echo esc_html( $settings['cart_button_text'] ); ?>
 						</span>
 						<span class="uael-mc__btn-subtotal">
-							<?php echo wp_kses_post( WC()->cart->get_cart_subtotal() ); ?>
+							<?php echo wp_kses_post( $cart_subtotal ); ?>
 						</span>
 					</span>
 					<?php
@@ -2664,8 +2695,8 @@ class Woo_Mini_Cart extends Common_Widget {
 						<?php
 						if ( 'yes' === $settings['show_badge'] ) {
 							?>
-							<div class="uael-mc__btn-badge uael-badge-<?php echo esc_attr( $settings['badge_placement'] ); ?>">
-								<?php echo esc_html( WC()->cart->get_cart_contents_count() ); ?>
+							<div class="uael-mc__btn-badge uael-badge-<?php echo esc_attr( $settings['badge_placement'] ); ?>" data-counter="<?php echo esc_attr( $cart_count ); ?>"">
+								<?php echo esc_html( $cart_count ); ?>
 							</div>
 							<?php
 						}
@@ -2698,13 +2729,13 @@ class Woo_Mini_Cart extends Common_Widget {
 								?>
 								</div>
 								<div class="uael-mc-dropdown__header-badge">
-									<?php echo esc_html( WC()->cart->get_cart_contents_count() ); ?>
+									<?php echo esc_html( $cart_count ); ?>
 								</div>
 							</div>
 							<span class="uael-mc-dropdown__header-text">
 							<?php
 							esc_attr_e( 'Subtotal: ', 'uael' );
-							echo wp_kses_post( WC()->cart->get_cart_subtotal() );
+							echo wp_kses_post( $cart_subtotal );
 							?>
 						</span>
 						</div>
@@ -2721,11 +2752,11 @@ class Woo_Mini_Cart extends Common_Widget {
 					break;
 
 				case 'modal':
-					$this->get_modal_offcanvas_markup( 'modal', $settings );
+					$this->get_modal_offcanvas_markup( 'modal', $settings, $cart_count, $cart_subtotal );
 					break;
 
 				case 'offcanvas':
-					$this->get_modal_offcanvas_markup( 'offcanvas', $settings );
+					$this->get_modal_offcanvas_markup( 'offcanvas', $settings, $cart_count, $cart_subtotal );
 					break;
 			}
 			?>

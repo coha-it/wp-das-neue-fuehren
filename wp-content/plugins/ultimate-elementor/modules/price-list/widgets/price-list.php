@@ -88,6 +88,17 @@ if ( ! class_exists( 'Price_List' ) ) {
 		 */
 		protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+			$this->register_controls();
+		}
+
+		/**
+		 * Register Price List controls.
+		 *
+		 * @since 1.29.2
+		 * @access protected
+		 */
+		protected function register_controls() {
+
 			// Content Tab.
 			$this->render_list_item_control();
 			$this->render_structure_control();

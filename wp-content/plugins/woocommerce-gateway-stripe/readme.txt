@@ -2,9 +2,9 @@
 Contributors: woocommerce, automattic, royho, akeda, mattyza, bor0, woothemes
 Tags: credit card, stripe, apple pay, payment request, google pay, sepa, sofort, bancontact, alipay, giropay, ideal, p24, woocommerce, automattic
 Requires at least: 4.4
-Tested up to: 5.5
+Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 4.8.0
+Stable tag: 5.0.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Attributions: thorsten-stripe
@@ -126,8 +126,12 @@ If you get stuck, you can ask for help in the Plugin Forum.
 
 == Changelog ==
 
-= 4.8.0 - 2021-01-28 =
-* Fix - Filter more disallowed characters from statement descriptors.
+= 5.0.0 - 2021-03-17 =
+
+* Add - Display time of last Stripe webhook in settings.
+* Add - wc_stripe_webhook_validate_user_agent filter to customize webhook user-agent validation.
+* Fix - Payment Request Buttons for Chinese provinces in Chrome.
+* Fix - Enable wc_stripe_send_stripe_receipt filter to send Stripe emails.
+* Fix - Check for more errors when attaching sources to customers.
 
 [See changelog for all versions](https://raw.githubusercontent.com/woocommerce/woocommerce-gateway-stripe/trunk/changelog.txt).
-

@@ -47,7 +47,18 @@ if ( ! class_exists( 'Astra_Edd_Checkout_Configs' ) ) {
 					'type'    => 'control',
 					'section' => 'section-edd-checkout-page',
 					'title'   => __( 'Display Apply Coupon Field', 'astra-addon' ),
-					'control' => 'checkbox',
+					'control' => Astra_Theme_Extension::$switch_control,
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[edd-checkout-coupon-display-divider]',
+					'type'     => 'control',
+					'section'  => 'section-edd-checkout-page',
+					'control'  => 'ast-divider',
+					'settings' => array(),
 				),
 
 				/*
@@ -59,7 +70,18 @@ if ( ! class_exists( 'Astra_Edd_Checkout_Configs' ) ) {
 					'type'    => 'control',
 					'section' => 'section-edd-checkout-page',
 					'title'   => __( 'Distraction Free Checkout', 'astra-addon' ),
-					'control' => 'checkbox',
+					'control' => Astra_Theme_Extension::$switch_control,
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[edd-distraction-free-checkout-divider]',
+					'type'     => 'control',
+					'section'  => 'section-edd-checkout-page',
+					'control'  => 'ast-divider',
+					'settings' => array(),
 				),
 
 				/**
@@ -84,12 +106,12 @@ if ( ! class_exists( 'Astra_Edd_Checkout_Configs' ) ) {
 				 */
 				array(
 					'name'        => ASTRA_THEME_SETTINGS . '[edd-checkout-content-max-width]',
-					'default'     => 1200,
+					'default'     => astra_get_option( 'edd-checkout-content-max-width' ),
 					'type'        => 'control',
 					'transport'   => 'postMessage',
 					'control'     => 'ast-slider',
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[edd-checkout-content-width]',
 							'operator' => '==',
@@ -98,7 +120,7 @@ if ( ! class_exists( 'Astra_Edd_Checkout_Configs' ) ) {
 					),
 					'section'     => 'section-edd-checkout-page',
 					'title'       => __( 'Custom Width', 'astra-addon' ),
-					'suffix'      => '',
+					'suffix'      => 'px',
 					'input_attrs' => array(
 						'min'  => 768,
 						'step' => 1,

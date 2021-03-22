@@ -139,7 +139,9 @@
 			});
 
 			// Close box with esc key
-			$(document).keyup(function( e ){
+
+			$( document ).on( 'keyup', function(e){
+
 				if( e.keyCode === 27 ) {
 					uael_qv_close();
 				}

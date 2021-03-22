@@ -1,3 +1,30 @@
+v3.1.0
+- New: Ability to clone and delete elements from Header/Footer Builder. ( https://wpastra.com/docs/new-features-clone-delete/ )
+- New: Added new color options for Add to Cart Tray.
+- New: Language Switcher element for Header & Footer Builder.
+- Improvement: Redesigned the entire customizer UI for better user experience. ( https://wpastra.com/docs/revamped-astra-customizer/ )
+- Improvement: Added design options for Builder - Toggle Menu in Sticky header.
+- Improvement: Builder - Search - Placeholder text and color options.
+- Improvement: Builder - Search - Box height, Icon color and Background color options.
+- Improvement: Builder - Button - Added button size options.
+- Fix: Builder - Social Icons - Added ability to show the social icons in vertical layout for mobile devices.
+- Fix: Builder - Sticky Header - Social icon, label custom color & official color not working.
+- Fix: Corrected position of 'Last Menu Item' typography controls inside 'Primary Menu' section.
+- Fix: Builder - Menu - Megamenu container get hides when hover in between Top Offset spacing.
+- Fix: Sticky Header - Page scrolls to top in customizer when user switch to responsive mode.
+- Fix: Submenu colors are not working in the frontend.
+- Fix: Menu font size not working with old Header.
+- Fix: Sticky Header - Menu link, background and hover colors not working for old header.
+- Fix: Sticky Header -  Site title and tagline color not working.
+- Fix: White Label - Not able to white label the theme author and theme name in footer builder.
+- Fix: Added missing widget title font family option.
+- Fix: Product count value in cart element not aligned.
+- Fix: Custom Layouts - Removed unwanted blank CSS while using spacing option.
+
+v3.0.1
+- Fix: Mobile Header - Flyout Menu does not work for Sticky Header.
+- Fix: Hide label description option not working in Mega Menu.
+
 v3.0.0
 - New: Account element for Header Builder. ( https://wpastra.com/astra-3-0/ )
 - New: Divider element for Header & Footer Builder. ( https://wpastra.com/astra-3-0/ )

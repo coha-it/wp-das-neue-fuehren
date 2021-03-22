@@ -20,6 +20,15 @@ class OMGF_API_Download extends WP_REST_Controller
 {
     const OMGF_GOOGLE_FONTS_API_URL = 'https://google-webfonts-helper.herokuapp.com';
 
+    /**
+     * If a font changed names recently, this array will map the old name (key) to the new name (value).
+     * 
+     * The key of an element should be dashed (no spaces) if necessary, e.g. open-sans.
+     */
+    const OMGF_RENAMED_GOOGLE_FONTS   = [
+        'muli' => 'mulish'
+    ];
+
     private $plugin_text_domain = 'host-webfonts-local';
 
     /** @var array */
@@ -37,6 +46,9 @@ class OMGF_API_Download extends WP_REST_Controller
     /** @var string */
     private $path = '';
 
+    /**
+     * @return void 
+     */
     public function register_routes()
     {
         foreach ($this->endpoints as $endpoint) {
@@ -77,54 +89,56 @@ class OMGF_API_Download extends WP_REST_Controller
         $original_handle = $request->get_param('original_handle');
 
         if (!$this->handle || !$original_handle) {
-            wp_send_json_error('Handle not provided.', 406);
+            wp_die(__('Handle not provided.', $this->plugin_text_domain), 406);
         }
 
-        $this->path    = WP_CONTENT_DIR . OMGF_CACHE_PATH . '/' . $this->handle;
-        $url           = self::OMGF_GOOGLE_FONTS_API_URL . '/api/fonts/%s';
-        $font_families = explode('|', $params['family']);
-
-        if (defined('OMGF_PRO_FORCE_SUBSETS') && !empty(OMGF_PRO_FORCE_SUBSETS)) {
-            $query['subsets'] = implode(',', OMGF_PRO_FORCE_SUBSETS);
-        } else {
-            $query['subsets'] = $params['subset'] ?? 'latin,latin-ext';
-        }
-
-        $fonts = [];
+        $this->path       = WP_CONTENT_DIR . OMGF_CACHE_PATH . '/' . $this->handle;
+        $font_families    = explode('|', $params['family']);
+        $query['subsets'] = $params['subset'] ?? 'latin,latin-ext';
+        $fonts            = [];
 
         foreach ($font_families as $font_family) {
-            $fonts[] = $this->grab_font_family($font_family, $url, $query);
+            $fonts[] = $this->grab_font_family($font_family, $query);
         }
 
-        // Filter out empty element, i.e. failed requests.
+        // Filter out empty elements, i.e. failed requests.
         $fonts = array_filter($fonts);
 
         foreach ($fonts as $font_key => &$font) {
-            $font_request = $this->filter_font_families($font_families, $font);
+            $fonts_request = $this->build_fonts_request($font_families, $font);
 
-            list($family, $variants) = explode(':', $font_request);
+            list($family, $variants) = explode(':', $fonts_request);
 
-            $variants = $this->process_variants($variants, $font);
+            $variants = $this->parse_requested_variants($variants, $font);
 
             if ($unloaded_fonts = omgf_init()::unloaded_fonts()) {
                 $font_id = $font->id;
 
                 // Now we're sure we got 'em all. We can safely unload those we don't want.
                 if (isset($unloaded_fonts[$original_handle][$font_id])) {
-                    $variants     = $this->dequeue_unloaded_fonts($variants, $unloaded_fonts[$original_handle], $font->id);
-                    $font_request = $family . ':' . implode(',', $variants);
+                    $variants      = $this->dequeue_unloaded_variants($variants, $unloaded_fonts[$original_handle], $font->id);
+                    $fonts_request = $family . ':' . implode(',', $variants);
                 }
             }
 
-            $font->variants = $this->filter_variants($font->variants, $font_request);
+            $font->variants = $this->filter_variants($font->id, $font->variants, $fonts_request, $original_handle);
         }
 
         foreach ($fonts as &$font) {
+            $font_id = $font->id;
+
             foreach ($font->variants as &$variant) {
-                $font_family    = trim($variant->fontFamily, '\'"');
-                $filename       = strtolower(str_replace(' ', '-', $font_family) . '-' . $variant->fontStyle . '-' . $variant->fontWeight);
-                $variant->woff  = $this->download($variant->woff, $filename);
+                $filename       = strtolower($font_id . '-' . $variant->fontStyle . '-' . $variant->fontWeight);
                 $variant->woff2 = $this->download($variant->woff2, $filename);
+
+                /**
+                 * If Load .woff2 only is enabled, there's no need to continue here.
+                 */
+                if (OMGF_WOFF2_ONLY) {
+                    continue;
+                }
+
+                $variant->woff  = $this->download($variant->woff, $filename);
                 $variant->eot   = $this->download($variant->eot, $filename);
                 $variant->ttf   = $this->download($variant->ttf, $filename);
             }
@@ -151,13 +165,12 @@ class OMGF_API_Download extends WP_REST_Controller
 
         update_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_OPTIMIZED_FONTS, $optimized_fonts);
 
-        // After downloading it, serve it.
+        // After generating it, serve it.
         header('Content-Type: text/css');
-        header('Content-Transfer-Encoding: Binary');
         header('Content-Length: ' . filesize($local_file));
         flush();
         readfile($local_file);
-        die();
+        exit();
     }
 
     /**
@@ -167,7 +180,7 @@ class OMGF_API_Download extends WP_REST_Controller
      *
      * @return array
      */
-    private function dequeue_unloaded_fonts($variants, $unloaded_fonts, $font_id)
+    private function dequeue_unloaded_variants($variants, $unloaded_fonts, $font_id)
     {
         return array_filter(
             $variants,
@@ -175,6 +188,11 @@ class OMGF_API_Download extends WP_REST_Controller
                 if ($value == '400') {
                     // Sometimes the font is defined as 'regular', so we need to check both.
                     return !in_array('regular', $unloaded_fonts[$font_id]) && !in_array($value, $unloaded_fonts[$font_id]);
+                }
+
+                if ($value == '400italic') {
+                    // Sometimes the font is defined as 'italic', so we need to check both.
+                    return !in_array('italic', $unloaded_fonts[$font_id]) && !in_array($value, $unloaded_fonts[$font_id]);
                 }
 
                 return !in_array($value, $unloaded_fonts[$font_id]);
@@ -235,13 +253,40 @@ class OMGF_API_Download extends WP_REST_Controller
      *
      * @return mixed|void
      */
-    private function grab_font_family($font_family, $url, $query)
+    private function grab_font_family($font_family, $query)
     {
+        $url = self::OMGF_GOOGLE_FONTS_API_URL . '/api/fonts/%s';
+
         list($family, $variants) = explode(':', $font_family);
-        $family                  = strtolower(str_replace(' ', '-', $family));
+        $family                  = strtolower(str_replace([' ', '+'], '-', $family));
+
+        /**
+         * Add fonts to the request's $_GET 'family' parameter. Then pass an array to 'omgf_alternate_fonts' 
+         * filter. Then pass an alternate API url to the 'omgf_alternate_api_url' filter to fetch fonts from 
+         * an alternate API.
+         */
+        $alternate_fonts = apply_filters('omgf_alternate_fonts', []);
+
+        if (in_array($family, array_keys($alternate_fonts))) {
+            $url = apply_filters('omgf_alternate_api_url', $url);
+            unset($query);
+        }
+
+        $query_string = '';
+
+        if ($query) {
+            $query_string = '?' . http_build_query($query);
+        }
+
+        /**
+         * If a font changed names recently, map their old name to the new name, before triggering the API request.
+         */
+        if (in_array($family, array_keys(self::OMGF_RENAMED_GOOGLE_FONTS))) {
+            $family = self::OMGF_RENAMED_GOOGLE_FONTS[$family];
+        }
 
         $response = wp_remote_get(
-            sprintf($url, $family) . '?' . http_build_query($query)
+            sprintf($url, $family) . $query_string
         );
 
         $response_code = $response['response']['code'] ?? '';
@@ -270,11 +315,15 @@ class OMGF_API_Download extends WP_REST_Controller
      *
      * @return mixed
      */
-    private function filter_font_families($font_families, $font)
+    private function build_fonts_request($font_families, $font)
     {
         $font_request = array_filter(
             $font_families,
             function ($value) use ($font) {
+                if (isset($font->early_access)) {
+                    return strpos($value, strtolower(str_replace(' ', '', $font->family))) !== false;
+                }
+
                 return strpos($value, $font->family) !== false;
             }
         );
@@ -283,43 +332,54 @@ class OMGF_API_Download extends WP_REST_Controller
     }
 
     /**
-     * @param $variants
+     * @param $request
      * @param $font
      *
      * @return array
      */
-    private function process_variants($variants, $font)
+    private function parse_requested_variants($request, $font)
     {
-        $variants = array_filter(explode(',', $variants));
+        $requested_variants = array_filter(explode(',', $request));
 
-        // This means by default all fonts are requested, so we need to fill up the queue, before unloading the unwanted variants.
-        if (count($variants) == 0) {
+        /**
+         * This means by default all fonts are requested, so we need to fill up the queue, before unloading the unwanted variants.
+         */
+        if (count($requested_variants) == 0) {
             foreach ($font->variants as $variant) {
-                $variants[] = $variant->id;
+                $requested_variants[] = $variant->id;
             }
         }
 
-        return $variants;
+        return $requested_variants;
     }
 
     /**
-     * @param $available_variants
-     * @param $wanted
-     *
-     * @return array
+     * 
+     * @param mixed $font_id 
+     * @param mixed $available 
+     * @param mixed $wanted 
+     * @param mixed $stylesheet_handle 
+     * @return mixed 
      */
-    private function filter_variants($available_variants, $wanted)
+    private function filter_variants($font_id, $available, $wanted, $stylesheet_handle)
     {
         list($family, $variants) = explode(':', $wanted);
 
-        if (!$variants) {
-            return $available_variants;
+        /**
+         * Build array and filter out empty elements.
+         */
+        $variants = array_filter(explode(',', $variants));
+
+        /**
+         * If $variants is empty and this is the first run, i.e. there are no unloaded fonts (yet)
+         * return all available variants.
+         */
+        if (empty($variants) && !isset(omgf::unloaded_fonts()[$stylesheet_handle][$font_id])) {
+            return $available;
         }
 
-        $variants = explode(',', $variants);
-
         return array_filter(
-            $available_variants,
+            $available,
             function ($font) use ($variants) {
                 $id = $font->id;
 
@@ -357,6 +417,10 @@ class OMGF_API_Download extends WP_REST_Controller
             return content_url($file_uri);
         }
 
+        if (strpos($url, '//') == 0) {
+            $url = 'https:' . $url;
+        }
+
         $tmp = download_url($url);
         copy($tmp, $file);
         @unlink($tmp);
@@ -375,8 +439,16 @@ class OMGF_API_Download extends WP_REST_Controller
         $font_display = OMGF_DISPLAY_OPTION;
 
         foreach ($fonts as $font) {
+            /**
+             * If Font Family's name was recently renamed, the old name should be used so no manual changes have to be made 
+             * to the stylesheet after processing.
+             */
+            $renamed_font_family = in_array($font->id, self::OMGF_RENAMED_GOOGLE_FONTS)
+                ? array_search($font->id, self::OMGF_RENAMED_GOOGLE_FONTS)
+                : '';
+
             foreach ($font->variants as $variant) {
-                $font_family = $variant->fontFamily;
+                $font_family = $renamed_font_family ? '\'' . ucfirst($renamed_font_family) . '\'' : $variant->fontFamily;
                 $font_style  = $variant->fontStyle;
                 $font_weight = $variant->fontWeight;
                 $stylesheet .= "@font-face {\n";
@@ -384,7 +456,13 @@ class OMGF_API_Download extends WP_REST_Controller
                 $stylesheet .= "    font-style: $font_style;\n";
                 $stylesheet .= "    font-weight: $font_weight;\n";
                 $stylesheet .= "    font-display: $font_display;\n";
-                $stylesheet .= "    src: url('" . $variant->eot . "');\n";
+
+                /**
+                 * If WOFF2 Only is disabled, add EOT to the stylesheet for IE compatibility.
+                 */
+                if (!OMGF_WOFF2_ONLY) {
+                    $stylesheet .= "    src: url('" . $variant->eot . "');\n";
+                }
 
                 $local_src = '';
 
@@ -397,8 +475,14 @@ class OMGF_API_Download extends WP_REST_Controller
                 $stylesheet .= "    src: $local_src\n";
 
                 $font_src_url = isset($variant->woff2) ? ['woff2' => $variant->woff2] : [];
-                $font_src_url = $font_src_url + (isset($variant->woff) ? ['woff' => $variant->woff] : []);
-                $font_src_url = $font_src_url + (isset($variant->ttf) ? ['ttf' => $variant->ttf] : []);
+
+                /**
+                 * If WOFF2 only is disabled, add WOFF and TTF to the source stack.
+                 */
+                if (!OMGF_WOFF2_ONLY) {
+                    $font_src_url = $font_src_url + (isset($variant->woff) ? ['woff' => $variant->woff] : []);
+                    $font_src_url = $font_src_url + (isset($variant->ttf) ? ['ttf' => $variant->ttf] : []);
+                }
 
                 $stylesheet .= $this->build_source_string($font_src_url);
                 $stylesheet .= "}\n";

@@ -17,7 +17,7 @@ add_filter( 'astra_dynamic_css', 'astra_ext_scroll_to_top_dynamic_css' );
 function astra_ext_scroll_to_top_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' ) {
 
 	$link_color                    = astra_get_option( 'link-color' );
-	$scroll_to_top_icon_size       = astra_get_option( 'scroll-to-top-icon-size', '15' );
+	$scroll_to_top_icon_size       = astra_get_option( 'scroll-to-top-icon-size', 15 );
 	$scroll_to_top_icon_radius     = astra_get_option( 'scroll-to-top-icon-radius' );
 	$scroll_to_top_icon_color      = astra_get_option( 'scroll-to-top-icon-color' );
 	$scroll_to_top_icon_h_color    = astra_get_option( 'scroll-to-top-icon-h-color' );

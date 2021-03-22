@@ -52,7 +52,32 @@
                         scroll_offset = lists.data( 'scroll-offset' );
                         return scroll_offset;
             }
-        } 
+        },
+
+        __scroll_to_top_offset: function( lists, scroll_to_top_offset ) {
+            if (window.matchMedia("(max-width: 767px)").matches) {
+                    
+                if( undefined == lists.data( 'scroll-to-top-offset-mobile' ) ){
+                    return scroll_to_top_offset;
+                }
+                else{
+                    scroll_to_top_offset = lists.data( 'scroll-to-top-offset-mobile' );
+                    return scroll_to_top_offset;
+                }
+
+            } else if ( window.matchMedia("(max-width: 976px)").matches  ) {
+
+                    if( undefined == lists.data( 'scroll-to-top-offset-tablet' ) ){
+                        return scroll_to_top_offset;
+                    }
+                    else{
+                        scroll_to_top_offset = lists.data( 'scroll-to-top-offset-tablet' );
+                        return scroll_to_top_offset;
+                    }
+                } else {
+                    return scroll_to_top_offset;
+            } 
+        }
     }
 
     var toc = function (options) {
@@ -196,7 +221,8 @@
 
     WidgetUAELTableOfContents = function( $scope, $ ) { 
 
-        var $body = $( 'body' ).find( '.entry-content' );
+        var body_wrap =  $( 'body' );
+        var $body = body_wrap.find( '.entry-content' );
         var node_id = $scope.data( 'id' );
         var toggle_button = $scope.find( '.uael-toc-switch' );
         var toggle_content = $scope.find( '.uael-toc-toggle-content' );
@@ -207,19 +233,21 @@
         var scroll_delay = lists.data( 'scroll' );
         var separator = $scope.find( '.uael-separator-parent' );
         var scroll_offset = OffSet._setoffset( lists );
-
+        var lists_scroll_to_top_offset = lists.data( 'scroll-to-top-offset' );
+        var scroll_to_top_offset = OffSet.__scroll_to_top_offset( lists, lists_scroll_to_top_offset );
         if( $body.length === 0 ) {
-            $body = $( 'body' ).find( '.page-content' );
+            $body = body_wrap.find( '.page-content' );
         }
 
         if( $body.length === 0 ) {
-            $body = $( 'body' ).find( 'div[data-elementor-type]' );
+            $body = body_wrap.find( 'div[data-elementor-type]' );
         }
 
-    window.onresize = function( ) {
-        scroll_offset = OffSet._setoffset( lists );
-    }
-
+        window.onresize = function( ) {
+            scroll_offset = OffSet._setoffset( lists );
+            lists_scroll_to_top_offset = lists.data( 'scroll-to-top-offset' );
+            scroll_to_top_offset = OffSet.__scroll_to_top_offset( lists, lists_scroll_to_top_offset );
+        }
 
         // Toggle content on Show/Hide button.
         toggle_button.on( 'click', function( e ) {
@@ -249,7 +277,7 @@
         // Execute TOC function.
         $scope.find( '.uael-toc-list' ).toc( { content: $body, headings: selected_headings, scope: node_id } );
 
-        wrapper.find( '.uael-toc-list a' ).click( function () {
+        wrapper.find( '.uael-toc-list a' ).on( 'click', function () {
             
             if( '' == scroll_offset || 'undefined' == typeof scroll_offset ) {
                 $( 'html, body' ).animate( {
@@ -273,9 +301,16 @@
         });
 
         $scope.find( '.uael-scroll-top-icon' ).on( 'click', function( e ) {
-            $( "html, body" ).animate( {
-                scrollTop: wrapper.offset().top
-            }, scroll_delay );
+            if( '' == scroll_to_top_offset || 'undefined' == typeof scroll_to_top_offset ) {
+                $( "html, body" ).animate( {
+                    scrollTop: wrapper.offset().top
+                }, scroll_delay );
+            } else {
+                $( 'html, body' ).animate( {
+                    scrollTop: scroll_to_top_offset
+                }, scroll_delay );
+            }
+            
         });
 
         $( document ).on( "scroll", UAELTableOfContents._showHideScroll  );

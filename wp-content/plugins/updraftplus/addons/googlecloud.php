@@ -221,9 +221,24 @@ class UpdraftPlus_Addons_RemoteStorage_googlecloud extends UpdraftPlus_RemoteSto
 				$chunk = fread($handle, $this->chunk_size);
 				// Error handling??
 				$pointer += strlen($chunk);
+				
+				$start_time = microtime(true);
 				$status = $media->nextChunk($chunk);
+				
+				unset($chunk);
+
+				$extra_log = $media->getProgress();
+				
+				if (!$status && $this->chunk_size < 67108864 && microtime(true) - $start_time < 2.5 && !feof($handle) && $updraftplus->verify_free_memory($this->chunk_size * 4)) {
+					$memory_usage = round(@memory_get_usage(false)/1048576, 1);// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+					$memory_usage2 = round(@memory_get_usage(true)/1048576, 1);// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+					$this->chunk_size = $this->chunk_size * 2;
+					$extra_log .= ' - increasing chunk size to '.round($this->chunk_size/1024).' KB';
+					$extra_log .= " - memory usage: $memory_usage / $memory_usage2";
+				}
+				
 				$updraftplus->jobdata_set($transkey, array($media->updraftplus_getResumeUri(), $media->getProgress()));
-				$updraftplus->record_uploaded_chunk(round(100*$pointer/$local_size, 1), $media->getProgress(), $from);
+				$updraftplus->record_uploaded_chunk(round(100*$pointer/$local_size, 1), $extra_log, $from);
 			}
 		} catch (UDP_Google_Service_Exception $e) {
 			return $this->catch_upload_engine_exceptions($e, $handle, $try_again, $basename, $from);

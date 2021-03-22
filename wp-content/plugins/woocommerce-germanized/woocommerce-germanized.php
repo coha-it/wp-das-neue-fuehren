@@ -3,13 +3,13 @@
  * Plugin Name: Germanized for WooCommerce
  * Plugin URI: https://www.vendidero.de/woocommerce-germanized
  * Description: Germanized for WooCommerce extends WooCommerce to become a legally compliant store in the german market.
- * Version: 3.3.6
+ * Version: 3.3.7
  * Author: vendidero
  * Author URI: https://vendidero.de
  * Requires at least: 4.9
- * Tested up to: 5.6
+ * Tested up to: 5.7
  * WC requires at least: 3.9
- * WC tested up to: 5.0
+ * WC tested up to: 5.1
  *
  * Text Domain: woocommerce-germanized
  * Domain Path: /i18n/languages/
@@ -69,7 +69,7 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '3.3.6';
+		public $version = '3.3.7';
 
 		/**
 		 * @var WooCommerce_Germanized $instance of the plugin
@@ -597,7 +597,9 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 					'woo-paypalplus'                              => 'WC_GZD_Compatibility_Woo_PaypalPlus',
 					'elementor-pro'                               => 'WC_GZD_Compatibility_Elementor_Pro',
 					'klarna-checkout-for-woocommerce'             => 'WC_GZD_Compatibility_Klarna_Checkout_For_WooCommerce',
-					'flexible-checkout-fields'                    => 'WC_GZD_Compatibility_Flexible_Checkout_Fields'
+					'flexible-checkout-fields'                    => 'WC_GZD_Compatibility_Flexible_Checkout_Fields',
+					'woocommerce-all-products-for-subscriptions'  => 'WC_GZD_Compatibility_WooCommerce_All_Products_For_Subscriptions',
+					'b2b-market'                                  => 'WC_GZD_Compatibility_B2B_Market'
 				)
 			);
 
@@ -882,6 +884,13 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 			wp_add_inline_style( 'woocommerce-gzd-layout', $custom_css );
 		}
 
+		public function get_variation_script_params() {
+		    return apply_filters( 'woocommerce_gzd_add_to_cart_variation_params', array(
+			    'wrapper'        => '.type-product',
+			    'price_selector' => '.price',
+		    ) );
+		}
+
 		/**
 		 * Localize Script to enable AJAX
 		 */
@@ -918,10 +927,7 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 				 * @since 1.0.0
 				 *
 				 */
-				wp_localize_script( 'wc-gzd-add-to-cart-variation', 'wc_gzd_add_to_cart_variation_params', apply_filters( 'woocommerce_gzd_add_to_cart_variation_params', array(
-					'wrapper'        => '.type-product',
-					'price_selector' => '.price',
-				) ) );
+				wp_localize_script( 'wc-gzd-add-to-cart-variation', 'wc_gzd_add_to_cart_variation_params', $this->get_variation_script_params() );
 			}
 
 			if ( wp_script_is( 'wc-gzd-single-product' ) && ! in_array( 'wc-gzd-single-product', $this->localized_scripts ) ) {
@@ -1054,6 +1060,7 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 		public function add_emails( $mails ) {
 
 			$mails['WC_GZD_Email_Customer_Paid_For_Order']         = include WC_GERMANIZED_ABSPATH . 'includes/emails/class-wc-gzd-email-customer-paid-for-order.php';
+			$mails['WC_GZD_Email_Customer_Cancelled_Order']        = include WC_GERMANIZED_ABSPATH . 'includes/emails/class-wc-gzd-email-customer-cancelled-order.php';
 			$mails['WC_GZD_Email_Customer_New_Account_Activation'] = include WC_GERMANIZED_ABSPATH . 'includes/emails/class-wc-gzd-email-customer-new-account-activation.php';
 			$mails['WC_GZD_Email_Customer_Revocation']             = include WC_GERMANIZED_ABSPATH . 'includes/emails/class-wc-gzd-email-customer-revocation.php';
 

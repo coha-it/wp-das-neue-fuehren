@@ -54,14 +54,14 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 		if ( get_option( 'users_can_register' ) ) {
 			$register_option = array(
 				'name'      => ASTRA_THEME_SETTINGS . '[header-account-login-register]',
-				'default'   => '',
+				'default'   => astra_get_option( 'header-account-login-register' ),
 				'type'      => 'control',
-				'control'   => 'checkbox',
+				'control'   => Astra_Theme_Extension::$switch_control,
 				'section'   => $_section,
 				'priority'  => 205,
 				'title'     => __( 'Register', 'astra-addon' ),
 				'context'   => array(
-					Astra_Addon_Builder_Helper::$general_tab_config,
+					astra_addon_builder_helper()->general_tab_config,
 					array(
 						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-logout-action]',
 						'operator' => '==',
@@ -87,22 +87,36 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 			 * Option: Profile Link type
 			 */
 			array(
-				'name'      => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
-				'default'   => astra_get_option( 'header-account-action-type' ),
-				'type'      => 'control',
-				'control'   => 'select',
-				'section'   => $_section,
-				'title'     => __( 'Profile Action', 'astra-addon' ),
-				'priority'  => 4,
-				'choices'   => array(
+				'name'       => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
+				'default'    => astra_get_option( 'header-account-action-type' ),
+				'type'       => 'control',
+				'control'    => Astra_Theme_Extension::$selector_control,
+				'section'    => $_section,
+				'title'      => __( 'Profile Action', 'astra-addon' ),
+				'priority'   => 4,
+				'choices'    => array(
 					'link' => __( 'Link', 'astra-addon' ),
 					'menu' => __( 'Menu', 'astra-addon' ),
 				),
-				'transport' => 'postMessage',
-				'partial'   => array(
+				'transport'  => 'postMessage',
+				'partial'    => array(
 					'selector'        => '.ast-header-account',
 					'render_callback' => array( 'Astra_Builder_UI_Controller', 'render_account' ),
 				),
+				'responsive' => false,
+				'renderAs'   => 'text',
+			),
+
+			/**
+			 * Option: Divider
+			 */
+			array(
+				'name'     => ASTRA_THEME_SETTINGS . '[header-account-action-type-divider]',
+				'type'     => 'control',
+				'section'  => $_section,
+				'control'  => 'ast-divider',
+				'priority' => 4,
+				'settings' => array(),
 			),
 
 			/**
@@ -126,7 +140,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 					'render_callback' => array( 'Astra_Builder_UI_Controller', 'render_account' ),
 				),
 				'context'   => array(
-					Astra_Addon_Builder_Helper::$general_tab_config,
+					astra_addon_builder_helper()->general_tab_config,
 					array(
 						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-type]',
 						'operator' => '!=',
@@ -144,7 +158,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 				'name'      => ASTRA_THEME_SETTINGS . '[header-account-woo-menu]',
 				'default'   => astra_get_option( 'header-account-woo-menu' ),
 				'type'      => 'control',
-				'control'   => 'checkbox',
+				'control'   => Astra_Theme_Extension::$switch_control,
 				'section'   => $_section,
 				'priority'  => 7,
 				'title'     => __( 'Use WooCommerce Account Menu', 'astra-addon' ),
@@ -159,7 +173,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 						'operator' => '==',
 						'value'    => 'menu',
 					),
-					Astra_Addon_Builder_Helper::$general_tab_config,
+					astra_addon_builder_helper()->general_tab_config,
 				),
 				'partial'   => array(
 					'selector'        => '.ast-header-account',
@@ -173,7 +187,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 			*/
 			array(
 				'name'      => ASTRA_THEME_SETTINGS . '[header-account-create-menu-link]',
-				'default'   => '',
+				'default'   => astra_get_option( 'header-account-create-menu-link' ),
 				'type'      => 'control',
 				'control'   => 'ast-customizer-link',
 				'section'   => $_section,
@@ -182,7 +196,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 				'link_text' => __( 'Configure Menu from Here.', 'astra-addon' ),
 				'priority'  => 7,
 				'context'   => array(
-					Astra_Addon_Builder_Helper::$general_tab_config,
+					astra_addon_builder_helper()->general_tab_config,
 					array(
 						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
 						'operator' => '==',
@@ -195,29 +209,51 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 			 * Option: Click action type
 			 */
 			array(
-				'name'      => ASTRA_THEME_SETTINGS . '[header-account-logout-action]',
-				'default'   => astra_get_option( 'header-account-logout-action' ),
-				'type'      => 'control',
-				'control'   => 'select',
-				'section'   => $_section,
-				'title'     => __( 'Click Action', 'astra-addon' ),
-				'choices'   => array(
+				'name'       => ASTRA_THEME_SETTINGS . '[header-account-logout-action]',
+				'default'    => astra_get_option( 'header-account-logout-action' ),
+				'type'       => 'control',
+				'control'    => Astra_Theme_Extension::$selector_control,
+				'section'    => $_section,
+				'title'      => __( 'Click Action', 'astra-addon' ),
+				'choices'    => array(
 					'link'  => __( 'Link', 'astra-addon' ),
 					'login' => __( 'Login Popup', 'astra-addon' ),
 				),
-				'transport' => 'postMessage',
-				'priority'  => 204,
-				'context'   => array(
+				'transport'  => 'postMessage',
+				'priority'   => 204,
+				'context'    => array(
 					array(
 						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-logout-style]',
 						'operator' => '!=',
 						'value'    => 'none',
 					),
-					Astra_Addon_Builder_Helper::$general_tab_config,
+					astra_addon_builder_helper()->general_tab_config,
 				),
-				'partial'   => array(
+				'partial'    => array(
 					'selector'        => '.ast-header-account',
 					'render_callback' => array( 'Astra_Builder_UI_Controller', 'render_account' ),
+				),
+				'responsive' => false,
+				'renderAs'   => 'text',
+			),
+
+			/**
+			 * Option: Divider
+			 */
+			array(
+				'name'     => ASTRA_THEME_SETTINGS . '[hheader-account-logout-action-divider]',
+				'type'     => 'control',
+				'section'  => $_section,
+				'control'  => 'ast-divider',
+				'priority' => 204,
+				'settings' => array(),
+				'context'  => array(
+					array(
+						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-logout-style]',
+						'operator' => '!=',
+						'value'    => 'none',
+					),
+					astra_addon_builder_helper()->general_tab_config,
 				),
 			),
 
@@ -225,14 +261,14 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 
 			array(
 				'name'      => ASTRA_THEME_SETTINGS . '[header-account-login-lostpass]',
-				'default'   => '',
+				'default'   => astra_get_option( 'header-account-login-lostpass' ),
 				'type'      => 'control',
-				'control'   => 'checkbox',
+				'control'   => Astra_Theme_Extension::$switch_control,
 				'section'   => $_section,
 				'priority'  => 205,
 				'title'     => __( 'Lost your password?', 'astra-addon' ),
 				'context'   => array(
-					Astra_Addon_Builder_Helper::$general_tab_config,
+					astra_addon_builder_helper()->general_tab_config,
 					array(
 						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-logout-action]',
 						'operator' => '==',
@@ -252,26 +288,26 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 			),
 
 			array(
-				'name'      => ASTRA_THEME_SETTINGS . '[header-account-icon-type]',
-				'default'   => astra_get_option( 'header-account-icon-type' ),
-				'type'      => 'control',
-				'control'   => 'select',
-				'section'   => $_section,
-				'priority'  => 3,
-				'title'     => __( 'Select Icon', 'astra-addon' ),
-				'choices'   => array(
-					'account-1' => __( 'Icon 1', 'astra-addon' ),
-					'account-2' => __( 'Icon 2', 'astra-addon' ),
-					'account-3' => __( 'Icon 3', 'astra-addon' ),
-					'account-4' => __( 'Icon 4', 'astra-addon' ),
+				'name'       => ASTRA_THEME_SETTINGS . '[header-account-icon-type]',
+				'default'    => astra_get_option( 'header-account-icon-type' ),
+				'type'       => 'control',
+				'control'    => Astra_Theme_Extension::$selector_control,
+				'section'    => $_section,
+				'priority'   => 3,
+				'title'      => __( 'Select Icon', 'astra-addon' ),
+				'choices'    => array(
+					'account-1' => 'account-1',
+					'account-2' => 'account-2',
+					'account-3' => 'account-3',
+					'account-4' => 'account-4',
 				),
-				'transport' => 'postMessage',
-				'partial'   => array(
+				'transport'  => 'postMessage',
+				'partial'    => array(
 					'selector'        => '.ast-header-account',
 					'render_callback' => array( 'Astra_Builder_UI_Controller', 'render_account' ),
 				),
-				'context'   => array(
-					Astra_Addon_Builder_Helper::$design_tab_config,
+				'context'    => array(
+					astra_addon_builder_helper()->design_tab_config,
 					array(
 						'relation' => 'OR',
 						array(
@@ -286,6 +322,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 						),
 					),
 				),
+				'responsive' => false,
 			),
 		);
 

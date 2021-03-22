@@ -38,6 +38,7 @@ class OMGF_Admin
 		$this->show_notice = apply_filters(
 			'omgf_admin_options_show_notice',
 			[
+				OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_WOFF2_ONLY,
 				OMGF_Admin_Settings::OMGF_ADV_SETTING_CACHE_PATH,
 				OMGF_Admin_Settings::OMGF_ADV_SETTING_CACHE_URI,
 				OMGF_Admin_Settings::OMGF_ADV_SETTING_RELATIVE_URL,
@@ -64,8 +65,10 @@ class OMGF_Admin
 	 */
 	public function enqueue_admin_scripts($hook)
 	{
-		wp_enqueue_script(self::OMGF_ADMIN_JS_HANDLE, plugin_dir_url(OMGF_PLUGIN_FILE) . 'assets/js/omgf-admin.js', ['jquery'], OMGF_STATIC_VERSION, true);
-		wp_enqueue_style(self::OMGF_ADMIN_CSS_HANDLE, plugin_dir_url(OMGF_PLUGIN_FILE) . 'assets/css/omgf-admin.css', [], OMGF_STATIC_VERSION);
+		if ($hook == 'settings_page_optimize-webfonts') {
+			wp_enqueue_script(self::OMGF_ADMIN_JS_HANDLE, plugin_dir_url(OMGF_PLUGIN_FILE) . 'assets/js/omgf-admin.js', ['jquery'], OMGF_STATIC_VERSION, true);
+			wp_enqueue_style(self::OMGF_ADMIN_CSS_HANDLE, plugin_dir_url(OMGF_PLUGIN_FILE) . 'assets/css/omgf-admin.css', [], OMGF_STATIC_VERSION);
+		}
 	}
 
 	/**
@@ -155,8 +158,12 @@ class OMGF_Admin
 	}
 
 	/**
+	 * Shows notice if $option_name is in $show_notice array.
+	 * 
 	 * @param $new_value
 	 * @param $old_settings
+	 * 
+	 * @see $show_notice
 	 *
 	 * @return mixed
 	 */

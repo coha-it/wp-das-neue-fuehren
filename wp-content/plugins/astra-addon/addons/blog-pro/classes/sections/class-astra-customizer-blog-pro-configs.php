@@ -47,14 +47,15 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 				 * Option: Display Post Meta
 				 */
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[blog-meta]',
-					'type'     => 'control',
-					'control'  => 'ast-sortable',
-					'section'  => 'section-blog',
-					'default'  => astra_get_option( 'blog-meta' ),
-					'priority' => 50,
-					'title'    => __( 'Meta', 'astra-addon' ),
-					'choices'  => array(
+					'name'              => ASTRA_THEME_SETTINGS . '[blog-meta]',
+					'type'              => 'control',
+					'control'           => 'ast-sortable',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_multi_choices' ),
+					'section'           => 'section-blog',
+					'default'           => astra_get_option( 'blog-meta' ),
+					'priority'          => 50,
+					'title'             => __( 'Meta', 'astra-addon' ),
+					'choices'           => array(
 						'comments'  => __( 'Comments', 'astra-addon' ),
 						'category'  => __( 'Category', 'astra-addon' ),
 						'author'    => __( 'Author', 'astra-addon' ),
@@ -62,8 +63,8 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 						'tag'       => __( 'Tag', 'astra-addon' ),
 						'read-time' => __( 'Read Time', 'astra-addon' ),
 					),
-					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+					'context'           => array(
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-post-structure]',
 							'operator' => 'contains',
@@ -76,14 +77,15 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 				 * Option: Blog Layout
 				 */
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[blog-layout]',
-					'type'     => 'control',
-					'control'  => 'ast-radio-image',
-					'section'  => 'section-blog',
-					'default'  => astra_get_option( 'blog-layout' ),
-					'priority' => 5,
-					'title'    => __( 'Layout', 'astra-addon' ),
-					'choices'  => array(
+					'name'              => ASTRA_THEME_SETTINGS . '[blog-layout]',
+					'type'              => 'control',
+					'control'           => 'ast-radio-image',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_choices' ),
+					'section'           => 'section-blog',
+					'default'           => astra_get_option( 'blog-layout' ),
+					'priority'          => 5,
+					'title'             => __( 'Layout', 'astra-addon' ),
+					'choices'           => array(
 						'blog-layout-1' => array(
 							'label' => __( 'Layout 1', 'astra-addon' ),
 							'path'  => ( class_exists( 'Astra_Builder_UI_Controller' ) ) ? Astra_Builder_UI_Controller::fetch_svg_icon( 'blog-layout-1', false ) : '',
@@ -97,6 +99,18 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 							'path'  => ( class_exists( 'Astra_Builder_UI_Controller' ) ) ? Astra_Builder_UI_Controller::fetch_svg_icon( 'blog-layout-3', false ) : '',
 						),
 					),
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[blog-layout-divider]',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'section'  => 'section-blog',
+					'priority' => 5,
+					'settings' => array(),
 				),
 
 				/**
@@ -117,7 +131,27 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 						'4' => __( '4 Columns', 'astra-addon' ),
 					),
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[blog-layout]',
+							'operator' => '===',
+							'value'    => 'blog-layout-1',
+						),
+					),
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[blog-grid-divider]',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'section'  => 'section-blog',
+					'priority' => 10,
+					'settings' => array(),
+					'context'  => array(
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-layout]',
 							'operator' => '===',
@@ -133,11 +167,23 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 					'name'      => ASTRA_THEME_SETTINGS . '[blog-space-bet-posts]',
 					'default'   => astra_get_option( 'blog-space-bet-posts' ),
 					'type'      => 'control',
-					'control'   => 'checkbox',
+					'control'   => Astra_Theme_Extension::$switch_control,
 					'section'   => 'section-blog',
 					'title'     => __( 'Add Space Between Posts', 'astra-addon' ),
 					'transport' => 'postMessage',
 					'priority'  => 15,
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[blog-space-bet-posts-divider]',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'section'  => 'section-blog',
+					'priority' => 15,
+					'settings' => array(),
 				),
 
 				/**
@@ -147,12 +193,12 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 					'name'     => ASTRA_THEME_SETTINGS . '[blog-masonry]',
 					'default'  => astra_get_option( 'blog-masonry' ),
 					'type'     => 'control',
-					'control'  => 'checkbox',
+					'control'  => Astra_Theme_Extension::$switch_control,
 					'section'  => 'section-blog',
 					'title'    => __( 'Masonry Layout', 'astra-addon' ),
 					'priority' => 20,
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-layout]',
 							'operator' => '===',
@@ -164,7 +210,31 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 							'value'    => 1,
 						),
 					),
+				),
 
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[blog-masonry-divider]',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'section'  => 'section-blog',
+					'priority' => 20,
+					'settings' => array(),
+					'context'  => array(
+						astra_addon_builder_helper()->general_tab_config,
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[blog-layout]',
+							'operator' => '===',
+							'value'    => 'blog-layout-1',
+						),
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[blog-grid]',
+							'operator' => '!=',
+							'value'    => 1,
+						),
+					),
 				),
 
 				/**
@@ -174,13 +244,38 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 					'name'        => ASTRA_THEME_SETTINGS . '[first-post-full-width]',
 					'default'     => astra_get_option( 'first-post-full-width' ),
 					'type'        => 'control',
-					'control'     => 'checkbox',
+					'control'     => Astra_Theme_Extension::$switch_control,
 					'section'     => 'section-blog',
 					'title'       => __( 'Highlight First Post', 'astra-addon' ),
 					'description' => __( 'This will not work if Masonry Layout is enabled.', 'astra-addon' ),
 					'priority'    => 25,
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[blog-layout]',
+							'operator' => '===',
+							'value'    => 'blog-layout-1',
+						),
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[blog-grid]',
+							'operator' => '!=',
+							'value'    => 1,
+						),
+					),
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[first-post-full-width-divider]',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'section'  => 'section-blog',
+					'priority' => 25,
+					'settings' => array(),
+					'context'  => array(
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-layout]',
 							'operator' => '===',
@@ -201,7 +296,7 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 					'name'     => ASTRA_THEME_SETTINGS . '[blog-date-box]',
 					'default'  => astra_get_option( 'blog-date-box' ),
 					'type'     => 'control',
-					'control'  => 'checkbox',
+					'control'  => Astra_Theme_Extension::$switch_control,
 					'section'  => 'section-blog',
 					'title'    => __( 'Enable Date Box', 'astra-addon' ),
 					'priority' => 30,
@@ -211,25 +306,39 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 				 * Option: Date Box Style
 				 */
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[blog-date-box-style]',
-					'default'  => astra_get_option( 'blog-date-box-style' ),
-					'type'     => 'control',
-					'section'  => 'section-blog',
-					'title'    => __( 'Date Box Style', 'astra-addon' ),
-					'control'  => 'select',
-					'priority' => 35,
-					'choices'  => array(
+					'name'       => ASTRA_THEME_SETTINGS . '[blog-date-box-style]',
+					'default'    => astra_get_option( 'blog-date-box-style' ),
+					'type'       => 'control',
+					'section'    => 'section-blog',
+					'title'      => __( 'Date Box Style', 'astra-addon' ),
+					'control'    => Astra_Theme_Extension::$selector_control,
+					'priority'   => 35,
+					'choices'    => array(
 						'square' => __( 'Square', 'astra-addon' ),
 						'circle' => __( 'Circle', 'astra-addon' ),
 					),
-					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+					'context'    => array(
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-date-box]',
 							'operator' => '===',
 							'value'    => true,
 						),
 					),
+					'responsive' => false,
+					'renderAs'   => 'text',
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[blog-date-box-style-divider]',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'section'  => 'section-blog',
+					'priority' => 35,
+					'settings' => array(),
 				),
 
 				/**
@@ -239,13 +348,13 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 					'name'        => ASTRA_THEME_SETTINGS . '[blog-featured-image-padding]',
 					'default'     => astra_get_option( 'blog-featured-image-padding' ),
 					'type'        => 'control',
-					'control'     => 'checkbox',
+					'control'     => Astra_Theme_Extension::$switch_control,
 					'section'     => 'section-blog',
 					'title'       => __( 'Remove Featured Image Padding', 'astra-addon' ),
 					'description' => __( 'This option will not work on full width layouts.', 'astra-addon' ),
 					'priority'    => 40,
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-layout]',
 							'operator' => '===',
@@ -257,12 +366,20 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 				 * Option: Divider
 				 */
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[ast-styling-section-blog-grid]',
+					'name'     => ASTRA_THEME_SETTINGS . '[blog-featured-image-padding-divider]',
 					'type'     => 'control',
 					'control'  => 'ast-divider',
 					'section'  => 'section-blog',
 					'priority' => 40,
 					'settings' => array(),
+					'context'  => array(
+						astra_addon_builder_helper()->general_tab_config,
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[blog-layout]',
+							'operator' => '===',
+							'value'    => 'blog-layout-1',
+						),
+					),
 				),
 
 				/**
@@ -282,7 +399,7 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 						'max'  => 3000,
 					),
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-post-content]',
 							'operator' => '===',
@@ -303,7 +420,7 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 					'title'    => __( 'Read More Text', 'astra-addon' ),
 					'control'  => 'text',
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-post-content]',
 							'operator' => '===',
@@ -319,12 +436,24 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 					'name'     => ASTRA_THEME_SETTINGS . '[blog-read-more-as-button]',
 					'default'  => astra_get_option( 'blog-read-more-as-button' ),
 					'type'     => 'control',
-					'control'  => 'checkbox',
+					'control'  => Astra_Theme_Extension::$switch_control,
 					'section'  => 'section-blog',
 					'title'    => __( 'Display Read More as Button', 'astra-addon' ),
 					'priority' => 90,
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[blog-read-more-as-button-divider]',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'section'  => 'section-blog',
+					'priority' => 90,
+					'settings' => array(),
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-post-content]',
 							'operator' => '===',
@@ -337,17 +466,31 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 				 * Option: Post Pagination
 				 */
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[blog-pagination]',
-					'default'  => astra_get_option( 'blog-pagination' ),
-					'type'     => 'control',
-					'control'  => 'select',
-					'section'  => 'section-blog',
-					'priority' => 110,
-					'title'    => __( 'Post Pagination', 'astra-addon' ),
-					'choices'  => array(
+					'name'       => ASTRA_THEME_SETTINGS . '[blog-pagination]',
+					'default'    => astra_get_option( 'blog-pagination' ),
+					'type'       => 'control',
+					'control'    => Astra_Theme_Extension::$selector_control,
+					'section'    => 'section-blog',
+					'priority'   => 110,
+					'title'      => __( 'Post Pagination', 'astra-addon' ),
+					'choices'    => array(
 						'number'   => __( 'Number', 'astra-addon' ),
 						'infinite' => __( 'Infinite Scroll', 'astra-addon' ),
 					),
+					'responsive' => false,
+					'renderAs'   => 'text',
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[blog-pagination-divider]',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'section'  => 'section-blog',
+					'priority' => 110,
+					'settings' => array(),
 				),
 
 				/**
@@ -357,7 +500,7 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 					'name'        => ASTRA_THEME_SETTINGS . '[blog-infinite-scroll-event]',
 					'default'     => astra_get_option( 'blog-infinite-scroll-event' ),
 					'type'        => 'control',
-					'control'     => 'select',
+					'control'     => Astra_Theme_Extension::$selector_control,
 					'section'     => 'section-blog',
 					'description' => __( 'Infinite Scroll cannot be previewed in the Customizer.', 'astra-addon' ),
 					'priority'    => 112,
@@ -367,39 +510,43 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 						'click'  => __( 'Click', 'astra-addon' ),
 					),
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-pagination]',
 							'operator' => '===',
 							'value'    => 'infinite',
 						),
 					),
+					'responsive'  => false,
+					'renderAs'    => 'text',
 				),
 
 				/**
 				 * Option: Post Pagination Style
 				 */
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[blog-pagination-style]',
-					'default'  => astra_get_option( 'blog-pagination-style' ),
-					'type'     => 'control',
-					'control'  => 'select',
-					'section'  => 'section-blog',
-					'priority' => 115,
-					'title'    => __( 'Post Pagination Style', 'astra-addon' ),
-					'choices'  => array(
+					'name'       => ASTRA_THEME_SETTINGS . '[blog-pagination-style]',
+					'default'    => astra_get_option( 'blog-pagination-style' ),
+					'type'       => 'control',
+					'control'    => Astra_Theme_Extension::$selector_control,
+					'section'    => 'section-blog',
+					'priority'   => 115,
+					'title'      => __( 'Post Pagination Style', 'astra-addon' ),
+					'choices'    => array(
 						'default' => __( 'Default', 'astra-addon' ),
 						'square'  => __( 'Square', 'astra-addon' ),
 						'circle'  => __( 'Circle', 'astra-addon' ),
 					),
-					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+					'context'    => array(
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-pagination]',
 							'operator' => '===',
 							'value'    => 'number',
 						),
 					),
+					'responsive' => false,
+					'renderAs'   => 'text',
 				),
 
 				/**
@@ -414,7 +561,7 @@ if ( ! class_exists( 'Astra_Customizer_Blog_Pro_Configs' ) ) {
 					'title'    => __( 'Load More Text', 'astra-addon' ),
 					'control'  => 'text',
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[blog-pagination]',
 							'operator' => '===',

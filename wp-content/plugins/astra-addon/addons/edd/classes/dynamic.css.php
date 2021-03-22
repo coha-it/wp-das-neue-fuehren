@@ -154,7 +154,7 @@ function astra_edd_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' ) {
 
 		$header_cart_icon = array();
 
-		if ( Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) {
+		if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 			/**
 			 * Header Cart Icon colors

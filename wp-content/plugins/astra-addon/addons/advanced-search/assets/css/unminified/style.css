@@ -226,6 +226,25 @@
   }
 }
 
+.astra-hfb-header .ast-search-box.full-screen.full-screen ::-webkit-input-placeholder {
+  opacity: 0.5;
+}
+
+.astra-hfb-header .ast-search-box.full-screen.full-screen ::-moz-placeholder {
+  /* Firefox 19+ */
+  opacity: 0.5;
+}
+
+.astra-hfb-header .ast-search-box.full-screen.full-screen :-ms-input-placeholder {
+  /* IE 10+ */
+  opacity: 0.5;
+}
+
+.astra-hfb-header .ast-search-box.full-screen.full-screen :-moz-placeholder {
+  /* Firefox 18- */
+  opacity: 0.5;
+}
+
 .site-header .ast-inline-search.ast-search-menu-icon .search-form {
   padding-left: 0;
   padding-right: 2em;

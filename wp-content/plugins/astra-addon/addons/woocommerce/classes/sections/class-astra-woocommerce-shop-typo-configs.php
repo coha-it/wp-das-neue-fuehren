@@ -39,18 +39,17 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option: Shop Typography Divider
+				 * Option: Divider
 				 */
 				array(
 					'name'     => ASTRA_THEME_SETTINGS . '[woo-shop-typography-divider]',
 					'type'     => 'control',
-					'control'  => 'ast-heading',
 					'section'  => 'woocommerce_product_catalog',
-					'title'    => __( 'Typography', 'astra-addon' ),
-					'settings' => array(),
+					'control'  => 'ast-divider',
 					'priority' => 230,
+					'settings' => array(),
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[shop-product-structure]',
 							'operator' => 'contains',
@@ -67,11 +66,11 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'default'   => astra_get_option( 'shop-product-title-group' ),
 					'type'      => 'control',
 					'control'   => 'ast-settings-group',
-					'title'     => __( 'Product Title', 'astra-addon' ),
+					'title'     => __( 'Product Title Font', 'astra-addon' ),
 					'section'   => 'woocommerce_product_catalog',
 					'transport' => 'postMessage',
 					'context'   => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[shop-product-structure]',
 							'operator' => 'contains',
@@ -163,7 +162,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 				 */
 				array(
 					'name'              => 'line-height-shop-product-title',
-					'default'           => '',
+					'default'           => astra_get_option( 'line-height-shop-product-title' ),
 					'transport'         => 'postMessage',
 					'type'              => 'sub-control',
 					'parent'            => ASTRA_THEME_SETTINGS . '[shop-product-title-group]',
@@ -172,7 +171,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'control'           => 'ast-slider',
 					'priority'          => 5,
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_number_n_blank' ),
-					'suffix'            => '',
+					'suffix'            => 'em',
 					'input_attrs'       => array(
 						'min'  => 1,
 						'step' => 0.01,
@@ -188,7 +187,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'default'   => astra_get_option( 'shop-product-price-group' ),
 					'type'      => 'control',
 					'control'   => 'ast-settings-group',
-					'title'     => __( 'Product Price', 'astra-addon' ),
+					'title'     => __( 'Product Price Font', 'astra-addon' ),
 					'section'   => 'woocommerce_product_catalog',
 					'transport' => 'postMessage',
 					'context'   => array(
@@ -261,7 +260,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 				 */
 				array(
 					'name'        => 'line-height-shop-product-price',
-					'default'     => '',
+					'default'     => astra_get_option( 'line-height-shop-product-price' ),
 					'type'        => 'sub-control',
 					'parent'      => ASTRA_THEME_SETTINGS . '[shop-product-price-group]',
 					'section'     => 'woocommerce_product_catalog',
@@ -269,7 +268,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'title'       => __( 'Line Height', 'astra-addon' ),
 					'control'     => 'ast-slider',
 					'priority'    => 10,
-					'suffix'      => '',
+					'suffix'      => 'em',
 					'input_attrs' => array(
 						'min'  => 1,
 						'step' => 0.01,
@@ -285,12 +284,12 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'default'   => astra_get_option( 'shop-product-content-group' ),
 					'type'      => 'control',
 					'control'   => 'ast-settings-group',
-					'title'     => __( 'Product Content', 'astra-addon' ),
+					'title'     => __( 'Product Content Font', 'astra-addon' ),
 					'section'   => 'woocommerce_product_catalog',
 					'transport' => 'postMessage',
 					'context'   => array(
 						'relation' => 'AND',
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'relation' => 'OR',
 							array(
@@ -392,7 +391,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 				 */
 				array(
 					'name'        => 'line-height-shop-product-content',
-					'default'     => '',
+					'default'     => astra_get_option( 'line-height-shop-product-content' ),
 					'type'        => 'sub-control',
 					'parent'      => ASTRA_THEME_SETTINGS . '[shop-product-content-group]',
 					'section'     => 'woocommerce_product_catalog',
@@ -400,7 +399,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'title'       => __( 'Line Height', 'astra-addon' ),
 					'control'     => 'ast-slider',
 					'priority'    => 15,
-					'suffix'      => '',
+					'suffix'      => 'em',
 					'input_attrs' => array(
 						'min'  => 1,
 						'step' => 0.01,

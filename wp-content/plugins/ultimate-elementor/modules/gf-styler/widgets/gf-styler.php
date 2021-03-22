@@ -149,6 +149,17 @@ class GfStyler extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register GForms Styler controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		$this->register_general_content_controls();
 		$this->register_input_style_controls();
 		$this->register_radio_content_controls();
@@ -440,7 +451,7 @@ class GfStyler extends Common_Widget {
 		$this->add_control(
 			'form_input_color',
 			array(
-				'label'     => __( 'Input Text / Placeholder Color', 'uael' ),
+				'label'     => __( 'Input Text', 'uael' ),
 				'type'      => Controls_Manager::COLOR,
 				'scheme'    => array(
 					'type'  => Scheme_Color::get_type(),
@@ -450,7 +461,7 @@ class GfStyler extends Common_Widget {
 				'selectors' => array(
 					'{{WRAPPER}} .uael-gf-style .gform_wrapper .gfield input:not([type="radio"]):not([type="checkbox"]):not([type="submit"]):not([type="button"]):not([type="image"]):not([type="file"]),
 					{{WRAPPER}} .uael-gf-style .ginput_container select,
-					{{WRAPPER}} .uael-gf-style .ginput_container .chosen-single,  
+					{{WRAPPER}} .uael-gf-style .ginput_container .chosen-single,
 					{{WRAPPER}} .uael-gf-style .ginput_container textarea,
 					{{WRAPPER}} .uael-gf-style .gform_wrapper .gfield input::placeholder,
 					{{WRAPPER}} .uael-gf-style .ginput_container textarea::placeholder,
@@ -459,6 +470,19 @@ class GfStyler extends Common_Widget {
 					{{WRAPPER}} .uael-gf-style .uael-gf-select-custom:after ' => 'color: {{VALUE}}; opacity: 1;',
 					'{{WRAPPER}} .uael-gf-style .gfield_radio input[type="radio"]:checked + label:before,
 					{{WRAPPER}} .uael-gf-style .gfield_radio .gchoice_button.uael-radio-active + .gchoice_label label:before' => 'background-color: {{VALUE}}; box-shadow:inset 0px 0px 0px 4px {{form_input_bgcolor.VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'form_input_placeholder_color',
+			array(
+				'label'     => __( 'Placeholder Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '',
+				'selectors' => array(
+					'{{WRAPPER}}.elementor-widget-uael-gf-styler .uael-gf-style .gform_wrapper .gfield input::placeholder,
+					{{WRAPPER}}.elementor-widget-uael-gf-styler .uael-gf-style .ginput_container textarea::placeholder' => 'color: {{VALUE}}; opacity: 1;',
 				),
 			)
 		);

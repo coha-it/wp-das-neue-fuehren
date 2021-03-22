@@ -44,16 +44,15 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_Typo_Configs' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option: Learndash Typography Divider
+				 * Option: Divider
 				 */
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[learndash-typography-divider]',
+					'name'     => ASTRA_THEME_SETTINGS . '[learndash-typography-before-divider]',
 					'type'     => 'control',
-					'control'  => 'ast-heading',
 					'section'  => 'section-learndash',
-					'title'    => __( 'Typography', 'astra-addon' ),
-					'settings' => array(),
+					'control'  => 'ast-divider',
 					'priority' => 42,
+					'settings' => array(),
 				),
 
 				/**
@@ -64,10 +63,22 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_Typo_Configs' ) ) {
 					'default'   => astra_get_option( 'learndash-header-typography-group' ),
 					'type'      => 'control',
 					'control'   => 'ast-settings-group',
-					'title'     => __( 'Header', 'astra-addon' ),
+					'title'     => __( 'Header Font', 'astra-addon' ),
 					'section'   => 'section-learndash',
 					'transport' => 'postMessage',
 					'priority'  => 43,
+				),
+
+				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[learndash-typography-middle-divider]',
+					'type'     => 'control',
+					'section'  => 'section-learndash',
+					'control'  => 'ast-divider',
+					'priority' => 43,
+					'settings' => array(),
 				),
 
 				/**
@@ -78,7 +89,7 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_Typo_Configs' ) ) {
 					'default'   => astra_get_option( 'learndash-content-typography-group' ),
 					'type'      => 'control',
 					'control'   => 'ast-settings-group',
-					'title'     => __( 'Content', 'astra-addon' ),
+					'title'     => __( 'Content Font', 'astra-addon' ),
 					'section'   => 'section-learndash',
 					'transport' => 'postMessage',
 					'priority'  => 43,

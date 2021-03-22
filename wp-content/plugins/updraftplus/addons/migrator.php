@@ -463,6 +463,8 @@ class UpdraftPlus_Addons_Migrator {
 
 		if (!is_integer($new_blogid)) return $new_blogid;
 
+		do_action('updraftplus_restore_set_table_prefix_multisite_got_new_blog_id', $new_blogid, $import_table_prefix);
+
 		$this->new_blogid = $new_blogid;
 
 		return (string) $import_table_prefix.$new_blogid.'_';
@@ -793,7 +795,7 @@ class UpdraftPlus_Addons_Migrator {
 		if (!empty($this->tables_replaced[$table])) return;
 
 		// If not done already, then search & replace this table, + record that it is done
-		@set_time_limit(1800);// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+		if (function_exists('set_time_limit')) @set_time_limit(1800);// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
 
 		$stripped_table = substr($table, strlen($import_table_prefix));
 		// Remove multisite site number prefix, if relevant
@@ -1156,7 +1158,7 @@ class UpdraftPlus_Addons_Migrator {
 			}
 		}
 
-		@set_time_limit(1800);// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+		if (function_exists('set_time_limit')) @set_time_limit(1800);// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
 
 		list($from_array, $to_array) = $this->build_searchreplace_array($replace_this_siteurl, $replace_this_home, $replace_this_content, $replace_this_uploads);
 

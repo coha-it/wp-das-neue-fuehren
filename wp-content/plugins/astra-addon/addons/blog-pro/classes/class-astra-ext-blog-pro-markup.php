@@ -395,7 +395,7 @@ if ( ! class_exists( 'Astra_Ext_Blog_Pro_Markup' ) ) {
 						$classes[] = 'ast-col-md-' . ( 12 / $blog_grid_layout );
 					}
 				}
-				if ( Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) {
+				if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
 					$classes[] = 'ast-archive-post';
 				}
 				if ( $blog_space_bet_posts ) {

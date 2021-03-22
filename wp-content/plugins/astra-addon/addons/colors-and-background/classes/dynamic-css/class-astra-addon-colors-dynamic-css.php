@@ -297,7 +297,7 @@ class Astra_Addon_Colors_Dynamic_CSS {
 			$css_output        .= astra_parse_css( $sidebar_foreground );
 		}
 
-		if ( ! Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) {
+		if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 			/**
 			 * Responsive Colors options

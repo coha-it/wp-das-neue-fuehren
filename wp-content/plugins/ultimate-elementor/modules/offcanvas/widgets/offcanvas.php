@@ -120,6 +120,16 @@ class Offcanvas extends Common_Widget {
 	 * @access protected
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+		$this->register_controls();
+	}
+
+	/**
+	 * Register canvas controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
 		$this->register_general_content_controls();
 		$this->register_menu_content_controls();
 		$this->register_display_offcanvas_controls();

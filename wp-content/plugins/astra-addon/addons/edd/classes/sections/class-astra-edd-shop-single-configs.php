@@ -39,6 +39,18 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Configs' ) ) {
 			$_configs = array(
 
 				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[disable-edd-single-product-nav-divider]',
+					'type'     => 'control',
+					'section'  => 'section-edd-single',
+					'control'  => 'ast-divider',
+					'priority' => 10,
+					'settings' => array(),
+				),
+
+				/**
 				 * Option: Enable Ajax add to cart.
 				 */
 				array(
@@ -48,45 +60,29 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Configs' ) ) {
 					'section'  => 'section-edd-single',
 					'title'    => __( 'Disable Add To Cart Button', 'astra-addon' ),
 					'priority' => 18,
-					'control'  => 'checkbox',
+					'control'  => Astra_Theme_Extension::$switch_control,
 				),
 
 				/**
 				 * Option: Divider
 				 */
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-single-product-colors-heading]',
-					'section'  => 'section-edd-single',
+					'name'     => ASTRA_THEME_SETTINGS . '[edd-single-product-colors-divider]',
 					'type'     => 'control',
-					'control'  => 'ast-heading',
-					'title'    => __( 'Colors', 'astra-addon' ),
+					'section'  => 'section-edd-single',
+					'control'  => 'ast-divider',
 					'priority' => 230,
 					'settings' => array(),
 				),
 
 				/**
-				 * Option: EDD Single product Colors Group
-				 */
-				array(
-					'name'      => ASTRA_THEME_SETTINGS . '[edd-single-product-colors]',
-					'default'   => astra_get_option( 'edd-single-colors' ),
-					'type'      => 'control',
-					'control'   => 'ast-settings-group',
-					'title'     => __( 'Colors', 'astra-addon' ),
-					'section'   => 'section-edd-single',
-					'transport' => 'postMessage',
-					'priority'  => 231,
-				),
-
-				/**
 				 * Option: Divider
 				 */
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-single-typo-heading]',
-					'section'  => 'section-edd-single',
+					'name'     => ASTRA_THEME_SETTINGS . '[edd-single-typo-divider]',
 					'type'     => 'control',
-					'control'  => 'ast-heading',
-					'title'    => __( 'Typography', 'astra-addon' ),
+					'section'  => 'section-edd-single',
+					'control'  => 'ast-divider',
 					'priority' => 232,
 					'settings' => array(),
 				),
@@ -99,7 +95,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Configs' ) ) {
 					'default'   => astra_get_option( 'edd-single-product-title-typo' ),
 					'type'      => 'control',
 					'control'   => 'ast-settings-group',
-					'title'     => __( 'Product Title', 'astra-addon' ),
+					'title'     => __( 'Product Title Font', 'astra-addon' ),
 					'section'   => 'section-edd-single',
 					'transport' => 'postMessage',
 					'priority'  => 233,
@@ -113,7 +109,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Configs' ) ) {
 					'default'   => astra_get_option( 'edd-single-product-content-typo' ),
 					'type'      => 'control',
 					'control'   => 'ast-settings-group',
-					'title'     => __( 'Product Content', 'astra-addon' ),
+					'title'     => __( 'Product Content Font', 'astra-addon' ),
 					'section'   => 'section-edd-single',
 					'transport' => 'postMessage',
 					'priority'  => 233,

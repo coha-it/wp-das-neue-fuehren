@@ -123,16 +123,17 @@ class DeutschePostLabel extends Label {
 	}
 
 	public function is_trackable() {
-		$voucher_id = $this->get_voucher_id();
+		$voucher_id   = $this->get_voucher_id();
+		$is_trackable = false;
 
 		if ( ! empty( $voucher_id ) && $voucher_id !== $this->get_number() ) {
-			return true;
-		} elseif ( in_array( $this->get_dhl_product(), [ 232, 233, 234, 238, 1007, 195, 1017, 196, 1027, 197, 1037, 198, 1047, 199, 1057, 200 ] ) ) {
-			return true;
+			$is_trackable = true;
+		} elseif ( in_array( $this->get_dhl_product(), [ 195, 196, 197, 198, 199, 200, 1007, 1017, 1027, 1037, 1047, 1057 ] ) ) {
+			$is_trackable = true;
 		} elseif( ! empty( $this->get_wp_int_barcode() ) && in_array( 'TRCK', $this->get_additional_services() ) ) {
-			return true;
+			$is_trackable = true;
 		}
 
-		return false;
+		return apply_filters( 'woocommerce_gzd_deutsche_post_label_is_trackable', $is_trackable, $this );
 	}
 }

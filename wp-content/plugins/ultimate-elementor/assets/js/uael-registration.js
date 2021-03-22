@@ -108,10 +108,8 @@
 				var field_text = form_field.val();
 
 				if ( form_field.length > 0 && '' !== field_text ) {
-
 					if ( 'email' === field_type ) {
-						field_text = field_text.trim();
-
+						field_text = $.trim( field_text );
 						if ( user_email_regex.test( field_text ) ) {
 
 							form_field.siblings( '.uael-register-field-message' ).hide();

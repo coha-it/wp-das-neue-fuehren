@@ -1,3 +1,24 @@
+v2.6.1 - 10-March-2021
+
+- Improvement: Used better and optimised way to show the initial sites and pages list on Starter Template dashboard.
+- Improvement: Block Templates - Used version.json instead of package.json to manage the dependency.
+- Improvement: Block Templates - Now users can suggest their required templates via suggestion link.
+- Improvement: Block Templates - Added filter to disable the Block Templates. - https://wpastra.com/docs/filter-to-remove-starter-templates-button/
+- Fix: Block Templates - Retained the selected block pattern category filter after switching between Pages/Patterns tabs.
+- Fix: Rectified the invisible icon from the 'View Site' button.
+- Fix: Brizy pages initially not showing any content.
+
+v2.6.0 - 17-February-2021
+- New: Added the single pages and blocks for the Gutenberg. Read more https://wpastra.com/docs/import-gb-pages-patterns/
+
+v2.5.1 - 1-February-2021
+- Improvement: Improved the admin notice first view logic.
+- Improvement: Improved the experience while subscribing to Starter Templates' news.
+
+v2.5.0 - 29-January-2021
+- New: Added an ability to subscribe to Starter Templates' updates.
+- Improvement: Added new API to support asynchronous import for the Starter Templates.
+
 v2.4.0 - 30-December-2020
 - Improvement: Additional compatibility with WordPress 5.6.
 

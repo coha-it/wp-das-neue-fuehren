@@ -49,6 +49,7 @@ class OMGF
 		define('OMGF_MANUAL_OPTIMIZE_URL', esc_attr(get_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_MANUAL_OPTIMIZE_URL, site_url())));
 		define('OMGF_FONT_PROCESSING', esc_attr(get_option(OMGF_Admin_Settings::OMGF_DETECTION_SETTING_FONT_PROCESSING, 'replace')));
 		define('OMGF_DISPLAY_OPTION', esc_attr(get_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_DISPLAY_OPTION, 'swap')) ?: 'swap');
+		define('OMGF_WOFF2_ONLY', esc_attr(get_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_WOFF2_ONLY)));
 		define('OMGF_OPTIMIZE_EDIT_ROLES', esc_attr(get_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_OPTIMIZE_EDIT_ROLES, 'on')));
 		define('OMGF_CACHE_PATH', esc_attr(get_option(OMGF_Admin_Settings::OMGF_ADV_SETTING_CACHE_PATH)) ?: '/uploads/omgf');
 		define('OMGF_CACHE_URI', esc_attr(get_option(OMGF_Admin_Settings::OMGF_ADV_SETTING_CACHE_URI)) ?: '');
@@ -68,7 +69,7 @@ class OMGF
 		static $optimized_fonts = [];
 
 		if (empty($optimized_fonts)) {
-			$optimized_fonts = get_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_OPTIMIZED_FONTS, []);
+			$optimized_fonts = get_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_OPTIMIZED_FONTS, []) ?: [];
 		}
 
 		return $optimized_fonts;
@@ -82,7 +83,7 @@ class OMGF
 		static $preloaded_fonts = [];
 
 		if (empty($preloaded_fonts)) {
-			$preloaded_fonts = get_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_PRELOAD_FONTS, []);
+			$preloaded_fonts = get_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_PRELOAD_FONTS, []) ?: [];
 		}
 
 		return $preloaded_fonts;
@@ -96,7 +97,7 @@ class OMGF
 		static $unloaded_fonts = [];
 
 		if (empty($unloaded_fonts)) {
-			$unloaded_fonts = get_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_UNLOAD_FONTS, []);
+			$unloaded_fonts = get_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_UNLOAD_FONTS, []) ?: [];
 		}
 
 		return $unloaded_fonts;

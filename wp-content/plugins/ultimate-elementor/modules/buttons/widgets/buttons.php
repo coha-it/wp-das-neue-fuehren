@@ -101,6 +101,17 @@ class Buttons extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register Buttons controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		// Content Tab.
 		$this->register_buttons_content_controls();
 

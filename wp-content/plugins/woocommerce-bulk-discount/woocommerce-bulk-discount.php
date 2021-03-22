@@ -4,11 +4,14 @@ Plugin Name: WooCommerce Bulk Discount
 Plugin URI: http://wordpress.org/plugins/woocommerce-bulk-discount/
 Description: Apply fine-grained bulk discounts to items in the shopping cart.
 Author: Rene Puchinger
-Version: 2.4.5
+Version: 3.0
 Author URI: https://profiles.wordpress.org/rene-puchinger/
 License: GPL3
 
-    Copyright (C) 2013  Rene Puchinger
+WC requires at least: 3.7.0
+WC tested up to: 4.9
+
+    Copyright (C) 2013 - 2021  Rene Puchinger
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +30,10 @@ License: GPL3
 
 if ( !defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) return; // Check if WooCommerce is active
+include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
+if ( !is_plugin_active( 'woocommerce/woocommerce.php' ) )
+	return; // Check if WooCommerce is active
 
 if ( !class_exists( 'Woo_Bulk_Discount_Plugin_t4m' ) ) {
 
@@ -872,7 +878,7 @@ if ( !class_exists( 'Woo_Bulk_Discount_Plugin_t4m' ) ) {
 			// Define settings
 			$this->fields['bulk_discount'] = apply_filters( 'woocommerce_bulk_discount_settings_fields', array(
 
-				array( 'name' => __( 'Bulk Discount', 'wc_bulk_discount' ), 'type' => 'title', 'desc' => __( 'The following options are specific to product bulk discount.', 'wc_bulk_discount' ) . '<br /><br/><strong><i>' . __( 'After changing the settings, it is recommended to clear all sessions in WooCommerce &gt; System Status &gt; Tools.', 'wc_bulk_discount' ) . '</i></strong>', 'id' => 't4m_bulk_discounts_options' ),
+				array( 'name' => __( 'Bulk Discount', 'wc_bulk_discount' ), 'type' => 'title', 'desc' => __( 'The following options are specific to product bulk discount.', 'wc_bulk_discount' ), 'id' => 't4m_bulk_discounts_options' ),
 
 				array(
 					'title' => __( 'Discount Type', 'wc_bulk_discount' ),

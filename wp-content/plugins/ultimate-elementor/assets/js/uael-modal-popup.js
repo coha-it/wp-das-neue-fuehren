@@ -322,13 +322,13 @@
 						div.attr( 'data-sourcelink', $( this ).data( 'sourcelink' ) );
 						div.html( '<img src="' + $( this ).data( 'thumb' ) + '"><div class="play ' + $( this ).data( 'play-icon' ) + '"></div>' );
 
-					div.bind( "click", videoIframe );
+					div.on( "click", videoIframe );
 
 					$( this ).html( div );
 
 					if( true == device ) {
 
-						div[0].click();
+						div[0].trigger( 'click' );
 					}
 
 				} );
@@ -343,7 +343,7 @@
 	 * Resize event
 	 *
 	 */
-	$( window ).resize( function() {
+	$( window ).on( 'resize', function() {
 		UAELModalPopup._center();
 	} );
 
@@ -410,7 +410,7 @@
 
 		UAELModalPopup._center();
 
-		$( '.uael-modal-content-data' ).resize( function() {
+		$( '.uael-modal-content-data' ).on( 'resize', function() {
 	        UAELModalPopup._center();
 	    } );
 

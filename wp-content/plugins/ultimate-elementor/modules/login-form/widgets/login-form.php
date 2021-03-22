@@ -113,6 +113,17 @@ class LoginForm extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register Login Form controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		$this->register_general_controls();
 
 		$this->register_social_controls();

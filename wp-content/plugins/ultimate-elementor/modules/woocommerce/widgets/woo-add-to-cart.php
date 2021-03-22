@@ -97,6 +97,17 @@ class Woo_Add_To_Cart extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		/* Product Control */
 		$this->register_content_product_controls();
 		/* Button Control */

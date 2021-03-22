@@ -2,10 +2,10 @@
 Contributors: vendidero, vdwoocommercesupport
 Tags: woocommerce, woocommerce german, woocommerce DE, woocommerce germany, woocommerce deutsch, woo, woocommerce deutschland, woocommerce germanized, woocommerce addon, woocommerce plugin, woocommerce german addon, woocommerce germany addon, woocommerce dhl, dhl, shipments
 Requires at least: 5.4
-Tested up to: 5.6
+Tested up to: 5.7
 WC requires at least: 3.9
 WC tested up to: 5.0
-Stable tag: 3.3.6
+Stable tag: 3.3.7
 Requires PHP: 5.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -186,6 +186,26 @@ Bug reports may be filed via our [GitHub repository](https://github.com/vendider
 6. Edit pdf documents (Pro)
 
 == Changelog ==
+= 3.3.7 =
+* Feature: Added customer email notifications for cancelled/failed orders
+* Feature: WP 5.7 support
+* Feature: Woo 5.1 support
+* Improvement: Allow deciding on a per label basis if tracking is supported or nor (e.g. DP labels)
+* Improvement: Added subtotal to shipment items for customs
+* Improvement: Added shipping provider title to customer notifications
+* Improvement: DHL customs weight calculation
+* Improvement: DHL customs value calculations
+* Improvement: Additional DOI warning message check
+* Improvement: Compatibility for Woo Discount Rules
+* Improvement: Compatibility for WooCommerce All Products for Subscriptions
+* Improvement: B2B Market unit price compatibility
+* Improvement: PHP 8 compatibility fixes
+* Improvement: By default hide shopmarks for empty prices
+* Improvement: Prefer using closest element for variation script
+* Fix: Woo Poly Integration
+* Fix: Wrong sort in packaging query
+* Fix: COD payment reference replacement for DHL
+
 = 3.3.6 =
 * Improvement: Third party shipping method compatibility
 * Improvement: Make sure additional shipping methods settings are not hidden

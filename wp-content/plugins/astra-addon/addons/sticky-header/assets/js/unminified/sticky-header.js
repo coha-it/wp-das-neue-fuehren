@@ -99,7 +99,7 @@
 			// Decrese the top of primary / below as we decrease the min-height of all sticked headers by 20.
 			if ( ( selector.hasClass( 'ast-stick-primary-below-wrapper' ) || ( selector.hasClass( 'ast-primary-header' ) ) ) && 1 == astraAddon.header_above_stick && gutter > 0  ) {
 
-				gutter = gutter - 20;
+				gutter = gutter - 10;
 			}
 		}
 
@@ -521,33 +521,8 @@
 		$("head").append( output );
 	}
 
-	function is_customizer_preview() {
-		var in_customizer = false;
-
-		// check for wp.customize return boolean
-		if ( typeof wp !== 'undefined' ) {
-			in_customizer =  typeof wp.customize !== 'undefined' ? true : false;
-		}
-
-		return in_customizer;
-	}
-
-	function stickHeaderToTop() {
-
-		if( ! is_customizer_preview() ) {
-			return ;
-		}
-
-		stick_upto_scroll = 0;
-		jQuery( window ).scrollTop( 0 );
-	}
-
 	// Any stick header is enabled?
 	if ( stick_main || stick_above || stick_below ) {
-
-		if ( header_builder_active ) {
-			stickHeaderToTop();
-		}
 
 		// Add Respective class to the body dependent on which sticky header is activated.
 		$( document ).on( "addStickyClass", function() {
@@ -592,11 +567,9 @@
 			if( 'astLayoutWidthChanged' === e.type ) {
 
 				// return if sticky not enabled.
-				if (!(stick_main || stick_below || stick_above)) {
+				if (!(parseInt( stick_main ) || parseInt( stick_below ) || parseInt( stick_above ))) {
 					return;
 				}
-
-				stickHeaderToTop();
 
 				// Unwrapping sticky to reapply again.
 				jQuery('div.ast-stick-primary-below-wrapper').children().unwrap();

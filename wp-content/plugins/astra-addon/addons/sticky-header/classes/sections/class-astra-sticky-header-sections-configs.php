@@ -61,9 +61,21 @@ if ( ! class_exists( 'Astra_Sticky_Header_Sections_Configs' ) ) {
 						'section'   => 'section-sticky-header',
 						'title'     => __( 'Stick Above Header', 'astra-addon' ),
 						'priority'  => 5,
-						'control'   => 'checkbox',
-						'context'   => ! Astra_Addon_Builder_Helper::$is_header_footer_builder_active ? array( ASTRA_THEME_SETTINGS . '[above-header-layout]', '!=', 'disabled' ) : '',
+						'control'   => Astra_Theme_Extension::$switch_control,
+						'context'   => ! astra_addon_builder_helper()->is_header_footer_builder_active ? array( ASTRA_THEME_SETTINGS . '[above-header-layout]', '!=', 'disabled' ) : '',
 						'transport' => 'refresh',
+					),
+					/**
+					 * Option: Divider
+					 */
+					array(
+						'name'     => ASTRA_THEME_SETTINGS . '[header-above-stick-divider]',
+						'type'     => 'control',
+						'section'  => 'section-sticky-header',
+						'control'  => 'ast-divider',
+						'priority' => 5,
+						'context'  => ! astra_addon_builder_helper()->is_header_footer_builder_active ? array( ASTRA_THEME_SETTINGS . '[above-header-layout]', '!=', 'disabled' ) : '',
+						'settings' => array(),
 					)
 				);
 
@@ -76,9 +88,21 @@ if ( ! class_exists( 'Astra_Sticky_Header_Sections_Configs' ) ) {
 						'section'   => 'section-sticky-header',
 						'title'     => __( 'Stick Below Header', 'astra-addon' ),
 						'priority'  => 13,
-						'control'   => 'checkbox',
-						'context'   => ! Astra_Addon_Builder_Helper::$is_header_footer_builder_active ? array( ASTRA_THEME_SETTINGS . '[below-header-layout]', '!=', 'disabled' ) : '',
+						'control'   => Astra_Theme_Extension::$switch_control,
+						'context'   => ! astra_addon_builder_helper()->is_header_footer_builder_active ? array( ASTRA_THEME_SETTINGS . '[below-header-layout]', '!=', 'disabled' ) : '',
 						'transport' => 'refresh',
+					),
+					/**
+					 * Option: Divider
+					 */
+					array(
+						'name'     => ASTRA_THEME_SETTINGS . '[header-below-stick-divider]',
+						'type'     => 'control',
+						'section'  => 'section-sticky-header',
+						'control'  => 'ast-divider',
+						'priority' => 13,
+						'context'  => ! astra_addon_builder_helper()->is_header_footer_builder_active ? array( ASTRA_THEME_SETTINGS . '[below-header-layout]', '!=', 'disabled' ) : '',
+						'settings' => array(),
 					)
 				);
 

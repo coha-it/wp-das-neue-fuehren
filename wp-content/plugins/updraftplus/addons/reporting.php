@@ -182,7 +182,7 @@ class UpdraftPlus_Addon_Reporting {
 
 		ob_start();
 		?>
-<style type="text/css">.rowlabel { font-weight: bold; width: 200px; float: left; clear: left;} .rowvalue { float: left; } h1, h2, h3, p, pre, ul { float: left; clear: left;} h1, h3, ul { margin-top: 2px; margin-bottom: 0; }</style>
+<style type="text/css">h1, h2, h3, p, pre, ul { clear: both; margin: 0; padding: 15px 0 0;} h1, h3, ul { margin-top: 2px; margin-bottom: 0; }</style>
 <h1><?php echo get_bloginfo('name').': '.__('Backup Report', 'updraftplus');?></h1>
 <p style="float: left; clear: left; margin: 0 0 8px;"><em><?php printf(__('Backup made by %s', 'updraftplus'), '<a href="https://updraftplus.com" target="_blank">UpdraftPlus '.$updraftplus->version); ?></a></em></p>
 <?php
@@ -193,21 +193,21 @@ class UpdraftPlus_Addon_Reporting {
 	echo '<div style="max-width: 700px; border: 1px solid; border-radius: 4px; font-size:110%; line-height: 110%; padding:8px; margin: 6px 0 12px; clear:left;">'.$ws_advert.'</div>';
 	}
 ?>
-<div class="rowlabel"><?php echo __('Backup of:', 'updraftplus'); ?></div> <div class="rowvalue"><a href="<?php echo esc_attr(site_url()); ?>"><?php echo site_url();?></a></div>
-<div class="rowlabel"><?php echo __('Latest status:', 'updraftplus');?></div> <div class="rowvalue"><?php echo $final_message; ?></div>
-<div class="rowlabel"><?php echo __('Backup began:', 'updraftplus');?></div> <div class="rowvalue"><?php echo $date; ?></div>
-<div class="rowlabel"><?php echo __('Contains:', 'updraftplus');?></div> <div class="rowvalue"><?php echo $contains; ?></div>
+<div style="width: 100%; display: table; margin-bottom: 5px;"><div style="font-weight: bold; width: 200px; float: left;"><?php echo __('Backup of:', 'updraftplus'); ?></div> <div style="float: left;"><a href="<?php echo esc_attr(site_url()); ?>"><?php echo site_url();?></a></div></div>
+<div style="width: 100%; display: table; margin-bottom: 5px;"><div style="font-weight: bold; width: 200px; float: left;"><?php echo __('Latest status:', 'updraftplus');?></div> <div style="float: left;"><?php echo $final_message; ?></div></div>
+<div style="width: 100%; display: table; margin-bottom: 5px;"><div style="font-weight: bold; width: 200px; float: left;"><?php echo __('Backup began:', 'updraftplus');?></div> <div style="float: left;"><?php echo $date; ?></div></div>
+<div style="width: 100%; display: table; margin-bottom: 5px;"><div style="font-weight: bold; width: 200px; float: left;"><?php echo __('Contains:', 'updraftplus');?></div> <div style="float: left;"><?php echo $contains; ?></div></div>
 <?php
 	$extra_messages = apply_filters('updraftplus_report_extramessages', array());
 	$extra_msg = '';
 	if (is_array($extra_messages)) {
 	foreach ($extra_messages as $msg) {
-		$extra_msg .= '<div class="rowlabel">'.htmlspecialchars($msg['key']).'</div> <div class="rowvalue">'.htmlspecialchars($msg['val']).'</div>';
+		$extra_msg .= '<div style="width: 100%; display: table; margin-bottom: 5px;"><div style="font-weight: bold; width: 200px; float: left;">'.htmlspecialchars($msg['key']).'</div> <div style="float: left;">'.htmlspecialchars($msg['val']).'</div></div>';
 	}
 	}
 	echo $extra_msg;
 ?>
-<div class="rowlabel"><?php echo __('Errors / warnings:', 'updraftplus');?></div> <div class="rowvalue"><?php echo $errors_and_warns; ?></div>
+<div style="width: 100%; display: table; margin-bottom: 5px;"><div style="font-weight: bold; width: 200px; float: left;"><?php echo __('Errors / warnings:', 'updraftplus');?></div> <div style="float: left;"><?php echo $errors_and_warns; ?></div></div>
 <?php
 		if ($updraftplus->error_count() > 0) {
 	echo '<h2>'.__('Errors', 'updraftplus')."</h2>\n<ul>";
@@ -234,8 +234,8 @@ class UpdraftPlus_Addon_Reporting {
 		}
 		?>
 <p>
-<div class="rowlabel"><?php echo __('Time taken:', 'updraftplus');?></div> <div class="rowvalue"><?php echo $time_taken;?></div>
-<div class="rowlabel"><?php echo __('Uploaded to:', 'updraftplus');?></div> <div class="rowvalue"><?php
+<div style="width: 100%; display: table; margin-bottom: 5px;"><div style="font-weight: bold; width: 200px; float: left;"><?php echo __('Time taken:', 'updraftplus');?></div> <div style="float: left;"><?php echo $time_taken;?></div></div>
+<div style="width: 100%; display: table; margin-bottom: 5px;"><div style="font-weight: bold; width: 200px; float: left;"><?php echo __('Uploaded to:', 'updraftplus');?></div> <div style="float: left;"><?php
 
 			$show_services = '';
 			foreach ($services as $serv) {
@@ -259,7 +259,7 @@ class UpdraftPlus_Addon_Reporting {
 			}
 			if ('' == $show_services && $add_none) $show_services .= __('None', 'updraftplus');
 
-			echo $show_services."</div></p>\n\n";
+			echo $show_services."</div></div></p>\n\n";
 
 			$checksums = $updraftplus->which_checksums();
 

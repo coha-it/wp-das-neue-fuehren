@@ -86,6 +86,17 @@ class HowTo extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register HowTo controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		// Content Tab.
 		$this->register_general_controls();
 		$this->register_total_time_controls();

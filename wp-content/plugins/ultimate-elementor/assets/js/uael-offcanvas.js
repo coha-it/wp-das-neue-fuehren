@@ -163,7 +163,7 @@
 			/**
 			* Close on Icon
 			*/
-			$( '.uael-offcanvas-close' ).click(function () {
+			$( '.uael-offcanvas-close' ).on( 'click', function () {
 					var canvas_id = $( this ).closest( '.elementor-element' ).data( 'id' );
 					OffCanvas._close( canvas_id ); 
 						

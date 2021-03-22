@@ -279,7 +279,7 @@ function astra_ext_advanced_headers_dynamic_css( $dynamic_css, $dynamic_css_filt
 			$above_header_style = '';
 			$below_header_style = '';
 
-			if ( Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) {
+			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
 				$merge_header_style = array(
 					/**
 					 * Header
@@ -393,7 +393,7 @@ function astra_ext_advanced_headers_dynamic_css( $dynamic_css, $dynamic_css_filt
 			$parse_css .= astra_parse_css( $merge_header_style );
 
 			// Above Headder enabled.
-			if ( Astra_Addon_Builder_Helper::$is_header_footer_builder_active && class_exists( 'Astra_Builder_Helper' ) && Astra_Builder_helper::is_row_empty( 'above', 'header', 'desktop' ) ) {
+			if ( astra_addon_builder_helper()->is_header_footer_builder_active && Astra_Addon_Builder_Helper::is_row_empty( 'above', 'header', 'desktop' ) ) {
 				/**
 				 * Above Heaader
 				*/
@@ -481,7 +481,7 @@ function astra_ext_advanced_headers_dynamic_css( $dynamic_css, $dynamic_css_filt
 			$parse_css .= astra_parse_css( $above_header_style );
 
 			// Below Headder enabled.
-			if ( Astra_Addon_Builder_Helper::$is_header_footer_builder_active && class_exists( 'Astra_Builder_Helper' ) && Astra_Builder_helper::is_row_empty( 'below', 'header', 'desktop' ) ) {
+			if ( astra_addon_builder_helper()->is_header_footer_builder_active && Astra_Addon_Builder_Helper::is_row_empty( 'below', 'header', 'desktop' ) ) {
 				/**
 				 * Below Heaader
 				 */
@@ -936,5 +936,5 @@ function astra_ext_advanced_headers_dynamic_css( $dynamic_css, $dynamic_css_filt
 
 	$parse_css .= astra_parse_css( $parallax_style );
 
-	return $dynamic_css .= $parse_css;
+	return $dynamic_css . $parse_css;
 }

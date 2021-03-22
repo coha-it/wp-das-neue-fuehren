@@ -73,7 +73,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Header_Configs' ) ) {
 					'choices'     => $menu_style_choices,
 					'description' => $menu_style_description,
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[disable-primary-nav]',
 							'operator' => '!=',
@@ -94,7 +94,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Header_Configs' ) ) {
 					'control'  => 'select',
 
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[mobile-menu-style]',
 							'operator' => '==',
@@ -107,6 +107,15 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Header_Configs' ) ) {
 						'left'  => __( 'Left', 'astra-addon' ),
 						'right' => __( 'Right', 'astra-addon' ),
 					),
+				),
+
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[mobile-header-toggle-target-divider]',
+					'type'     => 'control',
+					'section'  => 'section-primary-menu',
+					'control'  => 'ast-divider',
+					'priority' => 65,
+					'settings' => array(),
 				),
 
 				/**
@@ -134,14 +143,15 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Header_Configs' ) ) {
 				 * Option: Mobile Header Menu Border Color
 				 */
 				array(
-					'name'      => ASTRA_THEME_SETTINGS . '[mobile-header-menu-b-color]',
-					'section'   => 'section-primary-menu',
-					'type'      => 'control',
-					'control'   => 'ast-color',
-					'title'     => __( 'Border Color', 'astra-addon' ),
-					'default'   => '#dadada',
-					'transport' => 'postMessage',
-					'priority'  => 68,
+					'name'              => ASTRA_THEME_SETTINGS . '[mobile-header-menu-b-color]',
+					'section'           => 'section-primary-menu',
+					'type'              => 'control',
+					'control'           => 'ast-color',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
+					'title'             => __( 'Border Color', 'astra-addon' ),
+					'default'           => '#dadada',
+					'transport'         => 'postMessage',
+					'priority'          => 68,
 				),
 			);
 

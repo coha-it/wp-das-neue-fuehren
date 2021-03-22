@@ -197,7 +197,9 @@ class Skin_Style {
 		$paged       = $query_obj->get_paged();
 		$total_pages = $query->max_num_pages;
 
-		$total_pages = min( 5, $total_pages );
+		// Users can change the limit of no. of pages in infinite load using this filter
+		// default is 5.
+		$total_pages = apply_filters( 'uael_timeline_infinite_limit', $total_pages = 5 );
 
 		// Return pagination html.
 		if ( $total_pages > 1 ) {

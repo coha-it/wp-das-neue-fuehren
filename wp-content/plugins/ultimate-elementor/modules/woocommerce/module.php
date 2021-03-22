@@ -310,21 +310,24 @@ class Module extends Module_Base {
 		add_filter(
 			'woocommerce_add_to_cart_fragments',
 			function ( $fragments ) {
-				$fragments['div.uael-mc__btn-badge'] = '<div class="uael-mc__btn-badge">' . WC()->cart->get_cart_contents_count() . '</div>';
+				$cart_count    = WC()->cart->get_cart_contents_count();
+				$cart_subtotal = WC()->cart->get_cart_subtotal();
 
-				$fragments['span.uael-mc__btn-subtotal'] = '<span class="uael-mc__btn-subtotal">' . WC()->cart->get_cart_subtotal() . '</span>';
+				$fragments['div.uael-mc__btn-badge'] = '<div class="uael-mc__btn-badge" data-counter="' . esc_attr( $cart_count ) . '">' . $cart_count . '</div>';
 
-				$fragments['div.uael-mc-dropdown__header-badge'] = '<div class="uael-mc-dropdown__header-badge">' . WC()->cart->get_cart_contents_count() . '</div>';
+				$fragments['span.uael-mc__btn-subtotal'] = '<span class="uael-mc__btn-subtotal">' . $cart_subtotal . '</span>';
 
-				$fragments['span.uael-mc-dropdown__header-text'] = '<span class="uael-mc-dropdown__header-text">' . __( 'Subtotal: ', 'uael' ) . WC()->cart->get_cart_subtotal() . '</span>';
+				$fragments['div.uael-mc-dropdown__header-badge'] = '<div class="uael-mc-dropdown__header-badge">' . $cart_count . '</div>';
 
-				$fragments['div.uael-mc-modal__header-badge'] = '<div class="uael-mc-modal__header-badge">' . WC()->cart->get_cart_contents_count() . '</div>';
+				$fragments['span.uael-mc-dropdown__header-text'] = '<span class="uael-mc-dropdown__header-text">' . __( 'Subtotal: ', 'uael' ) . $cart_subtotal . '</span>';
 
-				$fragments['span.uael-mc-modal__header-text'] = '<span class="uael-mc-modal__header-text">' . __( 'Subtotal: ', 'uael' ) . WC()->cart->get_cart_subtotal() . '</span>';
+				$fragments['div.uael-mc-modal__header-badge'] = '<div class="uael-mc-modal__header-badge">' . $cart_count . '</div>';
 
-				$fragments['div.uael-mc-offcanvas__header-badge'] = '<div class="uael-mc-offcanvas__header-badge">' . WC()->cart->get_cart_contents_count() . '</div>';
+				$fragments['span.uael-mc-modal__header-text'] = '<span class="uael-mc-modal__header-text">' . __( 'Subtotal: ', 'uael' ) . $cart_subtotal . '</span>';
 
-				$fragments['span.uael-mc-offcanvas__header-text'] = '<span class="uael-mc-offcanvas__header-text">' . __( 'Subtotal: ', 'uael' ) . WC()->cart->get_cart_subtotal() . '</span>';
+				$fragments['div.uael-mc-offcanvas__header-badge'] = '<div class="uael-mc-offcanvas__header-badge">' . $cart_count . '</div>';
+
+				$fragments['span.uael-mc-offcanvas__header-text'] = '<span class="uael-mc-offcanvas__header-text">' . __( 'Subtotal: ', 'uael' ) . $cart_subtotal . '</span>';
 
 				ob_start();
 				?>

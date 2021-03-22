@@ -59,7 +59,7 @@ if ( ! class_exists( 'Astra_Customizer_Adv_Search_Header' ) ) {
 						'search-box'   => __( 'Search Box', 'astra-addon' ),
 					),
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[header-main-rt-section]',
 							'operator' => '==',

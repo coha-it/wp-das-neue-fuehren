@@ -36,9 +36,9 @@ if ( ! class_exists( 'Astra_Woocommerce_General_Configs' ) ) {
 		 */
 		public function register_configuration( $configurations, $wp_customize ) {
 
-			$_section = ( Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) ? 'section-header-woo-cart' : 'section-woo-general';
+			$_section = ( astra_addon_builder_helper()->is_header_footer_builder_active ) ? 'section-header-woo-cart' : 'section-woo-general';
 
-			$context = Astra_Addon_Builder_Helper::$is_header_footer_builder_active ? Astra_Addon_Builder_Helper::$design_tab : Astra_Addon_Builder_Helper::$general_tab;
+			$context = astra_addon_builder_helper()->is_header_footer_builder_active ? astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab;
 
 			$_configs = array(
 
@@ -61,6 +61,18 @@ if ( ! class_exists( 'Astra_Woocommerce_General_Configs' ) ) {
 				),
 
 				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[product-sale-notification-divider]',
+					'type'     => 'control',
+					'section'  => 'section-woo-general',
+					'control'  => 'ast-divider',
+					'priority' => 15,
+					'settings' => array(),
+				),
+
+				/**
 				 * Option: Sale Percentage Input
 				 */
 				array(
@@ -71,7 +83,7 @@ if ( ! class_exists( 'Astra_Woocommerce_General_Configs' ) ) {
 					'title'       => __( 'Sale % Value', 'astra-addon' ),
 					'description' => __( 'Sale percentage(%) value = [value]', 'astra-addon' ),
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[product-sale-notification]',
 							'operator' => '==',
@@ -86,6 +98,26 @@ if ( ! class_exists( 'Astra_Woocommerce_General_Configs' ) ) {
 				),
 
 				/**
+				 * Option: Divider
+				 */
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[product-sale-percent-value-divider]',
+					'type'     => 'control',
+					'section'  => 'section-woo-general',
+					'control'  => 'ast-divider',
+					'priority' => 20,
+					'settings' => array(),
+					'context'  => array(
+						astra_addon_builder_helper()->general_tab_config,
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[product-sale-notification]',
+							'operator' => '==',
+							'value'    => 'sale-percentage',
+						),
+					),
+				),
+
+				/**
 				 * Option: Sale Bubble Shape
 				 */
 				array(
@@ -96,7 +128,7 @@ if ( ! class_exists( 'Astra_Woocommerce_General_Configs' ) ) {
 					'section'   => 'section-woo-general',
 					'title'     => __( 'Sale Bubble Style', 'astra-addon' ),
 					'context'   => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[product-sale-notification]',
 							'operator' => 'in',
@@ -131,13 +163,13 @@ if ( ! class_exists( 'Astra_Woocommerce_General_Configs' ) ) {
 						'bag'     => __( 'Bag', 'astra-addon' ),
 						'basket'  => __( 'Basket', 'astra-addon' ),
 					),
-					'context'   => Astra_Addon_Builder_Helper::$general_tab,
+					'context'   => astra_addon_builder_helper()->general_tab,
 				),
 			);
 
 			$configurations = array_merge( $configurations, $_configs );
 
-			if ( ! Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) {
+			if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				$_configs = array(
 
@@ -202,11 +234,25 @@ if ( ! class_exists( 'Astra_Woocommerce_General_Configs' ) ) {
 						'title'       => __( 'Border Radius', 'astra-addon' ),
 						'control'     => 'ast-slider',
 						'priority'    => 45,
+						'suffix'      => 'px',
 						'input_attrs' => array(
 							'min'  => 0,
 							'step' => 1,
 							'max'  => 200,
 						),
+					),
+
+					/**
+					 * Option: Divider
+					 */
+					array(
+						'name'     => ASTRA_THEME_SETTINGS . '[woo-header-cart-details-before-divider]',
+						'type'     => 'control',
+						'section'  => 'section-woo-general',
+						'control'  => 'ast-divider',
+						'priority' => 50,
+						'settings' => array(),
+						'context'  => astra_addon_builder_helper()->general_tab,
 					),
 
 					/**
@@ -220,8 +266,21 @@ if ( ! class_exists( 'Astra_Woocommerce_General_Configs' ) ) {
 						'transport' => 'postMessage',
 						'title'     => __( 'Display Cart Totals', 'astra-addon' ),
 						'priority'  => 50,
-						'control'   => 'checkbox',
-						'context'   => Astra_Addon_Builder_Helper::$general_tab,
+						'control'   => Astra_Theme_Extension::$switch_control,
+						'context'   => astra_addon_builder_helper()->general_tab,
+					),
+
+					/**
+					 * Option: Divider
+					 */
+					array(
+						'name'     => ASTRA_THEME_SETTINGS . '[woo-header-cart-details-after-divider]',
+						'type'     => 'control',
+						'section'  => 'section-woo-general',
+						'control'  => 'ast-divider',
+						'priority' => 55,
+						'settings' => array(),
+						'context'  => astra_addon_builder_helper()->general_tab,
 					),
 
 					/**
@@ -235,8 +294,8 @@ if ( ! class_exists( 'Astra_Woocommerce_General_Configs' ) ) {
 						'transport' => 'postMessage',
 						'title'     => __( 'Display Cart Title', 'astra-addon' ),
 						'priority'  => 55,
-						'control'   => 'checkbox',
-						'context'   => Astra_Addon_Builder_Helper::$general_tab,
+						'control'   => Astra_Theme_Extension::$switch_control,
+						'context'   => astra_addon_builder_helper()->general_tab,
 					),
 				);
 			}

@@ -15,6 +15,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+$subscription_status = Astra_Sites::get_instance()->should_display_subscription_form();
+$subscription_class  = true === $subscription_status ? 'subscription-enabled' : '';
+
+$site_import_options = apply_filters(
+	'astra_sites_site_import_options',
+	array(
+		'activate-theme' => true,
+		'reset'          => false,
+		'customizer'     => true,
+		'widgets'        => true,
+		'plugins'        => true,
+		'xml'            => true,
+	)
+);
 
 ?>
 
@@ -121,9 +135,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div class="description">
 					<p>
 					<?php
-					$s_url = Astra_Sites_White_Label::get_option( 'astra-agency', 'licence' );
 					/* translators: %1$s External Link */
-					printf( __( 'Don\'t see a template you would like to import?<br><a target="_blank" href="%1$s">Make a Template Suggestion!</a>', 'astra-sites' ), esc_url( $s_url ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					printf( __( 'Don\'t see a template you would like to import?<br><a target="_blank" href="%1$s">Make a Template Suggestion!</a>', 'astra-sites' ), esc_url( astra_sites_get_suggestion_link() ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					?>
 					</p>
 					<div class="back-to-layout-button"><span class="button astra-sites-back"><?php esc_html_e( 'Back to Templates', 'astra-sites' ); ?></span></div>
@@ -653,6 +666,45 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 </script>
 
+<script type="text/template" id="tmpl-astra-sites-subscription-form-one">
+<div class="subscription-fields">
+	<div class="subscription-field-wrap">
+		<select class="subscription-input subscription-input-wp-user-type" name="wp_user_type">
+			<option value=""></option>
+			<option value="1"><?php esc_html_e( 'Beginner', 'astra-sites' ); ?></option>
+			<option value="2"><?php esc_html_e( 'Intermediate', 'astra-sites' ); ?></option>
+			<option value="3"><?php esc_html_e( 'Expert', 'astra-sites' ); ?></option>
+		</select>
+		<small class="subscription-desc"><?php esc_html_e( 'Field is required', 'astra-sites' ); ?></small>
+		<label class="subscription-label"><?php esc_html_e( 'I\'m a WordPress:', 'astra-sites' ); ?></label>
+	</div>
+	<div class="subscription-field-wrap">
+		<select class="subscription-input subscription-input-build-website-for" name="build_website_for">
+			<option value=""></option>
+			<option value="1"><?php esc_html_e( 'Myself/My company', 'astra-sites' ); ?></option>
+			<option value="2"><?php esc_html_e( 'My client', 'astra-sites' ); ?></option>
+		</select>
+		<small class="subscription-desc"><?php esc_html_e( 'Field is required', 'astra-sites' ); ?></small>
+		<label class="subscription-label"><?php esc_html_e( 'I\'m building website for:', 'astra-sites' ); ?></label>
+	</div>
+</div>
+</script>
+
+<script type="text/template" id="tmpl-astra-sites-subscription-form-two">
+	<div class="subscription-fields">
+		<div class="subscription-field-wrap">
+			<input class="subscription-input subscription-input-name" type="text" name="first_name" />
+			<small class="subscription-desc"><?php esc_html_e( 'First name is required', 'astra-sites' ); ?></small>
+			<label class="subscription-label"><?php esc_html_e( 'Your First Name', 'astra-sites' ); ?></label>
+		</div>
+		<div class="subscription-field-wrap">
+			<input class="subscription-input subscription-input-email" type="email" name="email" />
+			<small class="subscription-desc"><?php esc_html_e( 'Email address is required', 'astra-sites' ); ?></small>
+			<label class="subscription-label"><?php esc_html_e( 'Your Work Email', 'astra-sites' ); ?></label>
+		</div>
+	</div>
+</script>
+
 <?php
 /**
  * TMPL - First Screen
@@ -661,7 +713,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 <script type="text/template" id="tmpl-astra-sites-result-preview">
 
 	<div class="overlay"></div>
-	<div class="inner">
+	<div class="inner <?php echo esc_attr( $subscription_class ); ?>">
+
+		<div class="subscription-popup">
+			<div class="heading">
+				<h3><?php esc_html_e( 'One Last Step..', 'astra-sites' ); ?></h3>
+				<span class="dashicons close dashicons-no-alt"></span>
+			</div>
+			<div class="astra-sites-import-content">
+				<p><?php esc_html_e( 'To get access to exclusive starter templates, themes and updates, enter your details below:', 'astra-sites' ); ?></p>
+				<div id="astra-sites-subscription-form-two" class="subscription-form astra-sites-subscription-form-two"></div>
+				<div class="subscription-actions">
+					<button class="button button-hero button-primary button-subscription-submit">
+						<span class="button-title"><?php esc_html_e( 'Submit and Start Importing', 'astra-sites' ); ?></span>
+						<span class="dashicons dashicons-update"></span>
+					</button>
+				</div>
+				<div class="subscription-footer">
+					<?php /* translators: %1$s and %3$s are opening anchor tags, and %2$s and %4$s is closing anchor tags. */ ?>
+					<p><?php printf( __( 'By submitting, you agree to our %1$sTerms%2$s and %3$sPrivacy Policy%4$s.', 'astra-sites' ), '<a href="https://store.brainstormforce.com/terms-and-conditions/" target="_blank">', '<a>', '<a href="https://store.brainstormforce.com/privacy-policy/" target="_blank">', '<a>' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+					<a href="#" class="button-subscription-skip"><?php esc_html_e( 'Skip', 'astra-sites' ); ?></a>
+				</div>
+			</div>
+		</div>
 
 		<div class="default">
 			<div class="heading">
@@ -676,17 +750,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="astra-sites-import-content">
 				<div class="install-theme-info">
 					<div class="astra-sites-advanced-options-wrap">
+
+						<?php if ( true === $subscription_status ) : ?>
+							<p><?php esc_html_e( 'To serve more beautiful starter templates, we would like to know more about you:', 'astra-sites' ); ?></p>
+						<?php endif; ?>
+
+						<div id="astra-sites-subscription-form-one" class="subscription-form astra-sites-subscription-form-one"></div>
+
+						<h2 class="astra-sites-advanced-options-heading"><?php esc_html_e( 'Advanced Options', 'astra-sites' ); ?> <span class="dashicons dashicons-arrow-down-alt2"></span></h2>
+
 						<div class="astra-sites-advanced-options">
 							<ul class="astra-site-contents">
 
 								<# if( 'astra-sites' === data ) { #>
+									<?php
+									$first_import_complete = get_option( 'astra_sites_import_complete', '' );
+									if ( ! empty( $first_import_complete ) ) :
+										?>
 									<li class="astra-sites-reset-data">
 										<label>
-											<input type="checkbox" name="reset" class="checkbox">
+											<input type="checkbox" name="reset" class="checkbox" <?php checked( 'reset', true ); ?>>
 											<strong><?php esc_html_e( 'Delete Previously Imported Site', 'astra-sites' ); ?></strong>
 											<div class="astra-sites-tooltip-message" id="astra-sites-tooltip-reset-data" style="display: none;"><p><?php esc_html_e( 'WARNING: Selecting this option will delete all data from the previous import. Choose this option only if this is intended.', 'astra-sites' ); ?></p><p><?php esc_html_e( 'You can find the backup to the current customizer settings at ', 'astra-sites' ); ?><code><?php esc_html_e( '/wp-content/uploads/astra-sites/', 'astra-sites' ); ?></code></p></div>
 										</label>
 									</li>
+									<?php endif; ?>
 
 									<?php $theme_status = Astra_Sites::get_instance()->get_theme_status(); ?>
 									<?php $theme_dependancy_class = ''; ?>
@@ -694,7 +782,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 										<?php $theme_dependancy_class = 'astra-theme-module'; ?>
 										<li class="astra-sites-theme-activation">
 											<label>
-												<input type="checkbox" name="reset" class="checkbox" checked="checked" data-status="<?php echo esc_attr( $theme_status ); ?>">
+												<input type="checkbox" name="activate-theme" class="checkbox" <?php checked( $site_import_options['activate-theme'], true ); ?> data-status="<?php echo esc_attr( $theme_status ); ?>">
 												<strong><?php esc_html_e( 'Install & Activate Astra Theme', 'astra-sites' ); ?></strong>
 												<div class="astra-sites-tooltip-message" id="astra-sites-tooltip-theme-activation" style="display: none;"><p><?php esc_html_e( 'To import the site in the original format, you would need the Astra theme activated. You can import it with any other theme, but the site might lose some of the design settings and look a bit different.', 'astra-sites' ); ?></p></div>
 											</label>
@@ -703,7 +791,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 									<li class="astra-sites-import-customizer <?php echo esc_attr( $theme_dependancy_class ); ?>">
 										<label>
-											<input type="checkbox" name="customizer" checked="checked" class="checkbox">
+											<input type="checkbox" name="customizer" class="checkbox" <?php checked( $site_import_options['customizer'], true ); ?> />
 											<strong><?php esc_html_e( 'Import Customizer Settings', 'astra-sites' ); ?></strong>
 											<span class="astra-sites-tooltip-icon" data-tip-id="astra-sites-tooltip-customizer-settings"><span class="dashicons dashicons-editor-help"></span></span>
 											<div class="astra-sites-tooltip-message" id="astra-sites-tooltip-customizer-settings" style="display: none;">
@@ -718,14 +806,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<# if( 'astra-sites' === data ) { #>
 									<li class="astra-sites-import-widgets">
 										<label>
-											<input type="checkbox" name="widgets" checked="checked" class="checkbox">
+											<input type="checkbox" name="widgets" class="checkbox" <?php checked( $site_import_options['widgets'], true ); ?> />
 											<strong><?php esc_html_e( 'Import Widgets', 'astra-sites' ); ?></strong>
 										</label>
 									</li>
 								<# } #>
 
 								<li class="astra-sites-import-plugins">
-									<input type="checkbox" name="plugins" checked="checked" class="disabled checkbox" readonly>
+									<input type="checkbox" name="plugins" class="disabled checkbox" readonly <?php checked( $site_import_options['plugins'], true ); ?> />
 									<strong><?php esc_html_e( 'Install Required Plugins', 'astra-sites' ); ?></strong>
 									<span class="astra-sites-tooltip-icon" data-tip-id="astra-sites-tooltip-plugins-settings"><span class="dashicons dashicons-editor-help"></span></span>
 									<div class="astra-sites-tooltip-message" id="astra-sites-tooltip-plugins-settings" style="display: none;">
@@ -737,7 +825,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<# if( 'astra-sites' === data ) { #>
 									<li class="astra-sites-import-xml">
 										<label>
-											<input type="checkbox" name="xml" checked="checked" class="checkbox">
+											<input type="checkbox" name="xml" class="checkbox" <?php checked( $site_import_options['xml'], true ); ?> />
 											<strong><?php esc_html_e( 'Import Content', 'astra-sites' ); ?></strong>
 										</label>
 										<span class="astra-sites-tooltip-icon" data-tip-id="astra-sites-tooltip-site-content"><span class="dashicons dashicons-editor-help"></span></span>
@@ -779,7 +867,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 
 			<div class="ast-actioms-wrap">
-				<a href="#" class="button button-hero button-primary astra-demo-import disabled site-install-site-button"><?php esc_html_e( 'Import', 'astra-sites' ); ?></a>
+				<a href="#" class="button button-hero button-primary astra-demo-import disabled site-install-site-button">
+				<?php
+				if ( true === $subscription_status ) {
+					esc_html_e( 'Next', 'astra-sites' );
+				} else {
+					esc_html_e( 'Import', 'astra-sites' );
+				}
+				?>
+				</a>
 				<a href="#" class="button button-hero button-primary astra-sites-skip-and-import" style="display: none;"><?php esc_html_e( 'Skip & Import', 'astra-sites' ); ?></a>
 				<div class="button button-hero site-import-cancel"><?php esc_html_e( 'Cancel', 'astra-sites' ); ?></div>
 			</div>

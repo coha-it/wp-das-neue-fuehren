@@ -101,6 +101,17 @@ class Video extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register Video controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		$this->register_video_content();
 		$this->register_overlay_content();
 		$this->register_video_icon_style();
@@ -135,6 +146,62 @@ class Video extends Common_Widget {
 						'youtube' => __( 'YouTube', 'uael' ),
 						'vimeo'   => __( 'Vimeo', 'uael' ),
 						'wistia'  => __( 'Wistia', 'uael' ),
+						'hosted'  => __( 'Self Hosted', 'uael' ),
+					),
+				)
+			);
+
+			$this->add_control(
+				'insert_link',
+				array(
+					'label'     => __( 'External URL', 'uael' ),
+					'type'      => Controls_Manager::SWITCHER,
+					'condition' => array(
+						'video_type' => 'hosted',
+					),
+				)
+			);
+
+			$this->add_control(
+				'hosted_link',
+				array(
+					'label'      => __( 'Choose File', 'uael' ),
+					'type'       => Controls_Manager::MEDIA,
+					'dynamic'    => array(
+						'active'     => true,
+						'categories' => array(
+							TagsModule::MEDIA_CATEGORY,
+						),
+					),
+					'media_type' => 'video',
+					'condition'  => array(
+						'video_type'  => 'hosted',
+						'insert_link' => '',
+					),
+				)
+			);
+
+			$this->add_control(
+				'external_link',
+				array(
+					'label'        => __( 'URL', 'uael' ),
+					'type'         => Controls_Manager::URL,
+					'autocomplete' => false,
+					'options'      => false,
+					'label_block'  => true,
+					'show_label'   => false,
+					'dynamic'      => array(
+						'active'     => true,
+						'categories' => array(
+							TagsModule::POST_META_CATEGORY,
+							TagsModule::URL_CATEGORY,
+						),
+					),
+					'media_type'   => 'video',
+					'placeholder'  => __( 'Enter your URL', 'uael' ),
+					'condition'    => array(
+						'video_type'  => 'hosted',
+						'insert_link' => 'yes',
 					),
 				)
 			);
@@ -269,7 +336,7 @@ class Video extends Common_Widget {
 					),
 					'description' => __( 'Specify a start time (in seconds)', 'uael' ),
 					'condition'   => array(
-						'video_type' => array( 'youtube', 'vimeo' ),
+						'video_type' => array( 'youtube', 'vimeo', 'hosted' ),
 					),
 				)
 			);
@@ -284,7 +351,7 @@ class Video extends Common_Widget {
 					),
 					'description' => __( 'Specify an end time (in seconds)', 'uael' ),
 					'condition'   => array(
-						'video_type' => 'youtube',
+						'video_type' => array( 'youtube', 'hosted' ),
 					),
 				)
 			);
@@ -543,6 +610,66 @@ class Video extends Common_Widget {
 				)
 			);
 
+			// Hosted.
+			$this->add_control(
+				'autoplay',
+				array(
+					'label'     => __( 'Autoplay', 'uael' ),
+					'type'      => Controls_Manager::SWITCHER,
+					'condition' => array(
+						'video_type' => 'hosted',
+					),
+				)
+			);
+
+			$this->add_control(
+				'loop',
+				array(
+					'label'     => __( 'Loop', 'uael' ),
+					'type'      => Controls_Manager::SWITCHER,
+					'condition' => array(
+						'video_type' => 'hosted',
+					),
+				)
+			);
+
+			$this->add_control(
+				'controls',
+				array(
+					'label'     => __( 'Player Control', 'uael' ),
+					'type'      => Controls_Manager::SWITCHER,
+					'label_off' => __( 'Hide', 'uael' ),
+					'label_on'  => __( 'Show', 'uael' ),
+					'default'   => 'yes',
+					'condition' => array(
+						'video_type' => 'hosted',
+					),
+				)
+			);
+
+			$this->add_control(
+				'muted',
+				array(
+					'label'     => __( 'Mute', 'uael' ),
+					'type'      => Controls_Manager::SWITCHER,
+					'condition' => array(
+						'video_type' => 'hosted',
+					),
+				)
+			);
+
+			$this->add_control(
+				'mute_notice',
+				array(
+					'raw'             => __( 'Note: Mute functionality will not work inside the lightbox.', 'uael' ),
+					'type'            => Controls_Manager::RAW_HTML,
+					'content_classes' => 'elementor-descriptor',
+					'condition'       => array(
+						'lightbox' => 'yes',
+					),
+				)
+			);
+
 			$this->add_control(
 				'video_double_click',
 				array(
@@ -663,10 +790,10 @@ class Video extends Common_Widget {
 					'type'       => Controls_Manager::DIMENSIONS,
 					'size_units' => array( 'px', '%' ),
 					'selectors'  => array(
-						'{{WRAPPER}} .uael-video__outer-wrap:before, 
+						'{{WRAPPER}} .uael-video__outer-wrap:before,
 						{{WRAPPER}} .uael-video__outer-wrap' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						'{{WRAPPER}}.uael-youtube-subscribe-yes .uael-subscribe-bar' => 'border-radius: 0{{UNIT}} 0{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-						'{{WRAPPER}}.uael-youtube-subscribe-yes .uael-video__outer-wrap:before, 
+						'{{WRAPPER}}.uael-youtube-subscribe-yes .uael-video__outer-wrap:before,
 						{{WRAPPER}}.uael-youtube-subscribe-yes .uael-video__outer-wrap' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} 0{{UNIT}} 0{{UNIT}};',
 					),
 				)
@@ -1190,13 +1317,13 @@ class Video extends Common_Widget {
 						'enable_sticky' => 'yes',
 					),
 					'selectors'      => array(
-						'{{WRAPPER}}.uael-aspect-ratio-16_9 .uael-video__outer-wrap.uael-sticky-apply .uael-video-inner-wrap, 
+						'{{WRAPPER}}.uael-aspect-ratio-16_9 .uael-video__outer-wrap.uael-sticky-apply .uael-video-inner-wrap,
 						{{WRAPPER}}.uael-aspect-ratio-16_9 .uael-sticky-apply .uael-video__thumb' => 'width: {{SIZE}}px; height: calc( {{SIZE}}px * 0.5625 );',
-						'{{WRAPPER}}.uael-aspect-ratio-4_3 .uael-video__outer-wrap.uael-sticky-apply .uael-video-inner-wrap, 
+						'{{WRAPPER}}.uael-aspect-ratio-4_3 .uael-video__outer-wrap.uael-sticky-apply .uael-video-inner-wrap,
 						{{WRAPPER}}.uael-aspect-ratio-4_3 .uael-sticky-apply .uael-video__thumb' => 'width: {{SIZE}}px; height: calc( {{SIZE}}px * 0.75 );',
-						'{{WRAPPER}}.uael-aspect-ratio-3_2 .uael-video__outer-wrap.uael-sticky-apply .uael-video-inner-wrap, 
+						'{{WRAPPER}}.uael-aspect-ratio-3_2 .uael-video__outer-wrap.uael-sticky-apply .uael-video-inner-wrap,
 						{{WRAPPER}}.uael-aspect-ratio-3_2 .uael-sticky-apply .uael-video__thumb' => 'width: {{SIZE}}px; height: calc( {{SIZE}}px * 0.6666666666666667 );',
-						'{{WRAPPER}}.uael-aspect-ratio-9_16 .uael-video__outer-wrap.uael-sticky-apply .uael-video-inner-wrap, 
+						'{{WRAPPER}}.uael-aspect-ratio-9_16 .uael-video__outer-wrap.uael-sticky-apply .uael-video-inner-wrap,
 						{{WRAPPER}}.uael-aspect-ratio-9_16 .uael-sticky-apply .uael-video__thumb' => 'width: {{SIZE}}px; height: calc( {{SIZE}}px * 0.1778 );',
 					),
 				)
@@ -2013,7 +2140,6 @@ class Video extends Common_Widget {
 		$is_editor      = \Elementor\Plugin::instance()->editor->is_edit_mode();
 		$id             = $this->get_video_id();
 		$embed_param    = $this->get_embed_params();
-		$src            = $this->get_url( $embed_param, $id );
 		$sticky         = ( 'yes' === $settings['enable_sticky'] ) ? 'yes' : 'no';
 		$stick_desktop  = '';
 		$stick_tablet   = '';
@@ -2021,6 +2147,12 @@ class Video extends Common_Widget {
 		$sticky_infobar = ( 'yes' === $settings['sticky_info_bar_switch'] ) ? 'uael-sticky-infobar-wrap' : '';
 		$viewport       = 0;
 		$viewport       = apply_filters( 'uael_sticky_video_viewport', $viewport );
+
+		if ( 'hosted' !== $settings['video_type'] ) {
+			$src = $this->get_url( $embed_param, $id );
+		} else {
+			$src = $this->get_hosted_video_url();
+		}
 
 		if ( is_array( $settings['sticky_hide_on'] ) ) {
 			foreach ( $settings['sticky_hide_on'] as $element ) {
@@ -2048,12 +2180,26 @@ class Video extends Common_Widget {
 			$device = ( false !== ( stripos( $_SERVER['HTTP_USER_AGENT'], 'iPhone' ) ) ? 'true' : 'false' );
 		}
 
-		if ( 'youtube' === $settings['video_type'] ) {
-			$autoplay = ( 'yes' === $settings['yt_autoplay'] ) ? '1' : '0';
-		} elseif ( 'vimeo' === $settings['video_type'] ) {
-			$autoplay = ( 'yes' === $settings['vimeo_autoplay'] ) ? '1' : '0';
-		} elseif ( 'wistia' === $settings['video_type'] ) {
-			$autoplay = ( 'yes' === $settings['wistia_autoplay'] ) ? '1' : '0';
+		switch ( $settings['video_type'] ) {
+
+			case 'youtube':
+				$autoplay = ( 'yes' === $settings['yt_autoplay'] ) ? '1' : '0';
+				break;
+
+			case 'vimeo':
+				$autoplay = ( 'yes' === $settings['vimeo_autoplay'] ) ? '1' : '0';
+				break;
+
+			case 'wistia':
+				$autoplay = ( 'yes' === $settings['wistia_autoplay'] ) ? '1' : '0';
+				break;
+
+			case 'hosted':
+				$autoplay = ( 'yes' === $settings['autoplay'] ) ? '1' : '0';
+				break;
+
+			default:
+				break;
 		}
 
 		if ( ! empty( $settings['sticky_video_margin'] ) ) {
@@ -2063,6 +2209,7 @@ class Video extends Common_Widget {
 
 		$this->add_render_attribute( 'video-outer', 'class', 'uael-video__outer-wrap' );
 		$this->add_render_attribute( 'video-outer', 'class', $sticky_infobar );
+		$this->add_render_attribute( 'video-outer', 'class', 'uael-video-type-' . $settings['video_type'] );
 		$this->add_render_attribute( 'video-outer', 'data-device', $device );
 		$this->add_render_attribute( 'video-outer', 'data-vsticky', $sticky );
 
@@ -2077,27 +2224,49 @@ class Video extends Common_Widget {
 
 		$this->add_render_attribute( 'video-thumb', 'class', 'uael-video__thumb' );
 
-		$this->add_render_attribute( 'video-thumb', 'src', $this->get_video_thumb( $id ) );
+		if ( 'hosted' !== $settings['video_type'] ) {
+			$this->add_render_attribute( 'video-thumb', 'src', $this->get_video_thumb( $id ) );
+		} else {
+			if ( 'yes' === $settings['show_image_overlay'] ) {
+
+				$thumb = Group_Control_Image_Size::get_attachment_image_src( $settings['image_overlay']['id'], 'image_overlay', $settings );
+
+			} else {
+				$thumb = $this->get_hosted_video_url();
+
+			}
+			$this->add_render_attribute( 'video-thumb', 'src', $thumb );
+		}
 
 		$this->add_render_attribute( 'video-thumb', 'alt', Control_Media::get_image_alt( $settings['image_overlay'] ) );
 		$this->add_render_attribute( 'video-play', 'class', 'uael-video__play-icon' );
 
 		if ( 'default' === $settings['play_source'] ) {
-			if ( 'youtube' === $settings['video_type'] ) {
+			switch ( $settings['video_type'] ) {
+				case 'youtube':
+					$html = '<svg height="100%" version="1.1" viewBox="0 0 68 48" width="100%"><path class="uael-youtube-icon-bg" d="m .66,37.62 c 0,0 .66,4.70 2.70,6.77 2.58,2.71 5.98,2.63 7.49,2.91 5.43,.52 23.10,.68 23.12,.68 .00,-1.3e-5 14.29,-0.02 23.81,-0.71 1.32,-0.15 4.22,-0.17 6.81,-2.89 2.03,-2.07 2.70,-6.77 2.70,-6.77 0,0 .67,-5.52 .67,-11.04 l 0,-5.17 c 0,-5.52 -0.67,-11.04 -0.67,-11.04 0,0 -0.66,-4.70 -2.70,-6.77 C 62.03,.86 59.13,.84 57.80,.69 48.28,0 34.00,0 34.00,0 33.97,0 19.69,0 10.18,.69 8.85,.84 5.95,.86 3.36,3.58 1.32,5.65 .66,10.35 .66,10.35 c 0,0 -0.55,4.50 -0.66,9.45 l 0,8.36 c .10,4.94 .66,9.45 .66,9.45 z" fill="#1f1f1e"></path><path d="m 26.96,13.67 18.37,9.62 -18.37,9.55 -0.00,-19.17 z" fill="#fff"></path><path d="M 45.02,23.46 45.32,23.28 26.96,13.67 43.32,24.34 45.02,23.46 z" fill="#ccc"></path></svg>';
+					break;
 
-				$html = '<svg height="100%" version="1.1" viewBox="0 0 68 48" width="100%"><path class="uael-youtube-icon-bg" d="m .66,37.62 c 0,0 .66,4.70 2.70,6.77 2.58,2.71 5.98,2.63 7.49,2.91 5.43,.52 23.10,.68 23.12,.68 .00,-1.3e-5 14.29,-0.02 23.81,-0.71 1.32,-0.15 4.22,-0.17 6.81,-2.89 2.03,-2.07 2.70,-6.77 2.70,-6.77 0,0 .67,-5.52 .67,-11.04 l 0,-5.17 c 0,-5.52 -0.67,-11.04 -0.67,-11.04 0,0 -0.66,-4.70 -2.70,-6.77 C 62.03,.86 59.13,.84 57.80,.69 48.28,0 34.00,0 34.00,0 33.97,0 19.69,0 10.18,.69 8.85,.84 5.95,.86 3.36,3.58 1.32,5.65 .66,10.35 .66,10.35 c 0,0 -0.55,4.50 -0.66,9.45 l 0,8.36 c .10,4.94 .66,9.45 .66,9.45 z" fill="#1f1f1e"></path><path d="m 26.96,13.67 18.37,9.62 -18.37,9.55 -0.00,-19.17 z" fill="#fff"></path><path d="M 45.02,23.46 45.32,23.28 26.96,13.67 43.32,24.34 45.02,23.46 z" fill="#ccc"></path></svg>';
+				case 'vimeo':
+					$this->add_render_attribute( 'video-play', 'class', 'uael-video__vimeo-play' );
 
-			} elseif ( 'vimeo' === $settings['video_type'] ) {
+					$html = '<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="uael-vimeo-icon-bg" x="0px" y="0px" width="100%" height="100%" viewBox="0 14.375 95 66.25" enable-background="new 0 14.375 95 66.25" xml:space="preserve" fill="rgba(23,34,35,.75)"><path d="M12.5,14.375c-6.903,0-12.5,5.597-12.5,12.5v41.25c0,6.902,5.597,12.5,12.5,12.5h70c6.903,0,12.5-5.598,12.5-12.5v-41.25 c0-6.903-5.597-12.5-12.5-12.5H12.5z"/><polygon fill="#FFFFFF" points="39.992,64.299 39.992,30.701 62.075,47.5 "/></svg>';
+					break;
 
-				$this->add_render_attribute( 'video-play', 'class', 'uael-video__vimeo-play' );
+				case 'wistia':
+					$this->add_render_attribute( 'video-play', 'class', 'uael-video__vimeo-play' );
 
-				$html = '<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="uael-vimeo-icon-bg" x="0px" y="0px" width="100%" height="100%" viewBox="0 14.375 95 66.25" enable-background="new 0 14.375 95 66.25" xml:space="preserve" fill="rgba(23,34,35,.75)"><path d="M12.5,14.375c-6.903,0-12.5,5.597-12.5,12.5v41.25c0,6.902,5.597,12.5,12.5,12.5h70c6.903,0,12.5-5.598,12.5-12.5v-41.25 c0-6.903-5.597-12.5-12.5-12.5H12.5z"/><polygon fill="#FFFFFF" points="39.992,64.299 39.992,30.701 62.075,47.5 "/></svg>';
+					$html = '<button class="uael-video-wistia-play w-big-play-button w-css-reset-button-important w-vulcan-v2-button"><svg x="0px" y="0px" viewBox="0 0 125 80" enable-background="new 0 0 125 80" focusable="false" alt="" style="fill: rgb(255, 255, 255); height: 100%; left: 0px; stroke-width: 0px; top: 0px; width: 100%;"><rect fill-rule="evenodd" clip-rule="evenodd" fill="none" width="125" height="80"></rect><polygon fill-rule="evenodd" clip-rule="evenodd" fill="#FFFFFF" points="53,22 53,58 79,40"></polygon></svg></button>';
+					break;
 
-			} elseif ( 'wistia' === $settings['video_type'] ) {
+				case 'hosted':
+					$this->add_render_attribute( 'video-play', 'class', 'uael-video__hosted-play' );
 
-				$this->add_render_attribute( 'video-play', 'class', 'uael-video__vimeo-play' );
+					$html = '<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="uael-vimeo-icon-bg" x="0px" y="0px" width="100%" height="100%" viewBox="0 14.375 95 66.25" enable-background="new 0 14.375 95 66.25" xml:space="preserve" fill="rgba(23,34,35,.75)"><path d="M12.5,14.375c-6.903,0-12.5,5.597-12.5,12.5v41.25c0,6.902,5.597,12.5,12.5,12.5h70c6.903,0,12.5-5.598,12.5-12.5v-41.25 c0-6.903-5.597-12.5-12.5-12.5H12.5z"/><polygon fill="#FFFFFF" points="39.992,64.299 39.992,30.701 62.075,47.5 "/></svg>';
+					break;
 
-				$html = '<button class="uael-video-wistia-play w-big-play-button w-css-reset-button-important w-vulcan-v2-button"><svg x="0px" y="0px" viewBox="0 0 125 80" enable-background="new 0 0 125 80" focusable="false" alt="" style="fill: rgb(255, 255, 255); height: 100%; left: 0px; stroke-width: 0px; top: 0px; width: 100%;"><rect fill-rule="evenodd" clip-rule="evenodd" fill="none" width="125" height="80"></rect><polygon fill-rule="evenodd" clip-rule="evenodd" fill="#FFFFFF" points="53,22 53,58 79,40"></polygon></svg></button>';
+				default:
+					break;
 			}
 		} elseif ( 'icon' === $settings['play_source'] ) {
 			$html = '';
@@ -2131,12 +2300,40 @@ class Video extends Common_Widget {
 			$this->add_render_attribute( 'video-play', 'class', 'uael-animation-' . $settings['hover_animation'] );
 		}
 
+		if ( 'hosted' === $settings['video_type'] ) {
+
+			$video_url = $this->get_hosted_video_url();
+
+			ob_start();
+
+			$this->render_hosted_video();
+
+			$video_html = ob_get_clean();
+
+			$video_html = wp_json_encode( $video_html );
+
+			$video_html = htmlspecialchars( $video_html, ENT_QUOTES );
+
+			$this->add_render_attribute(
+				'video-outer',
+				array(
+					'data-hosted-html' => $video_html,
+				)
+			);
+		}
+
 		if ( 'yes' === $settings['lightbox'] ) {
+
+			if ( 'hosted' === $settings['video_type'] ) {
+				$lightbox_src = $video_url;
+			} else {
+				$lightbox_src = $src;
+			}
 
 			$lightbox_options = array(
 				'type'         => 'video',
 				'videoType'    => $settings['video_type'],
-				'url'          => $src,
+				'url'          => $lightbox_src,
 				'modalOptions' => array(
 					'id'                       => 'elementor-lightbox-' . $this->get_id(),
 					'entranceAnimation'        => $settings['lightbox_content_animation'],
@@ -2145,6 +2342,10 @@ class Video extends Common_Widget {
 					'videoAspectRatio'         => '169',
 				),
 			);
+
+			if ( 'hosted' === $settings['video_type'] ) {
+				$lightbox_options['videoParams'] = $this->get_hosted_parameter();
+			}
 
 			$this->add_render_attribute( 'video-outer', 'class', 'uael-video-play-lightbox' );
 			$this->add_render_attribute(
@@ -2159,12 +2360,32 @@ class Video extends Common_Widget {
 			$this->add_render_attribute( 'video-outer', 'data-autoplay', $autoplay );
 		}
 
+		if ( 'hosted' === $settings['video_type'] && 'yes' !== $settings['show_image_overlay'] ) {
+			$custom_tag = 'video';
+		} else {
+			$custom_tag = 'img';
+		}
+		if ( 'hosted' === $settings['video_type'] ) {
+			$video_url = $this->get_hosted_video_url();
+		} else {
+			$video_url = $this->get_url( $embed_param, $id );
+		}
+
 		?>
+		<?php if ( 'hosted' === $settings['video_type'] && empty( $video_url ) && $is_editor ) { ?>
+			<span class='uael-hosted-error-message'>
+				<?php
+				echo '<div class="elementor-alert elementor-alert-warning">';
+					echo esc_attr__( 'Please choose a file.', 'uael' );
+				echo '</div>';
+				?>
+			</span>
+		<?php } elseif ( ! empty( $video_url ) ) { ?>
 		<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'video-outer' ) ); ?>>
 			<?php $this->get_header_wrap( $id ); ?>
 			<div class="uael-video-inner-wrap">
 				<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'video-wrapper' ) ); ?>>
-					<img <?php echo wp_kses_post( $this->get_render_attribute_string( 'video-thumb' ) ); ?> />
+					<<?php echo esc_attr( $custom_tag ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( 'video-thumb' ) ); ?>></<?php echo esc_attr( $custom_tag ); ?>>
 					<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'video-play' ) ); ?>>
 						<?php echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					</div>
@@ -2180,25 +2401,26 @@ class Video extends Common_Widget {
 			</div>
 		</div>
 			<?php
-			if ( 'youtube' === $settings['video_type'] && 'yes' === $settings['subscribe_bar'] ) {
-				$channel_name = ( '' !== $settings['subscribe_bar_channel_name'] ) ? $settings['subscribe_bar_channel_name'] : '';
+		}
+		if ( 'youtube' === $settings['video_type'] && 'yes' === $settings['subscribe_bar'] ) {
+			$channel_name = ( '' !== $settings['subscribe_bar_channel_name'] ) ? $settings['subscribe_bar_channel_name'] : '';
 
-				$channel_id = ( '' !== $settings['subscribe_bar_channel_id'] ) ? $settings['subscribe_bar_channel_id'] : '';
+			$channel_id = ( '' !== $settings['subscribe_bar_channel_id'] ) ? $settings['subscribe_bar_channel_id'] : '';
 
-				$channel_id = apply_filters( 'uael_video_default_channel_id', $channel_id, $settings );
+			$channel_id = apply_filters( 'uael_video_default_channel_id', $channel_id, $settings );
 
-				$youtube_text = ( '' !== $settings['subscribe_bar_channel_text'] ) ? $settings['subscribe_bar_channel_text'] : '';
+			$youtube_text = ( '' !== $settings['subscribe_bar_channel_text'] ) ? $settings['subscribe_bar_channel_text'] : '';
 
-				$subscriber_count = ( 'yes' === $settings['subscribe_count'] ) ? 'default' : 'hidden';
+			$subscriber_count = ( 'yes' === $settings['subscribe_count'] ) ? 'default' : 'hidden';
 
-				?>
+			?>
 			<div class="uael-subscribe-bar">
 				<div class="uael-subscribe-bar-prefix"><?php echo wp_kses_post( $youtube_text ); ?></div>
 				<div class="uael-subscribe-content">
-					<?php if ( false !== $is_editor ) { ?>
+				<?php if ( false !== $is_editor ) { ?>
 						<script src="https://apis.google.com/js/platform.js"></script> <?php //phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
 					<?php } ?>
-					<?php if ( 'channel_name' === $settings['subscribe_bar_select'] ) { ?>
+				<?php if ( 'channel_name' === $settings['subscribe_bar_select'] ) { ?>
 						<div class="g-ytsubscribe" data-channel="<?php echo esc_attr( $channel_name ); ?>" data-count="<?php echo esc_attr( $subscriber_count ); ?>"></div>
 					<?php } elseif ( 'channel_id' === $settings['subscribe_bar_select'] ) { ?>
 						<div class="g-ytsubscribe" data-channelid="<?php echo esc_attr( $channel_id ); ?>" data-count="<?php echo esc_attr( $subscriber_count ); ?>"></div>
@@ -2206,7 +2428,7 @@ class Video extends Common_Widget {
 				</div>
 			</div>
 				<?php
-			}
+		}
 	}
 
 	/**
@@ -2233,7 +2455,89 @@ class Video extends Common_Widget {
 			return '';
 		}
 
+		if ( '' === $settings['hosted_link'] && 'hosted' === $settings['video_type'] ) {
+			return '';
+		}
+
 		$this->get_video_embed();
+	}
+
+	/**
+	 * Get hosted video URL.
+	 *
+	 * @since 1.29.1
+	 * @access protected
+	 */
+	private function get_hosted_video_url() {
+
+		$settings = $this->get_settings_for_display();
+
+		if ( ! empty( $settings['insert_link'] ) ) {
+			$video_url = $settings['external_link']['url'];
+		} else {
+			$video_url = isset( $settings['hosted_link']['url'] ) ? $settings['hosted_link']['url'] : '';
+		}
+
+		if ( empty( $video_url ) ) {
+			return '';
+		}
+		if ( $settings['start'] || $settings['end'] ) {
+			$video_url .= '#t=';
+		}
+
+		if ( $settings['start'] ) {
+			$video_url .= $settings['start'];
+		}
+
+		if ( $settings['end'] ) {
+			$video_url .= ',' . $settings['end'];
+		}
+		return $video_url;
+	}
+
+
+	/**
+	 * Get hosted video parameters.
+	 *
+	 * @since 1.29.1
+	 * @access protected
+	 */
+	private function get_hosted_parameter() {
+		$settings = $this->get_settings_for_display();
+
+		$video_params = array();
+
+		foreach ( array( 'autoplay', 'loop', 'controls' ) as $option_name ) {
+			if ( $settings[ $option_name ] ) {
+				$video_params[ $option_name ] = '';
+			}
+		}
+
+		if ( $settings['muted'] ) {
+			$video_params['muted'] = 'muted';
+		}
+
+		return $video_params;
+	}
+
+
+	/**
+	 * Render hosted video.
+	 *
+	 * @since 1.29.1
+	 * @access protected
+	 */
+	private function render_hosted_video() {
+		$video_url = $this->get_hosted_video_url();
+		if ( empty( $video_url ) ) {
+			return;
+		}
+
+		$video_params = $this->get_hosted_parameter();
+
+		?>
+		<video class="uael-hosted-video" src="<?php echo esc_url( $video_url ); ?>" <?php echo esc_attr( Utils::render_html_attributes( $video_params ) ); ?>></video>
+		<?php
 	}
 
 	/**

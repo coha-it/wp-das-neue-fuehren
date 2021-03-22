@@ -134,6 +134,17 @@ class WpfStyler extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register WPForms Styler controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		$this->register_general_content_controls();
 		$this->register_input_style_controls();
 		$this->register_radio_content_controls();

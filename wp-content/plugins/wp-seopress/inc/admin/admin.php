@@ -27,117 +27,197 @@ class seopress_options {
             $sp_seo_admin_menu['icon'] = 'dashicons-admin-seopress';
         }
 
-        add_menu_page('SEOPress Option Page', __('SEO', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-option', [$this, 'create_admin_page'], $sp_seo_admin_menu['icon'], 90);
+        $sp_seo_admin_menu['title'] = __('SEO', 'wp-seopress');
+        if (has_filter('seopress_seo_admin_menu_title')) {
+            $sp_seo_admin_menu['title'] = apply_filters('seopress_seo_admin_menu_title', $sp_seo_admin_menu['title']);
+        }
+
+        add_menu_page(__('SEOPress Option Page', 'wp-seopress-pro'), $sp_seo_admin_menu['title'], seopress_capability('manage_options', 'menu'), 'seopress-option', [$this, 'create_admin_page'], $sp_seo_admin_menu['icon'], 90);
         add_submenu_page('seopress-option', __('Dashboard', 'wp-seopress'), __('Dashboard', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-option', [$this, 'create_admin_page']);
-        $seopress_titles_help_tab = add_submenu_page('seopress-option', __('Titles & Metas', 'wp-seopress'), __('Titles & Metas', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-titles', [$this, 'seopress_titles_page']);
-        add_submenu_page('seopress-option', __('XML / Image / Video / HTML Sitemap', 'wp-seopress'), __('XML / HTML Sitemap', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-xml-sitemap', [$this, 'seopress_xml_sitemap_page']);
-        add_submenu_page('seopress-option', __('Social Networks', 'wp-seopress'), __('Social Networks', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-social', [$this, 'seopress_social_page']);
+        $seopress_titles_help_tab           = add_submenu_page('seopress-option', __('Titles & Metas', 'wp-seopress'), __('Titles & Metas', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-titles', [$this, 'seopress_titles_page']);
+        $seopress_xml_sitemaps_help_tab     = add_submenu_page('seopress-option', __('XML / Image / Video / HTML Sitemap', 'wp-seopress'), __('XML / HTML Sitemap', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-xml-sitemap', [$this, 'seopress_xml_sitemap_page']);
+        $seopress_social_networks_help_tab  = add_submenu_page('seopress-option', __('Social Networks', 'wp-seopress'), __('Social Networks', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-social', [$this, 'seopress_social_page']);
         $seopress_google_analytics_help_tab = add_submenu_page('seopress-option', __('Analytics', 'wp-seopress'), __('Analytics', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-google-analytics', [$this, 'seopress_google_analytics_page']);
         add_submenu_page('seopress-option', __('Advanced', 'wp-seopress'), __('Advanced', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-advanced', [$this, 'seopress_advanced_page']);
         add_submenu_page('seopress-option', __('Tools', 'wp-seopress'), __('Tools', 'wp-seopress'), seopress_capability('manage_options', 'menu'), 'seopress-import-export', [$this, 'seopress_import_export_page']);
+
+        if (function_exists('seopress_get_toggle_white_label_option')) {
+            $white_label_toggle = seopress_get_toggle_white_label_option();
+            if ('1' === $white_label_toggle) {
+                if ('1' === seopress_white_label_help_links_option()) {
+                    return;
+                }
+            }
+        }
 
         function seopress_titles_help_tab() {
             $screen = get_current_screen();
 
             $seopress_titles_help_tab_content = '
-				<ul>
-					<li><span>' . __('%%sep%%', 'wp-seopress') . '</span>' . __('Separator (eg: - )', 'wp-seopress') . '</li>
-					<li><span>' . __('%%sitetitle%% (alias: %%sitename%%)', 'wp-seopress') . '</span>' . __('Site Title', 'wp-seopress') . '</li>
-					<li><span>' . __('%%tagline%% (alias %%sitedesc%%)', 'wp-seopress') . '</span>' . __('Tagline', 'wp-seopress') . '</li>
-					<li><span>' . __('%%post_title%% (alias %%title%%)', 'wp-seopress') . '</span>' . __('Post Title (post, page, custom post type)', 'wp-seopress') . '</li>
-					<li><span>' . __('%%post_excerpt%% (alias %%excerpt%%)', 'wp-seopress') . '</span>' . __('Post excerpt', 'wp-seopress') . '</li>
-					<li><span>' . __('%%post_content%%', 'wp-seopress') . '</span>' . __('Post content / product long description', 'wp-seopress') . '</li>
-					<li><span>' . __('%%post_thumbnail_url%%', 'wp-seopress') . '</span>' . __('Post thumbnail URL', 'wp-seopress') . '</li>
-					<li><span>' . __('%%post_url%%', 'wp-seopress') . '</span>' . __('Post URL (permalink)', 'wp-seopress') . '</li>
-					<li><span>' . __('%%post_date%% (alias %%date%%)', 'wp-seopress') . '</span>' . __('Post date', 'wp-seopress') . '</li>
-					<li><span>' . __('%%post_modified_date%%', 'wp-seopress') . '</span>' . __('Last modified post date', 'wp-seopress') . '</li>
-					<li><span>' . __('%%post_author%%', 'wp-seopress') . '</span>' . __('Post author', 'wp-seopress') . '</li>
-					<li><span>' . __('%%post_category%%', 'wp-seopress') . '</span>' . __('Post category', 'wp-seopress') . '</li>
-					<li><span>' . __('%%post_tag%%', 'wp-seopress') . '</span>' . __('Post tag', 'wp-seopress') . '</li>
-					<li><span>' . __('%%_category_title%%', 'wp-seopress') . '</span>' . __('Category title', 'wp-seopress') . '</li>
-					<li><span>' . __('%%_category_description%%', 'wp-seopress') . '</span>' . __('Category description', 'wp-seopress') . '</li>
-					<li><span>' . __('%%tag_title%%', 'wp-seopress') . '</span>' . __('Tag title', 'wp-seopress') . '</li>
-					<li><span>' . __('%%tag_description%%', 'wp-seopress') . '</span>' . __('Tag description', 'wp-seopress') . '</li>
-					<li><span>' . __('%%term_title%%', 'wp-seopress') . '</span>' . __('Term title', 'wp-seopress') . '</li>
-					<li><span>' . __('%%term_description%%', 'wp-seopress') . '</span>' . __('Term description', 'wp-seopress') . '</li>
-					<li><span>' . __('%%search_keywords%%', 'wp-seopress') . '</span>' . __('Search keywords', 'wp-seopress') . '</li>
-					<li><span>' . __('%%current_pagination%%', 'wp-seopress') . '</span>' . __('Current number page', 'wp-seopress') . '</li>
-					<li><span>' . __('%%page%%', 'wp-seopress') . '</span>' . __('Current page number with context (i.e. page 1 of 3)', 'wp-seopress') . '</li>
-					<li><span>' . __('%%cpt_plural%%', 'wp-seopress') . '</span>' . __('Plural Post Type Archive name', 'wp-seopress') . '</li>
-					<li><span>' . __('%%archive_title%%', 'wp-seopress') . '</span>' . __('Archive title', 'wp-seopress') . '</li>
-					<li><span>' . __('%%archive_date%%', 'wp-seopress') . '</span>' . __('Date Archive', 'wp-seopress') . '</li>
-					<li><span>' . __('%%archive_date_day%%', 'wp-seopress') . '</span>' . __('Day Archive date', 'wp-seopress') . '</li>
-					<li><span>' . __('%%archive_date_month%%', 'wp-seopress') . '</span>' . __('Month Archive title', 'wp-seopress') . '</li>
-					<li><span>' . __('%%archive_date_year%%', 'wp-seopress') . '</span>' . __('Year Archive title', 'wp-seopress') . '</li>
-					<li><span>' . __('%%_cf_your_custom_field_name%%', 'wp-seopress') . '</span>' . __('Custom fields from post, page or post type (replace <span style="color:red;margin:0">your_custom_field_name</span> with your custom field name)', 'wp-seopress') . '</li>
-					<li><span>' . __('%%_ct_your_custom_taxonomy_slug%%', 'wp-seopress') . '</span>' . __('Custom term taxonomy from post, page or post type (replace <span style="color:red;margin:0">your_custom_taxonomy_slug</span> with your custom taxonomy slug)', 'wp-seopress') . '</li>
-					<li><span>' . __('%%wc_single_cat%%', 'wp-seopress') . '</span>' . __('Single product category', 'wp-seopress') . '</li>
-					<li><span>' . __('%%wc_single_tag%%', 'wp-seopress') . '</span>' . __('Single product tag', 'wp-seopress') . '</li>
-					<li><span>' . __('%%wc_single_short_desc%%', 'wp-seopress') . '</span>' . __('Single product short description', 'wp-seopress') . '</li>
-					<li><span>' . __('%%wc_single_price%%', 'wp-seopress') . '</span>' . __('Single product price', 'wp-seopress') . '</li>
-					<li><span>' . __('%%wc_single_price_exc_tax%%', 'wp-seopress') . '</span>' . __('Single product price taxes excluded', 'wp-seopress') . '</li>
-					<li><span>' . __('%%wc_sku%%', 'wp-seopress') . '</span>' . __('Single SKU product', 'wp-seopress') . '</li>
-					<li><span>' . __('%%currentday%%', 'wp-seopress') . '</span>' . __('Current day', 'wp-seopress') . '</li>
-					<li><span>' . __('%%currentmonth%%', 'wp-seopress') . '</span>' . __('Current month', 'wp-seopress') . '</li>
-					<li><span>' . __('%%currentmonth_short%%', 'wp-seopress') . '</span>' . __('Current month in 3 letters, eg: "Jan" for "January"', 'wp-seopress') . '</li>
-					<li><span>' . __('%%currentyear%%', 'wp-seopress') . '</span>' . __('Current year', 'wp-seopress') . '</li>
-					<li><span>' . __('%%currentdate%%', 'wp-seopress') . '</span>' . __('Current date', 'wp-seopress') . '</li>
-					<li><span>' . __('%%currenttime%%', 'wp-seopress') . '</span>' . __('Current time', 'wp-seopress') . '</li>
-					<li><span>' . __('%%author_bio%%', 'wp-seopress') . '</span>' . __('Author biography (description), meta desc only', 'wp-seopress') . '</li>
-					<li><span>' . __('%%currentmonth_num%%', 'wp-seopress') . '</span>' . __('Current month in digital format', 'wp-seopress') . '</li>
-				</ul>
-			' . wp_oembed_get('https://www.youtube.com/watch?v=Jretu4Gpgo8', ['width'=>530]);
+                <ul>
+                    <li><span>' . __('%%sep%%', 'wp-seopress') . '</span>' . __('Separator (eg: - )', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%sitetitle%% (alias: %%sitename%%)', 'wp-seopress') . '</span>' . __('Site Title', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%tagline%% (alias %%sitedesc%%)', 'wp-seopress') . '</span>' . __('Tagline', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%post_title%% (alias %%title%%)', 'wp-seopress') . '</span>' . __('Post Title (post, page, custom post type)', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%post_excerpt%% (alias %%excerpt%%)', 'wp-seopress') . '</span>' . __('Post excerpt', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%post_content%%', 'wp-seopress') . '</span>' . __('Post content / product long description', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%post_thumbnail_url%%', 'wp-seopress') . '</span>' . __('Post thumbnail URL', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%post_url%%', 'wp-seopress') . '</span>' . __('Post URL (permalink)', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%post_date%% (alias %%date%%)', 'wp-seopress') . '</span>' . __('Post date', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%post_modified_date%%', 'wp-seopress') . '</span>' . __('Last modified post date', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%post_author%%', 'wp-seopress') . '</span>' . __('Post author', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%post_category%%', 'wp-seopress') . '</span>' . __('Post category', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%post_tag%%', 'wp-seopress') . '</span>' . __('Post tag', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%_category_title%%', 'wp-seopress') . '</span>' . __('Category title', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%_category_description%%', 'wp-seopress') . '</span>' . __('Category description', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%tag_title%%', 'wp-seopress') . '</span>' . __('Tag title', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%tag_description%%', 'wp-seopress') . '</span>' . __('Tag description', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%term_title%%', 'wp-seopress') . '</span>' . __('Term title', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%term_description%%', 'wp-seopress') . '</span>' . __('Term description', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%search_keywords%%', 'wp-seopress') . '</span>' . __('Search keywords', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%current_pagination%%', 'wp-seopress') . '</span>' . __('Current number page', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%page%%', 'wp-seopress') . '</span>' . __('Current page number with context (i.e. page 1 of 3)', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%cpt_plural%%', 'wp-seopress') . '</span>' . __('Plural Post Type Archive name', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%archive_title%%', 'wp-seopress') . '</span>' . __('Archive title', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%archive_date%%', 'wp-seopress') . '</span>' . __('Date Archive', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%archive_date_day%%', 'wp-seopress') . '</span>' . __('Day Archive date', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%archive_date_month%%', 'wp-seopress') . '</span>' . __('Month Archive title', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%archive_date_year%%', 'wp-seopress') . '</span>' . __('Year Archive title', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%_cf_your_custom_field_name%%', 'wp-seopress') . '</span>' . __('Custom fields from post, page or post type (replace <span style="color:red;margin:0">your_custom_field_name</span> with your custom field name)', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%_ct_your_custom_taxonomy_slug%%', 'wp-seopress') . '</span>' . __('Custom term taxonomy from post, page or post type (replace <span style="color:red;margin:0">your_custom_taxonomy_slug</span> with your custom taxonomy slug)', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%wc_single_cat%%', 'wp-seopress') . '</span>' . __('Single product category', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%wc_single_tag%%', 'wp-seopress') . '</span>' . __('Single product tag', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%wc_single_short_desc%%', 'wp-seopress') . '</span>' . __('Single product short description', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%wc_single_price%%', 'wp-seopress') . '</span>' . __('Single product price', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%wc_single_price_exc_tax%%', 'wp-seopress') . '</span>' . __('Single product price taxes excluded', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%wc_sku%%', 'wp-seopress') . '</span>' . __('Single SKU product', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%currentday%%', 'wp-seopress') . '</span>' . __('Current day', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%currentmonth%%', 'wp-seopress') . '</span>' . __('Current month', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%currentmonth_short%%', 'wp-seopress') . '</span>' . __('Current month in 3 letters, eg: "Jan" for "January"', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%currentyear%%', 'wp-seopress') . '</span>' . __('Current year', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%currentdate%%', 'wp-seopress') . '</span>' . __('Current date', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%currenttime%%', 'wp-seopress') . '</span>' . __('Current time', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%author_bio%%', 'wp-seopress') . '</span>' . __('Author biography (description), meta desc only', 'wp-seopress') . '</li>
+                    <li><span>' . __('%%currentmonth_num%%', 'wp-seopress') . '</span>' . __('Current month in digital format', 'wp-seopress') . '</li>
+                </ul>
+            ' . wp_oembed_get('https://www.youtube.com/watch?v=Jretu4Gpgo8', ['width'=>530]);
+
+            $seopress_titles_help_robots_tab_content = wp_oembed_get('https://www.youtube.com/watch?v=Jretu4Gpgo8', ['width'=>530]);
 
             $screen->add_help_tab([
                 'id'        => 'seopress_titles_help_tab',
-                'title'     => __('Templates variables'),
+                'title'     => __('Templates variables', 'wp-seopress'),
                 'content'   => $seopress_titles_help_tab_content,
+            ]);
+
+            $screen->add_help_tab([
+                'id'        => 'seopress_titles_help_robots_tab',
+                'title'     => __('Edit your meta robots', 'wp-seopress'),
+                'content'   => $seopress_titles_help_robots_tab_content,
             ]);
 
             if (function_exists('seopress_get_locale') && 'fr' == seopress_get_locale()) {
                 $screen->set_help_sidebar(
                     '<ul>
-						<li><a href="https://www.seopress.org/fr/support/guides/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Browse our guides', 'wp-seopress') . '</a></li>
-						<li><a href="https://www.seopress.org/fr/support/faq/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our FAQ', 'wp-seopress') . '</a></li>
-						<li><a href="https://www.seopress.org/fr/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Check our website', 'wp-seopress') . '</a></li>
-					</ul>'
+                        <li><a href="https://www.seopress.org/fr/support/guides/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Browse our guides', 'wp-seopress') . '</a></li>
+                        <li><a href="https://www.seopress.org/fr/support/faq/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our FAQ', 'wp-seopress') . '</a></li>
+                        <li><a href="https://www.seopress.org/fr/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Check our website', 'wp-seopress') . '</a></li>
+                    </ul>'
                 );
             } else {
                 $screen->set_help_sidebar(
                     '<ul>
-						<li><a href="https://www.seopress.org/support/guides/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Browse our guides', 'wp-seopress') . '</a></li>
-						<li><a href="https://www.seopress.org/support/faq/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our FAQ', 'wp-seopress') . '</a></li>
-						<li><a href="https://www.seopress.org/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Check our website', 'wp-seopress') . '</a></li>
-					</ul>'
+                        <li><a href="https://www.seopress.org/support/guides/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Browse our guides', 'wp-seopress') . '</a></li>
+                        <li><a href="https://www.seopress.org/support/faq/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our FAQ', 'wp-seopress') . '</a></li>
+                        <li><a href="https://www.seopress.org/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Check our website', 'wp-seopress') . '</a></li>
+                    </ul>'
                 );
             }
         }
         add_action('load-' . $seopress_titles_help_tab, 'seopress_titles_help_tab');
 
+        function seopress_xml_sitemaps_help_tab() {
+            $screen = get_current_screen();
+
+            $seopress_xml_sitemaps_help_tab_content = '
+                <p>' . __('Watch our video to learn how to enable XML sitemaps to improve crawling and them to Google Search Console.', 'wp-seopress') . '</p>
+            ' . wp_oembed_get('https://www.youtube.com/watch?v=Bjfspe1nusY', ['width'=>530]);
+
+            $screen->add_help_tab([
+                'id'        => 'seopress_google_analytics_help_tab',
+                'title'     => __('How-to', 'wp-seopress'),
+                'content'   => $seopress_xml_sitemaps_help_tab_content,
+            ]);
+
+            if (function_exists('seopress_get_locale') && 'fr' == seopress_get_locale()) {
+                $screen->set_help_sidebar(
+                    '<ul>
+                        <li><a href="https://www.seopress.org/fr/support/guides/activer-sitemap-xml/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our guide', 'wp-seopress') . '</a></li>
+                    </ul>'
+                );
+            } else {
+                $screen->set_help_sidebar(
+                    '<ul>
+                        <li><a href="https://www.seopress.org/support/guides/enable-xml-sitemaps/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our guide', 'wp-seopress') . '</a></li>
+                    </ul>'
+                );
+            }
+        }
+        add_action('load-' . $seopress_xml_sitemaps_help_tab, 'seopress_xml_sitemaps_help_tab');
+
+        function seopress_social_networks_help_tab() {
+            $screen = get_current_screen();
+
+            $seopress_social_networks_help_tab_content = '
+                <p>' . __('Watch our video to learn how to edit your Open Graph and Twitters Cards tags to improve social sharing.', 'wp-seopress') . '</p>
+            ' . wp_oembed_get('https://www.youtube.com/watch?v=TX3AUsI6vKk', ['width'=>530]);
+
+            $screen->add_help_tab([
+                'id'        => 'seopress_social_networks_help_tab',
+                'title'     => __('How-to', 'wp-seopress'),
+                'content'   => $seopress_social_networks_help_tab_content,
+            ]);
+
+            if (function_exists('seopress_get_locale') && 'fr' == seopress_get_locale()) {
+                $screen->set_help_sidebar(
+                    '<ul>
+                        <li><a href="https://www.seopress.org/fr/support/guides/gerer-les-metas-facebook-open-graph-et-twitter-cards/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our guide', 'wp-seopress') . '</a></li>
+                    </ul>'
+                );
+            } else {
+                $screen->set_help_sidebar(
+                    '<ul>
+                        <li><a href="https://www.seopress.org/support/guides/manage-facebook-open-graph-and-twitter-cards-metas/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our guide', 'wp-seopress') . '</a></li>
+                    </ul>'
+                );
+            }
+        }
+        add_action('load-' . $seopress_social_networks_help_tab, 'seopress_social_networks_help_tab');
+
         function seopress_google_analytics_help_tab() {
             $screen = get_current_screen();
 
             $seopress_google_analytics_help_tab_content = '
-				<p>' . __('Watch our video to learn how to connect your WordPress site with Google Analytics and get statistics right in your dashboard (PRO only).', 'wp-seopress') . '</p>
-			' . wp_oembed_get('https://www.youtube.com/watch?v=2EWdogYuFgs', ['width'=>530]);
+                <p>' . __('Watch our video to learn how to connect your WordPress site with Google Analytics and get statistics right in your dashboard (PRO only).', 'wp-seopress') . '</p>
+            ' . wp_oembed_get('https://www.youtube.com/watch?v=2EWdogYuFgs', ['width'=>530]);
 
             $screen->add_help_tab([
                 'id'        => 'seopress_google_analytics_help_tab',
-                'title'     => __('How-to'),
+                'title'     => __('How-to', 'wp-seopress'),
                 'content'   => $seopress_google_analytics_help_tab_content,
             ]);
 
             if (function_exists('seopress_get_locale') && 'fr' == seopress_get_locale()) {
                 $screen->set_help_sidebar(
                     '<ul>
-						<li><a href="https://www.seopress.org/fr/support/guides/connectez-site-wordpress-a-google-analytics/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our guide', 'wp-seopress') . '</a></li>
-					</ul>'
+                        <li><a href="https://www.seopress.org/fr/support/guides/connectez-site-wordpress-a-google-analytics/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our guide', 'wp-seopress') . '</a></li>
+                    </ul>'
                 );
             } else {
                 $screen->set_help_sidebar(
                     '<ul>
-						<li><a href="https://www.seopress.org/support/guides/connect-wordpress-site-google-analytics/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our guide', 'wp-seopress') . '</a></li>
-					</ul>'
+                        <li><a href="https://www.seopress.org/support/guides/connect-wordpress-site-google-analytics/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">' . __('Read our guide', 'wp-seopress') . '</a></li>
+                    </ul>'
                 );
             }
         }
@@ -515,9 +595,10 @@ class seopress_options {
 		 <?php
 
             $plugin_settings_tabs = [
-                'tab_seopress_advanced_advanced'   => __('Advanced', 'wp-seopress'),
-                'tab_seopress_advanced_appearance' => __('Appearance', 'wp-seopress'),
-                'tab_seopress_advanced_security'   => __('Security', 'wp-seopress'),
+                'tab_seopress_advanced_image'       => __('Image SEO', 'wp-seopress'),
+                'tab_seopress_advanced_advanced'    => __('Advanced', 'wp-seopress'),
+                'tab_seopress_advanced_appearance'  => __('Appearance', 'wp-seopress'),
+                'tab_seopress_advanced_security'    => __('Security', 'wp-seopress'),
             ];
 
         echo '<div class="nav-tab-wrapper">';
@@ -525,9 +606,14 @@ class seopress_options {
             echo '<a id="' . $tab_key . '-tab" class="nav-tab" href="?page=seopress-advanced#tab=' . $tab_key . '">' . $tab_caption . '</a>';
         }
         echo '</div>'; ?>
-			<div class="seopress-tab <?php if ('tab_seopress_advanced_advanced' == $current_tab) {
+        <div class="seopress-tab <?php if ('tab_seopress_advanced_image' == $current_tab) {
             echo 'active';
-        } ?>" id="tab_seopress_advanced_advanced"><?php do_settings_sections('seopress-settings-admin-advanced-advanced'); ?></div>
+        } ?>" id="tab_seopress_advanced_image"><?php do_settings_sections('seopress-settings-admin-advanced-image'); ?>
+        </div>
+		<div class="seopress-tab <?php if ('tab_seopress_advanced_advanced' == $current_tab) {
+            echo 'active';
+        } ?>" id="tab_seopress_advanced_advanced"><?php do_settings_sections('seopress-settings-admin-advanced-advanced'); ?>
+        </div>
 			<div class="seopress-tab <?php if ('tab_seopress_advanced_appearance' == $current_tab) {
             echo 'active';
         } ?>" id="tab_seopress_advanced_appearance"><?php do_settings_sections('seopress-settings-admin-advanced-appearance'); ?></div>
@@ -712,6 +798,7 @@ class seopress_options {
 							<option value="wpseo-migration-tool"><?php _e('wpSEO', 'wp-seopress'); ?></option>
 						</select>
 						<br><br>
+                        <p class="description"><?php _e('You don\'t have to enable the selected SEO plugin to run the import.', 'wp-seopress'); ?></p>
 					</div>
 					<!-- Yoast import tool -->
 					<div id="yoast-migration-tool" class="postbox section-tool">
@@ -2209,6 +2296,79 @@ class seopress_options {
             'seopress_setting_section_google_analytics_matomo' // Section
         );
 
+        //Image SECTION============================================================================
+        add_settings_section(
+            'seopress_setting_section_advanced_image', // ID
+            '',
+            //__("Image SEO","wp-seopress"), // Title
+            [$this, 'print_section_info_advanced_image'], // Callback
+            'seopress-settings-admin-advanced-image' // Page
+        );
+
+        add_settings_field(
+            'seopress_advanced_advanced_attachments', // ID
+            __('Redirect attachment pages to post parent', 'wp-seopress'), // Title
+            [$this, 'seopress_advanced_advanced_attachments_callback'], // Callback
+            'seopress-settings-admin-advanced-image', // Page
+            'seopress_setting_section_advanced_image' // Section
+        );
+
+        add_settings_field(
+            'seopress_advanced_advanced_attachments_file', // ID
+            __('Redirect attachment pages to their file URL', 'wp-seopress'), // Title
+            [$this, 'seopress_advanced_advanced_attachments_file_callback'], // Callback
+            'seopress-settings-admin-advanced-image', // Page
+            'seopress_setting_section_advanced_image' // Section
+        );
+
+        add_settings_field(
+            'seopress_advanced_advanced_replytocom', // ID
+            __('Remove ?replytocom link to avoid duplicate content', 'wp-seopress'), // Title
+            [$this, 'seopress_advanced_advanced_replytocom_callback'], // Callback
+            'seopress-settings-admin-advanced-image', // Page
+            'seopress_setting_section_advanced_image' // Section
+        );
+
+        add_settings_field(
+            'seopress_advanced_advanced_image_auto_title_editor', // ID
+            __('Automatically set the image Title', 'wp-seopress'), // Title
+            [$this, 'seopress_advanced_advanced_image_auto_title_editor_callback'], // Callback
+            'seopress-settings-admin-advanced-image', // Page
+            'seopress_setting_section_advanced_image' // Section
+        );
+
+        add_settings_field(
+            'seopress_advanced_advanced_image_auto_alt_editor', // ID
+            __('Automatically set the image Alt text', 'wp-seopress'), // Title
+            [$this, 'seopress_advanced_advanced_image_auto_alt_editor_callback'], // Callback
+            'seopress-settings-admin-advanced-image', // Page
+            'seopress_setting_section_advanced_image' // Section
+        );
+
+        add_settings_field(
+            'seopress_advanced_advanced_image_auto_alt_target_kw', // ID
+            __('Automatically set the image Alt text from target keywords', 'wp-seopress'), // Title
+            [$this, 'seopress_advanced_advanced_image_auto_alt_target_kw_callback'], // Callback
+            'seopress-settings-admin-advanced-image', // Page
+            'seopress_setting_section_advanced_image' // Section
+        );
+
+        add_settings_field(
+            'seopress_advanced_advanced_image_auto_caption_editor', // ID
+            __('Automatically set the image Caption', 'wp-seopress'), // Title
+            [$this, 'seopress_advanced_advanced_image_auto_caption_editor_callback'], // Callback
+            'seopress-settings-admin-advanced-image', // Page
+            'seopress_setting_section_advanced_image' // Section
+        );
+
+        add_settings_field(
+            'seopress_advanced_advanced_image_auto_desc_editor', // ID
+            __('Automatically set the image Description', 'wp-seopress'), // Title
+            [$this, 'seopress_advanced_advanced_image_auto_desc_editor_callback'], // Callback
+            'seopress-settings-admin-advanced-image', // Page
+            'seopress_setting_section_advanced_image' // Section
+        );
+
         //Advanced SECTION=========================================================================
         add_settings_section(
             'seopress_setting_section_advanced_advanced', // ID
@@ -2216,70 +2376,6 @@ class seopress_options {
             //__("Advanced","wp-seopress"), // Title
             [$this, 'print_section_info_advanced_advanced'], // Callback
             'seopress-settings-admin-advanced-advanced' // Page
-        );
-
-        add_settings_field(
-            'seopress_advanced_advanced_attachments', // ID
-            __('Redirect attachment pages to post parent', 'wp-seopress'), // Title
-            [$this, 'seopress_advanced_advanced_attachments_callback'], // Callback
-            'seopress-settings-admin-advanced-advanced', // Page
-            'seopress_setting_section_advanced_advanced' // Section
-        );
-
-        add_settings_field(
-            'seopress_advanced_advanced_attachments_file', // ID
-            __('Redirect attachment pages to their file URL', 'wp-seopress'), // Title
-            [$this, 'seopress_advanced_advanced_attachments_file_callback'], // Callback
-            'seopress-settings-admin-advanced-advanced', // Page
-            'seopress_setting_section_advanced_advanced' // Section
-        );
-
-        add_settings_field(
-            'seopress_advanced_advanced_replytocom', // ID
-            __('Remove ?replytocom link to avoid duplicate content', 'wp-seopress'), // Title
-            [$this, 'seopress_advanced_advanced_replytocom_callback'], // Callback
-            'seopress-settings-admin-advanced-advanced', // Page
-            'seopress_setting_section_advanced_advanced' // Section
-        );
-
-        add_settings_field(
-            'seopress_advanced_advanced_image_auto_title_editor', // ID
-            __('Automatically set the image Title', 'wp-seopress'), // Title
-            [$this, 'seopress_advanced_advanced_image_auto_title_editor_callback'], // Callback
-            'seopress-settings-admin-advanced-advanced', // Page
-            'seopress_setting_section_advanced_advanced' // Section
-        );
-
-        add_settings_field(
-            'seopress_advanced_advanced_image_auto_alt_editor', // ID
-            __('Automatically set the image Alt text', 'wp-seopress'), // Title
-            [$this, 'seopress_advanced_advanced_image_auto_alt_editor_callback'], // Callback
-            'seopress-settings-admin-advanced-advanced', // Page
-            'seopress_setting_section_advanced_advanced' // Section
-        );
-
-        add_settings_field(
-            'seopress_advanced_advanced_image_auto_alt_target_kw', // ID
-            __('Automatically set the image Alt text from target keywords', 'wp-seopress'), // Title
-            [$this, 'seopress_advanced_advanced_image_auto_alt_target_kw_callback'], // Callback
-            'seopress-settings-admin-advanced-advanced', // Page
-            'seopress_setting_section_advanced_advanced' // Section
-        );
-
-        add_settings_field(
-            'seopress_advanced_advanced_image_auto_caption_editor', // ID
-            __('Automatically set the image Caption', 'wp-seopress'), // Title
-            [$this, 'seopress_advanced_advanced_image_auto_caption_editor_callback'], // Callback
-            'seopress-settings-admin-advanced-advanced', // Page
-            'seopress_setting_section_advanced_advanced' // Section
-        );
-
-        add_settings_field(
-            'seopress_advanced_advanced_image_auto_desc_editor', // ID
-            __('Automatically set the image Description', 'wp-seopress'), // Title
-            [$this, 'seopress_advanced_advanced_image_auto_desc_editor_callback'], // Callback
-            'seopress-settings-admin-advanced-advanced', // Page
-            'seopress_setting_section_advanced_advanced' // Section
         );
 
         add_settings_field(
@@ -2905,6 +3001,10 @@ class seopress_options {
         echo __('<p>Use Matomo to track your users with privacy in mind.</p>', 'wp-seopress');
 
         echo '<p>' . __('Your <strong>Custom Dimensions</strong> will also work with Matomo tracking code', 'wp-seopress') . '</p>';
+    }
+
+    public function print_section_info_advanced_image() {
+        echo __('<p>Image SEO options.</p>', 'wp-seopress');
     }
 
     public function print_section_info_advanced_advanced() {

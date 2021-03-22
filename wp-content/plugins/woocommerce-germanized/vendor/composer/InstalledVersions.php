@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '2ef09a3aaa7ff19a2ea193ea1d45cfbf30c12e1f',
+    'reference' => '2489ad310a54e34336fc1f0b2e35ba66616cbe69',
     'name' => 'vendidero/woocommerce-germanized',
   ),
   'versions' => 
@@ -82,12 +82,12 @@ private static $installed = array (
     ),
     'setasign/fpdi' => 
     array (
-      'pretty_version' => 'v2.3.5',
-      'version' => '2.3.5.0',
+      'pretty_version' => 'v2.3.6',
+      'version' => '2.3.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f2246c8669bd25834f5c264425eb0e250d7a9312',
+      'reference' => '6231e315f73e4f62d72b73f3d6d78ff0eed93c31',
     ),
     'shama/baton' => 
     array (
@@ -103,25 +103,25 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '2ef09a3aaa7ff19a2ea193ea1d45cfbf30c12e1f',
+      'reference' => '2489ad310a54e34336fc1f0b2e35ba66616cbe69',
     ),
     'vendidero/woocommerce-germanized-dhl' => 
     array (
-      'pretty_version' => 'v1.4.5',
-      'version' => '1.4.5.0',
+      'pretty_version' => 'v1.4.6',
+      'version' => '1.4.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2930d1349b0112abae960d9e2ffd8eb309818316',
+      'reference' => 'b515b7c6f0187a11a3c0d70dd49de2fb1698ae41',
     ),
     'vendidero/woocommerce-germanized-shipments' => 
     array (
-      'pretty_version' => 'v1.4.5',
-      'version' => '1.4.5.0',
+      'pretty_version' => 'v1.4.6',
+      'version' => '1.4.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => '082f5a9790565c86efe0c2672fdf6474da2d8d87',
+      'reference' => '7362c6809d7de937e444b3dc7928a97d516191d7',
     ),
     'vendidero/woocommerce-trusted-shops' => 
     array (

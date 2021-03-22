@@ -126,6 +126,17 @@ class Business_Reviews extends Common_Widget {
 	 */
 	public function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register Business Reviews controls.
+	 *
+	 * @since 1.29.2
+	 * @access public
+	 */
+	public function register_controls() {
+
 		$this->register_general_controls();
 		$this->register_content_grid_controls();
 		$this->register_filters_controls();

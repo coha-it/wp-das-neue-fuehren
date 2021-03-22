@@ -69,7 +69,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 					'control'     => 'select',
 					'transport'   => 'refresh',
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						'relation' => 'AND',
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
@@ -110,7 +110,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 						'right' => __( 'Right', 'astra-addon' ),
 					),
 					'context'  => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[mobile-below-header-menu-style]',
 							'operator' => '==',
@@ -130,7 +130,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 					'title'     => __( 'Toggle Button Style', 'astra-addon' ),
 					'transport' => 'postMessage',
 					'context'   => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						'relation' => 'AND',
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
@@ -156,11 +156,12 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 				* Option: Toggle Button Color
 				*/
 				array(
-					'name'      => ASTRA_THEME_SETTINGS . '[mobile-below-header-toggle-btn-style-color]',
-					'type'      => 'control',
-					'control'   => 'ast-color',
-					'context'   => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+					'name'              => ASTRA_THEME_SETTINGS . '[mobile-below-header-toggle-btn-style-color]',
+					'type'              => 'control',
+					'control'           => 'ast-color',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
+					'context'           => array(
+						astra_addon_builder_helper()->general_tab_config,
 						'relation' => 'AND',
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
@@ -173,11 +174,11 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 							'value'    => 'no-toggle',
 						),
 					),
-					'default'   => astra_get_option( 'mobile-below-header-toggle-btn-style-color' ),
-					'title'     => __( 'Toggle Button Color', 'astra-addon' ),
-					'section'   => 'section-below-header',
-					'transport' => 'postMessage',
-					'priority'  => 107,
+					'default'           => astra_get_option( 'mobile-below-header-toggle-btn-style-color' ),
+					'title'             => __( 'Toggle Button Color', 'astra-addon' ),
+					'section'           => 'section-below-header',
+					'transport'         => 'postMessage',
+					'priority'          => 107,
 				),
 
 				/**
@@ -189,7 +190,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 					'control'     => 'ast-slider',
 					'transport'   => 'postMessage',
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[mobile-below-header-menu-style]',
 							'operator' => '!=',
@@ -205,11 +206,39 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 					'section'     => 'section-below-header',
 					'title'       => __( 'Border Radius', 'astra-addon' ),
 					'priority'    => 107,
-					'suffix'      => '',
+					'suffix'      => 'px',
 					'input_attrs' => array(
 						'min'  => 0,
 						'step' => 1,
 						'max'  => 100,
+					),
+				),
+
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[mobile-below-header-menu-all-border-divider]',
+					'type'     => 'control',
+					'section'  => 'section-below-header',
+					'control'  => 'ast-divider',
+					'priority' => 130,
+					'settings' => array(),
+					'context'  => array(
+						astra_addon_builder_helper()->general_tab_config,
+						'relation' => 'AND',
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
+							'operator' => '!=',
+							'value'    => 'disabled',
+						),
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-on-mobile]',
+							'operator' => '==',
+							'value'    => true,
+						),
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-merge-menu]',
+							'operator' => '!=',
+							'value'    => true,
+						),
 					),
 				),
 
@@ -226,7 +255,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 					'title'          => __( 'Menu Items Border', 'astra-addon' ),
 					'linked_choices' => true,
 					'context'        => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						'relation' => 'AND',
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
@@ -257,14 +286,15 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 				 * Option: Mobile Header Menu Border Color
 				 */
 				array(
-					'name'      => ASTRA_THEME_SETTINGS . '[mobile-below-header-menu-b-color]',
-					'type'      => 'control',
-					'control'   => 'ast-color',
-					'default'   => '#dadada',
-					'transport' => 'postMessage',
-					'title'     => __( 'Menu Items Border Color', 'astra-addon' ),
-					'context'   => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+					'name'              => ASTRA_THEME_SETTINGS . '[mobile-below-header-menu-b-color]',
+					'type'              => 'control',
+					'control'           => 'ast-color',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
+					'default'           => '#dadada',
+					'transport'         => 'postMessage',
+					'title'             => __( 'Menu Items Border Color', 'astra-addon' ),
+					'context'           => array(
+						astra_addon_builder_helper()->general_tab_config,
 						'relation' => 'AND',
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
@@ -282,8 +312,8 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 							'value'    => true,
 						),
 					),
-					'section'   => 'section-below-header',
-					'priority'  => 135,
+					'section'           => 'section-below-header',
+					'priority'          => 135,
 				),
 			);
 

@@ -21,21 +21,7 @@ if ( ! class_exists( 'Astra_Builder' ) ) {
 		 */
 		private static $instance;
 
-		/**
-		 * No. Of. Header Dividers.
-		 *
-		 * @since 3.0.0
-		 * @var int
-		 */
-		public static $num_of_header_divider;
 
-		/**
-		 * No. Of. Footer Dividers.
-		 *
-		 * @since 3.0.0
-		 * @var int
-		 */
-		public static $num_of_footer_divider;
 
 		/**
 		 *  Initiator
@@ -52,8 +38,6 @@ if ( ! class_exists( 'Astra_Builder' ) ) {
 		 */
 		public function __construct() {
 
-			add_filter( 'astra_builder_elements_count', __CLASS__ . '::elements_count', 10 );
-
 			add_filter(
 				'astra_footer_row_layout',
 				function( $layout ) {
@@ -61,11 +45,6 @@ if ( ! class_exists( 'Astra_Builder' ) ) {
 					return $layout;
 				}
 			);
-
-			$component_count_by_key = self::elements_count();
-
-			self::$num_of_header_divider = $component_count_by_key['header-divider'];
-			self::$num_of_footer_divider = $component_count_by_key['footer-divider'];
 
 			add_filter( 'astra_header_desktop_items', array( $this, 'update_header_builder_desktop_items' ) );
 			add_filter( 'astra_header_mobile_items', array( $this, 'update_header_builder_mobile_items' ) );
@@ -85,14 +64,32 @@ if ( ! class_exists( 'Astra_Builder' ) ) {
 		 */
 		public function update_header_builder_desktop_items( $header_items ) {
 
-			for ( $index = 1; $index <= self::$num_of_header_divider; $index++ ) {
+			$cloned_component_track = astra_addon_builder_helper()->component_count_array;
+
+			$num_of_header_divider = astra_addon_builder_helper()->num_of_header_divider;
+			for ( $index = 1; $index <= $num_of_header_divider; $index++ ) {
+
+				$tmp_section = 'section-hb-divider-' . $index;
+
+				if ( isset( $cloned_component_track['removed-items'] ) && in_array( $tmp_section, $cloned_component_track['removed-items'], true ) ) {
+					continue;
+				}
 
 				$header_items[ 'divider-' . $index ] = array(
-					'name'    => ( 1 === self::$num_of_header_divider ) ? 'Divider' : 'Divider ' . $index,
+					'name'    => ( 1 === $num_of_header_divider ) ? 'Divider' : 'Divider ' . $index,
 					'icon'    => 'minus',
-					'section' => 'section-hb-divider-' . $index,
+					'section' => $tmp_section,
+					'clone'   => true,
+					'type'    => 'divider',
+					'builder' => 'header',
 				);
 			}
+
+			$header_items['language-switcher'] = array(
+				'name'    => __( 'Language Switcher', 'astra-addon' ),
+				'icon'    => 'translation',
+				'section' => 'section-hb-language-switcher',
+			);
 
 			return $header_items;
 		}
@@ -107,14 +104,32 @@ if ( ! class_exists( 'Astra_Builder' ) ) {
 		 */
 		public function update_header_builder_mobile_items( $mobile_items ) {
 
-			for ( $index = 1; $index <= self::$num_of_header_divider; $index++ ) {
+			$cloned_component_track = astra_addon_builder_helper()->component_count_array;
+
+			$num_of_header_divider = astra_addon_builder_helper()->num_of_header_divider;
+			for ( $index = 1; $index <= $num_of_header_divider; $index++ ) {
+
+				$tmp_section = 'section-hb-divider-' . $index;
+
+				if ( isset( $cloned_component_track['removed-items'] ) && in_array( $tmp_section, $cloned_component_track['removed-items'], true ) ) {
+					continue;
+				}
 
 				$mobile_items[ 'divider-' . $index ] = array(
-					'name'    => ( 1 === self::$num_of_header_divider ) ? 'Divider' : 'Divider ' . $index,
+					'name'    => ( 1 === $num_of_header_divider ) ? 'Divider' : 'Divider ' . $index,
 					'icon'    => 'minus',
-					'section' => 'section-hb-divider-' . $index,
+					'section' => $tmp_section,
+					'clone'   => true,
+					'type'    => 'divider',
+					'builder' => 'header',
 				);
 			}
+
+			$mobile_items['language-switcher'] = array(
+				'name'    => __( 'Language Switcher', 'astra-addon' ),
+				'icon'    => 'translation',
+				'section' => 'section-hb-language-switcher',
+			);
 
 			return $mobile_items;
 		}
@@ -129,39 +144,34 @@ if ( ! class_exists( 'Astra_Builder' ) ) {
 		 */
 		public function update_footer_builder_desktop_items( $footer_items ) {
 
-			for ( $index = 1; $index <= self::$num_of_footer_divider; $index++ ) {
+			$cloned_component_track = astra_addon_builder_helper()->component_count_array;
+
+			$num_of_footer_divider = astra_addon_builder_helper()->num_of_footer_divider;
+			for ( $index = 1; $index <= $num_of_footer_divider; $index++ ) {
+
+				$tmp_section = 'section-fb-divider-' . $index;
+
+				if ( isset( $cloned_component_track['removed-items'] ) && in_array( $tmp_section, $cloned_component_track['removed-items'], true ) ) {
+					continue;
+				}
 
 				$footer_items[ 'divider-' . $index ] = array(
-					'name'    => ( 1 === self::$num_of_footer_divider ) ? 'Divider' : 'Divider ' . $index,
+					'name'    => ( 1 === $num_of_footer_divider ) ? 'Divider' : 'Divider ' . $index,
 					'icon'    => 'minus',
-					'section' => 'section-fb-divider-' . $index,
+					'section' => $tmp_section,
+					'clone'   => true,
+					'type'    => 'divider',
+					'builder' => 'footer',
 				);
 			}
 
+			$footer_items['language-switcher'] = array(
+				'name'    => __( 'Language Switcher', 'astra-addon' ),
+				'icon'    => 'translation',
+				'section' => 'section-fb-language-switcher',
+			);
+
 			return $footer_items;
-		}
-
-		/**
-		 * Update the count of elements in HF Builder.
-		 *
-		 * @param array $elements array of elements having key as slug and value as count.
-		 * @return array $elements
-		 */
-		public static function elements_count( $elements = array() ) {
-
-			$elements['header-button']       = 2;
-			$elements['footer-button']       = 2;
-			$elements['header-html']         = 3;
-			$elements['footer-html']         = 2;
-			$elements['header-menu']         = 3;
-			$elements['header-widget']       = 4;
-			$elements['footer-widget']       = 6;
-			$elements['header-social-icons'] = 1;
-			$elements['footer-social-icons'] = 1;
-			$elements['header-divider']      = 3;
-			$elements['footer-divider']      = 3;
-
-			return $elements;
 		}
 
 		/**
@@ -209,7 +219,7 @@ if ( ! class_exists( 'Astra_Builder' ) ) {
 					}
 					?>
 					<div class="header-widget-area-inner site-info-inner">
-						<?php dynamic_sidebar( 'header-' . str_replace( '_', '-', $slug ) ); ?>
+						<?php astra_get_sidebar( 'header-' . str_replace( '_', '-', $slug ) ); ?>
 					</div>
 				</aside>
 
@@ -237,6 +247,16 @@ if ( ! class_exists( 'Astra_Builder' ) ) {
 				$layout_class = astra_get_option( 'header-' . $slug . '-layout' );
 				?>
 					<div class="ast-builder-layout-element site-header-focus-item ast-header-divider-element ast-header-<?php echo esc_attr( $slug ); ?> ast-hb-divider-layout-<?php echo esc_attr( $layout_class ); ?>" data-section="section-hb-<?php echo esc_attr( $slug ); ?>">
+					<?php
+						$action_name = 'astra_header_' . str_replace( '-', '_', $slug );
+						do_action( $action_name );
+					?>
+					</div>
+				<?php
+			} elseif ( 0 === strpos( $slug, 'language-switcher' ) ) {
+				$layout_class = astra_get_option( 'header-' . $slug . '-layout' );
+				?>
+					<div class="ast-builder-layout-element site-header-focus-item ast-header-language-switcher-element ast-header-<?php echo esc_attr( $slug ); ?> ast-hb-language-switcher-layout-<?php echo esc_attr( $layout_class ); ?>" data-section="section-hb-<?php echo esc_attr( $slug ); ?>">
 					<?php
 						$action_name = 'astra_header_' . str_replace( '-', '_', $slug );
 						do_action( $action_name );
@@ -277,7 +297,7 @@ if ( ! class_exists( 'Astra_Builder' ) ) {
 				<aside class="footer-widget-area widget-area site-footer-focus-item" data-section="sidebar-widgets-footer-<?php echo esc_attr( $slug ); ?>">
 					<div class="footer-widget-area-inner site-info-inner">
 						<?php
-						dynamic_sidebar( 'footer-' . str_replace( '_', '-', $slug ) );
+						astra_get_sidebar( 'footer-' . str_replace( '_', '-', $slug ) );
 						?>
 					</div>
 				</aside>
@@ -297,6 +317,16 @@ if ( ! class_exists( 'Astra_Builder' ) ) {
 				$layout_class = astra_get_option( 'footer-' . $slug . '-layout' );
 				?>
 					<div class="footer-widget-area widget-area site-footer-focus-item ast-footer-divider-element ast-footer-<?php echo esc_attr( $slug ); ?> ast-fb-divider-layout-<?php echo esc_attr( $layout_class ); ?>" data-section="section-fb-<?php echo esc_attr( $slug ); ?>">
+					<?php
+						$action_name = 'astra_footer_' . str_replace( '-', '_', $slug );
+						do_action( $action_name );
+					?>
+					</div>
+				<?php
+			} elseif ( 0 === strpos( $slug, 'language-switcher' ) ) {
+				$layout_class = astra_get_option( 'footer-' . $slug . '-layout' );
+				?>
+					<div class="ast-builder-layout-element site-footer-focus-item ast-footer-language-switcher-element ast-footer-<?php echo esc_attr( $slug ); ?> ast-fb-language-switcher-layout-<?php echo esc_attr( $layout_class ); ?>" data-section="section-fb-<?php echo esc_attr( $slug ); ?>">
 					<?php
 						$action_name = 'astra_footer_' . str_replace( '-', '_', $slug );
 						do_action( $action_name );

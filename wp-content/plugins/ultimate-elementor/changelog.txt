@@ -1,3 +1,20 @@
+Version 1.29.2 - Tuesday, 9th March 2021
+- Improvement: Compatibility with WordPress v5.7.
+- Improvement: Compatibility with Elementor v3.1.
+- Improvement: Gravity Form Styler - Added placeholder text color option.
+- Improvement: Mini Cart - Added option to hide badge when the cart is empty.
+
+Version 1.29.1 - Tuesday, 23rd February 2021
+- Improvement: Video - Added self hosted video type.
+- Improvement: Video Gallery - Added self hosted video type.
+- Improvement: Navigation Menu - Added active color support to the custom menu type.
+- Improvement: Particle Backgrounds - Replaced particles.js with tsParticles for better performance.
+- Improvement: Table of Contents - Added 'Scroll to Top Offset' option for Scroll to Top.
+- Improvement: Timeline - Added 'uael_timeline_infinite_limit' filter to change the limit of number of pages while infinite loading.
+- Fix: Particle Backgrounds - Not working on archive pages.
+- Fix: Image Gallery - 'Row Gap' adding the extra space below the images with the Hello theme.
+- Fix: Image Gallery - Fixed justified layout not aligning the images properly.
+
 Version 1.29.0 - Wednesday, 20th January 2021.
 - New: Introduced WooCommerce Mini Cart widget.
 - Improvement: Compatibility with Elementor v3.1.0 - Soft deprecated functions updated.

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '79d2f8434650d56316d422c6b6827ead8230acd9',
+    'reference' => 'cd4ab62aa564b94a7892f011699546946ad87a82',
     'name' => 'updraftplus/updraftplus',
   ),
   'versions' => 
@@ -321,7 +321,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '79d2f8434650d56316d422c6b6827ead8230acd9',
+      'reference' => 'cd4ab62aa564b94a7892f011699546946ad87a82',
     ),
     'yahnis-elsts/plugin-update-checker' => 
     array (

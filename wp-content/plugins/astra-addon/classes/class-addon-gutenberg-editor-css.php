@@ -156,7 +156,7 @@ if ( ! class_exists( 'Addon_Gutenberg_Editor_CSS' ) ) {
 			);
 			$parse_css .= astra_parse_css( $typography_css_output );
 
-			return $dynamic_css .= $parse_css;
+			return $dynamic_css . $parse_css;
 		}
 
 		/**
@@ -252,7 +252,7 @@ if ( ! class_exists( 'Addon_Gutenberg_Editor_CSS' ) ) {
 			$parse_css .= astra_parse_css( $boxed_container_tablet, '', astra_addon_get_tablet_breakpoint() );
 			$parse_css .= astra_parse_css( $boxed_container_mobile, '', astra_addon_get_mobile_breakpoint() );
 
-			return $dynamic_css .= $parse_css;
+			return $dynamic_css . $parse_css;
 		}
 
 		/**
@@ -324,7 +324,7 @@ if ( ! class_exists( 'Addon_Gutenberg_Editor_CSS' ) ) {
 
 			$parse_css = astra_parse_css( $boxed_container );
 
-			return $dynamic_css .= $parse_css;
+			return $dynamic_css . $parse_css;
 		}
 
 		/**
@@ -453,7 +453,7 @@ if ( ! class_exists( 'Addon_Gutenberg_Editor_CSS' ) ) {
 
 			$css_output .= astra_parse_css( $mobile_css, '', astra_addon_get_mobile_breakpoint() );
 
-			return $dynamic_css .= $css_output;
+			return $dynamic_css . $css_output;
 		}
 
 	}

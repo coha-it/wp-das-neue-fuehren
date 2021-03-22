@@ -51,7 +51,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Typo_Configs' ) ) {
 					'font_type' => 'ast-font-family',
 					'title'     => __( 'Family', 'astra-addon' ),
 					'context'   => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[single-product-structure]',
 							'operator' => 'contains',
@@ -76,7 +76,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Typo_Configs' ) ) {
 					'font_type'         => 'ast-font-weight',
 					'title'             => __( 'Weight', 'astra-addon' ),
 					'context'           => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[single-product-structure]',
 							'operator' => 'contains',
@@ -101,7 +101,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Typo_Configs' ) ) {
 					'priority'    => 5,
 					'title'       => __( 'Size', 'astra-addon' ),
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[single-product-structure]',
 							'operator' => 'contains',
@@ -124,13 +124,13 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Typo_Configs' ) ) {
 					'name'        => 'line-height-edd-product-title',
 					'parent'      => ASTRA_THEME_SETTINGS . '[edd-single-product-title-typo]',
 					'section'     => 'section-edd-single',
-					'default'     => '',
+					'default'     => astra_get_option( 'line-height-edd-product-title' ),
 					'type'        => 'sub-control',
 					'transport'   => 'postMessage',
 					'title'       => __( 'Line Height', 'astra-addon' ),
 					'control'     => 'ast-slider',
 					'context'     => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[single-product-structure]',
 							'operator' => 'contains',
@@ -138,7 +138,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Typo_Configs' ) ) {
 						),
 					),
 					'priority'    => 5,
-					'suffix'      => '',
+					'suffix'      => 'em',
 					'input_attrs' => array(
 						'min'  => 1,
 						'step' => 0.01,
@@ -158,7 +158,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Typo_Configs' ) ) {
 					'transport' => 'postMessage',
 					'title'     => __( 'Text Transform', 'astra-addon' ),
 					'context'   => array(
-						Astra_Addon_Builder_Helper::$general_tab_config,
+						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[single-product-structure]',
 							'operator' => 'contains',
@@ -238,13 +238,13 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Typo_Configs' ) ) {
 					'name'        => 'line-height-edd-product-content',
 					'parent'      => ASTRA_THEME_SETTINGS . '[edd-single-product-content-typo]',
 					'section'     => 'section-edd-single',
-					'default'     => '',
+					'default'     => astra_get_option( 'line-height-edd-product-content' ),
 					'type'        => 'sub-control',
 					'transport'   => 'postMessage',
 					'title'       => __( 'Line Height', 'astra-addon' ),
 					'control'     => 'ast-slider',
 					'priority'    => 20,
-					'suffix'      => '',
+					'suffix'      => 'em',
 					'input_attrs' => array(
 						'min'  => 1,
 						'step' => 0.01,

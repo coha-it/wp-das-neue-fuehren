@@ -86,6 +86,17 @@ class Advanced_Heading extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register Advanced Heading controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		$this->register_general_content_controls();
 		$this->register_separator_content_controls();
 		$this->register_style_content_controls();

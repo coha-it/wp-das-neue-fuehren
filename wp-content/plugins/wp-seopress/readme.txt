@@ -4,9 +4,9 @@ Contributors: rainbowgeek, gmulti, juliobox, maigret, mgris
 Donate link: https://www.seopress.org/
 Tags: SEO, XML sitemap, meta title, open graph, content analysis, knowledge graph, redirection, breadcrumbs, google analytics, rich snippets, broken link checker, Schema.org
 Requires at least: 4.7+
-Tested up to: 5.6
+Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 4.3.0.2
+Stable tag: 4.4.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -320,10 +320,59 @@ You're theme is probably using a deprecated function to handle the title. <a hre
 9. Schemas metabox
 
 == Changelog ==
-= 4.3.0.2 (19/01/2021) =
+= 4.4.0.7 (05/03/2021) =
+* NEW WordPress 5.7 compatibility
+* INFO Improve UI
+* FIX Site Title default setting
+* FIX Automatic Product schema without WooCommerce
+* FIX seopress_mu_white_label_admin_title_callback warning in multisite setup
+= 4.4.0.6 (26/02/2021) =
+* INFO Improve UI by adding a new tab (Image SEO) to the Advanced settings page
+* FIX Quick edit metadata from posts list
+* FIX WooCommerce Breadcrumbs Shop page
+= 4.4.0.5 (19/02/2021) =
+* FIX "Use the target keywords if not alternative text set for the image" option
+= 4.4.0.4 (18/02/2021) =
+* INFO Add "View my RSS feed" button to SEO, PRO, RSS tab
+* INFO Improve performance for video xml sitemap
+* FIX Help tabs missing
+* FIX Content analysis compatibility for Oxygen Page Builder
+* FIX Variable products for automatic schema
+* FIX Product currency property for automatic product schema
+* FIX Ecommerce tracking on purchases
+* FIX PHP Fatal error: Uncaught Error: Call to a member function is_type()
+= 4.4.0.3 (12/02/2021) =
+* FIX Fatal errors in posts list
+= 4.4.0.2 (12/02/2021) =
+* FIX Homepage title
+= 4.4.0.1 (12/02/2021) =
+* FIX Fatal errors
+= 4.4 (10/02/2021) =
+* NEW Complete code refactoring on Titles and metas feature 🎉
+* NEW Preview dynamic tags on post list columns 🎉
+* NEW Live preview when adding dynamic variables for Google Preview 🎉
+* NEW Add Local Business types to automatic schemas as new mapping option to avoid entering manually a business type 🎉 (PRO)
+* NEW Support variable products for automatic product schema (PRO) 🎉
+* NEW Support Global Product Identifiers for variable products (PRO)
+* NEW Dashboard notification if Google Analytics is enabled without UA or GA4 ids
+* NEW White Label option to change the SEO menu name (PRO)
+* NEW Add post ID to automatic schemas as new mapping option (PRO)
+* INFO Remove jQuery for Google Analytics Enhanced Ecommerce (no more jQuery with GA tracking code 🎉)
+* INFO Improve wizard assistant user interface
+* INFO Stop adding uppercase on the first letter of each word when automatically adding media attributes (eg: alt tag)
+* INFO Add new help tabs for Sitemaps and Social networks settings page to improve user experience
+* FIX Cornerstone compatibility issue with our content analysis feature
+* FIX Oxygen compatibility issue with our content analysis feature ("2 meta robots found")
+* FIX CSV broken link export with specific PHP configuration
+* FIX Social tags for term taxonomies
+* FIX White label: some SEOPress links weren't hidden
+* FIX WPML XML configuration file (wpml-config.xml)
+* FIX GA Enhanced Ecommerce check on status order for measuring purchases
+* FIX GA Enhanced Ecommerce add_to_cart event from archive product page
+= 4.3.0.2 19/01/2021 =
 * FIX Analytics tracking code if no UA-XXX set
 * FIX Conflict Google Analytics with UpdraftPlus (PRO)
-= 4.3.0.1 (15/01/2021) =
+= 4.3.0.1 15/01/2021 =
 * FIX Fatal error
 * FIX Product price with taxes for automatic product schema (default: sale price, fallback: regular price)
 * FIX Fatal error get_price in specific cases

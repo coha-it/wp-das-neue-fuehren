@@ -5,7 +5,7 @@
  * @package Astra Addon
  */
 
-add_filter( 'astra_dynamic_css', 'astra_ext_header_sections_colors_dynamic_css' );
+add_filter( 'astra_dynamic_css', 'astra_ext_header_sections_colors_dynamic_css', 99 );
 
 /**
  * Dynamic CSS
@@ -27,7 +27,7 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 	/**
 	 * Merge Header Section when there is no primary menu
 	 */
-	if ( $disable_primary_nav && ( $above_header_merged || $below_header_merged ) && ! Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) {
+	if ( $disable_primary_nav && ( $above_header_merged || $below_header_merged ) && ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 		$header_bg_obj           = astra_get_option( 'header-bg-obj-responsive' );
 		$desktop_header_bg_color = isset( $header_bg_obj['desktop']['background-color'] ) ? $header_bg_obj['desktop']['background-color'] : '';
@@ -233,11 +233,12 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 		$parse_css .= astra_parse_css( $mobile_colors, '', astra_addon_get_mobile_breakpoint() );
 	}
 
-	if ( Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) {
+	if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
 		/**
 		 * Header - Menu
 		 */
-		for ( $index = 1; $index <= Astra_Addon_Builder_Helper::$num_of_header_menu; $index++ ) {
+		$num_of_header_menu = astra_addon_builder_helper()->num_of_header_menu;
+		for ( $index = 1; $index <= $num_of_header_menu; $index++ ) {
 
 			if ( ! Astra_Addon_Builder_Helper::is_component_loaded( 'menu-' . $index, 'header' ) ) {
 				continue;
@@ -487,10 +488,10 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 
 		$css_output = array(
 			// Copyright Link.
-			'.ast-footer-copyright .ast-footer-html-inner a' => array(
+			'.ast-footer-copyright a'       => array(
 				'color' => esc_attr( astra_get_option( 'footer-copyright-link-color' ) ),
 			),
-			'.ast-footer-copyright .ast-footer-html-inner a:hover' => array(
+			'.ast-footer-copyright a:hover' => array(
 				'color' => esc_attr( astra_get_option( 'footer-copyright-link-h-color' ) ),
 			),
 		);
@@ -638,22 +639,37 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 		$search_border_size   = astra_get_option( 'header-search-border-size' );
 		$search_border_radius = astra_get_option( 'header-search-border-radius' );
 
+		$icon_h_color_desktop = astra_get_prop( astra_get_option( 'header-search-icon-h-color' ), 'desktop' );
+		$icon_h_color_tablet  = astra_get_prop( astra_get_option( 'header-search-icon-h-color' ), 'tablet' );
+		$icon_h_color_mobile  = astra_get_prop( astra_get_option( 'header-search-icon-h-color' ), 'mobile' );
+
+		$text_color_desktop = astra_get_prop( astra_get_option( 'header-search-text-placeholder-color' ), 'desktop' );
+		$text_color_tablet  = astra_get_prop( astra_get_option( 'header-search-text-placeholder-color' ), 'tablet' );
+		$text_color_mobile  = astra_get_prop( astra_get_option( 'header-search-text-placeholder-color' ), 'mobile' );
+
+		$search_height_desktop = astra_get_prop( astra_get_option( 'header-search-height' ), 'desktop' );
+		$search_height_tablet  = astra_get_prop( astra_get_option( 'header-search-height' ), 'tablet' );
+		$search_height_mobile  = astra_get_prop( astra_get_option( 'header-search-height' ), 'mobile' );
+
 		$search_css_output = array(
+			$search_selector . ' form.search-form .search-field' => array(
+				'height' => astra_get_css_value( $search_height_desktop, 'px' ),
+			),
 
 			// Search Box Background.
-			$search_selector . ' .search-field'      => array(
+			$search_selector . ' .search-field'           => array(
 				'background-color' => esc_attr( astra_get_option( 'header-search-box-background-color' ) ),
 
 				// Search Box Border.
 				'border-radius'    => astra_get_css_value( $search_border_radius, 'px' ),
 			),
-			$search_selector . ' .search-submit'     => array(
+			$search_selector . ' .search-submit'          => array(
 				'background-color' => esc_attr( astra_get_option( 'header-search-box-background-color' ) ),
 
 				// Search Box Border.
 				'border-radius'    => astra_get_css_value( $search_border_radius, 'px' ),
 			),
-			$search_selector . ' .search-form'       => array(
+			$search_selector . ' .search-form'            => array(
 				'background-color'    => esc_attr( astra_get_option( 'header-search-box-background-color' ) ),
 
 				// Search Box Border.
@@ -665,7 +681,7 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 				'border-radius'       => astra_get_css_value( $search_border_radius, 'px' ),
 			),
 
-			$search_selector . ' .search-form:hover' => array(
+			$search_selector . ' .search-form:hover'      => array(
 				'border-color' => esc_attr( astra_get_option( 'header-search-border-h-color' ) ),
 			),
 
@@ -682,10 +698,89 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 			'.ast-search-box.full-screen .ast-search-wrapper fieldset' => array(
 				'border-color' => esc_attr( astra_get_option( 'header-search-overlay-text-color' ) ),
 			),
+
+			'.ast-header-break-point ' . $search_selector . '.slide-search:hover .search-field, .ast-header-break-point ' . $search_selector . '.slide-search:focus .search-field, .ast-header-break-point ' . $search_selector . '.slide-search:hover .search-submit, .ast-header-break-point ' . $search_selector . '.slide-search:focus .search-submit, .ast-header-break-point ' . $search_selector . '.slide-search:hover .search-form, .ast-header-break-point ' . $search_selector . '.slide-search:focus .search-form' => array(
+				'background-color' => esc_attr( astra_get_option( 'header-search-box-background-color' ) ),
+			),
+
+			$search_selector . ':hover .search-field, ' . $search_selector . ':focus .search-field' => array(
+				'background-color' => esc_attr( astra_get_option( 'header-search-box-background-h-color' ) ),
+			),
+			$search_selector . ':hover .search-submit, ' . $search_selector . ':focus .search-submit' => array(
+				'background-color' => esc_attr( astra_get_option( 'header-search-box-background-h-color' ) ),
+			),
+			$search_selector . ':hover .search-form, ' . $search_selector . ':focus .search-form' => array(
+				'background-color' => esc_attr( astra_get_option( 'header-search-box-background-h-color' ) ),
+			),
+			'.ast-header-search .astra-search-icon:hover' => array(
+				'color' => esc_attr( $icon_h_color_desktop ),
+			),
+			$search_selector . ' .search-field, ' . $search_selector . ' .search-field::placeholder' => array(
+				'color' => esc_attr( $text_color_desktop ),
+			),
+		);
+
+		$search_css_output_tablet = array(
+			'.ast-header-search .astra-search-icon:hover' => array(
+				'color' => esc_attr( $icon_h_color_tablet ),
+			),
+			$search_selector . ' .search-field, ' . $search_selector . ' .search-field::placeholder' => array(
+				'color' => esc_attr( $text_color_tablet ),
+			),
+			'.ast-header-break-point ' . $search_selector . ' .search-form .search-field' => array(
+				'height' => esc_attr( $search_height_tablet ) . 'px',
+			),
+		);
+
+		$search_css_output_mobile = array(
+			'.ast-header-search .astra-search-icon:hover' => array(
+				'color' => esc_attr( $icon_h_color_mobile ),
+			),
+			$search_selector . ' .search-field, ' . $search_selector . ' .search-field::placeholder' => array(
+				'color' => esc_attr( $text_color_mobile ),
+			),
+			'.ast-header-break-point ' . $search_selector . ' .search-form .search-field' => array(
+				'height' => esc_attr( $search_height_mobile ) . 'px',
+			),
 		);
 
 		$parse_css .= astra_parse_css( $search_css_output );
+		$parse_css .= astra_parse_css( $search_css_output_tablet, '', astra_get_tablet_breakpoint() );
+		$parse_css .= astra_parse_css( $search_css_output_mobile, '', astra_get_mobile_breakpoint() );
 
+		/**
+		 * Header - language switcher
+		 */
+		if ( Astra_Addon_Builder_Helper::is_component_loaded( 'language-switcher', 'header' ) ) {
+			$_section = 'section-hb-language-switcher';
+
+			$selector = '.ast-header-language-switcher';
+
+			$css_output = array(
+				'.ast-lswitcher-item-header' => array(
+					'color' => astra_get_option( $_section . '-color' ),
+				),
+			);
+
+			$parse_css .= astra_parse_css( $css_output );
+		}
+
+		/**
+		 * Footer - language switcher
+		 */
+		if ( Astra_Addon_Builder_Helper::is_component_loaded( 'language-switcher', 'footer' ) ) {
+			$_section = 'section-fb-language-switcher';
+
+			$selector = '.ast-footer-language-switcher';
+
+			$css_output = array(
+				'.ast-lswitcher-item-footer' => array(
+					'color' => astra_get_option( $_section . '-color' ),
+				),
+			);
+
+			$parse_css .= astra_parse_css( $css_output );
+		}
 	}
 
 	return $dynamic_css . $parse_css;

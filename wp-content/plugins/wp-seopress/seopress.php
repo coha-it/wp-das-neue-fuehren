@@ -4,7 +4,7 @@ Plugin Name: SEOPress
 Plugin URI: https://www.seopress.org/
 Description: One of the best SEO plugins for WordPress.
 Author: SEOPress
-Version: 4.3.0.2
+Version: 4.4.0.7
 Author URI: https://www.seopress.org/
 License: GPLv2
 Text Domain: wp-seopress
@@ -55,7 +55,7 @@ register_deactivation_hook(__FILE__, 'seopress_deactivation');
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Define
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-define('SEOPRESS_VERSION', '4.3.0.2');
+define('SEOPRESS_VERSION', '4.4.0.7');
 define('SEOPRESS_AUTHOR', 'Benjamin Denis');
 define('SEOPRESS_PLUGIN_DIR_PATH', plugin_dir_path(__FILE__));
 define('SEOPRESS_TEMPLATE_DIR', SEOPRESS_PLUGIN_DIR_PATH . 'templates');
@@ -73,6 +73,37 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
         'main_file' => 'seopress',
         'root'      => __DIR__,
     ]);
+}
+
+function seopress_titles_single_cpt_enable_option($cpt) {
+    $current_cpt                          = null;
+    $seopress_titles_single_enable_option = get_option('seopress_titles_option_name');
+    if ( ! empty($seopress_titles_single_enable_option)) {
+        foreach ($seopress_titles_single_enable_option as $key => $seopress_titles_single_enable_value) {
+            $options[$key] = $seopress_titles_single_enable_value;
+            if (isset($seopress_titles_single_enable_option['seopress_titles_single_titles'][$cpt]['enable'])) {
+                $current_cpt = $seopress_titles_single_enable_option['seopress_titles_single_titles'][$cpt]['enable'];
+            }
+        }
+    }
+
+    return $current_cpt;
+}
+
+//Archive CPT Titles
+function seopress_titles_archive_titles_option() {
+    global $post;
+    $seopress_get_current_cpt = get_post_type($post);
+
+    $seopress_titles_archive_titles_option = get_option('seopress_titles_option_name');
+    if ( ! empty($seopress_titles_archive_titles_option)) {
+        foreach ($seopress_titles_archive_titles_option as $key => $seopress_titles_archive_titles_value) {
+            $options[$key] = $seopress_titles_archive_titles_value;
+        }
+        if (isset($seopress_titles_archive_titles_option['seopress_titles_archive_titles'][$seopress_get_current_cpt]['title'])) {
+            return $seopress_titles_archive_titles_option['seopress_titles_archive_titles'][$seopress_get_current_cpt]['title'];
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -390,6 +421,16 @@ function seopress_admin_body_class($classes) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+//WP compatibility
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Remove WP default meta robots (added in WP 5.7)
+ *
+ * @since 4.4.0.7
+ */
+remove_filter( 'wp_robots', 'wp_robots_max_image_preview_large' );
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 //3rd plugins compatibility
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Jetpack
@@ -535,34 +576,40 @@ function seopress_plugin_action_links($links, $file) {
  *
  * @author Benjamin Denis
  *
+ * @deprecated 4.4.0
+ *
  * @return (array) $wp_post_types
  **/
 function seopress_get_post_types() {
-    global $wp_post_types;
+    if ( ! function_exists('seopress_get_service')) {
+        global $wp_post_types;
 
-    $args = [
-        'show_ui' => true,
-        'public'  => true,
-    ];
+        $args = [
+            'show_ui' => true,
+            'public'  => true,
+        ];
 
-    $output   = 'objects'; // names or objects, note names is the default
-    $operator = 'and'; // 'and' or 'or'
+        $output   = 'objects'; // names or objects, note names is the default
+        $operator = 'and'; // 'and' or 'or'
 
-    $post_types = get_post_types($args, $output, $operator);
-    unset(
-        $post_types['attachment'],
-        $post_types['seopress_rankings'],
-        $post_types['seopress_backlinks'],
-        $post_types['seopress_404'],
-        $post_types['elementor_library'],
-        $post_types['customer_discount'],
-        $post_types['cuar_private_file'],
-        $post_types['cuar_private_page'],
-        $post_types['ct_template']
-    );
-    $post_types = apply_filters('seopress_post_types', $post_types);
+        $post_types = get_post_types($args, $output, $operator);
+        unset(
+            $post_types['attachment'],
+            $post_types['seopress_rankings'],
+            $post_types['seopress_backlinks'],
+            $post_types['seopress_404'],
+            $post_types['elementor_library'],
+            $post_types['customer_discount'],
+            $post_types['cuar_private_file'],
+            $post_types['cuar_private_page'],
+            $post_types['ct_template']
+        );
+        $post_types = apply_filters('seopress_post_types', $post_types);
 
-    return $post_types;
+        return $post_types;
+    }
+
+    return seopress_get_service('WordPressData')->getPostTypes();
 }
 
 /**
@@ -827,7 +874,7 @@ function seopress_xml_sitemap_img_enable_option() {
 //Rewrite Rules for XML Sitemap
 if ('1' == seopress_xml_sitemap_general_enable_option() && '1' == seopress_get_toggle_option('xml-sitemap')) {
     function seopress_sitemaps_headers() {
-        if(!function_exists('seopress_get_service')){
+        if ( ! function_exists('seopress_get_service')) {
             return;
         }
 
@@ -1069,18 +1116,6 @@ function seopress_notification($args) {
  * @return (string)
  **/
 function seopress_capability($cap, $context = '') {
-    /**
-     * Filter the capability to allow other roles to use the plugin.
-     *
-     * @since 3.8.2
-     *
-     * @author Julio Potier
-     *
-     * @param (string) $cap
-     * @param (string) $context
-     *
-     * @return (string)
-     **/
     $newcap = apply_filters('seopress_capability', $cap, $context);
     if ( ! current_user_can($newcap)) {
         return $cap;

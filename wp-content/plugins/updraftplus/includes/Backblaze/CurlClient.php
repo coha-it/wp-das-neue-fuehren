@@ -100,6 +100,10 @@ class UpdraftPlus_Backblaze_CurlClient {
 			curl_setopt($session, CURLOPT_FOLLOWLOCATION, true);
 		}
 
+		if (isset($options['session'])) {
+			return $session;
+		}
+
 		$response = curl_exec($session);
 		
 		if (0 != ($curl_error = curl_errno($session))) {
@@ -564,6 +568,83 @@ class UpdraftPlus_Backblaze_CurlClient {
 		));
 
 		return (is_array($delete_result) && !empty($delete_result['fileId'])) ? true : false;
+	}
+
+	/**
+	 * Delete multiple files
+	 *
+	 * @param Array $options - array of possible keys are FileName, FileId, BucketName
+	 *
+	 * @return Boolean. Can also throw an exception; including UpdraftPlus_Backblaze_NotFoundException if the file was not found.
+	 */
+	public function deleteMultipleFiles($options, $bucket_name) {
+		if (count($options) == 0) {
+			return false;
+		}
+
+		$active       = null;
+		$sessions     = [];
+		$result       = [];
+		$bulk_session = curl_multi_init();
+
+		$files = $this->listFiles(array(
+			'BucketName' => $bucket_name
+		));
+
+		$files_lookup = array();
+
+		foreach ($files as $file_object) {
+			$file_name = $file_object->getName();
+			$file_id = $file_object->getId();
+			$files_lookup[$file_name] = $file_id;
+		}
+
+		foreach ($options as $key => $option) {
+			
+			if (!isset($option['FileName'])) {
+				// We should not enter here as we always pass a file name but just in case
+				$file = $this->getFile($option);
+				$option['FileName'] = $file->getName();
+				$option['FileId'] = $file->getId();
+			} elseif (!isset($option['FileId'])) {
+				if (isset($files_lookup[$option['FileName']])) {
+					$option['FileId'] = $files_lookup[$option['FileName']];
+				} else {
+					// We should not enter here as all the files should be in the same bucket but just in case
+					$file = $this->getFile($option);
+					$option['FileId'] = $file->getId();
+				}
+			}
+
+			$session = $this->request('POST', $this->apiUrl . '/b2_delete_file_version', array(
+				'headers' => array(
+					'Authorization' => $this->authToken,
+				),
+				'json'	=> array(
+					'fileName' => $option['FileName'],
+					'fileId'   => $option['FileId'],
+				),
+				'session' => true
+			));
+			array_push($sessions, $session);
+			curl_multi_add_handle($bulk_session, $session);
+		}
+
+		do {
+			$status = curl_multi_exec($bulk_session, $active);
+			if ($active) {
+				curl_multi_select($bulk_session);
+			}
+		} while ($active && $status == CURLM_OK);
+
+		foreach ($sessions as $session) {
+			$response = curl_multi_getcontent($session);
+			array_push($result, $response);
+			curl_multi_remove_handle($bulk_session, $session);
+		}
+		curl_multi_close($bulk_session);
+
+		return (is_array($result) && !empty($result)) ? $result : false;
 	}
 	
 	/**

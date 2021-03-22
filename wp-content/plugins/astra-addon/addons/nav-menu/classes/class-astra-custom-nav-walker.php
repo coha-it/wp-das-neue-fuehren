@@ -96,9 +96,8 @@ if ( ! class_exists( 'Astra_Custom_Nav_Walker' ) ) {
 					$megamenu_custom_width = ( isset( $megamenu_custom_width ) && ! empty( $megamenu_custom_width ) ) ? $megamenu_custom_width : 1200;
 
 					$style[ '.ast-desktop .astra-megamenu-li.menu-item-' . $this->menu_megamenu_item_id . ' .astra-mega-menu-width-custom:before' ] = array(
-						'content'    => '"' . $megamenu_custom_width . '"',
-						'opacity'    => 0,
-						'visibility' => 'hidden',
+						'content' => '"' . $megamenu_custom_width . '"',
+						'opacity' => 0,
 					);
 				}
 
@@ -278,11 +277,26 @@ if ( ! class_exists( 'Astra_Custom_Nav_Walker' ) ) {
 			$atts['href']   = ! empty( $item->url ) ? $item->url : '';
 
 			/**
-			 * Removing previously triggered theme's filter.
+			 * Passing Attr Classes to the filter in order to not override the existing CSS classes using the filter 'nav_menu_link_attributes' added from theme.
 			 *
-			 * @since 2.6.2
+			 * This resolves the cloning Menu CSS for menu added after Primary Menu issue + 'MegaMenu Hide Menu Label / Description?' option not working issue.
+			 *
+			 * @since 3.1.0
 			 */
-			remove_filter( 'nav_menu_link_attributes', 'astra_menu_anchor_class_for_nav_menus' );
+			$item_output  = $args->before;
+			$link_classes = array();
+
+			if ( 'disable-link' === $item->megamenu_disable_link ) {
+				$link_classes[] = 'ast-disable-link';
+			}
+
+			if ( 'disable-title' === $item->megamenu_disable_title ) {
+				$link_classes[] = 'ast-hide-menu-item';
+			}
+
+			$link_classes_str = join( ' ', $link_classes );
+
+			$atts['class'] = ! empty( $link_classes_str ) ? $link_classes_str : '';
 
 			/**
 			 * Filters the HTML attributes applied to a menu item's anchor element.
@@ -334,17 +348,6 @@ if ( ! class_exists( 'Astra_Custom_Nav_Walker' ) ) {
 
 			// Wrap menu text in a span tag.
 			$title = '<span class="menu-text">' . $title . '</span>';
-			// Output.
-			$item_output  = $args->before;
-			$link_classes = array();
-
-			if ( 'disable-link' === $item->megamenu_disable_link ) {
-				$link_classes[] = 'ast-disable-link';
-			}
-
-			if ( 'disable-title' === $item->megamenu_disable_title ) {
-				$link_classes[] = 'ast-hide-menu-item';
-			}
 
 			$item_output .= '<a' . $attributes . ' class="menu-link ' . implode( ' ', $link_classes ) . '">';
 

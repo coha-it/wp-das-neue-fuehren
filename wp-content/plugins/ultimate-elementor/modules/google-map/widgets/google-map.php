@@ -99,6 +99,17 @@ class GoogleMap extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+	}
+
+	/**
+	 * Register GoogleMap controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		$this->register_addresses_controls();
 		$this->register_layout_controls();
 		$this->register_controls_controls();

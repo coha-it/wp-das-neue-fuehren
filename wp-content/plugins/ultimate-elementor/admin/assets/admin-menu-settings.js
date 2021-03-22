@@ -88,20 +88,20 @@
 			this._support();
 			
 
-			$( document ).delegate( ".uael-activate-widget", "click", UaelAdmin._activate_widget );
-			$( document ).delegate( ".uael-deactivate-widget", "click", UaelAdmin._deactivate_widget );
+			$( document ).on( "click", ".uael-activate-widget", UaelAdmin._activate_widget );
+			$( document ).on( "click", ".uael-deactivate-widget", UaelAdmin._deactivate_widget );
 
-			$( document ).delegate( ".uael-activate-all", "click", UaelAdmin._bulk_activate_widgets );
-			$( document ).delegate( ".uael-deactivate-all", "click", UaelAdmin._bulk_deactivate_widgets );
+			$( document ).on( "click", ".uael-activate-all", UaelAdmin._bulk_activate_widgets );
+			$( document ).on( "click", ".uael-deactivate-all", UaelAdmin._bulk_deactivate_widgets );
 
-			$( document ).delegate( ".uael-activate-skins-all", "click", UaelAdmin._bulk_activate_skins );
-			$( document ).delegate( ".uael-deactivate-skins-all", "click", UaelAdmin._bulk_deactivate_skins );
+			$( document ).on( "click", ".uael-activate-skins-all", UaelAdmin._bulk_activate_skins );
+			$( document ).on( "click", ".uael-deactivate-skins-all", UaelAdmin._bulk_deactivate_skins );
 			
-			$( document ).delegate( "#uael-gen-enable-beta-update", "click", UaelAdmin._allow_beta_updates );
+			$( document ).on( "click", "#uael-gen-enable-beta-update", UaelAdmin._allow_beta_updates );
 
 			/* White Label */
-			$( document ).delegate( "#uael-wl-enable-knowledgebase", "change", UaelAdmin._knowledgebase );
-			$( document ).delegate( "#uael-wl-enable-support", "change", UaelAdmin._support );
+			$( document ).on( "change", "#uael-wl-enable-knowledgebase", UaelAdmin._knowledgebase );
+			$( document ).on( "change", "#uael-wl-enable-support", UaelAdmin._support );
 		},
 
 		/**

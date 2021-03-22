@@ -104,6 +104,18 @@ class Table_Of_Contents extends Common_Widget {
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
+		$this->register_controls();
+
+	}
+
+	/**
+	 * Register controls.
+	 *
+	 * @since 1.29.2
+	 * @access protected
+	 */
+	protected function register_controls() {
+
 		$this->register_table_of_contents_controls();
 		$this->register_heading_to_display_controls();
 		$this->register_exclude_content_controls();
@@ -369,6 +381,23 @@ class Table_Of_Contents extends Common_Widget {
 				'description'  => __( 'This will add a Scroll to Top arrow at the bottom of page.', 'uael' ),
 				'return_value' => 'yes',
 				'default'      => 'no',
+			)
+		);
+
+		$this->add_responsive_control(
+			'scroll_to_top_offset',
+			array(
+				'label'      => __( 'Scroll to Top Offset', 'uael' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array(
+					'px' => array(
+						'max' => 200,
+					),
+				),
+				'condition'  => array(
+					'scroll_to_top' => 'yes',
+				),
 			)
 		);
 
@@ -952,6 +981,22 @@ class Table_Of_Contents extends Common_Widget {
 
 		if ( '' !== $scroll_offset_size ) {
 			$this->add_render_attribute( 'list-parent-wrapper', 'data-scroll-offset', $scroll_offset_size );
+		}
+
+		$scroll_to_top_offset_size   = isset( $settings['scroll_to_top_offset']['size'] ) ? $settings['scroll_to_top_offset']['size'] : '';
+		$scroll_to_top_offset_mobile = isset( $settings['scroll_to_top_offset_mobile']['size'] ) ? $settings['scroll_to_top_offset_mobile']['size'] : '';
+		$scroll_to_top_offset_tablet = isset( $settings['scroll_to_top_offset_tablet']['size'] ) ? $settings['scroll_to_top_offset_tablet']['size'] : '';
+
+		if ( '' !== $scroll_to_top_offset_mobile ) {
+			$this->add_render_attribute( 'list-parent-wrapper', 'data-scroll-to-top-offset-mobile', $scroll_to_top_offset_mobile );
+		}
+
+		if ( '' !== $scroll_to_top_offset_tablet ) {
+			$this->add_render_attribute( 'list-parent-wrapper', 'data-scroll-to-top-offset-tablet', $scroll_to_top_offset_tablet );
+		}
+
+		if ( '' !== $scroll_to_top_offset_size ) {
+			$this->add_render_attribute( 'list-parent-wrapper', 'data-scroll-to-top-offset', $scroll_to_top_offset_size );
 		}
 
 		$this->add_render_attribute( 'hide-show-wrapper', 'data-hideshow', $hideshow );

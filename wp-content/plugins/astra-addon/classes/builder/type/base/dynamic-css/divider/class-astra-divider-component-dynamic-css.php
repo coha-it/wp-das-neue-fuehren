@@ -38,7 +38,7 @@ class Astra_Divider_Component_Dynamic_CSS {
 
 		$generated_css = '';
 
-		$number_of_divider = ( 'header' === $builder_type ) ? Astra_Addon_Builder_Helper::$num_of_header_divider : Astra_Addon_Builder_Helper::$num_of_footer_divider;
+		$number_of_divider = ( 'header' === $builder_type ) ? astra_addon_builder_helper()->num_of_header_divider : astra_addon_builder_helper()->num_of_footer_divider;
 
 		for ( $index = 1; $index <= $number_of_divider; $index++ ) {
 

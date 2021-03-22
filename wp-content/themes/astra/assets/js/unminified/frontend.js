@@ -125,7 +125,7 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 ( function() {
 
 	var menu_toggle_all 	 = document.querySelectorAll( '#masthead .main-header-menu-toggle' ),
-	    main_header_masthead = document.getElementById('masthead'),
+		main_header_masthead = document.getElementById('masthead'),
 		menu_click_listeners = {},
 		mobileHeaderType = '',
 		body = document.body,
@@ -135,8 +135,8 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 
 		mobileHeader = main_header_masthead.querySelector("#ast-mobile-header");
 	}
-	
-	if ( '' !== mobileHeader ) {
+
+	if ( '' !== mobileHeader && null !== mobileHeader ) {
 
 		mobileHeaderType = mobileHeader.dataset.type;
 	}
@@ -193,41 +193,6 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 
 		popupWrap.classList.add( 'active', 'show' );
 	}
-	/**
-	 * Opens the Sub Menu when button is clicked.
-	 */
-	function submenuButtonClick () {
-
-		var parent_li = this.parentNode;
-
-		var parent_li_sibling = parent_li.parentNode.querySelectorAll('.menu-item-has-children');
-		for ( var j = 0; j < parent_li_sibling.length; j++ ) {
-
-			if ( parent_li_sibling[j] != parent_li ) {
-
-				parent_li_sibling[j].classList.remove( 'ast-submenu-expanded' );
-
-				var all_sub_menu = parent_li_sibling[j].querySelectorAll('.sub-menu');
-
-				for ( var k = 0; k < all_sub_menu.length; k++ ) {
-					all_sub_menu[k].style.display = 'none';
-				};
-			}
-		};
-
-		if ( parent_li.classList.contains('menu-item-has-children') ) {
-
-			parent_li.classList.toggle( 'ast-submenu-expanded' );
-
-			if ( parent_li.classList.contains('ast-submenu-expanded') ) {
-
-				parent_li.querySelector('.sub-menu').style.display = 'block';
-			} else {
-
-				parent_li.querySelector('.sub-menu').style.display = 'none';
-			}
-		}
-	}
 
 	/**
 	 * Closes the Trigger when Popup is Closed.
@@ -279,8 +244,10 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 	function init( mobileHeaderType ) {
 
 		var popupTrigger = document.querySelectorAll( '.menu-toggle' );
-		
-		if ( undefined === mobileHeaderType ) {
+		var popupClose = document.getElementById( 'menu-toggle-close' );
+		var submenuButtons = document.querySelectorAll( '#ast-mobile-popup .ast-menu-toggle' );
+
+		if ( undefined === mobileHeaderType && null !== main_header_masthead ) {
 
 			mobileHeader = main_header_masthead.querySelector("#ast-mobile-header");
 			if( ! mobileHeader ) {
@@ -299,11 +266,6 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 				// Open the Popup when click on trigger
 				popupTrigger[item].addEventListener("click", popupTriggerClick, false);
 
-			}
-			for ( var item = 0;  item < submenuButtons.length; item++ ) {
-
-				// Open the Popup when click on trigger
-				submenuButtons[item].addEventListener("click", submenuButtonClick, false);
 			}
 
 			//Close Popup on CLose Button Click.
@@ -345,7 +307,7 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 		}
 
 		accountPopupTrigger();
-		
+
 	}
 
 	window.addEventListener( 'load', function() {
@@ -376,7 +338,6 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 		if( menu_toggle_close ) {
 			menu_toggle_close.click();
 		}
-
 		// Skip resize event when keyboard display event triggers on devices.
 		if( 'INPUT' !== document.activeElement.tagName ) {
 
@@ -406,6 +367,11 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 		});
 	}
 
+	var get_window_width = function () {
+
+		return document.documentElement.clientWidth;
+	}
+
 	/* Add break point Class and related trigger */
 	var updateHeaderBreakPoint = function () {
 
@@ -413,7 +379,7 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 		// Adding overflow hidden and then calculating the window.innerWidth fixes the problem.
 		var originalOverflow = body.style.overflow;
 		body.style.overflow = 'hidden';
-		var ww = window.innerWidth;
+		var ww = get_window_width();
 		body.style.overflow = originalOverflow;
 
 		var break_point = astra.break_point,
@@ -423,7 +389,14 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 			for (var i = 0; i < headerWrap.length; i++) {
 
 				if (headerWrap[i].tagName == 'DIV' && headerWrap[i].classList.contains('ast-main-header-wrap')) {
-					if (ww > break_point) {
+
+					/**
+					 * This case is when one hits a URL one after the other via `Open in New Tab` option
+					 * Chrome returns the value of outer width as 0 in this case.
+					 * This mis-calculates the width of the window and header seems invisible.
+					 * This could be fixed by using `0 === ww` condition below.
+					 */
+					if (ww > break_point || 0 === ww) {
 						//remove menu toggled class.
 						if (null != menu_toggle_all[i]) {
 							menu_toggle_all[i].classList.remove('toggled');
@@ -451,7 +424,7 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 
 			var header_account__close_trigger =  document.getElementById( 'ast-hb-login-close' );
 			var login_popup =  document.getElementById( 'ast-hb-account-login-wrap' );
-			
+
 			header_account_trigger.onclick = function( event ) {
 				event.preventDefault();
 				event.stopPropagation();
@@ -531,9 +504,13 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 	};
 
 	AstraToggleSetup = function () {
-		var __main_header_all = document.querySelectorAll('#ast-mobile-header');
-
-		menu_toggle_all 	 = document.querySelectorAll( '#ast-mobile-header .main-header-menu-toggle' );
+		if ( 'off-canvas' === mobileHeaderType || 'full-width' === mobileHeaderType ) {
+			var __main_header_all = document.querySelectorAll( '#ast-mobile-popup' ),
+				menu_toggle_all   = document.querySelectorAll( '#ast-mobile-header .main-header-menu-toggle' );
+		} else {
+			var __main_header_all = document.querySelectorAll( '#ast-mobile-header' ),
+				menu_toggle_all   = document.querySelectorAll( '#ast-mobile-header .main-header-menu-toggle' );
+		}
 
 		if (menu_toggle_all.length > 0) {
 
@@ -549,7 +526,7 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 				if ('undefined' !== typeof __main_header_all[i]) {
 
 					if (document.querySelector('header.site-header').classList.contains('ast-builder-menu-toggle-link')) {
-						var astra_menu_toggle = __main_header_all[i].querySelectorAll('.ast-header-break-point .ast-builder-menu .menu-item-has-children > .menu-link, .ast-header-break-point .ast-builder-menu .ast-menu-toggle');
+						var astra_menu_toggle = __main_header_all[i].querySelectorAll('ul.main-header-menu .menu-item-has-children > .menu-link, ul.main-header-menu .ast-menu-toggle');
 					} else {
 						var astra_menu_toggle = __main_header_all[i].querySelectorAll('ul.main-header-menu .ast-menu-toggle');
 					}
@@ -673,7 +650,7 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
                 var sibling = this.parentNode.parentNode.parentNode.querySelector( '.ast-search-menu-icon' );
                 if ( ! sibling.classList.contains( 'ast-dropdown-active' ) ) {
                     sibling.classList.add( 'ast-dropdown-active' );
-                    sibling.querySelector( '.search-field' ).setAttribute('autocompvare','off');
+                    sibling.querySelector( '.search-field' ).setAttribute('autocomplete','off');
                     setTimeout(function() {
                      sibling.querySelector( '.search-field' ).focus();
                     },200);
@@ -872,7 +849,7 @@ var astraTriggerEvent = function astraTriggerEvent( el, typeArg ) {
 		if (undefined === main_header_masthead || null === main_header_masthead) {
 			return;
 		}
-		var window_width = body.clientWidth;
+		var window_width = get_window_width();
 		var break_point = astra.break_point;
 
 		var desktop_header = main_header_masthead.querySelector("#masthead > #ast-desktop-header");

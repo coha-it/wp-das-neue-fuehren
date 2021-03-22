@@ -708,7 +708,7 @@ if ( ! class_exists( 'Astra_Ext_Advanced_Hooks_Meta' ) ) {
 				);
 			}
 
-			if ( Astra_Addon_Builder_Helper::$is_header_footer_builder_active ) {
+			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				unset( $hooks['header']['hooks']['astra_main_header_bar_top'] );
 				unset( $hooks['header']['hooks']['astra_masthead_content'] );

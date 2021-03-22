@@ -252,7 +252,7 @@ class Settings {
 			array(
 				'title'             => _x( 'Live Username', 'dhl', 'woocommerce-germanized' ),
 				'type'              => 'text',
-				'desc'              => '<div class="wc-gzd-additional-desc">' . sprintf( _x( 'Your username for the DHL business customer portal. Please note the lower case and test your access data in advance %s.', 'dhl', 'woocommerce-germanized' ), '<a href="' . Package::get_geschaeftskunden_portal_url() . '" target = "_blank">' . _x(  'here', 'dhl', 'woocommerce-germanized' ) . '</a>' ) . '</div>',
+				'desc'              => '<div class="wc-gzd-additional-desc">' . sprintf( _x( 'Your username (<strong>not</strong> your email address) to the DHL business customer portal. Please make sure to test your access data in advance %s.', 'dhl', 'woocommerce-germanized' ), '<a href="' . Package::get_geschaeftskunden_portal_url() . '" target = "_blank">' . _x(  'here', 'dhl', 'woocommerce-germanized' ) . '</a>' ) . '</div>',
 				'id' 		        => 'woocommerce_gzd_dhl_api_username',
 				'default'           => '',
 				'custom_attributes'	=> array( 'data-show_if_woocommerce_gzd_dhl_sandbox_mode' => 'no', 'autocomplete' => 'new-password' )
@@ -261,7 +261,7 @@ class Settings {
 			array(
 				'title'             => _x( 'Live Password', 'dhl', 'woocommerce-germanized' ),
 				'type'              => 'password',
-				'desc'              => '<div class="wc-gzd-additional-desc">' . sprintf( _x( 'Your password for the DHL business customer portal. Please note the new assignment of the password to 3 (Standard User) or 12 (System User) months and test your access data in advance %s.', 'dhl', 'woocommerce-germanized' ), '<a href="' . Package::get_geschaeftskunden_portal_url() . '" target = "_blank">' . _x(  'here', 'dhl', 'woocommerce-germanized' ) .'</a>' ) . '</div>',
+				'desc'              => '<div class="wc-gzd-additional-desc">' . sprintf( _x( 'Your password to the DHL business customer portal. Please note the new assignment of the password to 3 (Standard User) or 12 (System User) months and make sure to test your access data in advance %s.', 'dhl', 'woocommerce-germanized' ), '<a href="' . Package::get_geschaeftskunden_portal_url() . '" target = "_blank">' . _x(  'here', 'dhl', 'woocommerce-germanized' ) .'</a>' ) . '</div>',
 				'id' 		        => 'woocommerce_gzd_dhl_api_password',
 				'default'           => '',
 				'custom_attributes'	=> array( 'data-show_if_woocommerce_gzd_dhl_sandbox_mode' => 'no', 'autocomplete' => 'new-password' )
@@ -270,7 +270,7 @@ class Settings {
 			array(
 				'title'             => _x( 'Sandbox Username', 'dhl', 'woocommerce-germanized' ),
 				'type'              => 'text',
-				'desc'              => '<div class="wc-gzd-additional-desc">' . sprintf( _x( 'Your username for the DHL developer portal. Please note the lower case and test your access data in advance %s.', 'dhl', 'woocommerce-germanized' ), '<a href="https://entwickler.dhl.de" target = "_blank">' . _x(  'here', 'dhl', 'woocommerce-germanized' ) . '</a>' ) . '</div>',
+				'desc'              => '<div class="wc-gzd-additional-desc">' . sprintf( _x( 'Your username (<strong>not</strong> your email address) to the DHL developer portal. Please make sure to test your access data in advance %s.', 'dhl', 'woocommerce-germanized' ), '<a href="https://entwickler.dhl.de" target = "_blank">' . _x(  'here', 'dhl', 'woocommerce-germanized' ) . '</a>' ) . '</div>',
 				'id' 		        => 'woocommerce_gzd_dhl_api_sandbox_username',
 				'default'           => '',
 				'custom_attributes'	=> array( 'data-show_if_woocommerce_gzd_dhl_sandbox_mode' => '', 'autocomplete' => 'new-password' )
@@ -902,6 +902,9 @@ class Settings {
 			array( 'type' => 'sectionend', 'id' => 'dhl_automation_options' ),
 		) );
 
+		$ref_placeholders     = wc_gzd_dhl_get_label_payment_ref_placeholder();
+		$ref_placeholders_str = implode( ', ', array_keys( $ref_placeholders ) );
+
 		$settings = array_merge( $settings, array(
 
 			array( 'title' => _x( 'Bank Account', 'dhl', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'dhl_bank_account_options', 'desc' => _x(  'Enter your bank details needed for services that use COD.', 'dhl', 'woocommerce-germanized' ) ),
@@ -939,7 +942,7 @@ class Settings {
 				'type'              => 'text',
 				'id' 		        => 'woocommerce_gzd_dhl_bank_ref',
 				'custom_attributes'	=> array( 'maxlength' => '35' ),
-				'desc'              => '<div class="wc-gzd-additional-desc">' . sprintf( _x( 'Use these placeholders to add info to the payment reference: %s. This text is limited to 35 characters.', 'dhl', 'woocommerce-germanized' ), '<code>{shipment_id}, {order_id}, {email}</code>' ) . '</div>',
+				'desc'              => '<div class="wc-gzd-additional-desc">' . sprintf( _x( 'Use these placeholders to add info to the payment reference: %s. This text is limited to 35 characters.', 'dhl', 'woocommerce-germanized' ), '<code>' . esc_html( $ref_placeholders_str )  . '</code>' ) . '</div>',
 				'default'           => '{shipment_id}'
 			),
 
@@ -948,7 +951,7 @@ class Settings {
 				'type'              => 'text',
 				'id' 		        => 'woocommerce_gzd_dhl_bank_ref_2',
 				'custom_attributes'	=> array( 'maxlength' => '35' ),
-				'desc'              => '<div class="wc-gzd-additional-desc">' . sprintf( _x( 'Use these placeholders to add info to the payment reference: %s. This text is limited to 35 characters.', 'dhl', 'woocommerce-germanized' ), '<code>{shipment_id}, {order_id}, {email}</code>' ) . '</div>',
+				'desc'              => '<div class="wc-gzd-additional-desc">' . sprintf( _x( 'Use these placeholders to add info to the payment reference: %s. This text is limited to 35 characters.', 'dhl', 'woocommerce-germanized' ), '<code>' . esc_html( $ref_placeholders_str )  . '</code>' ) . '</div>',
 				'default'           => '{email}'
 			),
 

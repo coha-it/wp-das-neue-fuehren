@@ -340,6 +340,7 @@ if (is_multisite()) {
 				add_filter('updraftplus_restore_delete_recursive', array($this, 'restore_delete_recursive'), 10, 3);
 				add_filter('updraft_move_others_preserve_existing', array($this, 'move_others_preserve_existing'), 10, 4);
 				add_filter('updraftplus_restore_move_old_mode', array($this, 'restore_move_old_mode'), 10, 3);
+				add_action('updraftplus_restore_set_table_prefix_multisite_got_new_blog_id', array($this, 'drop_existing_non_wpcore_tables'), 10, 2);
 			}
 		}
 		
@@ -785,6 +786,31 @@ if (is_multisite()) {
 				'title' => __('UpdraftPlus Backups', 'updraftplus'),
 				'href' => UpdraftPlus_Options::admin_page_url().'?page=updraftplus'
 			));
+		}
+
+		/**
+		 * Perform deletion of non WP core tables for the given Blog ID
+		 *
+		 * @param Integer $blog_id      Site Blog ID
+		 * @param String  $table_prefix System table prefix
+		 */
+		public function drop_existing_non_wpcore_tables($blog_id, $table_prefix) {
+			if (!$blog_id) return;
+			global $wpdb, $updraftplus;
+			$tables = array();
+			$blog_tables = $wpdb->tables('blog', true, (int) $blog_id);
+			foreach ($wpdb->get_results("SHOW TABLES LIKE '".$table_prefix.$blog_id."_%'") as $table) {
+				$tables = array_merge($tables, array_values(get_object_vars($table)));
+			}
+			$tables = array_unique($tables);
+			$tables = array_diff($tables, $blog_tables);
+			$suppress = $wpdb->suppress_errors();
+			foreach ($tables as $table) {
+				if (!$wpdb->query('DROP TABLE IF EXISTS '.UpdraftPlus_Manipulation_Functions::backquote(str_replace('`', '``', $table))) && !empty($wpdb->last_error)) {
+					$updraftplus->log(__METHOD__.' : '.$wpdb->last_error.' - '.$wpdb->last_query);
+				}
+			}
+			$wpdb->suppress_errors($suppress);
 		}
 	}
 	

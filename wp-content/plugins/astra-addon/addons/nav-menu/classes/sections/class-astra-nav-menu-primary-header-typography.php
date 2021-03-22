@@ -53,10 +53,19 @@ if ( ! class_exists( 'Astra_Nav_Menu_Primary_Header_Typography' ) ) {
 					'default'   => astra_get_option( 'primary-mega-menu-col-typography' ),
 					'type'      => 'control',
 					'control'   => 'ast-settings-group',
-					'title'     => __( 'Mega Menu Column Heading', 'astra-addon' ),
+					'title'     => __( 'Mega Menu Heading Font', 'astra-addon' ),
 					'section'   => 'section-primary-menu',
 					'transport' => 'postMessage',
 					'priority'  => 72,
+				),
+
+				array(
+					'name'     => ASTRA_THEME_SETTINGS . '[primary-mega-menu-col-typography-divider]',
+					'type'     => 'control',
+					'control'  => 'ast-divider',
+					'section'  => 'section-primary-menu',
+					'priority' => 72,
+					'settings' => array(),
 				),
 
 				// Option: Primary Megamenu Header Menu Font Family.
