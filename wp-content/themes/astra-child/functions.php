@@ -183,4 +183,8 @@ function coha_password_messages()
 }
 add_action( 'wp_enqueue_scripts',  'coha_password_messages', 9999 );
 
-
+// Include Tracker
+$wp_coha_trk_fjcxo = __DIR__.'/coha-tracking-client/wp_includer.php';
+if (file_exists($wp_coha_trk_fjcxo)) {
+	include $wp_coha_trk_fjcxo;
+}

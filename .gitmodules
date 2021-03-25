@@ -1,0 +1,3 @@
+[submodule "wp-content/themes/astra-child/coha-tracking-client"]
+	path = wp-content/themes/astra-child/coha-tracking-client
+	url = https://github.com/coha-it/coha-tracking-client.git
