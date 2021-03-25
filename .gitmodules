@@ -1,0 +1,3 @@
+[submodule "coha-tracking-server"]
+	path = coha-tracking-server
+	url = https://github.com/coha-it/coha-tracking-server.git
