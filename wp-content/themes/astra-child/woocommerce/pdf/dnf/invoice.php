@@ -88,7 +88,6 @@
 
 
 <?php /* CUSTOM START: PDF comment for article attribute */ ?>
-
 <?php $items = $this->get_order_items(); ?>
 <?php if( sizeof( $items ) > 0 ): ?>
 	<?php foreach( $items as $item_id => $item ): ?>
@@ -116,7 +115,6 @@
 		</div>
 	<?php endforeach; ?>
 <?php endif; ?>
-
 <?php /* CUSTOM NED: PDF comment for article attribute */ ?>
 
 
