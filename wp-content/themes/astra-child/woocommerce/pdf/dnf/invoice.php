@@ -98,8 +98,17 @@
 				$data = $product->get_data();
 				$art_name = $data['name'];
 				$attrs = get_post_meta( $product_id, '_product_attributes', false);
-				$str_leistungszeitraum = 'leistungszeitraum';
+				$str_leistungszeitraum = 'pa_leistungszeitraum';
 
+				$leist = $product->get_attribute($str_leistungszeitraum);
+
+				if($leist) {
+					echo "Der <strong>Leistungszeitraum</strong> " . 
+					"des Artikels: <strong>\"$art_name\"</strong> " . 
+					"beläuft sich auf: <strong>\"$leist\"</strong>.";
+				}
+
+				/*
 				foreach( $attrs as $attr_id => $attr)
 				{
 					if (array_key_exists($str_leistungszeitraum, $attr))
@@ -111,6 +120,7 @@
 						echo "Der <strong>$leist_name</strong> des Artikels: <strong>\"$art_name\"</strong> beläuft sich auf: <strong>\"$leist_value.\"</strong>";
 					}
 				}
+				*/
 			?>
 		</div>
 	<?php endforeach; ?>
