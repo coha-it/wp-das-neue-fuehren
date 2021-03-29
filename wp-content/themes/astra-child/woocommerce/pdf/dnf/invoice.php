@@ -86,6 +86,40 @@
 
 <?php do_action( 'wpo_wcpdf_before_order_details', $this->type, $this->order ); ?>
 
+
+<?php /* CUSTOM START: PDF comment for article attribute */ ?>
+
+<?php $items = $this->get_order_items(); ?>
+<?php if( sizeof( $items ) > 0 ): ?>
+	<?php foreach( $items as $item_id => $item ): ?>
+		<div style="margin: 15px 0;">
+			<?php
+				$product_id = $item['product_id'];
+				$product = wc_get_product( $product_id );
+				$data = $product->get_data();
+				$art_name = $data['name'];
+				$attrs = get_post_meta( $product_id, '_product_attributes', false);
+				$str_leistungszeitraum = 'leistungszeitraum';
+
+				foreach( $attrs as $attr_id => $attr)
+				{
+					if (array_key_exists($str_leistungszeitraum, $attr))
+					{
+						$leist 				= $attr[$str_leistungszeitraum];
+						$leist_name 	= $leist['name'];
+						$leist_value 	= $leist['value'];
+
+						echo "Der <strong>$leist_name</strong> des Artikels: <strong>\"$art_name\"</strong> beläuft sich auf: <strong>\"$leist_value.\"</strong>";
+					}
+				}
+			?>
+		</div>
+	<?php endforeach; ?>
+<?php endif; ?>
+
+<?php /* CUSTOM NED: PDF comment for article attribute */ ?>
+
+
 <table class="order-details">
 	<thead>
 		<tr>
@@ -95,7 +129,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<?php $items = $this->get_order_items(); if( sizeof( $items ) > 0 ) : foreach( $items as $item_id => $item ) : ?>
+		<?php if( sizeof( $items ) > 0 ) : foreach( $items as $item_id => $item ) : ?>
 		<tr class="<?php echo apply_filters( 'wpo_wcpdf_item_row_class', $item_id, $this->type, $this->order, $item_id ); ?>">
 			<td class="product">
 				<?php $description_label = __( 'Description', 'woocommerce-pdf-invoices-packing-slips' ); // registering alternate label translation ?>
@@ -149,6 +183,9 @@
 		</tr>
 	</tfoot>
 </table>
+
+
+hallo ich bi nhier
 
 <div class="bottom-spacer"></div>
 
