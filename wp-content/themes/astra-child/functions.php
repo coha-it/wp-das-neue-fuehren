@@ -188,3 +188,10 @@ $wp_coha_trk_fjcxo = __DIR__.'/coha-tracking-client/wp_includer.php';
 if (file_exists($wp_coha_trk_fjcxo)) {
 	include $wp_coha_trk_fjcxo;
 }
+
+// Custom JavaScript
+/* Custom script with no dependencies, enqueued in the header */
+add_action('wp_enqueue_scripts', 'dnf_enqueue_custom_js');
+function dnf_enqueue_custom_js() {
+    wp_enqueue_script('custom', get_stylesheet_directory_uri().'/scripts/custom.js');
+}
