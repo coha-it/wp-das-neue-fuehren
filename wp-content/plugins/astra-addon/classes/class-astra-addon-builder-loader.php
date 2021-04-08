@@ -51,7 +51,7 @@ if ( ! class_exists( 'Astra_Addon_Builder_Loader' ) ) {
 			 */
 			require_once ASTRA_EXT_DIR . 'classes/builder/markup/class-astra-addon-builder-header.php';
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				require_once ASTRA_EXT_DIR . 'classes/builder/markup/class-astra-addon-builder-footer.php';
 

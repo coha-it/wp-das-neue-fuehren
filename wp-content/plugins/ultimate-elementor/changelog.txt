@@ -1,3 +1,18 @@
+Version 1.30.0 - Wednesday, 31st March 2021
+- New: Introduced Social Share widget.
+- Improvement: Video Gallery - Added 'uael_video_gallery_slick_options' filter to pass extra option to the slick library carousel layout.
+- Fix: Countdown Timer - Recurring timer gets reset after finish and user visit.
+- Fix: Marketing Button - Flare animation applies on section instead of a button on iOS.
+- Fix: Mini Cart - Product image and name overlapping in Astra theme.
+- Fix: Mini Cart - Product image size issue with WP Twenty Twenty-One theme.
+- Fix: Navigation Menu – Removed transition effect of the horizontal menu layout.
+- Fix: Particle Backgrounds - Not working inside the Elementor Pro Popup.
+- Fix: Table - HTML not rendering inside the table header CSV file.
+- Fix: User Registration Form - Phone number field data not saving in a user profile.
+- Fix: Woo - Category - Product/Products string not translatable.
+- Fix: Woo - Products - Added RTL support to carousel navigation arrows.
+- Fix: Hardened allowed options in the editor to enforce better security policies.
+
 Version 1.29.2 - Tuesday, 9th March 2021
 - Improvement: Compatibility with WordPress v5.7.
 - Improvement: Compatibility with Elementor v3.1.

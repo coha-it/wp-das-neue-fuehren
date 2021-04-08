@@ -1625,8 +1625,9 @@ class WpfStyler extends Common_Widget {
 							} elseif ( 'custom' === $settings['form_title_option'] ) {
 
 								if ( '' !== $settings['form_title'] ) {
+									$title_size_tag = UAEL_Helper::validate_html_tag( $settings['form_title_tag'] );
 									?>
-									<<?php echo esc_attr( $settings['form_title_tag'] ); ?> class="wpforms-title"><?php echo wp_kses_post( $settings['form_title'] ); ?></<?php echo esc_attr( $settings['form_title_tag'] ); ?>>
+									<<?php echo esc_attr( $title_size_tag ); ?> class="wpforms-title"><?php echo wp_kses_post( $settings['form_title'] ); ?></<?php echo esc_attr( $title_size_tag ); ?>>
 									<?php
 								}
 

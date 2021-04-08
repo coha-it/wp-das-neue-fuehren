@@ -92,7 +92,7 @@ if ( ! class_exists( 'Astra_Ext_Sticky_Header_Markup' ) ) {
 				$classes[] = 'ast-sticky-custom-logo';
 			}
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active && '1' == $inherit_desk_logo && '' !== $header_logo ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active && '1' == $inherit_desk_logo && '' !== $header_logo ) {
 				$classes[] = 'ast-sticky-custom-logo';
 			}
 
@@ -123,7 +123,7 @@ if ( ! class_exists( 'Astra_Ext_Sticky_Header_Markup' ) ) {
 				add_filter( 'get_custom_logo', array( $this, 'none_custom_logo' ), 10, 2 );
 			}
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active && 'none' == $header_style ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active && 'none' == $header_style ) {
 
 				// Logo For None Effect.
 				add_filter( 'astra_has_custom_logo', '__return_true' );

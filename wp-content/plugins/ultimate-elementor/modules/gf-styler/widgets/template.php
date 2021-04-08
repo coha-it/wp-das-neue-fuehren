@@ -5,6 +5,7 @@
  * @package UAEL
  */
 
+use UltimateElementor\Classes\UAEL_Helper;
 ?>
 <?php
 $classname = '';
@@ -18,6 +19,7 @@ if ( 'yes' === $settings['gf_radio_check_custom'] ) {
 		$form_title  = '';
 		$description = '';
 		$form_desc   = 'false';
+
 	if ( 'yes' === $settings['form_title_option'] ) {
 		if ( class_exists( 'GFAPI' ) ) {
 			$form       = array();
@@ -35,8 +37,9 @@ if ( 'yes' === $settings['gf_radio_check_custom'] ) {
 		$form_desc   = 'false';
 	}
 	if ( '' !== $form_title ) {
+		$form_title_tag = UAEL_Helper::validate_html_tag( $settings['form_title_tag'] );
 		?>
-	<<?php echo esc_attr( $settings['form_title_tag'] ); ?> class="uael-gf-form-title"><?php echo wp_kses_post( $form_title ); ?></<?php echo esc_attr( $settings['form_title_tag'] ); ?>>
+	<<?php echo esc_attr( $form_title_tag ); ?> class="uael-gf-form-title"><?php echo wp_kses_post( $form_title ); ?></<?php echo esc_attr( $form_title_tag ); ?>>
 		<?php
 	}
 	if ( '' !== $description ) {

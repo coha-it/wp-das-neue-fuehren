@@ -54,12 +54,13 @@ if ( ! class_exists( 'UAEL_Loader' ) ) {
 			define( 'UAEL_BASE', plugin_basename( UAEL_FILE ) );
 			define( 'UAEL_DIR', plugin_dir_path( UAEL_FILE ) );
 			define( 'UAEL_URL', plugins_url( '/', UAEL_FILE ) );
-			define( 'UAEL_VER', '1.29.2' );
+			define( 'UAEL_VER', '1.30.0' );
 			define( 'UAEL_MODULES_DIR', UAEL_DIR . 'modules/' );
 			define( 'UAEL_MODULES_URL', UAEL_URL . 'modules/' );
 			define( 'UAEL_SLUG', 'uae' );
 			define( 'UAEL_CATEGORY', 'Ultimate Addons' );
 			define( 'UAEL_DOMAIN', trailingslashit( 'https://ultimateelementor.com' ) );
+			define( 'UAEL_FACEBOOK_GRAPH_API_ENDPOINT', trailingslashit( 'https://graph.facebook.com/v2.12' ) );
 		}
 
 		/**

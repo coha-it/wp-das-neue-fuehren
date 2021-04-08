@@ -52,14 +52,15 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Single' ) ) {
 					'transport' => 'postMessage',
 					'title'     => __( 'Post / Page Title Color', 'astra-addon' ),
 					'section'   => 'section-blog-single',
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 					'priority'  => 12,
-					'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
 			);
 
-			if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				$_new_config = array(
 					/**

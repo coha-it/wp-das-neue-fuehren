@@ -18,6 +18,7 @@ use Elementor\Group_Control_Background;
 
 // UltimateElementor Classes.
 use UltimateElementor\Base\Common_Widget;
+use UltimateElementor\Classes\UAEL_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;   // Exit if accessed directly.
@@ -1061,7 +1062,8 @@ class Fancy_Heading extends Common_Widget {
 		?>
 		<div class="uael-module-content uael-fancy-text-node <?php echo esc_attr( $cursor_class ); ?>" <?php echo wp_kses_post( $this->get_render_attribute_string( 'fancy-text' ) ); ?>>
 			<?php if ( ! empty( $settings['fancytext_effect_type'] ) ) { ?> 
-				<?php echo '<' . esc_attr( $settings['fancytext_title_tag'] ); ?> class="uael-fancy-text-wrap uael-fancy-text-<?php echo esc_attr( $settings['fancytext_effect_type'] ); ?>">
+				<?php $fancytext_title_tag = UAEL_Helper::validate_html_tag( $settings['fancytext_title_tag'] ); ?>
+				<?php echo '<' . esc_attr( $fancytext_title_tag ); ?> class="uael-fancy-text-wrap uael-fancy-text-<?php echo esc_attr( $settings['fancytext_effect_type'] ); ?>">
 					<?php if ( '' !== $dynamic_settings['fancytext_prefix'] ) { ?>
 						<span class="uael-fancy-heading uael-fancy-text-prefix"><?php echo wp_kses_post( $this->get_settings_for_display( 'fancytext_prefix' ) ); ?></span>
 					<?php } ?>
@@ -1100,7 +1102,7 @@ class Fancy_Heading extends Common_Widget {
 					<?php if ( '' !== $dynamic_settings['fancytext_suffix'] ) { ?>
 						<span class="uael-fancy-heading uael-fancy-text-suffix"><?php echo wp_kses_post( $this->get_settings_for_display( 'fancytext_suffix' ) ); ?></span>
 					<?php } ?>
-				<?php echo '</' . esc_attr( $settings['fancytext_title_tag'] ) . '>'; ?>
+				<?php echo '</' . esc_attr( $fancytext_title_tag ) . '>'; ?>
 			<?php } ?>
 		</div>
 		<?php
@@ -1200,10 +1202,19 @@ class Fancy_Heading extends Common_Widget {
 			}
 		}
 		var cursor_class = ( 'yes' == settings.fancytext_type_show_cursor ) ? 'uael-clip-cursor-yes' : '';
+
+		var fancy_text_title_tag = settings.fancytext_title_tag;
+
+		if ( typeof elementor.helpers.validateHTMLTag === "function" ) {
+			fancy_text_title_tag = elementor.helpers.validateHTMLTag( fancy_text_title_tag );
+		} else if( UAEWidgetsData.allowed_tags ) {
+			fancy_text_title_tag = UAEWidgetsData.allowed_tags.includes( fancy_text_title_tag.toLowerCase() ) ? fancy_text_title_tag : 'div';
+		}
+
 		#>
 			<div class="uael-module-content uael-fancy-text-node {{{ cursor_class }}}" {{{ view.getRenderAttributeString( 'fancy-text' ) }}}>
 				<# if ( '' != settings.fancytext_effect_type ) { #>
-					<{{{ settings.fancytext_title_tag }}} class="uael-fancy-text-wrap uael-fancy-text-{{{ settings.fancytext_effect_type }}}" >
+					<{{{ fancy_text_title_tag }}} class="uael-fancy-text-wrap uael-fancy-text-{{{ settings.fancytext_effect_type }}}" >
 
 						<# if ( '' != settings.fancytext_prefix ) { #>
 							<span class="uael-fancy-heading uael-fancy-text-prefix">{{{ settings.fancytext_prefix }}}</span>
@@ -1244,7 +1255,7 @@ class Fancy_Heading extends Common_Widget {
 							<span class="uael-fancy-heading uael-fancy-text-suffix">{{{ settings.fancytext_suffix }}}</span>
 						<# } #>
 
-					</{{{ settings.fancytext_title_tag }}}>
+					</{{{ fancy_text_title_tag }}}>
 				<# } #>
 			</div>
 			<# elementorFrontend.hooks.doAction( 'frontend/element_ready/uael-fancy-heading.default' ); #>

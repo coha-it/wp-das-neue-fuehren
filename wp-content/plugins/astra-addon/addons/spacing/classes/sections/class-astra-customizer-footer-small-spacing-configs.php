@@ -44,26 +44,6 @@ if ( ! class_exists( 'Astra_Customizer_Footer_Small_Spacing_Configs' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[footer-spacing-divider]',
-					'section'  => 'section-footer-small',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[footer-sml-layout]',
-							'operator' => '!=',
-							'value'    => 'disabled',
-						),
-					),
-					'priority' => 90,
-					'settings' => array(),
-				),
-
-				/**
 				 * Option - Footer Space
 				 */
 				array(
@@ -95,36 +75,6 @@ if ( ! class_exists( 'Astra_Customizer_Footer_Small_Spacing_Configs' ) ) {
 				),
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[footer-menu-spacing-divider]',
-					'section'  => 'section-footer-small',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'context'  => array(
-						'relation' => 'AND',
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'relation' => 'OR',
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[footer-sml-section-1]',
-								'operator' => '==',
-								'value'    => 'menu',
-							),
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[footer-sml-section-2]',
-								'operator' => '==',
-								'value'    => 'menu',
-							),
-						),
-
-					),
-					'priority' => 90,
-					'settings' => array(),
-				),
-
-				/**
 				 * Option - Footer Menu Space
 				 */
 				array(
@@ -137,6 +87,7 @@ if ( ! class_exists( 'Astra_Customizer_Footer_Small_Spacing_Configs' ) ) {
 					'section'           => 'section-footer-small',
 					'priority'          => 90,
 					'title'             => __( 'Menu Space', 'astra-addon' ),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'           => array(
 						'relation' => 'AND',
 						astra_addon_builder_helper()->general_tab_config,

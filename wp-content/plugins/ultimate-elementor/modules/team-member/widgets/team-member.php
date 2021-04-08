@@ -1494,8 +1494,9 @@ class Team_Member extends Common_Widget {
 					<?php if ( '' !== $settings['team_member_name'] ) { ?>
 						<div class="uael-team-member-name">
 						<?php
-							$name      = $settings['team_member_name'];
-							$name_html = sprintf( '<%1$s %2$s>%3$s</%1$s>', $settings['name_size'], $this->get_render_attribute_string( 'team_member_name' ), $name );
+							$name          = $settings['team_member_name'];
+							$name_size_tag = UAEL_Helper::validate_html_tag( $settings['name_size'] );
+							$name_html     = sprintf( '<%1$s %2$s>%3$s</%1$s>', $name_size_tag, $this->get_render_attribute_string( 'team_member_name' ), $name );
 							echo wp_kses_post( $name_html );
 						?>
 						</div>
@@ -1689,8 +1690,16 @@ class Team_Member extends Common_Widget {
 								view.addRenderAttribute( 'team_member_name', 'class', 'uael-team-name' );
 								view.addInlineEditingAttributes( 'team_member_name' );
 								var memberNameHtml = settings.team_member_name;
+
+								var nameSizeTag = settings.name_size;
+
+								if ( typeof elementor.helpers.validateHTMLTag === "function" ) { 
+									nameSizeTag = elementor.helpers.validateHTMLTag( nameSizeTag );
+								} else if( UAEWidgetsData.allowed_tags ) {
+									nameSizeTag = UAEWidgetsData.allowed_tags.includes( nameSizeTag.toLowerCase() ) ? nameSizeTag : 'div';
+								}					
 								#>
-								<{{{settings.name_size}}} {{{ view.getRenderAttributeString( 'team_member_name' )}}}>{{{settings.team_member_name}}}</{{{settings.name_size}}}>
+								<{{{ nameSizeTag }}} {{{ view.getRenderAttributeString( 'team_member_name' )}}}>{{{settings.team_member_name}}}</{{{ nameSizeTag }}}>
 							<# } #>
 						</div>
 						<# 

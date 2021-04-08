@@ -39,26 +39,6 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Typo_Configs' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option: WooCommerce Single Typography Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[woo-single-typography-divider]',
-					'type'     => 'control',
-					'section'  => 'section-woo-shop-single',
-					'control'  => 'ast-divider',
-					'priority' => 82,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[single-product-structure]',
-							'operator' => 'contains',
-							'value'    => 'title',
-						),
-					),
-				),
-
-				/**
 				 * Group: WooCommerce Single product title Group
 				 */
 				array(

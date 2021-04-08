@@ -54,19 +54,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header_Builder' ) ) {
 				$_prefix  = 'menu' . $index;
 
 				$_configs = array(
-					/**
-					 * Option: Divider
-					 */
-					array(
-						'name'     => ASTRA_THEME_SETTINGS . '[header-' . $_prefix . '-submenu-title-divider]',
-						'type'     => 'control',
-						'control'  => 'ast-divider',
-						'context'  => astra_addon_builder_helper()->design_tab,
-						'settings' => array(),
-						'title'    => __( 'Submenu Color', 'astra-addon' ),
-						'section'  => $_section,
-						'priority' => 100,
-					),
+
 					// Option Group: Sub Menu Colors.
 					array(
 						'name'       => ASTRA_THEME_SETTINGS . '[header-' . $_prefix . '-submenu-link-colors]',
@@ -78,6 +66,10 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header_Builder' ) ) {
 						'transport'  => 'postMessage',
 						'context'    => astra_addon_builder_helper()->design_tab,
 						'responsive' => true,
+						'divider'    => array(
+							'ast_class' => 'ast-top-divider',
+							'ast_title' => __( 'Submenu Color', 'astra-addon' ),
+						),
 					),
 
 					array(
@@ -279,24 +271,6 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header_Builder' ) ) {
 					),
 				),
 
-				// Option Group: Account Menu Color.
-				array(
-					'name'      => ASTRA_THEME_SETTINGS . '[header-account-menu-heading-colors]',
-					'type'      => 'control',
-					'control'   => 'ast-divider',
-					'title'     => __( 'Menu', 'astra-addon' ),
-					'section'   => 'section-header-account',
-					'transport' => 'postMessage',
-					'priority'  => 19,
-					'context'   => array(
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
-							'operator' => '==',
-							'value'    => 'menu',
-						),
-						astra_addon_builder_helper()->design_tab_config,
-					),
-				),
 				array(
 					'name'       => ASTRA_THEME_SETTINGS . '[header-account-menu-link-colors]',
 					'type'       => 'control',
@@ -305,6 +279,10 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header_Builder' ) ) {
 					'section'    => 'section-header-account',
 					'transport'  => 'postMessage',
 					'priority'   => 19,
+					'divider'    => array(
+						'ast_class' => 'ast-top-divider',
+						'ast_title' => __( 'Menu Color', 'astra-addon' ),
+					),
 					'context'    => array(
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
@@ -323,6 +301,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header_Builder' ) ) {
 					'section'    => 'section-header-account',
 					'transport'  => 'postMessage',
 					'priority'   => 19,
+					'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'    => array(
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
@@ -613,30 +592,17 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header_Builder' ) ) {
 			 * Mobile Menu - Submenu Colors
 			 */
 			$html_config[] = array(
-				// Divider for submenu.
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[header-mobile-menu-submenu-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-header-mobile-menu',
-					'priority' => 100,
-					'context'  => astra_addon_builder_helper()->design_tab,
-				),
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[header-mobile-menu-submenu-title-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'title'    => __( 'Submenu Color', 'astra-addon' ),
-					'section'  => 'section-header-mobile-menu',
-					'priority' => 100,
-					'context'  => astra_addon_builder_helper()->design_tab,
-				),
+
 				// Option Group: Sub Menu Colors.
 				array(
 					'name'       => ASTRA_THEME_SETTINGS . '[header-mobile-menu-submenu-link-colors]',
 					'type'       => 'control',
 					'control'    => Astra_Theme_Extension::$group_control,
 					'title'      => __( 'Link', 'astra-addon' ),
+					'divider'    => array(
+						'ast_class' => 'ast-top-divider',
+						'ast_title' => __( 'Submenu Color', 'astra-addon' ),
+					),
 					'section'    => 'section-header-mobile-menu',
 					'priority'   => 100,
 					'transport'  => 'postMessage',
@@ -654,6 +620,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header_Builder' ) ) {
 					'transport'  => 'postMessage',
 					'context'    => astra_addon_builder_helper()->design_tab,
 					'responsive' => true,
+					'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				// Option: Submenu Color.
@@ -764,25 +731,6 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header_Builder' ) ) {
 			 */
 			$html_config[] = array(
 
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[section-hb-language-switcher-color-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'context'  => array(
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[header-language-switcher-show-name]',
-							'operator' => '==',
-							'value'    => true,
-						),
-						astra_addon_builder_helper()->design_tab_config,
-					),
-					'section'  => 'section-hb-language-switcher',
-					'priority' => 21,
-				),
-
 				array(
 					'name'      => ASTRA_THEME_SETTINGS . '[section-hb-language-switcher-color]',
 					'default'   => astra_get_option( 'section-hb-language-switcher-color' ),
@@ -800,6 +748,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header_Builder' ) ) {
 						),
 						astra_addon_builder_helper()->design_tab_config,
 					),
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 				array(
 					'name'      => ASTRA_THEME_SETTINGS . '[section-fb-language-switcher-color]',

@@ -26,7 +26,8 @@ class OMGF_API_Download extends WP_REST_Controller
      * The key of an element should be dashed (no spaces) if necessary, e.g. open-sans.
      */
     const OMGF_RENAMED_GOOGLE_FONTS   = [
-        'muli' => 'mulish'
+        'ek-mukta' => 'mukta',
+        'muli'     => 'mulish'
     ];
 
     private $plugin_text_domain = 'host-webfonts-local';
@@ -107,7 +108,12 @@ class OMGF_API_Download extends WP_REST_Controller
         foreach ($fonts as $font_key => &$font) {
             $fonts_request = $this->build_fonts_request($font_families, $font);
 
-            list($family, $variants) = explode(':', $fonts_request);
+            if (strpos($fonts_request, ':') != false) {
+                list($family, $variants) = explode(':', $fonts_request);
+            } else {
+                $family   = $fonts_request;
+                $variants = '';
+            }
 
             $variants = $this->parse_requested_variants($variants, $font);
 
@@ -223,7 +229,12 @@ class OMGF_API_Download extends WP_REST_Controller
         }
 
         foreach ($font_families as $font_family) {
-            list($family, $weights) = explode(':', reset($font_family));
+            if (strpos($font_family, ':') !== false) {
+                list($family, $weights) = explode(':', reset($font_family));
+            } else {
+                $family  = $font_family;
+                $weights = '';
+            }
 
             /**
              * @return array [ '300', '400', '500', etc. ]
@@ -257,8 +268,8 @@ class OMGF_API_Download extends WP_REST_Controller
     {
         $url = self::OMGF_GOOGLE_FONTS_API_URL . '/api/fonts/%s';
 
-        list($family, $variants) = explode(':', $font_family);
-        $family                  = strtolower(str_replace([' ', '+'], '-', $family));
+        list($family) = explode(':', $font_family);
+        $family       = strtolower(str_replace([' ', '+'], '-', $family));
 
         /**
          * Add fonts to the request's $_GET 'family' parameter. Then pass an array to 'omgf_alternate_fonts' 
@@ -363,7 +374,12 @@ class OMGF_API_Download extends WP_REST_Controller
      */
     private function filter_variants($font_id, $available, $wanted, $stylesheet_handle)
     {
-        list($family, $variants) = explode(':', $wanted);
+        if (strpos($wanted, ':') !== false) {
+            // We don't need the first variable.
+            list(, $variants) = explode(':', $wanted);
+        } else {
+            $variants = '';
+        }
 
         /**
          * Build array and filter out empty elements.

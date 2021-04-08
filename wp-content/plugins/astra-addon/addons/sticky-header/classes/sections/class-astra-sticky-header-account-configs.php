@@ -108,33 +108,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Account_Configs' ) ) {
 							),
 						),
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-account-type-text-color-divider]',
-					'type'     => 'control',
-					'section'  => $_section,
-					'control'  => 'ast-divider',
-					'priority' => 131,
-					'context'  => array(
-						astra_addon_builder_helper()->design_tab_config,
-						array(
-							'relation' => 'AND',
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[header-account-login-style]',
-								'operator' => '!=',
-								'value'    => 'text',
-							),
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[header-account-logout-style]',
-								'operator' => '==',
-								'value'    => 'text',
-							),
-						),
-					),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -150,6 +124,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Account_Configs' ) ) {
 					'control'           => 'ast-color',
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
 					'title'             => __( 'Text Color', 'astra-addon' ),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'           => array(
 						astra_addon_builder_helper()->design_tab_config,
 						array(

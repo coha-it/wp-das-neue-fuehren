@@ -48,6 +48,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 					'section'           => 'woocommerce_product_catalog',
 					'title'             => __( 'Layout', 'astra-addon' ),
 					'control'           => 'ast-radio-image',
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_choices' ),
 					'priority'          => 10,
 					'choices'           => array(
@@ -60,18 +61,6 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 							'path'  => ( class_exists( 'Astra_Builder_UI_Controller' ) ) ? Astra_Builder_UI_Controller::fetch_svg_icon( 'shop-page-list-style', false ) : '',
 						),
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[shop-style-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_product_catalog',
-					'control'  => 'ast-divider',
-					'priority' => 10,
-					'settings' => array(),
 				),
 
 				/**
@@ -98,6 +87,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 					'control'    => Astra_Theme_Extension::$selector_control,
 					'section'    => 'woocommerce_product_catalog',
 					'priority'   => 80,
+					'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 					'title'      => __( 'Content Alignment', 'astra-addon' ),
 					'responsive' => false,
 					'choices'    => array(
@@ -105,18 +95,6 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 						'align-center' => 'align-center',
 						'align-right'  => 'align-right',
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[shop-product-align-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_product_catalog',
-					'control'  => 'ast-divider',
-					'priority' => 80,
-					'settings' => array(),
 				),
 
 				/**
@@ -157,18 +135,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 						'step' => 1,
 						'max'  => 5,
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[shop-product-shadow-hover-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_product_catalog',
-					'control'  => 'ast-divider',
-					'priority' => 90,
-					'settings' => array(),
+					'divider'     => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -177,7 +144,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 				array(
 					'name'     => ASTRA_THEME_SETTINGS . '[shop-hover-style]',
 					'type'     => 'control',
-					'control'  => 'select',
+					'control'  => 'ast-select',
 					'section'  => 'woocommerce_product_catalog',
 					'default'  => astra_get_option( 'shop-hover-style' ),
 					'priority' => 90,
@@ -222,18 +189,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 						'step' => 1,
 						'max'  => 200,
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[shop-button-v-padding-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_product_catalog',
-					'control'  => 'ast-divider',
-					'priority' => 110,
-					'settings' => array(),
+					'divider'     => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -276,7 +232,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 					'name'     => ASTRA_THEME_SETTINGS . '[shop-pagination]',
 					'default'  => astra_get_option( 'shop-pagination' ),
 					'type'     => 'control',
-					'control'  => 'select',
+					'control'  => 'ast-select',
 					'section'  => 'woocommerce_product_catalog',
 					'priority' => 145,
 					'title'    => __( 'Shop Pagination', 'astra-addon' ),
@@ -294,8 +250,9 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 					'default'   => astra_get_option( 'shop-pagination-style' ),
 					'type'      => 'control',
 					'transport' => 'postMessage',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'section'   => 'woocommerce_product_catalog',
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'   => array(
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[shop-pagination]',
@@ -319,7 +276,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 					'name'        => ASTRA_THEME_SETTINGS . '[shop-infinite-scroll-event]',
 					'default'     => astra_get_option( 'shop-infinite-scroll-event' ),
 					'type'        => 'control',
-					'control'     => 'select',
+					'control'     => 'ast-select',
 					'section'     => 'woocommerce_product_catalog',
 					'description' => __( 'Infinite Scroll cannot be previewed in the Customizer.', 'astra-addon' ),
 					'context'     => array(
@@ -336,6 +293,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 						'scroll' => __( 'Scroll', 'astra-addon' ),
 						'click'  => __( 'Click', 'astra-addon' ),
 					),
+					'divider'     => array( 'ast_class' => 'ast-bottom-divider ast-top-divider' ),
 				),
 
 				/**
@@ -371,18 +329,6 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 				),
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[shop-meta-divider]',
-					'section'  => 'woocommerce_product_catalog',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'priority' => 29,
-					'settings' => array(),
-				),
-
-				/**
 				 * Option: Display Page Title
 				 */
 				array(
@@ -391,20 +337,9 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 					'type'     => 'control',
 					'section'  => 'woocommerce_product_catalog',
 					'title'    => __( 'Display Page Title', 'astra-addon' ),
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 					'priority' => 29,
 					'control'  => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[shop-page-title-display-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_product_catalog',
-					'control'  => 'ast-divider',
-					'priority' => 29,
-					'settings' => array(),
 				),
 
 				/**
@@ -416,20 +351,9 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 					'type'     => 'control',
 					'section'  => 'woocommerce_product_catalog',
 					'title'    => __( 'Display Breadcrumb', 'astra-addon' ),
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 					'priority' => 29,
 					'control'  => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[shop-breadcrumb-display-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_product_catalog',
-					'control'  => 'ast-divider',
-					'priority' => 29,
-					'settings' => array(),
 				),
 
 				/**
@@ -446,27 +370,16 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 				),
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[shop-filters-off-canvas-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_product_catalog',
-					'control'  => 'ast-divider',
-					'priority' => 195,
-					'settings' => array(),
-				),
-
-				/**
 				 * Option: Display Off Canvas On Click Of
 				 */
 				array(
 					'name'     => ASTRA_THEME_SETTINGS . '[shop-off-canvas-trigger-type]',
 					'default'  => astra_get_option( 'shop-off-canvas-trigger-type' ),
 					'type'     => 'control',
-					'control'  => 'select',
+					'control'  => 'ast-select',
 					'section'  => 'woocommerce_product_catalog',
 					'priority' => 200,
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 					'title'    => __( 'Trigger for Off Canvas Sidebar', 'astra-addon' ),
 					'choices'  => array(
 						'disable'      => __( 'Disable', 'astra-addon' ),
@@ -537,18 +450,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 					'title'    => __( 'Display Active Filters', 'astra-addon' ),
 					'priority' => 215,
 					'control'  => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[shop-quick-view-divider]',
-					'section'  => 'woocommerce_product_catalog',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'priority' => 190,
-					'settings' => array(),
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -560,7 +462,8 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 					'type'     => 'control',
 					'section'  => 'woocommerce_product_catalog',
 					'title'    => __( 'Quick View', 'astra-addon' ),
-					'control'  => 'select',
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
+					'control'  => 'ast-select',
 					'priority' => 190,
 					'choices'  => array(
 						'disabled'       => __( 'Disabled', 'astra-addon' ),
@@ -582,6 +485,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Configs' ) ) {
 					'description' => __( 'If contents of the popup is larger then the button will stick at the end of the popup.', 'astra-addon' ),
 					'control'     => Astra_Theme_Extension::$switch_control,
 					'priority'    => 190,
+					'divider'     => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'     => array(
 						astra_addon_builder_helper()->general_tab_config,
 						array(

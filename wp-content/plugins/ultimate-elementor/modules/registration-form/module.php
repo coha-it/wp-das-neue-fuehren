@@ -74,6 +74,53 @@ class Module extends Module_Base {
 		add_action( 'wp_ajax_nopriv_uael_register_user', array( $this, 'get_form_data' ) );
 		add_filter( 'wp_new_user_notification_email', array( $this, 'custom_wp_new_user_notification_email' ), 10, 3 );
 
+		add_action( 'show_user_profile', array( $this, 'show_user_extra_field' ) );
+		add_action( 'edit_user_profile', array( $this, 'show_user_extra_field' ) );
+		add_action( 'personal_options_update', array( $this, 'update_user_profile' ) );
+		add_action( 'edit_user_profile_update', array( $this, 'update_user_profile' ) );
+
+	}
+
+	/**
+	 * Show extra phone field on user profile page.
+	 *
+	 * @since 1.30.0
+	 * @param object $user WP_User object.
+	 * @access public
+	 */
+	public static function show_user_extra_field( $user ) {
+		$phone = get_user_meta( $user->ID, 'phone', true );
+		if ( empty( $phone ) ) {
+			return;
+		}
+		?>
+		<h3><?php echo esc_html__( 'Extra profile information', 'uael' ); ?></h3>
+		<table class="form-table">
+			<tr>
+				<th><label for="phone"><?php echo esc_html__( 'Phone Number', 'uael' ); ?></label></th>
+				<td>
+					<input type="text" name="phone" id="phone" value="<?php echo esc_attr( $phone ); ?>" class="regular-text" placeholder="<?php echo esc_attr( 'Enter your phone number' ); ?>" /><br />
+				</td>
+			</tr>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Update extra phone field on user profile page.
+	 *
+	 * @since 1.30.0
+	 * @param int $user_id WP_User object.
+	 * @access public
+	 */
+	public function update_user_profile( $user_id ) {
+		if ( ! current_user_can( 'edit_user', $user_id ) ) {
+			return false;
+		}
+
+		if ( ! empty( $_POST['phone'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Missing
+			update_user_meta( $user_id, 'phone', intval( $_POST['phone'] ) ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
+		}
 	}
 
 	/**
@@ -307,7 +354,15 @@ class Module extends Module_Base {
 					$data
 				);
 
+				$phone_val = $user_args['phone'];
+
+				unset( $user_args['phone'] );
+
 				$result = wp_insert_user( $user_args );
+
+				if ( ! is_wp_error( $result ) ) {
+					update_user_meta( $result, 'phone', $phone_val );
+				}
 
 				if ( ! is_wp_error( $result ) ) {
 					// show a message of success and provide a true success variable.

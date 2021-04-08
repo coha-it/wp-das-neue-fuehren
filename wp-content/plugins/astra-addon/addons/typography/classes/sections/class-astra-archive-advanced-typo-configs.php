@@ -115,20 +115,6 @@ if ( ! class_exists( 'Astra_Archive_Advanced_Typo_Configs' ) ) {
 					),
 				),
 
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[blog-content-post-title-typo-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-blog',
-					'priority' => 145,
-					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
-					astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-				),
-
 				array(
 					'name'      => ASTRA_THEME_SETTINGS . '[blog-content-post-meta-typo]',
 					'default'   => astra_get_option( 'blog-content-post-meta-typo' ),
@@ -138,21 +124,8 @@ if ( ! class_exists( 'Astra_Archive_Advanced_Typo_Configs' ) ) {
 					'section'   => 'section-blog',
 					'transport' => 'postMessage',
 					'priority'  => 145,
-					'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
-						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[blog-content-post-meta-typo-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-blog',
-					'priority' => 145,
-					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
+					'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
@@ -165,7 +138,8 @@ if ( ! class_exists( 'Astra_Archive_Advanced_Typo_Configs' ) ) {
 					'section'   => 'section-blog',
 					'transport' => 'postMessage',
 					'priority'  => 150,
-					'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
+					'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 

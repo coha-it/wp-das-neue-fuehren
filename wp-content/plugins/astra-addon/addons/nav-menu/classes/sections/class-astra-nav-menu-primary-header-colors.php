@@ -67,7 +67,7 @@ if ( ! class_exists( 'Astra_Nav_Menu_Primary_Header_Colors' ) ) {
 				),
 			);
 
-			if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				$new_configs = array(
 
@@ -81,9 +81,10 @@ if ( ! class_exists( 'Astra_Nav_Menu_Primary_Header_Colors' ) ) {
 						'control'   => Astra_Theme_Extension::$group_control,
 						'title'     => __( 'Mega Menu Heading', 'astra-addon' ),
 						'section'   => 'section-sticky-header',
+						'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 						'transport' => 'postMessage',
 						'priority'  => 100,
-						'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
+						'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 							astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 					),
 				);

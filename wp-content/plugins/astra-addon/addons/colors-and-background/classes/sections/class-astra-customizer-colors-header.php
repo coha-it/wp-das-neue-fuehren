@@ -41,10 +41,9 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header' ) ) {
 		 */
 		public function register_configuration( $configurations, $wp_customize ) {
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			$title_color_heading = __( 'Colors', 'astra-addon' );
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 				$title_color_heading = __( 'Title', 'astra-addon' );
-			} else {
-				$title_color_heading = __( 'Colors', 'astra-addon' );
 			}
 
 			$_configs = array(
@@ -59,7 +58,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header' ) ) {
 					'responsive' => false,
 					'transport'  => 'postMessage',
 					'priority'   => 8,
-					'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ? array(
+					'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ? array(
 						astra_addon_builder_helper()->design_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[display-site-title]',
@@ -82,10 +81,10 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header' ) ) {
 					'control'   => 'ast-color',
 					'transport' => 'postMessage',
 					'default'   => astra_get_option( 'header-color-site-tagline' ),
-					'title'     => astra_addon_builder_helper()->is_header_footer_builder_active ? __( 'Tagline', 'astra-addon' ) : __( 'Color', 'astra-addon' ),
+					'title'     => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ? __( 'Tagline', 'astra-addon' ) : __( 'Color', 'astra-addon' ),
 					'section'   => 'title_tagline',
-					'priority'  => astra_addon_builder_helper()->is_header_footer_builder_active ? 8 : 11,
-					'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ? array(
+					'priority'  => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ? 8 : 11,
+					'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ? array(
 						astra_addon_builder_helper()->design_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[display-site-tagline]',
@@ -102,7 +101,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header' ) ) {
 				),
 			);
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				array_push(
 					$_configs,
@@ -124,26 +123,8 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header' ) ) {
 							'step' => 1,
 							'max'  => 100,
 						),
+						'divider'     => array( 'ast_class' => 'ast-top-divider' ),
 						'context'     => array(
-							astra_addon_builder_helper()->general_tab_config,
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[header-search-box-type]',
-								'operator' => 'in',
-								'value'    => array( 'slide-search', 'search-box' ),
-							),
-						),
-					),
-					/**
-					 * Option: Divider
-					 */
-					array(
-						'name'     => ASTRA_THEME_SETTINGS . '[header-search-height-divider]',
-						'type'     => 'control',
-						'section'  => 'section-header-search',
-						'control'  => 'ast-divider',
-						'priority' => 3,
-						'settings' => array(),
-						'context'  => array(
 							astra_addon_builder_helper()->general_tab_config,
 							array(
 								'setting'  => ASTRA_THEME_SETTINGS . '[header-search-box-type]',
@@ -228,25 +209,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Header' ) ) {
 								'value'    => array( 'slide-search', 'search-box' ),
 							),
 						),
-					),
-					/**
-					 * Option: Divider
-					 */
-					array(
-						'name'     => ASTRA_THEME_SETTINGS . '[header-search-bg-color-parent-divider]',
-						'type'     => 'control',
-						'section'  => 'section-header-search',
-						'control'  => 'ast-divider',
-						'priority' => 9,
-						'settings' => array(),
-						'context'  => array(
-							astra_addon_builder_helper()->design_tab_config,
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[header-search-box-type]',
-								'operator' => 'in',
-								'value'    => array( 'slide-search', 'search-box' ),
-							),
-						),
+						'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 					),
 					/**
 					 * Search Box Background Color

@@ -29,6 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Offcanvas extends Common_Widget {
 
+
 	/**
 	 * Retrieve Off - Canvas Widget name.
 	 *
@@ -394,7 +395,6 @@ class Offcanvas extends Common_Widget {
 		);
 
 		if ( UAEL_Helper::is_elementor_updated() ) {
-
 			$this->add_control(
 				'new_icon',
 				array(
@@ -619,7 +619,6 @@ class Offcanvas extends Common_Widget {
 		);
 
 		if ( UAEL_Helper::is_elementor_updated() ) {
-
 			$this->add_control(
 				'new_offcanvas_button_icon',
 				array(
@@ -803,7 +802,6 @@ class Offcanvas extends Common_Widget {
 		);
 
 		if ( UAEL_Helper::is_elementor_updated() ) {
-
 			$this->add_control(
 				'new_close_icon',
 				array(
@@ -1951,7 +1949,6 @@ class Offcanvas extends Common_Widget {
 		$menus = $this->get_menus_list();
 
 		if ( ! empty( $menus ) ) {
-
 			$args = array(
 				'echo'        => false,
 				'menu'        => $settings['menu'],
@@ -2084,7 +2081,6 @@ class Offcanvas extends Common_Widget {
 		);
 
 		if ( UAEL_Helper::is_elementor_updated() ) {
-
 			if ( ! isset( $settings['close_icon'] ) && ! \Elementor\Icons_Manager::is_migration_allowed() ) {
 				// add old default.
 				$settings['close_icon'] = 'fa fa-close';
@@ -2158,7 +2154,6 @@ class Offcanvas extends Common_Widget {
 		<span <?php echo wp_kses_post( $this->get_render_attribute_string( 'content-wrapper' ) ); ?>>
 
 			<?php if ( UAEL_Helper::is_elementor_updated() ) { ?>
-
 				<?php if ( ! empty( $settings['offcanvas_button_icon'] ) || ! empty( $settings['new_offcanvas_button_icon'] ) ) { ?>
 					<span <?php echo wp_kses_post( $this->get_render_attribute_string( 'icon-align' ) ); ?>>
 						<?php
@@ -2249,16 +2244,13 @@ class Offcanvas extends Common_Widget {
 					}
 
 					if ( UAEL_Helper::is_elementor_updated() ) {
-
 						$icon_migrated = isset( $settings['__fa4_migrated']['new_icon'] );
 						$icon_is_new   = ! isset( $settings['icon'] );
 
 						if ( $icon_migrated || $icon_is_new ) {
-
 							ob_start();
 							\Elementor\Icons_Manager::render_icon( $settings['new_icon'], array( 'aria-hidden' => 'true' ) );
 							$inner_html = ob_get_clean();
-
 						} elseif ( ! empty( $settings['icon'] ) ) {
 							$inner_html = '<i class="' . $settings['icon'] . '" aria-hidden="true"></i>';
 						}
@@ -2409,7 +2401,8 @@ class Offcanvas extends Common_Widget {
 	 * @since 1.22.1
 	 * @access protected
 	 */
-	protected function content_template() {}
+	protected function content_template() {
+	}
 
 	/**
 	 * Render offcanvas output in the editor.

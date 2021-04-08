@@ -71,19 +71,7 @@ if ( ! class_exists( 'Astra_Customizer_Header_Builder_Menu_Configs' ) ) {
 							'left'   => __( 'Left', 'astra-addon' ),
 						),
 						'context'           => astra_addon_builder_helper()->design_tab,
-					),
-
-					/**
-					 * Option: Divider
-					 */
-					array(
-						'name'     => ASTRA_THEME_SETTINGS . '[' . $_section . '-menu-submenu-spacing-divider]',
-						'type'     => 'control',
-						'section'  => $_section,
-						'control'  => 'ast-divider',
-						'priority' => 160,
-						'settings' => array(),
-						'context'  => astra_addon_builder_helper()->design_tab,
+						'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					),
 				);
 
@@ -112,18 +100,7 @@ if ( ! class_exists( 'Astra_Customizer_Header_Builder_Menu_Configs' ) ) {
 								'left'   => __( 'Left', 'astra-addon' ),
 							),
 							'context'           => astra_addon_builder_helper()->design_tab,
-						),
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[' . $_section . '-menu-megamenu-spacing-divider]',
-							'type'     => 'control',
-							'section'  => $_section,
-							'control'  => 'ast-divider',
-							'priority' => 170,
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->design_tab,
+							'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 						),
 					);
 
@@ -132,33 +109,7 @@ if ( ! class_exists( 'Astra_Customizer_Header_Builder_Menu_Configs' ) ) {
 			}
 
 			$html_config[] = array(
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[section-hb-language-switcher-flag-spacing-divider]',
-					'type'     => 'control',
-					'section'  => 'section-hb-language-switcher',
-					'control'  => 'ast-divider',
-					'priority' => 300,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->design_tab_config,
-						array(
-							'relation' => 'OR',
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[header-language-switcher-show-flag]',
-								'operator' => '==',
-								'value'    => true,
-							),
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[header-language-switcher-show-name]',
-								'operator' => '==',
-								'value'    => true,
-							),
-						),
-					),
-				),
+
 				/**
 				 * Option: Item Spacing
 				 */
@@ -173,6 +124,7 @@ if ( ! class_exists( 'Astra_Customizer_Header_Builder_Menu_Configs' ) ) {
 					'title'          => __( 'Item Spacing', 'astra-addon' ),
 					'linked_choices' => true,
 					'unit_choices'   => array( 'px', 'em', '%' ),
+					'divider'        => array( 'ast_class' => 'ast-bottom-divider' ),
 					'choices'        => array(
 						'top'    => __( 'Top', 'astra-addon' ),
 						'right'  => __( 'Right', 'astra-addon' ),
@@ -180,19 +132,6 @@ if ( ! class_exists( 'Astra_Customizer_Header_Builder_Menu_Configs' ) ) {
 						'left'   => __( 'Left', 'astra-addon' ),
 					),
 					'context'        => astra_addon_builder_helper()->design_tab,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[section-hb-language-switcher-item-spacing-divider]',
-					'type'     => 'control',
-					'section'  => 'section-hb-language-switcher',
-					'control'  => 'ast-divider',
-					'priority' => 320,
-					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->design_tab,
 				),
 
 				/**
@@ -221,53 +160,6 @@ if ( ! class_exists( 'Astra_Customizer_Header_Builder_Menu_Configs' ) ) {
 			);
 
 			$html_config[] = array(
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[section-fb-language-switcher-flag-spacing-divider]',
-					'type'     => 'control',
-					'section'  => 'section-fb-language-switcher',
-					'control'  => 'ast-divider',
-					'priority' => 300,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->design_tab_config,
-						array(
-							'relation' => 'OR',
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[footer-language-switcher-show-flag]',
-								'operator' => '==',
-								'value'    => true,
-							),
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[footer-language-switcher-show-name]',
-								'operator' => '==',
-								'value'    => true,
-							),
-						),
-					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[section-fb-language-switcher-flag-text-spacing-divider]',
-					'type'     => 'control',
-					'section'  => 'section-fb-language-switcher',
-					'control'  => 'ast-divider',
-					'priority' => 20,
-					'settings' => array(),
-					'context'  => array(
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[footer-language-switcher-show-name]',
-							'operator' => '==',
-							'value'    => true,
-						),
-						astra_addon_builder_helper()->design_tab_config,
-					),
-				),
 
 				/**
 				 * Option: Item Spacing
@@ -290,19 +182,7 @@ if ( ! class_exists( 'Astra_Customizer_Header_Builder_Menu_Configs' ) ) {
 						'left'   => __( 'Left', 'astra-addon' ),
 					),
 					'context'        => astra_addon_builder_helper()->design_tab,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[section-fb-language-switcher-item-spacing-divider]',
-					'type'     => 'control',
-					'section'  => 'section-fb-language-switcher',
-					'control'  => 'ast-divider',
-					'priority' => 320,
-					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->design_tab,
+					'divider'        => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -376,27 +256,8 @@ if ( ! class_exists( 'Astra_Customizer_Header_Builder_Menu_Configs' ) ) {
 						'bottom' => __( 'Bottom', 'astra-addon' ),
 						'left'   => __( 'Left', 'astra-addon' ),
 					),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'           => array(
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
-							'operator' => '==',
-							'value'    => 'menu',
-						),
-						astra_addon_builder_helper()->design_tab_config,
-					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[header-account-menu-colors-divider]',
-					'type'     => 'control',
-					'section'  => 'section-header-account',
-					'control'  => 'ast-divider',
-					'priority' => 510,
-					'settings' => array(),
-					'context'  => array(
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
 							'operator' => '==',

@@ -50,7 +50,7 @@ class Astra_Customizer_Adv_Search_Configs extends Astra_Customizer_Config_Base {
 				'priority'  => 1,
 				'title'     => __( 'Search Style', 'astra-addon' ),
 				'type'      => 'control',
-				'control'   => 'select',
+				'control'   => 'ast-select',
 				'choices'   => array(
 					'slide-search' => __( 'Slide Search', 'astra-addon' ),
 					'full-screen'  => __( 'Full Screen Search', 'astra-addon' ),
@@ -64,19 +64,7 @@ class Astra_Customizer_Adv_Search_Configs extends Astra_Customizer_Config_Base {
 					'container_inclusive' => false,
 					'render_callback'     => array( Astra_Ext_Adv_Search_Markup::get_instance(), 'get_search_markup' ),
 				),
-			),
-
-			/**
-			 * Option: Divider
-			 */
-			array(
-				'name'     => ASTRA_THEME_SETTINGS . '[header-search-box-type-divider]',
-				'type'     => 'control',
-				'section'  => $_section,
-				'control'  => 'ast-divider',
-				'priority' => 1,
-				'settings' => array(),
-				'context'  => astra_addon_builder_helper()->general_tab,
+				'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 			),
 
 			/**

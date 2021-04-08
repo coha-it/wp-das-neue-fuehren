@@ -53,21 +53,8 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Sidebar' ) ) {
 					'transport' => 'postMessage',
 					'default'   => astra_get_option( 'sidebar-bg-obj' ),
 					'title'     => __( 'Background', 'astra-addon' ),
-					'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
-					astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[sidebar-bg-obj-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-sidebars',
-					'priority' => 23,
-					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
+					'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 					astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
@@ -83,7 +70,8 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Sidebar' ) ) {
 					'section'   => 'section-sidebars',
 					'transport' => 'postMessage',
 					'priority'  => 24,
-					'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
+					'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
@@ -98,7 +86,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Sidebar' ) ) {
 					'transport'         => 'postMessage',
 					'name'              => ASTRA_THEME_SETTINGS . '[sidebar-widget-title-color]',
 					'title'             => __( 'Content Title', 'astra-addon' ),
-					'context'           => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'context'           => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
@@ -113,7 +101,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Sidebar' ) ) {
 					'transport'         => 'postMessage',
 					'name'              => ASTRA_THEME_SETTINGS . '[sidebar-text-color]',
 					'title'             => __( 'Content Text', 'astra-addon' ),
-					'context'           => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'context'           => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
@@ -147,39 +135,27 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Sidebar' ) ) {
 
 			);
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
-				array_push(
-					$_configs,
-					/**
-					 * Option: Sidebar Tabs
-					 */
-					array(
-						'name'        => 'section-sidebars-ast-context-tabs',
-						'section'     => 'section-sidebars',
-						'type'        => 'control',
-						'control'     => 'ast-builder-header-control',
-						'priority'    => 0,
-						'description' => '',
-					)
+				$_configs[] = array(
+					'name'        => 'section-sidebars-ast-context-tabs',
+					'section'     => 'section-sidebars',
+					'type'        => 'control',
+					'control'     => 'ast-builder-header-control',
+					'priority'    => 0,
+					'description' => '',
 				);
 			} else {
 
-				array_push(
-					$_configs,
-					/**
-					 * Option: SideBar Color & Background Section heading
-					 */
-					array(
-						'name'     => ASTRA_THEME_SETTINGS . '[sidebar-color-background-heading-divider]',
-						'type'     => 'control',
-						'control'  => 'ast-heading',
-						'section'  => 'section-sidebars',
-						'title'    => __( 'Colors & Background', 'astra-addon' ),
-						'priority' => 23,
-						'settings' => array(),
-						'context'  => astra_addon_builder_helper()->general_tab,
-					)
+				$_configs[] = array(
+					'name'     => ASTRA_THEME_SETTINGS . '[sidebar-color-background-heading-divider]',
+					'type'     => 'control',
+					'control'  => 'ast-heading',
+					'section'  => 'section-sidebars',
+					'title'    => __( 'Colors & Background', 'astra-addon' ),
+					'priority' => 23,
+					'settings' => array(),
+					'context'  => astra_addon_builder_helper()->general_tab,
 				);
 			}
 

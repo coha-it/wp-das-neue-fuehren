@@ -235,7 +235,11 @@
 	for ( var index = 1; index <= astTypography.component_limit; index++ ) {
 
 		var prefix = 'menu' + index;
-		var selector = '.astra-hfb-header .ast-builder-menu-' + index + '.ast-builder-menu .main-header-menu';
+		var selector = '.ast-hfb-header .ast-builder-menu-' + index + '.ast-builder-menu .main-header-menu';
+
+		if ( astTypography.astra_not_updated ) {
+			selector = '.astra-hfb-header .ast-builder-menu-' + index + '.ast-builder-menu .main-header-menu';
+		}
 
 		// Sub-Menu Typography.
 		astra_generate_outside_font_family_css(
@@ -297,7 +301,11 @@
 	 * Mobile menu - Typography
 	 */
 
-	var selector = '.astra-hfb-header .ast-builder-menu-mobile .main-header-menu';
+	var selector = '.ast-hfb-header .ast-builder-menu-mobile .main-header-menu';
+
+	if ( astTypography.astra_not_updated ) {
+		selector = '.astra-hfb-header .ast-builder-menu-mobile .main-header-menu';
+	}
 
 	// Sub-Menu Typography.
 	astra_generate_outside_font_family_css(

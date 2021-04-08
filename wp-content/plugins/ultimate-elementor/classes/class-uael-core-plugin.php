@@ -9,7 +9,6 @@ namespace UltimateElementor;
 
 use UltimateElementor\Classes\UAEL_Helper;
 
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -134,6 +133,8 @@ class UAEL_Core_Plugin {
 
 		add_action( 'elementor/frontend/after_register_scripts', array( $this, 'register_widget_scripts' ) );
 
+		add_action( 'elementor/widgets/widgets_registered', array( $this, 'register_widgets_helper_script' ) );
+
 		add_action( 'elementor/frontend/after_enqueue_styles', array( $this, 'enqueue_widget_styles' ) );
 
 		// Active widgets data to analytics.
@@ -174,10 +175,8 @@ class UAEL_Core_Plugin {
 		);
 
 		if ( '' !== $atts['id'] ) {
-
 			return \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( $atts['id'] );
 		}
-
 	}
 
 	/**
@@ -289,8 +288,7 @@ class UAEL_Core_Plugin {
 
 			// This checks for Chinese language.
 			// The Maps JavaScript API is served within China from http://maps.google.cn.
-			if (
-				'zh-CN' === $map_options['language'] ||
+			if ( 'zh-CN' === $map_options['language'] ||
 				'zh-TW' === $map_options['language']
 			) {
 				$api_url = 'http://maps.googleapis.cn';
@@ -298,11 +296,9 @@ class UAEL_Core_Plugin {
 		}
 
 		if ( isset( $map_options['google_api'] ) && '' !== $map_options['google_api'] ) {
-
 			$language = '&' . $language;
 			$url      = $api_url . '/maps/api/js?key=' . $map_options['google_api'] . $language;
 		} else {
-
 			$url = $api_url . '/maps/api/js?' . $language;
 		}
 
@@ -329,7 +325,6 @@ class UAEL_Core_Plugin {
 		wp_register_script( 'uael-google-recaptcha', 'https://www.google.com/recaptcha/api.js?onload=onLoadUAEReCaptcha&render=explicit', array( 'jquery', 'uael-registration' ), UAEL_VER, true );
 
 		foreach ( $js_files as $handle => $data ) {
-
 			wp_register_script( $handle, UAEL_URL . $data['path'], $data['dep'], UAEL_VER, $data['in_footer'] );
 		}
 
@@ -397,6 +392,23 @@ class UAEL_Core_Plugin {
 	}
 
 	/**
+	 * Register module required js on elementor's editor action.
+	 *
+	 * @since 1.30.0
+	 */
+	public function register_widgets_helper_script() {
+
+		wp_localize_script(
+			'elementor-editor',
+			'UAEWidgetsData',
+			array(
+				'allowed_tags' => UAEL_Helper::ALLOWED_HTML_WRAPPER_TAGS,
+			)
+		);
+
+	}
+
+	/**
 	 * Enqueue module required styles.
 	 *
 	 * @since 0.0.1
@@ -407,7 +419,6 @@ class UAEL_Core_Plugin {
 
 		if ( ! empty( $css_files ) ) {
 			foreach ( $css_files as $handle => $data ) {
-
 				wp_register_style( $handle, UAEL_URL . $data['path'], $data['dep'], UAEL_VER );
 				wp_enqueue_style( $handle );
 			}

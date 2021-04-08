@@ -55,18 +55,7 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_General_Configs' ) ) {
 					'description' => __( 'Remove extra links in the header and footer in LearnDash learning pages', 'astra-addon' ),
 					'priority'    => 5,
 					'control'     => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[learndash-distraction-free-learning-divider]',
-					'type'     => 'control',
-					'section'  => 'section-learndash',
-					'control'  => 'ast-divider',
-					'priority' => 5,
-					'settings' => array(),
+					'divider'     => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -93,6 +82,7 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_General_Configs' ) ) {
 					'section'  => 'section-learndash',
 					'title'    => __( 'Profile Picture Links to:', 'astra-addon' ),
 					'priority' => 15,
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'  => array(
 						astra_addon_builder_helper()->general_tab_config,
 						array(
@@ -101,31 +91,6 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_General_Configs' ) ) {
 							'value'    => true,
 						),
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[learndash-profile-link-divider]',
-					'type'     => 'control',
-					'section'  => 'section-learndash',
-					'control'  => 'ast-divider',
-					'priority' => 15,
-					'settings' => array(),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[learndash-lesson-content]',
-					'type'     => 'control',
-					'title'    => __( 'Course Content Table', 'astra-addon' ),
-					'section'  => 'section-learndash',
-					'control'  => 'ast-divider',
-					'priority' => 20,
-					'settings' => array(),
 				),
 
 				/**
@@ -141,6 +106,9 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_General_Configs' ) ) {
 					'section'     => 'section-learndash',
 					'suffix'      => 'px',
 					'priority'    => 35,
+					'divider'     => array(
+						'ast_class' => 'ast-top-divider',
+					),
 					'input_attrs' => array(
 						'min'  => 0,
 						'step' => 1,

@@ -39,7 +39,7 @@ if ( ! class_exists( 'Astra_Ext_Blog_Pro_Loader' ) ) {
 
 			add_filter( 'astra_theme_defaults', array( $this, 'theme_defaults' ) );
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				add_action( 'customize_preview_init', array( $this, 'preview_scripts' ) );
 			}

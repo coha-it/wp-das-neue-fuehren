@@ -12,6 +12,7 @@ namespace UltimateElementor\Compatibility;
  */
 class UAEL_Wpml {
 
+
 	/**
 	 * Member Variable
 	 *
@@ -51,6 +52,7 @@ class UAEL_Wpml {
 	 */
 	public function includes() {
 
+		include_once 'modules/social-share.php';
 		include_once 'modules/buttons.php';
 		include_once 'modules/table.php';
 		include_once 'modules/google-map.php';
@@ -794,6 +796,23 @@ class UAEL_Wpml {
 				),
 			),
 			'integration-class' => '\UltimateElementor\Compatibility\WPML\RegistrationForm',
+		);
+
+		$widgets['uael-social-share'] = array(
+			'conditions'        => array( 'widgetType' => 'uael-social-share' ),
+			'fields'            => array(
+				array(
+					'field'       => 'share_url',
+					'type'        => __( 'Social Share : Link', 'uael' ),
+					'editor_type' => 'LINE',
+				),
+				array(
+					'field'       => 'custom_share_text',
+					'type'        => __( 'Social Share : Custom Text', 'uael' ),
+					'editor_type' => 'LINE',
+				),
+			),
+			'integration-class' => '\UltimateElementor\Compatibility\WPML\SocialShare',
 		);
 
 		$widgets['uael-gf-styler'] = array(

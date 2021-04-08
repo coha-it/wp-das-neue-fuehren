@@ -1637,7 +1637,7 @@ class UpdraftPlus_Addons_Migrator {
 			}
 
 			// O:8:"DateTime":0:{} : see https://bugs.php.net/bug.php?id=62852
-			if (is_string($data) && false === strpos($data, 'O:8:"DateTime":0:{}') && ($unserialized = @unserialize($data)) !== false) {// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+			if (is_serialized($data) && false === strpos($data, 'O:8:"DateTime":0:{}') && false !== ($unserialized = @unserialize($data))) {// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
 				$data = $this->_migrator_recursive_unserialize_replace($from, $to, $unserialized, true);
 			} elseif (is_array($data)) {
 				$_tmp = array();

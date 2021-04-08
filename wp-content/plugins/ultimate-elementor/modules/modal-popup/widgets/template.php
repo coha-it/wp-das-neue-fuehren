@@ -44,7 +44,7 @@ $this->add_render_attribute(
 			if ( '' !== $settings['title'] ) {
 				?>
 			<div class="uael-modal-title-wrap">
-				<<?php echo esc_attr( $settings['title_tag'] ); ?> class="uael-modal-title elementor-inline-editing" data-elementor-setting-key="title" data-elementor-inline-editing-toolbar="basic"><?php echo wp_kses_post( $this->get_settings_for_display( 'title' ) ); ?></<?php echo esc_attr( $settings['title_tag'] ); ?>>
+				<<?php echo esc_attr( $title_tag ); ?> class="uael-modal-title elementor-inline-editing" data-elementor-setting-key="title" data-elementor-inline-editing-toolbar="basic"><?php echo wp_kses_post( $this->get_settings_for_display( 'title' ) ); ?></<?php echo esc_attr( $title_tag ); ?>>
 			</div>
 			<?php } ?>
 			<div class="uael-modal-text uael-modal-content-data clearfix">

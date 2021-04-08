@@ -597,26 +597,32 @@
 
 		var selector = '.ast-header-sticked .header-widget-area[data-section="sidebar-widgets-header-widget-' + index + '"]';
 
+		if( astSticky.is_flex_based_css ){
+			selector = selector + '.header-widget-area-inner';
+		}else{
+			selector = selector + ' .header-widget-area-inner';
+		}
+
 		// Widget Content Color.
-		astra_css(
-			'astra-settings[sticky-header-widget-' + index + '-color]',
-			'color',
-			selector + ' .header-widget-area-inner'
-		);
+			astra_css(
+				'astra-settings[sticky-header-widget-' + index + '-color]',
+				'color',
+				selector
+			);
 
-		// Widget Link Color.
-		astra_css(
-			'astra-settings[sticky-header-widget-' + index + '-link-color]',
-			'color',
-			selector + ' .header-widget-area-inner a'
-		);
+			// Widget Link Color.
+			astra_css(
+				'astra-settings[sticky-header-widget-' + index + '-link-color]',
+				'color',
+				selector + ' a'
+			);
 
-		// Widget Link Hover Color.
-		astra_css(
-			'astra-settings[sticky-header-widget-' + index + '-link-h-color]',
-			'color',
-			selector + ' .header-widget-area-inner a:hover'
-		);
+			// Widget Link Hover Color.
+			astra_css(
+				'astra-settings[sticky-header-widget-' + index + '-link-h-color]',
+				'color',
+				selector + ' a:hover'
+			);
 
 		// Widget Title Color.
 		astra_css(

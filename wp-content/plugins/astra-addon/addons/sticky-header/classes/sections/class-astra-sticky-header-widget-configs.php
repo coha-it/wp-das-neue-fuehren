@@ -116,6 +116,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Widget_Configs' ) ) {
 						'control'           => 'ast-color',
 						'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
 						'title'             => __( 'Link Hover Color', 'astra-addon' ),
+						'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					),
 				);
 

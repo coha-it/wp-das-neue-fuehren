@@ -31,6 +31,12 @@ class Astra_Ext_Footer_Button_Component {
 		// @codingStandardsIgnoreStart WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
 		require_once ASTRA_EXT_FOOTER_BUTTON_DIR . 'classes/class-astra-ext-footer-button-component-loader.php';
 		// @codingStandardsIgnoreEnd WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
+
+		// Include front end files.
+		if ( ! is_admin() ) {
+			require_once ASTRA_EXT_FOOTER_BUTTON_DIR . 'dynamic-css/dynamic.css.php';
+		}
+		// @codingStandardsIgnoreEnd WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
 	}
 }
 

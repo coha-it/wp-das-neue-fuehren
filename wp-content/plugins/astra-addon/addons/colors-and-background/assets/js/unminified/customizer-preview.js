@@ -355,7 +355,13 @@
 	for ( var index = 1; index <= astColors.component_limit; index++ ) {
 
 		var prefix = 'menu' + index;
-		var selector = '.astra-hfb-header .ast-builder-menu-' + index + '.ast-builder-menu .main-header-menu';
+
+		var selector = '.ast-hfb-header .ast-builder-menu-' + index + '.ast-builder-menu .main-header-menu';
+
+		if ( astColors.astra_not_updated ) {
+
+			selector = '.astra-hfb-header .ast-builder-menu-' + index + '.ast-builder-menu .main-header-menu';
+		}
 
 		/**
 		 * Sub-Menu - Colors
@@ -413,19 +419,20 @@
 			/**
 			 * Mega Menu - Colors
 			 */
+			var ast_class = ( astColors.astra_not_updated ) ? '.astra-hfb-header' : '.ast-hfb-header';
 
 			// Mega-Menu - Normal Color
 			astra_css(
 				'astra-settings[header-' + prefix + '-header-megamenu-heading-color]',
 				'color',
-				'.astra-hfb-header.ast-desktop .ast-builder-menu-' + index + ' .main-header-menu .menu-item.menu-item-heading > .menu-link'
+				ast_class + '.ast-desktop .ast-builder-menu-' + index + ' .main-header-menu .menu-item.menu-item-heading > .menu-link'
 			);
 
 			// Mega-Menu - Hover Color
 			astra_css(
 				'astra-settings[header-' + prefix + '-header-megamenu-heading-h-color]',
 				'color',
-				'.astra-hfb-header.ast-desktop .ast-builder-menu-' + index + ' .main-header-menu .astra-megamenu-li .menu-item.menu-item-heading > .menu-link:hover, .astra-hfb-header.ast-desktop .ast-builder-menu-' + index + ' .main-header-menu .astra-megamenu-li .menu-item.menu-item-heading:hover > .menu-link'
+				ast_class + '.ast-desktop .ast-builder-menu-' + index + ' .main-header-menu .astra-megamenu-li .menu-item.menu-item-heading > .menu-link:hover, ' + ast_class + '.ast-desktop .ast-builder-menu-' + index + ' .main-header-menu .astra-megamenu-li .menu-item.menu-item-heading:hover > .menu-link'
 			);
 		}
 
@@ -433,9 +440,13 @@
 	/**
 	 * Mobile menu CSS
 	 */
+	
+	var selector = '.ast-hfb-header .ast-builder-menu-mobile .main-header-menu';
 
-	var selector = '.astra-hfb-header .ast-builder-menu-mobile .main-header-menu';
+	if ( astColors.astra_not_updated ) {
 
+		selector = '.astra-hfb-header .ast-builder-menu-mobile .main-header-menu';
+	}
 	/**
 	 * Sub-Menu - Colors
 	 */

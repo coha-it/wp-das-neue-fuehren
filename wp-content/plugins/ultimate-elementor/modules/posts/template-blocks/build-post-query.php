@@ -18,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Build_Post_Query {
 
+
 	/**
 	 * Loop query counter
 	 *
@@ -149,12 +150,10 @@ class Build_Post_Query {
 		$query_args['ignore_sticky_posts'] = ( isset( $settings['ignore_sticky_posts'] ) && 'yes' === $settings['ignore_sticky_posts'] ) ? 1 : 0;
 
 		if ( ! empty( $settings['post_filter'] ) ) {
-
 			$query_args[ $settings['post_filter_rule'] ] = $settings['post_filter'];
 		}
 
 		if ( '' !== $settings['author_filter'] ) {
-
 			$query_args[ $settings['author_filter_rule'] ] = $settings['author_filter'];
 		}
 
@@ -162,14 +161,11 @@ class Build_Post_Query {
 		$taxonomy = UAEL_Posts_Helper::get_taxonomy( $post_type );
 
 		if ( ! empty( $taxonomy ) && ! is_wp_error( $taxonomy ) ) {
-
 			// Get all taxonomy values under the taxonomy.
 
 			$tax_count = 0;
 			foreach ( $taxonomy as $index => $tax ) {
-
 				if ( ! empty( $settings[ 'tax_' . $index . '_' . $post_type . '_filter' ] ) ) {
-
 					$operator = $settings[ $index . '_' . $post_type . '_filter_rule' ];
 
 					$query_args['tax_query'][] = array(
@@ -184,7 +180,6 @@ class Build_Post_Query {
 		}
 
 		if ( '' !== self::$filter && '*' !== self::$filter ) {
-
 			$query_args['tax_query'][ $tax_count ]['taxonomy'] = $settings[ $control_id . 'tax_masonry_' . $post_type . '_filter' ];
 			$query_args['tax_query'][ $tax_count ]['field']    = 'slug';
 			$query_args['tax_query'][ $tax_count ]['terms']    = self::$filter;
@@ -207,7 +202,6 @@ class Build_Post_Query {
 
 		// Exclude current post.
 		if ( 'yes' === $settings['query_exclude_current'] ) {
-
 			$query_args['post__not_in'][] = get_the_id();
 		}
 
@@ -225,15 +219,12 @@ class Build_Post_Query {
 		$settings = $this->settings;
 
 		if ( 'main' === $settings['query_type'] ) {
-
 			global $wp_query;
 
 			$main_query = clone $wp_query;
 
 			$this->query = $main_query;
-
 		} else {
-
 			$query_args  = $this->query_posts_args();
 			$this->query = new \WP_Query( $query_args );
 		}

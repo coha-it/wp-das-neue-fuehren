@@ -678,33 +678,6 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 
 			$html_config[] = array(
 
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[header-account-popup-heading-divider]',
-					'type'     => 'control',
-					'section'  => $_section,
-					'control'  => 'ast-divider',
-					'priority' => 21,
-					'context'  => array(
-						astra_addon_builder_helper()->design_tab_config,
-						array(
-							'relation' => 'OR',
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
-								'operator' => '==',
-								'value'    => 'menu',
-							),
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[header-account-logout-action]',
-								'operator' => '==',
-								'value'    => 'login',
-							),
-						),
-					),
-				),
-
 				// Option Group: Menu Typography.
 				array(
 					'name'      => ASTRA_THEME_SETTINGS . '[' . $_section . '-menu-typography]',
@@ -895,25 +868,6 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 
 			$html_config[] = array(
 
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[section-hb-language-switcher-typography-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'context'  => array(
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[header-language-switcher-show-name]',
-							'operator' => '==',
-							'value'    => true,
-						),
-						astra_addon_builder_helper()->design_tab_config,
-					),
-					'section'  => $hb_lswitcher_section,
-					'priority' => 23,
-				),
-
 				array(
 					'name'      => $parent,
 					'default'   => astra_get_option( $hb_lswitcher_section . '-typography' ),
@@ -1051,6 +1005,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'section'   => $fb_lswitcher_section,
 					'transport' => 'postMessage',
 					'priority'  => 23,
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'   => array(
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[footer-language-switcher-show-name]',

@@ -48,18 +48,6 @@ class Astra_Social_Component_Configs {
 
 			$_configs = array(
 
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-social-' . $index . '-stack-divider]',
-					'type'     => 'control',
-					'section'  => $_section,
-					'control'  => 'ast-divider',
-					'priority' => 3,
-					'settings' => array(),
-				),
-
 				array(
 					'name'       => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-social-' . $index . '-stack]',
 					'default'    => astra_get_option( $builder_type . '-social-' . $index . '-stack' ),
@@ -78,6 +66,7 @@ class Astra_Social_Component_Configs {
 					'context'    => astra_addon_builder_helper()->general_tab,
 					'renderAs'   => 'text',
 					'responsive' => false,
+					'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 			);
 

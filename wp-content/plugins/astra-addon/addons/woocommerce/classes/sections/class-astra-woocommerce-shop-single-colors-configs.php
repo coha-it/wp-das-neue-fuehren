@@ -39,26 +39,6 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Colors_Configs' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option: WooCommerce single page Colors Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[woo-single-page-divider]',
-					'type'     => 'control',
-					'section'  => 'section-woo-shop-single',
-					'control'  => 'ast-divider',
-					'priority' => 80,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[shop-product-structure]',
-							'operator' => 'contains',
-							'value'    => 'title',
-						),
-					),
-				),
-
-				/**
 				 * Single Product Title Color
 				 */
 				array(
@@ -78,7 +58,9 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Colors_Configs' ) ) {
 							'value'    => 'title',
 						),
 					),
+					'divider'           => array( 'ast_class' => 'ast-top-divider' ),
 					'priority'          => 80,
+					'divider'           => array( 'ast_class' => 'ast-top-divider' ),
 				),
 
 				/**
@@ -148,6 +130,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Single_Colors_Configs' ) ) {
 						),
 					),
 					'priority'          => 80,
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 			);
 

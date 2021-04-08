@@ -66,7 +66,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 					'default'     => astra_get_option( 'mobile-below-header-menu-style' ),
 					'title'       => __( 'Menu Style', 'astra-addon' ),
 					'type'        => 'control',
-					'control'     => 'select',
+					'control'     => 'ast-select',
 					'transport'   => 'refresh',
 					'context'     => array(
 						astra_addon_builder_helper()->general_tab_config,
@@ -103,7 +103,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 					'default'  => astra_get_option( 'flyout-mobile-below-header-menu-alignment' ),
 					'title'    => __( 'Flyout Menu Alignment', 'astra-addon' ),
 					'type'     => 'control',
-					'control'  => 'select',
+					'control'  => 'ast-select',
 					'priority' => 106,
 					'choices'  => array(
 						'left'  => __( 'Left', 'astra-addon' ),
@@ -125,7 +125,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 				array(
 					'name'      => ASTRA_THEME_SETTINGS . '[mobile-below-header-toggle-btn-style]',
 					'type'      => 'control',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'section'   => 'section-below-header',
 					'title'     => __( 'Toggle Button Style', 'astra-addon' ),
 					'transport' => 'postMessage',
@@ -160,6 +160,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 					'type'              => 'control',
 					'control'           => 'ast-color',
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'           => array(
 						astra_addon_builder_helper()->general_tab_config,
 						'relation' => 'AND',
@@ -214,34 +215,6 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 					),
 				),
 
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[mobile-below-header-menu-all-border-divider]',
-					'type'     => 'control',
-					'section'  => 'section-below-header',
-					'control'  => 'ast-divider',
-					'priority' => 130,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						'relation' => 'AND',
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-layout]',
-							'operator' => '!=',
-							'value'    => 'disabled',
-						),
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-on-mobile]',
-							'operator' => '==',
-							'value'    => true,
-						),
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[below-header-merge-menu]',
-							'operator' => '!=',
-							'value'    => true,
-						),
-					),
-				),
-
 				/**
 				 * Option: Mobile Header Menu Border
 				 */
@@ -290,7 +263,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Below_Header_Configs' ) ) {
 					'type'              => 'control',
 					'control'           => 'ast-color',
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
-					'default'           => '#dadada',
+					'default'           => astra_get_option( 'mobile-below-header-menu-b-color', '#dadada' ),
 					'transport'         => 'postMessage',
 					'title'             => __( 'Menu Items Border Color', 'astra-addon' ),
 					'context'           => array(

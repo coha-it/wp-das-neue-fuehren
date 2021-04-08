@@ -182,19 +182,24 @@ class Admin {
 			$icon = !empty($document->icon) ? $document->icon : WPO_WCPDF()->plugin_url() . "/assets/images/generic_document.png";
 			if ( $document = wcpdf_get_document( $document->get_type(), $order ) ) {
 				$document_title = is_callable( array( $document, 'get_title' ) ) ? $document->get_title() : $document_title;
+				$document_exists = is_callable( array( $document, 'exists' ) ) ? $document->exists() : false;
 				$listing_actions[$document->get_type()] = array(
-					'url'		=> wp_nonce_url( admin_url( "admin-ajax.php?action=generate_wpo_wcpdf&document_type={$document->get_type()}&order_ids=" . WCX_Order::get_id( $order ) ), 'generate_wpo_wcpdf' ),
-					'img'		=> $icon,
-					'alt'		=> "PDF " . $document_title,
-					'exists'	=> is_callable( array( $document, 'exists' ) ) ? $document->exists() : false,
+					'url'    => wp_nonce_url( admin_url( "admin-ajax.php?action=generate_wpo_wcpdf&document_type={$document->get_type()}&order_ids=" . WCX_Order::get_id( $order ) ), 'generate_wpo_wcpdf' ),
+					'img'    => $icon,
+					'alt'    => "PDF " . $document_title,
+					'exists' => $document_exists,
+					'class'  => apply_filters( 'wpo_wcpdf_action_button_class', $document_exists ? "exists " . $document->get_type() : $document->get_type(), $document ),
 				);
 			}
 		}
 
-		$listing_actions = apply_filters( 'wpo_wcpdf_listing_actions', $listing_actions, $order );			
+		$listing_actions = apply_filters( 'wpo_wcpdf_listing_actions', $listing_actions, $order );
 
 		foreach ($listing_actions as $action => $data) {
-			?><a href="<?php echo $data['url']; ?>" class="button tips wpo_wcpdf <?php echo $data['exists'] == true ? "exists " . $action : $action; ?>" target="_blank" alt="<?php echo $data['alt']; ?>" data-tip="<?php echo $data['alt']; ?>">
+			if ( !isset( $data['class'] ) ) {
+				$data['class'] = $data['exists'] ? "exists " . $action : $action;
+			}
+			?><a href="<?php echo $data['url']; ?>" class="button tips wpo_wcpdf <?php echo $data['class']; ?>" target="_blank" alt="<?php echo $data['alt']; ?>" data-tip="<?php echo $data['alt']; ?>">
 				<img src="<?php echo $data['img']; ?>" alt="<?php echo $data['alt']; ?>" width="16">
 			</a><?php
 		}
@@ -294,7 +299,7 @@ class Admin {
 		<ul class="wpo_wcpdf_send_emails submitbox">
 			<li class="wide" id="actions">
 				<select name="wpo_wcpdf_send_emails">
-					<option value=""></option>
+					<option value=""><?php esc_html_e( 'Choose an email to send&hellip;', 'woocommerce' ); ?></option>
 					<?php
 					$mailer           = WC()->mailer();
 					$available_emails = apply_filters( 'woocommerce_resend_order_emails_available', array( 'new_order', 'cancelled_order', 'customer_processing_order', 'customer_completed_order', 'customer_invoice' ) );
@@ -314,7 +319,6 @@ class Admin {
 				<?php
 				$title = __( 'Send email', 'woocommerce-pdf-invoices-packing-slips' );
 				$url = wp_nonce_url( add_query_arg('wpo_wcpdf_action','resend_email'), 'generate_wpo_wcpdf' );
-				// printf('<a href="%s" class="button wpo_wcpdf_send_email"><span>%s</span></a>')
 				?>
 			</li>
 		</ul>
@@ -427,7 +431,7 @@ class Admin {
 				<!-- Title -->
 				<h4>
 					<?= $document->get_title(); ?>
-					<?php if( $document->exists() ) : ?>
+					<?php if( $document->exists() && ( isset( $data['number'] ) || isset( $data['date'] ) ) ) : ?>
 						<span class="wpo-wcpdf-edit-date-number dashicons dashicons-edit"></span>
 						<span class="wpo-wcpdf-delete-document dashicons dashicons-trash" data-nonce="<?php echo wp_create_nonce( "wpo_wcpdf_delete_document" ); ?>"></span>
 						<?php do_action( 'wpo_wcpdf_document_actions', $document ); ?>
@@ -437,6 +441,7 @@ class Admin {
 				<!-- Read only -->
 				<div class="read-only">
 					<?php if( $document->exists() ) : ?>
+						<?php if( isset( $data['number'] ) ) : ?>
 						<div class="<?= $document->get_type(); ?>-number">
 							<p class="form-field <?= $data['number']['name']; ?>_field">	
 								<p>
@@ -445,6 +450,8 @@ class Admin {
 								</p>
 							</p>
 						</div>
+						<?php endif; ?>
+						<?php if( isset( $data['date'] ) ) : ?>
 						<div class="<?= $document->get_type(); ?>-date">
 							<p class="form-field form-field-wide">
 								<p>
@@ -453,6 +460,7 @@ class Admin {
 								</p>
 							</p>
 						</div>
+						<?php endif; ?>
 						<?php do_action( 'wpo_wcpdf_meta_box_after_document_data', $document, $document->order ); ?>
 					<?php else : ?>
 						<span class="wpo-wcpdf-set-date-number button"><?php printf( __( 'Set %s number & date', 'woocommerce-pdf-invoices-packing-slips' ), $document->get_title() ); ?></span>
@@ -461,14 +469,18 @@ class Admin {
 
 				<!-- Editable -->
 				<div class="editable">
+					<?php if( isset( $data['number'] ) ) : ?>
 					<p class="form-field <?= $data['number']['name']; ?>_field ">
 						<label for="<?= $data['number']['name']; ?>"><?= $data['number']['label']; ?></label>
 						<input type="text" class="short" style="" name="<?= $data['number']['name']; ?>" id="<?= $data['number']['name']; ?>" value="<?= $data['number']['plain']; ?>" disabled="disabled" > (<?= __( 'unformatted!', 'woocommerce-pdf-invoices-packing-slips' ) ?>)
 					</p>
+					<?php endif; ?>
+					<?php if( isset( $data['date'] ) ) : ?>
 					<p class="form-field form-field-wide">
 						<label for="<?= $data['date']['name'] ?>[date]"><?= $data['date']['label']; ?></label>
 						<input type="text" class="date-picker-field" name="<?= $data['date']['name'] ?>[date]" id="<?= $data['date']['name'] ?>[date]" maxlength="10" value="<?= $data['date']['date']; ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" disabled="disabled"/>@<input type="number" class="hour" disabled="disabled" placeholder="<?php _e( 'h', 'woocommerce' ); ?>" name="<?= $data['date']['name']; ?>[hour]" id="<?= $data['date']['name']; ?>[hour]" min="0" max="23" size="2" value="<?= $data['date']['hour']; ?>" pattern="([01]?[0-9]{1}|2[0-3]{1})" />:<input type="number" class="minute" placeholder="<?php _e( 'm', 'woocommerce' ); ?>" name="<?= $data['date']['name']; ?>[minute]" id="<?= $data['date']['name']; ?>[minute]" min="0" max="59" size="2" value="<?= $data['date']['minute']; ?>" pattern="[0-5]{1}[0-9]{1}"  disabled="disabled" />
 					</p>
+					<?php endif; ?>
 				</div>
 			</section>
 

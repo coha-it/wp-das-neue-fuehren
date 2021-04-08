@@ -39,16 +39,6 @@ if ( ! class_exists( 'Astra_Existing_Nav_Menu_Primary_Header_Colors' ) ) {
 			$_configs = array(
 
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[primary-menu-colors-divider]',
-					'section'  => 'section-primary-menu',
-					'type'     => 'control',
-					'control'  => 'ast-heading',
-					'title'    => __( 'Colors', 'astra-addon' ),
-					'priority' => 69,
-					'settings' => array(),
-				),
-
-				array(
 					'name'      => ASTRA_THEME_SETTINGS . '[primary-mega-menu-col-color-group]',
 					'default'   => astra_get_option( 'primary-mega-menu-col-color-group' ),
 					'type'      => 'control',
@@ -57,6 +47,7 @@ if ( ! class_exists( 'Astra_Existing_Nav_Menu_Primary_Header_Colors' ) ) {
 					'section'   => 'section-primary-menu',
 					'transport' => 'postMessage',
 					'priority'  => 70,
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				// Option: Megamenu Heading Color.

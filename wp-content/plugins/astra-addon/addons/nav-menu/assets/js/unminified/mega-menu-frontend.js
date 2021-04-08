@@ -11,7 +11,9 @@ function display_mega_menu_on_load() {
         for (var i = 0; i < menu_content.length; i++) {
             menu_content[i].addEventListener( "mouseenter", function( event ) {
                 var mega_menu_container = event.target.querySelector(".astra-mega-menu-width-content");
-                mega_menu_container.classList.remove("ast-hidden");
+                if ( null !== mega_menu_container ) {
+                    mega_menu_container.classList.remove("ast-hidden");
+                }
             });
         }
     }
@@ -22,7 +24,9 @@ function display_mega_menu_on_load() {
         for (var i = 0; i < menu_container.length; i++) {
             menu_container[i].addEventListener( "mouseenter", function( event ) {
                 var mega_menu_container = event.target.querySelector(".astra-mega-menu-width-menu-container");
-                mega_menu_container.classList.remove("ast-hidden");
+                if ( null !== mega_menu_container ) {
+                    mega_menu_container.classList.remove("ast-hidden");
+                }
             });
         }
     }
@@ -34,8 +38,12 @@ function display_mega_menu_on_load() {
 			menu_full_width[i].addEventListener( "mouseenter", function( event ) {
                 var mega_menu_container = event.target.querySelector(".astra-full-megamenu-wrapper");
                 var mega_menu_submenu = event.target.querySelector(".astra-mega-menu-width-full");
-                mega_menu_container.classList.remove("ast-hidden");
-                mega_menu_submenu.classList.remove("ast-hidden");
+                if ( null !== mega_menu_container ) {
+                    mega_menu_container.classList.remove("ast-hidden");
+                }
+                if ( null !== mega_menu_submenu ) {
+                    mega_menu_submenu.classList.remove("ast-hidden");
+                }
             });
         }
     }
@@ -47,8 +55,12 @@ function display_mega_menu_on_load() {
             menu_full_width_stretched[i].addEventListener( "mouseenter", function( event ) {
                 var mega_menu_container = event.target.querySelector(".astra-full-megamenu-wrapper");
                 var mega_menu_submenu = event.target.querySelector(".astra-mega-menu-width-full-stretched");
-                mega_menu_container.classList.remove("ast-hidden");
-                mega_menu_submenu.classList.remove("ast-hidden");
+                if ( null !== mega_menu_container ) {
+                    mega_menu_container.classList.remove("ast-hidden");
+                }
+                if ( null !== mega_menu_submenu ) {
+                    mega_menu_submenu.classList.remove("ast-hidden");
+                }
             });
         }
     }
@@ -59,7 +71,9 @@ function display_mega_menu_on_load() {
         for (var i = 0; i < customWidthStretched.length; i++) {
             customWidthStretched[i].addEventListener( "mouseenter", function( event ) {
                 var megaMenuSubmenu = event.target.querySelector(".astra-mega-menu-width-custom");
-                megaMenuSubmenu.classList.remove("ast-hidden");
+                if ( null !== megaMenuSubmenu ) {
+                    megaMenuSubmenu.classList.remove("ast-hidden");
+                }
             });
         }
     }
@@ -80,7 +94,7 @@ var items = document.getElementsByClassName('astra-megamenu-li');
             $main_container = jQuery( $main_container ).closest('.ast-container' );
         }
 
-        if ( parseInt( jQuery(window).width() ) > parseInt( astra.break_point ) ) {
+        if ( ( parseInt( jQuery(window).width() ) > parseInt( astra.break_point ) ) && 'ast-hf-mobile-menu' !== $this.parent().attr("id") ) {
 
             var $menuWidth           = $main_container.width(),
                 $menuPosition        = $main_container.offset(),
@@ -161,7 +175,7 @@ var items = document.getElementsByClassName('astra-megamenu-li');
     $this.find( '.menu-link' ).focusin(function( e ) {
         $this.find( '.sub-menu' ).addClass( 'astra-megamenu-focus' );
         $this.find( '.astra-full-megamenu-wrapper' ).addClass( 'astra-megamenu-wrapper-focus' );
-        if ( parseInt( jQuery(window).width() ) > parseInt( astra.break_point ) ) {
+        if ( parseInt( jQuery(window).width() ) > parseInt( astra.break_point ) && 'ast-hf-mobile-menu' !== $this.parent().attr("id") ) {
 
             var $menuWidth           = $main_container.width(),
                 $menuPosition        = $main_container.offset(),
@@ -189,7 +203,7 @@ var items = document.getElementsByClassName('astra-megamenu-li');
 
             if( $this.hasClass( 'menu-container-width-mega' ) ) {
 
-                var menu_width_container = jQuery(".main-navigation");
+                var menu_width_container = jQuery(container).parents( '.main-navigation' );
 
                 if( $full_width_main_container.hasClass( 'ast-above-header' ) ) {
                     menu_width_container = jQuery(".ast-above-header-navigation");

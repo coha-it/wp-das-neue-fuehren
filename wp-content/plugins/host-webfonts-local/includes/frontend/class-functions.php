@@ -30,6 +30,10 @@ class OMGF_Frontend_Functions
 	{
 		$this->do_optimize = $this->maybe_optimize_fonts();
 
+		if (!$this->do_optimize) {
+			return;
+		}
+
 		add_action('wp_head', [$this, 'add_preloads'], 3);
 		add_action('wp_print_styles', [$this, 'process_fonts'], PHP_INT_MAX - 1000);
 	}
@@ -67,21 +71,32 @@ class OMGF_Frontend_Functions
 			return;
 		}
 
-		$stylesheets = apply_filters('omgf_frontend_optimized_fonts', omgf_init()::optimized_fonts());
+		$optimized_fonts = apply_filters('omgf_frontend_optimized_fonts', omgf_init()::optimized_fonts());
+
+		/**
+		 * When OMGF Pro is enabled and set to Automatic mode, the merged handle is used to only load selected
+		 * preloads for the currently used stylesheet.
+		 */
+		$id         = get_queried_object_id();
+		$pro_handle = apply_filters('omgf_pro_merged_handle', '', $id);
 
 		$i = 0;
 
-		foreach ($stylesheets as $stylesheet => $fonts) {
-			foreach ($fonts as $font) {
-				$preloads_stylesheet = $preloaded_fonts[$stylesheet] ?? [];
+		foreach ($optimized_fonts as $stylesheet_handle => $font_faces) {
+			if ($pro_handle && $stylesheet_handle != $pro_handle) {
+				continue;
+			}
 
-				if (!in_array($font->id, array_keys($preloads_stylesheet))) {
+			foreach ($font_faces as $font_face) {
+				$preloads_stylesheet = $preloaded_fonts[$stylesheet_handle] ?? [];
+
+				if (!in_array($font_face->id, array_keys($preloads_stylesheet))) {
 					continue;
 				}
 
-				$font_id          = $font->id;
+				$font_id          = $font_face->id;
 				$preload_variants = array_filter(
-					(array) $font->variants,
+					(array) $font_face->variants,
 					function ($variant) use ($preloads_stylesheet, $font_id) {
 						return in_array($variant->id, $preloads_stylesheet[$font_id]);
 					}
@@ -101,10 +116,6 @@ class OMGF_Frontend_Functions
 	 */
 	public function process_fonts()
 	{
-		if (!$this->do_optimize) {
-			return;
-		}
-
 		if (is_admin()) {
 			return;
 		}
