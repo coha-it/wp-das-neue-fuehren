@@ -440,31 +440,39 @@ if ( ! class_exists( 'Astra_Ext_Nav_Menu_Loader' ) ) {
 				$defaults[ 'header-text-transform-' . $_prefix . '-sub-menu' ] = '';
 				$defaults[ 'header-line-height-' . $_prefix . '-sub-menu' ]    = '';
 
-				/**
-				 * Mega Menu Color.
-				 */
-				$defaults[ 'header-' . $_prefix . '-header-megamenu-heading-color' ]   = '';
-				$defaults[ 'header-' . $_prefix . '-header-megamenu-heading-h-color' ] = '';
+				if ( $index < 3 ) {
+					/**
+					 * Mega Menu Spacing.
+					 */
+					$defaults[ 'header-' . $_prefix . '-megamenu-heading-space' ]        = astra_addon_builder_helper()->default_responsive_spacing;
+					$defaults[ 'header-' . $_prefix . '-header-megamenu-heading-space' ] = astra_addon_builder_helper()->default_responsive_spacing;
 
-				/**
-				 * Mega Menu Typography.
-				 */
-				$defaults[ 'header-' . $_prefix . '-megamenu-heading-font-family' ]    = 'inherit';
-				$defaults[ 'header-' . $_prefix . '-megamenu-heading-font-weight' ]    = '700';
-				$defaults[ 'header-' . $_prefix . '-megamenu-heading-text-transform' ] = '';
-				$defaults[ 'header-' . $_prefix . '-megamenu-heading-font-size' ]      = array(
-					'desktop'      => '',
-					'tablet'       => '',
-					'mobile'       => '',
-					'desktop-unit' => 'px',
-					'tablet-unit'  => 'px',
-					'mobile-unit'  => 'px',
-				);
+					/**
+					 * Mega Menu Color.
+					 */
+					$defaults[ 'header-' . $_prefix . '-header-megamenu-heading-color' ]   = '';
+					$defaults[ 'header-' . $_prefix . '-header-megamenu-heading-h-color' ] = '';
 
+					/**
+					 * Mega Menu Typography.
+					 */
+					$defaults[ 'header-' . $_prefix . '-megamenu-heading-font-family' ]    = 'inherit';
+					$defaults[ 'header-' . $_prefix . '-megamenu-heading-font-weight' ]    = '700';
+					$defaults[ 'header-' . $_prefix . '-megamenu-heading-text-transform' ] = '';
+					$defaults[ 'header-' . $_prefix . '-megamenu-heading-font-size' ]      = array(
+						'desktop'      => '',
+						'tablet'       => '',
+						'mobile'       => '',
+						'desktop-unit' => 'px',
+						'tablet-unit'  => 'px',
+						'mobile-unit'  => 'px',
+					);
+
+				}
 				/**
 				 * Menu Spacing.
 				 */
-				$defaults[ 'header-' . $_prefix . '-spacing' ]                       = array(
+				$defaults[ 'header-' . $_prefix . '-spacing' ]         = array(
 					'desktop'      => array(
 						'top'    => '',
 						'right'  => '',
@@ -487,7 +495,7 @@ if ( ! class_exists( 'Astra_Ext_Nav_Menu_Loader' ) ) {
 					'tablet-unit'  => 'px',
 					'mobile-unit'  => 'px',
 				);
-				$defaults[ 'header-' . $_prefix . '-submenu-spacing' ]               = array(
+				$defaults[ 'header-' . $_prefix . '-submenu-spacing' ] = array(
 					'desktop'      => array(
 						'top'    => '',
 						'right'  => '',
@@ -510,29 +518,7 @@ if ( ! class_exists( 'Astra_Ext_Nav_Menu_Loader' ) ) {
 					'tablet-unit'  => 'px',
 					'mobile-unit'  => 'px',
 				);
-				$defaults[ 'header-' . $_prefix . '-header-megamenu-heading-space' ] = array(
-					'desktop'      => array(
-						'top'    => '',
-						'right'  => '',
-						'bottom' => '',
-						'left'   => '',
-					),
-					'tablet'       => array(
-						'top'    => '',
-						'right'  => '',
-						'bottom' => '',
-						'left'   => '',
-					),
-					'mobile'       => array(
-						'top'    => '',
-						'right'  => '',
-						'bottom' => '',
-						'left'   => '',
-					),
-					'desktop-unit' => 'px',
-					'tablet-unit'  => 'px',
-					'mobile-unit'  => 'px',
-				);
+
 			}
 
 			// Mobile Menu.
@@ -545,6 +531,8 @@ if ( ! class_exists( 'Astra_Ext_Nav_Menu_Loader' ) ) {
 			$defaults['header-mobile-menu-submenu-h-color']    = '';
 			$defaults['header-mobile-menu-submenu-a-bg-color'] = '';
 			$defaults['header-mobile-menu-submenu-a-color']    = '';
+
+			$defaults['header-mobile-menu-submenu-spacing'] = astra_addon_builder_helper()->default_responsive_spacing;
 
 			/**
 			 * Sub Menu - Typography.

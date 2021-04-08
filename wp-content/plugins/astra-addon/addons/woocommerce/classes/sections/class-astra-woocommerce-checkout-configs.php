@@ -45,7 +45,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Checkout_Configs' ) ) {
 					'name'      => ASTRA_THEME_SETTINGS . '[checkout-content-width]',
 					'default'   => astra_get_option( 'checkout-content-width' ),
 					'type'      => 'control',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'priority'  => 5,
 					'section'   => 'woocommerce_checkout',
 					'transport' => 'postMessage',
@@ -54,6 +54,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Checkout_Configs' ) ) {
 						'default' => __( 'Default', 'astra-addon' ),
 						'custom'  => __( 'Custom', 'astra-addon' ),
 					),
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -82,29 +83,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Checkout_Configs' ) ) {
 						'step' => 1,
 						'max'  => 1920,
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[checkout-content-max-width-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_checkout',
-					'control'  => 'ast-divider',
-					'priority' => 5,
-					'settings' => array(),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[two-step-checkout-before-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_checkout',
-					'control'  => 'ast-divider',
-					'settings' => array(),
+					'divider'     => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -117,17 +96,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Checkout_Configs' ) ) {
 					'section' => 'woocommerce_checkout',
 					'title'   => __( 'Two Step Checkout', 'astra-addon' ),
 					'control' => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[two-step-checkout-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_checkout',
-					'control'  => 'ast-divider',
-					'settings' => array(),
+					'divider' => array( 'ast_class' => 'ast-bottom-divider ast-top-divider' ),
 				),
 
 				/**
@@ -140,17 +109,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Checkout_Configs' ) ) {
 					'section' => 'woocommerce_checkout',
 					'title'   => __( 'Display Order Note', 'astra-addon' ),
 					'control' => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[checkout-order-notes-display-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_checkout',
-					'control'  => 'ast-divider',
-					'settings' => array(),
+					'divider' => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -163,17 +122,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Checkout_Configs' ) ) {
 					'section' => 'woocommerce_checkout',
 					'title'   => __( 'Display Apply Coupon Field', 'astra-addon' ),
 					'control' => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[checkout-coupon-display-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_checkout',
-					'control'  => 'ast-divider',
-					'settings' => array(),
+					'divider' => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/*
@@ -186,17 +135,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Checkout_Configs' ) ) {
 					'section' => 'woocommerce_checkout',
 					'title'   => __( 'Distraction Free Checkout', 'astra-addon' ),
 					'control' => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[checkout-distraction-free-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_checkout',
-					'control'  => 'ast-divider',
-					'settings' => array(),
+					'divider' => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/*
@@ -209,17 +148,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Checkout_Configs' ) ) {
 					'section' => 'woocommerce_checkout',
 					'title'   => __( 'Use Labels as Placeholders', 'astra-addon' ),
 					'control' => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[checkout-labels-as-placeholders-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_checkout',
-					'control'  => 'ast-divider',
-					'settings' => array(),
+					'divider' => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/*

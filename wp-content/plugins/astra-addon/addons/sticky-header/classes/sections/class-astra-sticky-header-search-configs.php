@@ -145,6 +145,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Search_Configs' ) ) {
 							'value'    => array( 'slide-search', 'search-box' ),
 						),
 					),
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**

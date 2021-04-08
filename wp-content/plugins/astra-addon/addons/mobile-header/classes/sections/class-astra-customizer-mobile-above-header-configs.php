@@ -68,7 +68,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Above_Header_Configs' ) ) {
 					'type'        => 'control',
 					'default'     => astra_get_option( 'mobile-above-header-menu-style' ),
 					'title'       => __( 'Menu Style', 'astra-addon' ),
-					'control'     => 'select',
+					'control'     => 'ast-select',
 					'context'     => array(
 						'relation' => 'AND',
 						array(
@@ -114,7 +114,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Above_Header_Configs' ) ) {
 					'type'     => 'control',
 					'default'  => astra_get_option( 'flyout-mobile-above-header-menu-alignment' ),
 					'title'    => __( 'Flyout Menu Alignment', 'astra-addon' ),
-					'control'  => 'select',
+					'control'  => 'ast-select',
 					'priority' => 102,
 					'choices'  => array(
 						'left'  => __( 'Left', 'astra-addon' ),
@@ -166,7 +166,7 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Above_Header_Configs' ) ) {
 					),
 					'type'      => 'control',
 					'transport' => 'refresh',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'priority'  => 103,
 					'choices'   => array(
 						'fill'    => __( 'Fill', 'astra-addon' ),
@@ -311,8 +311,9 @@ if ( ! class_exists( 'Astra_Customizer_Mobile_Above_Header_Configs' ) ) {
 					'name'              => ASTRA_THEME_SETTINGS . '[mobile-above-header-menu-b-color]',
 					'type'              => 'control',
 					'control'           => 'ast-color',
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
-					'default'           => '#dadada',
+					'default'           => astra_get_option( 'mobile-above-header-menu-b-color', '#dadada' ),
 					'transport'         => 'postMessage',
 					'title'             => __( 'Menu Items Border Color', 'astra-addon' ),
 					'context'           => array(

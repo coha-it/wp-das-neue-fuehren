@@ -424,7 +424,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	/* Parse CSS from array() */
 	$css_output = astra_parse_css( $css_output );
 
-	if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+	if ( false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 		$primary_menu_font_size      = astra_get_option( 'font-size-primary-menu' );
 		$primary_menu_font_weight    = astra_get_option( 'font-weight-primary-menu' );
@@ -540,7 +540,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	/* Parse CSS from array() */
 	$css_output .= astra_parse_css( $tablet_css, '', astra_addon_get_tablet_breakpoint() );
 
-	if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+	if ( false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 		$menu_tablet_css = array(
 			'.main-navigation' => array(
 				'font-size' => astra_responsive_font( $primary_menu_font_size, 'tablet' ),
@@ -588,7 +588,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	/* Parse CSS from array() */
 	$css_output .= astra_parse_css( $mobile_css, '', astra_addon_get_mobile_breakpoint() );
 
-	if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+	if ( false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 		$menu_mobile_css = array(
 			'.main-navigation' => array(
 				'font-size' => astra_responsive_font( $primary_menu_font_size, 'mobile' ),
@@ -606,7 +606,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	/**
 	 * Merge Header Section when no primary menu
 	 */
-	if ( Astra_Ext_Extension::is_active( 'header-sections' ) && ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+	if ( Astra_Ext_Extension::is_active( 'header-sections' ) && false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 		/**
 		 * Set font sizes
 		 */
@@ -672,7 +672,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 		$css_output .= astra_parse_css( $mobile_header_sections, '', astra_addon_get_mobile_breakpoint( 1, '' ) );
 	}
 
-	if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+	if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 		/**
 		 * Header - Menu - Typography.
@@ -687,8 +687,14 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 			$_prefix  = 'menu' . $index;
 			$_section = 'section-hb-menu-' . $index;
 
-			$selector         = '.astra-hfb-header .ast-builder-menu-' . $index . ' .main-header-menu';
-			$selector_desktop = '.astra-hfb-header.ast-desktop .ast-builder-menu-' . $index . ' .main-header-menu';
+			$selector         = '.ast-hfb-header .ast-builder-menu-' . $index . ' .main-header-menu';
+			$selector_desktop = '.ast-hfb-header.ast-desktop .ast-builder-menu-' . $index . ' .main-header-menu';
+
+			if ( version_compare( ASTRA_THEME_VERSION, '3.2.0', '<' ) ) {
+
+				$selector         = '.astra-hfb-header .ast-builder-menu-' . $index . ' .main-header-menu';
+				$selector_desktop = '.astra-hfb-header.ast-desktop .ast-builder-menu-' . $index . ' .main-header-menu';
+			}
 
 			$sub_menu_font_family    = astra_get_option( 'header-font-family-' . $_prefix . '-sub-menu' );
 			$sub_menu_font_size      = astra_get_option( 'header-font-size-' . $_prefix . '-sub-menu' );
@@ -921,7 +927,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 			 */
 			$css_output_desktop = array(
 
-				$selector . ' .widget-title'             => array(
+				$selector . ' .widget-title' => array(
 					// Typography.
 					'font-family'    => astra_get_css_value( $title_font_family, 'font' ),
 					'font-weight'    => astra_get_css_value( $title_font_weight, 'font' ),
@@ -929,15 +935,21 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 					'text-transform' => esc_attr( $title_text_transform ),
 					'letter-spacing' => astra_get_css_value( $title_letter_spacing, 'px' ),
 				),
+			);
 
-				$selector . ' .header-widget-area-inner' => array(
-					// Typography.
-					'font-family'    => astra_get_css_value( $content_font_family, 'font' ),
-					'font-weight'    => astra_get_css_value( $content_font_weight, 'font' ),
-					'line-height'    => esc_attr( $content_line_height ),
-					'text-transform' => esc_attr( $content_text_transform ),
-					'letter-spacing' => astra_get_css_value( $content_letter_spacing, 'px' ),
-				),
+			if ( Astra_Addon_Builder_Helper::apply_flex_based_css() ) {
+				$header_widget_selector = $selector . '.header-widget-area-inner';
+			} else {
+				$header_widget_selector = $selector . ' .header-widget-area-inner';
+			}
+
+			$css_output_desktop[ $header_widget_selector ] = array(
+				// Typography.
+				'font-family'    => astra_get_css_value( $content_font_family, 'font' ),
+				'font-weight'    => astra_get_css_value( $content_font_weight, 'font' ),
+				'line-height'    => esc_attr( $content_line_height ),
+				'text-transform' => esc_attr( $content_text_transform ),
+				'letter-spacing' => astra_get_css_value( $content_letter_spacing, 'px' ),
 			);
 
 			$css_output .= astra_parse_css( $css_output_desktop );
@@ -973,7 +985,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 			 */
 			$css_output_desktop = array(
 
-				$selector . ' .widget-title'             => array(
+				$selector . ' .widget-title' => array(
 					// Typography.
 					'font-family'    => astra_get_css_value( $title_font_family, 'font' ),
 					'font-weight'    => astra_get_css_value( $title_font_weight, 'font' ),
@@ -981,18 +993,24 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 					'text-transform' => esc_attr( $title_text_transform ),
 					'letter-spacing' => astra_get_css_value( $title_letter_spacing, 'px' ),
 				),
+			);
 
-				$selector . ' .footer-widget-area-inner' => array(
+			if ( Astra_Addon_Builder_Helper::apply_flex_based_css() ) {
+				$footer_widget_selector = $selector . '.footer-widget-area-inner';
+			} else {
+				$footer_widget_selector = $selector . ' .footer-widget-area-inner';
+			}
+
+				$css_output_desktop[ $footer_widget_selector ] = array(
 					// Typography.
 					'font-family'    => astra_get_css_value( $content_font_family, 'font' ),
 					'font-weight'    => astra_get_css_value( $content_font_weight, 'font' ),
 					'line-height'    => esc_attr( $content_line_height ),
 					'text-transform' => esc_attr( $content_text_transform ),
 					'letter-spacing' => astra_get_css_value( $content_letter_spacing, 'px' ),
-				),
-			);
+				);
 
-			$css_output .= astra_parse_css( $css_output_desktop );
+				$css_output .= astra_parse_css( $css_output_desktop );
 		}
 
 		/**
@@ -1378,7 +1396,12 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 
 			$_section = 'section-header-mobile-menu';
 
-			$selector = '.astra-hfb-header .ast-builder-menu-mobile .main-header-menu';
+			$selector = '.ast-hfb-header .ast-builder-menu-mobile .main-header-menu';
+
+			if ( version_compare( ASTRA_THEME_VERSION, '3.2.0', '<' ) ) {
+
+				$selector = '.astra-hfb-header .ast-builder-menu-mobile .main-header-menu';
+			}
 
 			$sub_menu_font_family    = astra_get_option( 'header-font-family-mobile-menu-sub-menu' );
 			$sub_menu_font_size      = astra_get_option( 'header-font-size-mobile-menu-sub-menu' );
@@ -1386,10 +1409,12 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 			$sub_menu_text_transform = astra_get_option( 'header-text-transform-mobile-menu-sub-menu' );
 			$sub_menu_line_height    = astra_get_option( 'header-line-height-mobile-menu-sub-menu' );
 
-			$sub_menu_font_size_tablet      = ( isset( $sub_menu_font_size['tablet'] ) ) ? $sub_menu_font_size['tablet'] : '';
-			$sub_menu_font_size_mobile      = ( isset( $sub_menu_font_size['mobile'] ) ) ? $sub_menu_font_size['mobile'] : '';
-			$sub_menu_font_size_tablet_unit = ( isset( $sub_menu_font_size['tablet-unit'] ) ) ? $sub_menu_font_size['tablet-unit'] : '';
-			$sub_menu_font_size_mobile_unit = ( isset( $sub_menu_font_size['mobile-unit'] ) ) ? $sub_menu_font_size['mobile-unit'] : '';
+			$sub_menu_font_size_desktop      = ( isset( $sub_menu_font_size['desktop'] ) ) ? $sub_menu_font_size['desktop'] : '';
+			$sub_menu_font_size_tablet       = ( isset( $sub_menu_font_size['tablet'] ) ) ? $sub_menu_font_size['tablet'] : '';
+			$sub_menu_font_size_mobile       = ( isset( $sub_menu_font_size['mobile'] ) ) ? $sub_menu_font_size['mobile'] : '';
+			$sub_menu_font_size_desktop_unit = ( isset( $sub_menu_font_size['desktop-unit'] ) ) ? $sub_menu_font_size['desktop-unit'] : '';
+			$sub_menu_font_size_tablet_unit  = ( isset( $sub_menu_font_size['tablet-unit'] ) ) ? $sub_menu_font_size['tablet-unit'] : '';
+			$sub_menu_font_size_mobile_unit  = ( isset( $sub_menu_font_size['mobile-unit'] ) ) ? $sub_menu_font_size['mobile-unit'] : '';
 
 			$css_output_common = array(
 
@@ -1398,6 +1423,9 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 					'font-weight'    => esc_attr( $sub_menu_font_weight ),
 					'line-height'    => esc_attr( $sub_menu_line_height ),
 					'text-transform' => esc_attr( $sub_menu_text_transform ),
+				),
+				$selector . '.ast-nav-menu .sub-menu .menu-item .menu-link' => array(
+					'font-size' => astra_get_font_css_value( $sub_menu_font_size_desktop, $sub_menu_font_size_desktop_unit ),
 				),
 			);
 

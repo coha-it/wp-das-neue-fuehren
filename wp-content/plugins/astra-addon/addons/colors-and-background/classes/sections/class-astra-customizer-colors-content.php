@@ -52,17 +52,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Content' ) ) {
 					'label'     => __( 'Background', 'astra-addon' ),
 					'section'   => 'section-colors-content',
 					'transport' => 'postMessage',
-				),
-
-				/**
-				 * Option: heading Color Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[content-color-divider]',
-					'section'  => 'section-colors-content',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'settings' => array(),
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				// Option: Heading 1 <h1> Color.

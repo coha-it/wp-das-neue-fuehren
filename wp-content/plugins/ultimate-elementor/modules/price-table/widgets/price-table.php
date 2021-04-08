@@ -31,6 +31,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Price_Table extends Common_Widget {
 
+
+
 	/**
 	 * Retrieve Price Table Widget name.
 	 *
@@ -374,7 +376,6 @@ class Price_Table extends Common_Widget {
 			)
 		);
 		if ( parent::is_internal_links() ) {
-
 			$this->add_control(
 				'help_doc_pricing',
 				array(
@@ -501,7 +502,6 @@ class Price_Table extends Common_Widget {
 		);
 
 		if ( UAEL_Helper::is_elementor_updated() ) {
-
 			$repeater->add_control(
 				'new_item_icon',
 				array(
@@ -919,7 +919,6 @@ class Price_Table extends Common_Widget {
 		);
 
 		if ( UAEL_Helper::is_elementor_updated() ) {
-
 			$this->add_control(
 				'new_cta_icon',
 				array(
@@ -3276,13 +3275,11 @@ class Price_Table extends Common_Widget {
 	 */
 	public function render_button( $settings ) {
 		if ( 'link' === $settings['price_cta_type'] ) {
-
 			$_nofollow = ( 'on' === $settings['link']['nofollow'] ) ? 'nofollow' : '';
 			$_target   = ( 'on' === $settings['link']['is_external'] ) ? '_blank' : '';
 			$_link     = ( isset( $settings['link']['url'] ) ) ? $settings['link']['url'] : '';
 
 			if ( ! empty( $settings['link']['url'] ) ) {
-
 				$this->add_render_attribute( 'cta_link', 'href', $settings['link']['url'] );
 				$this->add_render_attribute( 'cta_link', 'class', 'uael-pricebox-cta-link' );
 
@@ -3312,7 +3309,6 @@ class Price_Table extends Common_Widget {
 			</a>
 			<?php
 		} elseif ( 'button' === $settings['price_cta_type'] ) {
-
 			$this->add_render_attribute( 'wrapper', 'class', 'uael-button-wrapper elementor-button-wrapper' );
 			if ( ! empty( $settings['link']['url'] ) ) {
 				$this->add_render_attribute( 'button', 'href', $settings['link']['url'] );
@@ -3354,7 +3350,7 @@ class Price_Table extends Common_Widget {
 					if ( 'right' === $settings['cta_icon_position'] ) {
 						$this->render_button_icon( $settings, 'after' );
 						?>
-				<?php } ?>
+					<?php } ?>
 				</a>
 			</div>
 			<?php
@@ -3401,10 +3397,13 @@ class Price_Table extends Common_Widget {
 	public function render_heading_text( $settings ) {
 		if ( $settings['heading'] ) :
 			if ( ! empty( $settings['heading'] ) ) :
+
+				$heading_size_tag = UAEL_Helper::validate_html_tag( $settings['heading_tag'] );
+
 				?>
 				<div class="uael-price-heading-text">
-					<<?php echo esc_attr( $settings['heading_tag'] ); ?> class="uael-price-table-heading elementor-inline-editing" data-elementor-setting-key="heading" data-elementor-inline-editing-toolbar="basic"><?php echo wp_kses_post( $settings['heading'] ); ?>
-					</<?php echo esc_attr( $settings['heading_tag'] ); ?>>
+					<<?php echo esc_attr( $heading_size_tag ); ?> class="uael-price-table-heading elementor-inline-editing" data-elementor-setting-key="heading" data-elementor-inline-editing-toolbar="basic"><?php echo wp_kses_post( $settings['heading'] ); ?>
+					</<?php echo esc_attr( $heading_size_tag ); ?>>
 				</div>
 				<?php
 			endif;
@@ -3442,14 +3441,20 @@ class Price_Table extends Common_Widget {
 		if ( ! empty( $settings['sub_heading'] ) || ! empty( $settings['sub_heading_style2'] ) ) :
 			?>
 			<div class="uael-price-subheading-text">
-				<?php if ( '2' === $settings['pricetable_style'] ) { ?>
-					<<?php echo esc_attr( $settings['sub_heading_tag_style2'] ); ?> class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading_style2" data-elementor-inline-editing-toolbar="basic">
+				<?php
+				if ( '2' === $settings['pricetable_style'] ) {
+					$sub_heading_tag_style2 = UAEL_Helper::validate_html_tag( $settings['sub_heading_tag_style2'] );
+					?>
+					<<?php echo esc_attr( $sub_heading_tag_style2 ); ?> class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading_style2" data-elementor-inline-editing-toolbar="basic">
 						<?php echo wp_kses_post( $settings['sub_heading_style2'] ); ?>
-					</<?php echo esc_attr( $settings['sub_heading_tag_style2'] ); ?>>
-				<?php } else { ?>
-					<<?php echo esc_attr( $settings['sub_heading_tag'] ); ?> class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading" data-elementor-inline-editing-toolbar="basic">
+					</<?php echo esc_attr( $sub_heading_tag_style2 ); ?>>
+					<?php
+				} else {
+					$sub_heading_tag = UAEL_Helper::validate_html_tag( $settings['sub_heading_tag'] );
+					?>
+					<<?php echo esc_attr( $sub_heading_tag ); ?> class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading" data-elementor-inline-editing-toolbar="basic">
 						<?php echo wp_kses_post( $settings['sub_heading'] ); ?>
-					</<?php echo esc_attr( $settings['sub_heading_tag'] ); ?>>
+					</<?php echo esc_attr( $sub_heading_tag ); ?>>
 				<?php } ?>
 			</div>
 			<?php
@@ -3533,7 +3538,7 @@ class Price_Table extends Common_Widget {
 						<?php if ( ! empty( $intvalue ) || 0 <= $intvalue ) : ?>
 							<?php if ( ! empty( $symbol ) && ',' === $settings['currency_format'] ) : ?>
 									<span class="uael-price-currency-normal"><?php echo esc_attr( $symbol ); ?></span>
-								<?php endif; ?>
+							<?php endif; ?>
 							<span class="uael-price-table-integer-part"><?php echo wp_kses_post( $intvalue ); ?></span>
 						<?php endif; ?>
 
@@ -3581,6 +3586,7 @@ class Price_Table extends Common_Widget {
 				$device = true;
 			}
 			?>
+
 			<ul class="uael-price-table-features-list" <?php echo $this->get_data_attrs( $settings, $device ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 				<?php foreach ( $settings['features_list'] as  $index => $item ) : ?>
 					<?php
@@ -3594,7 +3600,6 @@ class Price_Table extends Common_Widget {
 						<div class="<?php echo esc_attr( $node_class ); ?>"data-tooltip-content="<?php echo '#uael-tooltip-content-' . esc_attr( $content_id ); ?>">
 							<?php
 							if ( UAEL_Helper::is_elementor_updated() ) {
-
 								$migration_allowed = \Elementor\Icons_Manager::is_migration_allowed();
 
 								if ( ! isset( $item['item_icon'] ) && ! $migration_allowed ) {
@@ -3616,12 +3621,12 @@ class Price_Table extends Common_Widget {
 									} elseif ( ! empty( $item['item_icon'] ) ) {
 										?>
 											<i class="<?php echo esc_attr( $item['item_icon'] ); ?>" aria-hidden="true"></i>
-										<?php } ?>
+									<?php } ?>
 
-									<?php endif; ?>
-								<?php } elseif ( ! empty( $item['item_icon'] ) ) { ?>
+								<?php endif; ?>
+							<?php } elseif ( ! empty( $item['item_icon'] ) ) { ?>
 									<i class="<?php echo esc_attr( $item['item_icon'] ); ?>" aria-hidden="true"></i>
-								<?php } ?>
+							<?php } ?>
 							<?php
 
 							if ( ! empty( $item['item_text'] ) ) :
@@ -3806,13 +3811,24 @@ class Price_Table extends Common_Widget {
 				<#
 			}
 		}
+
+		function render_heading_tag( sizetag ) {
+			if ( typeof elementor.helpers.validateHTMLTag === "function" ) { 
+				sizetag = elementor.helpers.validateHTMLTag( sizetag );
+			} else if( UAEWidgetsData.allowed_tags ) {
+				sizetag = UAEWidgetsData.allowed_tags.includes( sizetag.toLowerCase() ) ? sizetag : 'div';
+			}
+			return sizetag;
+		}
+
 		function render_heading_text() {
 			if ( settings.heading ) {
 				if ( '' != settings.heading ) {
+					var headingSizeTag = render_heading_tag( settings.heading_tag );
 					#>
 					<div class="uael-price-heading-text">
-						<{{ settings.heading_tag }} class="uael-price-table-heading elementor-inline-editing" data-elementor-setting-key="heading" data-elementor-inline-editing-toolbar="basic"> {{{ settings.heading }}}
-						</{{ settings.heading_tag }}>
+						<{{ headingSizeTag }} class="uael-price-table-heading elementor-inline-editing" data-elementor-setting-key="heading" data-elementor-inline-editing-toolbar="basic"> {{{ settings.heading }}}
+						</{{ headingSizeTag }}>
 					</div>
 					<#
 				}
@@ -3823,14 +3839,18 @@ class Price_Table extends Common_Widget {
 			#>
 				<div class="uael-price-subheading-text">
 
-					<# if ( '2' == settings.pricetable_style ) { #>
-						<{{ settings.sub_heading_tag_style2 }} class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading_style2" data-elementor-inline-editing-toolbar="basic">
+					<# if ( '2' == settings.pricetable_style ) { 
+						var subHeadingSizeTag2 = render_heading_tag( settings.sub_heading_tag_style2 );
+						#>
+						<{{ subHeadingSizeTag2 }} class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading_style2" data-elementor-inline-editing-toolbar="basic">
 							{{{ settings.sub_heading_style2 }}}
-						</{{ settings.sub_heading_tag_style2 }}>
-					<# } else { #>
-						<{{ settings.sub_heading_tag }} class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading" data-elementor-inline-editing-toolbar="basic">
+						</{{ subHeadingSizeTag2 }}>
+					<# } else { 
+						var subHeadingSizeTag = render_heading_tag( settings.sub_heading_tag );
+						#>
+						<{{ subHeadingSizeTag }} class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading" data-elementor-inline-editing-toolbar="basic">
 							{{{ settings.sub_heading }}}
-						</{{ settings.sub_heading_tag }}>
+						</{{ subHeadingSizeTag }}>
 					<# } #>
 				</div>
 			<#
@@ -3841,10 +3861,11 @@ class Price_Table extends Common_Widget {
 
 			if ( '2' == settings.pricetable_style ) {
 				if ( settings.heading ) {
+					var headingSizeTag = render_heading_tag( settings.heading_tag );
 					#>
 					<div class="uael-price-table-header">
 						<# render_heading_icon(); #>
-						<{{{ settings.heading_tag }}} class="uael-price-table-heading elementor-inline-editing" data-elementor-setting-key="heading" data-elementor-inline-editing-toolbar="basic">{{{ settings.heading }}}</{{{ settings.heading_tag }}}>
+						<{{{ headingSizeTag }}} class="uael-price-table-heading elementor-inline-editing" data-elementor-setting-key="heading" data-elementor-inline-editing-toolbar="basic">{{{ settings.heading }}}</{{{ headingSizeTag }}}>
 					</div>
 					<#
 				}
@@ -3900,7 +3921,7 @@ class Price_Table extends Common_Widget {
 				intvalue = price[0],
 				fraction = price[1];
 
-			var	durationText = '<span class="uael-price-table-duration uael-price-typo-excluded elementor-inline-editing" data-elementor-setting-key="duration" data-elementor-inline-editing-toolbar="basic">' + settings.duration + '</span>';
+			var durationText = '<span class="uael-price-table-duration uael-price-typo-excluded elementor-inline-editing" data-elementor-setting-key="duration" data-elementor-inline-editing-toolbar="basic">' + settings.duration + '</span>';
 			#>
 			<div class="uael-price-table-price-wrap">
 				<div class="uael-price-table-pricing">
@@ -3991,7 +4012,7 @@ class Price_Table extends Common_Widget {
 		function render_cta_icon( position ) {
 			view.addRenderAttribute( 'button_icon', 'class', 'uael-cta-link-icon uael-cta-link-icon-' + position ); #>
 			<?php if ( UAEL_Helper::is_elementor_updated() ) { ?>
-				<# if ( settings.cta_icon || settings.new_cta_icon ) {  #>	
+				<# if ( settings.cta_icon || settings.new_cta_icon ) {  #>  
 				<# 
 				var cta_iconHTML = elementor.helpers.renderIcon( view, settings.new_cta_icon, { 'aria-hidden': true }, 'i' , 'object' );
 				var cta_migrated = elementor.helpers.isIconMigrated( settings, 'new_cta_icon' ); 
@@ -4028,7 +4049,7 @@ class Price_Table extends Common_Widget {
 								<a {{{ view.getRenderAttributeString( 'cta_link' ) }}}>
 									<#
 									if ( 'left' == settings.cta_icon_position ) {
-									#>	
+									#>  
 										<# render_cta_icon( 'before' ); #>
 									<# } #>
 									<#

@@ -19,6 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Module_Manager {
 
 
+
 	/**
 	 * Member Variable
 	 *
@@ -73,6 +74,7 @@ class Module_Manager {
 			'how-to',
 			'faq',
 			'ff-styler',
+			'social-share',
 		);
 
 		foreach ( $all_modules as $module_name ) {

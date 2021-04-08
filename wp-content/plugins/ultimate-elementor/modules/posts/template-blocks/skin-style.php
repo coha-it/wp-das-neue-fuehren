@@ -111,7 +111,9 @@ abstract class Skin_Style {
 	 */
 	public function render_featured_meta_data() {
 
-		$settings = self::$settings;
+		$settings       = self::$settings;
+		$meta_tag_value = $this->get_instance_value( 'meta_tag' );
+		$meta_tag       = UAEL_Helper::validate_html_tag( $meta_tag_value );
 
 		if ( 'yes' !== $this->get_instance_value( 'show_meta' ) ) {
 			return;
@@ -124,7 +126,7 @@ abstract class Skin_Style {
 		$sequence = apply_filters( 'uael_post_meta_sequence', array( 'author', 'date', 'comments', 'cat', 'tag' ) );
 		?>
 
-		<<?php echo wp_kses_post( $this->get_instance_value( 'meta_tag' ) ); ?> class="uael-post__meta-data">
+		<<?php echo wp_kses_post( $meta_tag ); ?> class="uael-post__meta-data">
 
 		<?php
 		foreach ( $sequence as $key => $seq ) {
@@ -182,7 +184,7 @@ abstract class Skin_Style {
 		}
 		?>
 
-		</<?php echo wp_kses_post( $this->get_instance_value( 'meta_tag' ) ); ?>>
+		</<?php echo wp_kses_post( $meta_tag ); ?>>
 
 		<?php
 
@@ -336,10 +338,13 @@ abstract class Skin_Style {
 	 */
 	public function render_title() {
 
-		$settings = self::$settings;
+		$settings        = self::$settings;
+		$title_tag_value = $this->get_instance_value( 'title_tag' );
+		$title_tag       = UAEL_Helper::validate_html_tag( $title_tag_value );
+
 		do_action( 'uael_single_post_before_title', get_the_ID(), $settings );
 		?>
-		<<?php echo wp_kses_post( $this->get_instance_value( 'title_tag' ) ); ?> class="uael-post__title">
+		<<?php echo wp_kses_post( $title_tag ); ?> class="uael-post__title">
 
 		<?php if ( $this->get_instance_value( 'link_title' ) ) { ?>
 
@@ -351,7 +356,7 @@ abstract class Skin_Style {
 		<?php } else { ?>
 			<?php the_title(); ?>
 		<?php } ?>
-		</<?php echo wp_kses_post( $this->get_instance_value( 'title_tag' ) ); ?>>
+		</<?php echo wp_kses_post( $title_tag ); ?>>
 		<?php
 
 		do_action( 'uael_single_post_after_title', get_the_ID(), $settings );
@@ -367,7 +372,9 @@ abstract class Skin_Style {
 	 */
 	public function render_meta_data() {
 
-		$settings = self::$settings;
+		$settings       = self::$settings;
+		$meta_tag_value = $this->get_instance_value( 'meta_tag' );
+		$meta_tag       = UAEL_Helper::validate_html_tag( $meta_tag_value );
 
 		if ( 'yes' === $this->get_instance_value( 'show_meta' ) ) {
 
@@ -375,7 +382,7 @@ abstract class Skin_Style {
 
 			$sequence = apply_filters( 'uael_post_meta_sequence', array( 'author', 'date', 'comments', 'cat', 'tag' ) );
 			?>
-			<<?php echo wp_kses_post( $this->get_instance_value( 'meta_tag' ) ); ?> class="uael-post__meta-data">
+			<<?php echo wp_kses_post( $meta_tag ); ?> class="uael-post__meta-data">
 			<?php
 			if ( $this->get_instance_value( 'show_meta' ) ) {
 
@@ -435,7 +442,7 @@ abstract class Skin_Style {
 			}
 		}
 		?>
-		</<?php echo wp_kses_post( $this->get_instance_value( 'meta_tag' ) ); ?>>
+		</<?php echo wp_kses_post( $meta_tag ); ?>>
 		<?php
 		do_action( 'uael_single_post_after_meta', get_the_ID(), $settings );
 	}

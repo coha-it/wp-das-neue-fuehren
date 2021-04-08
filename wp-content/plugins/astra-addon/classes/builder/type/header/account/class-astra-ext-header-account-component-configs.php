@@ -105,18 +105,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 				),
 				'responsive' => false,
 				'renderAs'   => 'text',
-			),
-
-			/**
-			 * Option: Divider
-			 */
-			array(
-				'name'     => ASTRA_THEME_SETTINGS . '[header-account-action-type-divider]',
-				'type'     => 'control',
-				'section'  => $_section,
-				'control'  => 'ast-divider',
-				'priority' => 4,
-				'settings' => array(),
+				'divider'    => array( 'ast_class' => 'ast-top-divider' ),
 			),
 
 			/**
@@ -126,7 +115,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 				'name'      => ASTRA_THEME_SETTINGS . '[header-account-link-type]',
 				'default'   => astra_get_option( 'header-account-link-type' ),
 				'type'      => 'control',
-				'control'   => 'select',
+				'control'   => 'ast-select',
 				'section'   => $_section,
 				'priority'  => 5,
 				'title'     => __( 'Link Type', 'astra-addon' ),
@@ -205,6 +194,72 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 				),
 			),
 
+			array(
+				'name'     => ASTRA_THEME_SETTINGS . '[header-account-create-menu-link-woo-notice]',
+				'type'     => 'control',
+				'control'  => 'ast-description',
+				'section'  => $_section,
+				'priority' => 7,
+				'label'    => '',
+				'help'     => __( 'Note: For responsive devices, the menu will be replaced with the WooCommerce "My Account" link.', 'astra-addon' ),
+				'context'  => array(
+					array(
+						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-type]',
+						'operator' => '==',
+						'value'    => 'woocommerce',
+					),
+					array(
+						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
+						'operator' => '==',
+						'value'    => 'menu',
+					),
+				),
+			),
+
+			array(
+				'name'     => ASTRA_THEME_SETTINGS . '[header-account-create-menu-link-default-notice]',
+				'type'     => 'control',
+				'control'  => 'ast-description',
+				'section'  => $_section,
+				'priority' => 7,
+				'label'    => '',
+				'help'     => __( 'Note: For responsive devices, the menu will be replaced with the Link provided in the Link Tab.', 'astra-addon' ),
+				'context'  => array(
+					array(
+						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-type]',
+						'operator' => '==',
+						'value'    => 'default',
+					),
+					array(
+						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
+						'operator' => '==',
+						'value'    => 'menu',
+					),
+				),
+			),
+
+			array(
+				'name'     => ASTRA_THEME_SETTINGS . '[header-account-create-menu-link-lifterlms-notice]',
+				'type'     => 'control',
+				'control'  => 'ast-description',
+				'section'  => $_section,
+				'priority' => 7,
+				'label'    => '',
+				'help'     => __( 'Note: For responsive devices, the menu will be replaced with the LifterLMS "My Account" link.', 'astra-addon' ),
+				'context'  => array(
+					array(
+						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-type]',
+						'operator' => '==',
+						'value'    => 'lifterlms',
+					),
+					array(
+						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-action-type]',
+						'operator' => '==',
+						'value'    => 'menu',
+					),
+				),
+			),
+
 			/**
 			 * Option: Click action type
 			 */
@@ -235,26 +290,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 				),
 				'responsive' => false,
 				'renderAs'   => 'text',
-			),
-
-			/**
-			 * Option: Divider
-			 */
-			array(
-				'name'     => ASTRA_THEME_SETTINGS . '[hheader-account-logout-action-divider]',
-				'type'     => 'control',
-				'section'  => $_section,
-				'control'  => 'ast-divider',
-				'priority' => 204,
-				'settings' => array(),
-				'context'  => array(
-					array(
-						'setting'  => ASTRA_THEME_SETTINGS . '[header-account-logout-style]',
-						'operator' => '!=',
-						'value'    => 'none',
-					),
-					astra_addon_builder_helper()->general_tab_config,
-				),
+				'divider'    => array( 'ast_class' => 'ast-bottom-divider ast-top-divider' ),
 			),
 
 			$register_option,
@@ -267,6 +303,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 				'section'   => $_section,
 				'priority'  => 205,
 				'title'     => __( 'Lost your password?', 'astra-addon' ),
+				'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				'context'   => array(
 					astra_addon_builder_helper()->general_tab_config,
 					array(
@@ -323,6 +360,7 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 					),
 				),
 				'responsive' => false,
+				'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 			),
 		);
 
@@ -331,7 +369,8 @@ class Astra_Ext_Header_Account_Component_Configs extends Astra_Customizer_Config
 				'name'      => ASTRA_THEME_SETTINGS . '[header-account-type]',
 				'default'   => astra_get_option( 'header-account-type' ),
 				'type'      => 'control',
-				'control'   => 'select',
+				'control'   => 'ast-select',
+				'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				'section'   => $_section,
 				'priority'  => 1,
 				'title'     => __( 'Select Account', 'astra-addon' ),

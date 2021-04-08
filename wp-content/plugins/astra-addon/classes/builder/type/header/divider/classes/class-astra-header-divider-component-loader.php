@@ -52,6 +52,12 @@ class Astra_Header_Divider_Component_Loader {
 				'mobile'  => '50',
 			);
 
+			$defaults[ 'header-horizontal-divider-' . $index . '-size' ] = array(
+				'desktop' => '50',
+				'tablet'  => '50',
+				'mobile'  => '50',
+			);
+
 			$defaults[ 'header-divider-' . $index . '-thickness' ] = array(
 				'desktop' => '1',
 				'tablet'  => '1',

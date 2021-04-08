@@ -48,17 +48,7 @@ if ( ! class_exists( 'Astra_Edd_Checkout_Configs' ) ) {
 					'section' => 'section-edd-checkout-page',
 					'title'   => __( 'Display Apply Coupon Field', 'astra-addon' ),
 					'control' => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-checkout-coupon-display-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-checkout-page',
-					'control'  => 'ast-divider',
-					'settings' => array(),
+					'divider' => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/*
@@ -71,17 +61,7 @@ if ( ! class_exists( 'Astra_Edd_Checkout_Configs' ) ) {
 					'section' => 'section-edd-checkout-page',
 					'title'   => __( 'Distraction Free Checkout', 'astra-addon' ),
 					'control' => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-distraction-free-checkout-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-checkout-page',
-					'control'  => 'ast-divider',
-					'settings' => array(),
+					'divider' => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -91,7 +71,7 @@ if ( ! class_exists( 'Astra_Edd_Checkout_Configs' ) ) {
 					'name'      => ASTRA_THEME_SETTINGS . '[edd-checkout-content-width]',
 					'default'   => astra_get_option( 'edd-checkout-content-width' ),
 					'type'      => 'control',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'section'   => 'section-edd-checkout-page',
 					'transport' => 'postMessage',
 					'title'     => __( 'Checkout Form Width', 'astra-addon' ),

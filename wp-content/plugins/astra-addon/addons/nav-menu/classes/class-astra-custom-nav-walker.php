@@ -46,11 +46,12 @@ if ( ! class_exists( 'Astra_Custom_Nav_Walker' ) ) {
 		 * @param array  $args   An array of arguments. @see wp_nav_menu().
 		 */
 		public function start_lvl( &$output, $depth = 0, $args = array() ) {
+
 			$indent = str_repeat( "\t", $depth );
 
 			$style = '';
 
-			if ( 0 === $depth && '' != $this->megamenu ) {
+			if ( 0 === $depth && '' != $this->megamenu && 'ast-hf-mobile-menu' !== $args->menu_id ) {
 
 				$style = array(
 					'.ast-desktop .menu-item-' . $this->menu_megamenu_item_id . ' .menu-item > .menu-link, .menu-item-' . $this->menu_megamenu_item_id . ' .menu-item .sub-menu > .menu-link, .ast-desktop .ast-container .menu-item-' . $this->menu_megamenu_item_id . ' .menu-item:hover' => array(
@@ -220,7 +221,7 @@ if ( ! class_exists( 'Astra_Custom_Nav_Walker' ) ) {
 			}
 
 			// Mega menu and Hide headings.
-			if ( 0 === $depth && $this->has_children && '' != $this->megamenu ) {
+			if ( 0 === $depth && $this->has_children && '' != $this->megamenu && 'ast-hf-mobile-menu' !== $args->menu_id ) {
 				$classes[] = 'astra-megamenu-li ' . $this->megamenu_width . '-width-mega';
 			}
 
@@ -365,9 +366,15 @@ if ( ! class_exists( 'Astra_Custom_Nav_Walker' ) ) {
 				$title .= '<span class="astra-mm-highlight-label">' . esc_html( $item->megamenu_highlight_label ) . '</span>';
 			}
 
+			$item_output .= Astra_Icons::get_icons( 'arrow' );
+
 			$item_output .= $args->link_before . $title . $args->link_after;
 
-			if ( 0 == $depth ) {
+			if ( $args->walker->has_children ) {
+				$item_output .= Astra_Icons::get_icons( 'arrow' );
+			}
+
+			if ( 0 == $depth && 'ast-hf-mobile-menu' !== $args->menu_id ) {
 				$item_output .= '<span class="sub-arrow"></span>';
 			}
 

@@ -20,6 +20,7 @@ use Elementor\Group_Control_Image_Size;
 use Elementor\Control_Media;
 // UltimateElementor Classes.
 use UltimateElementor\Base\Common_Widget;
+use UltimateElementor\Classes\UAEL_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;   // Exit if accessed directly.
@@ -1848,11 +1849,13 @@ class HowTo extends Common_Widget {
 		$h                    = ( 60 * $hours );
 		$calculate_total_time = $y + $m + $d + $h + $minutes;
 
+		$heading_tag = UAEL_Helper::validate_html_tag( $settings['heading_tag'] )
+
 		?>
 
 		<div class="uael-howto-wrapper">
 			<div class="uael-howto-title">
-				<?php echo '<' . esc_attr( $settings['heading_tag'] ) . ' class="uael-howto-title-text">' . wp_kses_post( $settings['title'] ) . '</' . esc_attr( $settings['heading_tag'] ) . '>'; ?>
+				<?php echo '<' . esc_attr( $heading_tag ) . ' class="uael-howto-title-text">' . wp_kses_post( $settings['title'] ) . '</' . esc_attr( $heading_tag ) . '>'; ?>
 			</div>
 			<div class="uael-howto-description">
 				<span class="uael-howto-desc-text"><?php echo wp_kses_post( $settings['description'] ); ?></span>

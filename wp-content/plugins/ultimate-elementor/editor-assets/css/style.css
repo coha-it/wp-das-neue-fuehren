@@ -44,77 +44,70 @@
 	border-style: solid;
 }
 
-.uael-icon-uae-mini-cart-01:before {
+.uael-icon-caldera-form-styler:before {
+  content: "\e90b";
+  color: #556068;
+}
+.uael-icon-wp-form-styler:before {
+  content: "\e90e";
+  color: #556068;
+}
+.uael-icon-social-share:before {
+  content: "\e906";
+  color: #556068;
+}
+.uael-icon-woo-mini-cart:before {
   content: "\e900";
-  color: #566169;
 }
 .uael-icon-registration-form:before {
   content: "\e901";
 }
-.uael-icon-retina-image-1:before {
+.uael-icon-retina-image:before {
   content: "\e902";
 }
-.uael-icon-toc-2:before {
+.uael-icon-table-of-content:before {
   content: "\e903";
 }
-.uael-icon-uae-login-form-01:before {
+.uael-icon-login-form:before {
   content: "\e904";
 }
-.uael-icon-navigation-menu-4:before {
+.uael-icon-navigation-menu:before {
   content: "\e905";
 }
-.uael-icon-blog-post:before {
-  content: "\e906";
-}
-.uael-icon-gravity-form:before {
+.uael-icon-gravity-form-styler:before {
   content: "\e907";
 }
-.uael-icon-woo-cat:before {
+.uael-icon-woo-category:before {
   content: "\e908";
 }
-.uael-icon-fancy-text:before {
+.uael-icon-fancy-heading:before {
   content: "\e909";
 }
 .uael-icon-info-box:before {
   content: "\e90a";
 }
-.uael-icon-dual-button:before {
-  content: "\e90b";
-}
-.uael-icon-cf7-form:before {
+.uael-icon-contact-form-7:before {
   content: "\e90c";
 }
-.uael-icon-before-after:before {
+.uael-icon-before-after-slider:before {
   content: "\e90d";
 }
-.uael-icon-instagram:before {
-  content: "\e90e";
-}
-.uael-icon-adv-menu:before {
-  content: "\e90f";
-}
-.uael-icon-woo-carousel:before {
-  content: "\e910";
-}
-.uael-icon-woo-cart:before {
+.uael-icon-woo-add-to-cart:before {
   content: "\e911";
 }
-.uael-icon-woo-grid:before {
+.uael-icon-woo-product:before {
   content: "\e912";
 }
-.uael-icon-adv-heading:before {
+.uael-icon-advanced-heading:before {
   content: "\e913";
 }
-.uael-icon-img-gallery:before {
+.uael-icon-image-gallery:before {
   content: "\e914";
 }
-.uael-icon-img-carousel:before {
-  content: "\e915";
-}
-.uael-icon-post-grid:before {
+.uael-icon-posts:before {
   content: "\e916";
 }
-.uael-icon-price-table:before {
+.uael-icon-price-box:before {
   content: "\e917";
 }
 .uael-icon-price-list:before {
@@ -129,41 +122,20 @@
 .uael-icon-timeline:before {
   content: "\e91b";
 }
-.uael-icon-button:before {
+.uael-icon-multi-button:before {
   content: "\e91c";
 }
-.uael-icon-business--hours:before {
+.uael-icon-business-hour:before {
   content: "\e91d";
 }
 .uael-icon-content-toggle:before {
   content: "\e91e";
 }
-.uael-icon-caldera-form:before {
-  content: "\e91f";
-}
 .uael-icon-video-gallery:before {
   content: "\e920";
 }
-.uael-icon-post-layout:before {
-  content: "\e921";
-}
-.uael-icon-business-hours:before {
-  content: "\e922";
-}
 .uael-icon-video:before {
   content: "\e923";
-}
-.uael-icon-video-gallery-1:before {
-  content: "\e924";
-}
-.uael-icon-posts:before {
-  content: "\e925";
-}
-.uael-icon-before-after-2:before {
-  content: "\e926";
-}
-.uael-icon-wp-form-styler:before {
-  content: "\e927";
 }
 .uael-icon-team-member:before {
   content: "\e928";
@@ -174,31 +146,22 @@
 .uael-icon-marketing-button:before {
   content: "\e92a";
 }
-.uael-icon-business-reviews:before {
+.uael-icon-business-review:before {
   content: "\e92b";
 }
-.uael-icon-timer:before {
+.uael-icon-countdown-timer:before {
   content: "\e92c";
 }
-.uael-icon-popup:before {
+.uael-icon-modal-popup:before {
   content: "\e92d";
 }
 .uael-icon-google-map:before {
   content: "\e92e";
 }
-.uael-icon-cta:before {
-  content: "\e92f";
-}
-.uael-icon-fan-text:before {
-  content: "\e930";
-}
-.uael-icon-dual-col:before {
+.uael-icon-dual-color-heading:before {
   content: "\e931";
 }
-.uael-icon-faq:before {
-  content: "\e932";
-}
-.uael-icon-faq-2:before {
+.uael-icon-faq-schema:before {
   content: "\e933";
 }
 .uael-icon-uae:before {
@@ -207,7 +170,7 @@
 .uael-icon-how-to-schema:before {
   content: "\e935";
 }
-.uael-icon-Fluent-form-styler-icon:before {
+.uael-icon-fluent-form-styler:before {
   content: "\e936";
 }
 

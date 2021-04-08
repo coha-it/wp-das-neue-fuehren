@@ -38,18 +38,6 @@ if ( ! class_exists( 'Astra_Primary_Menu_Typo_Configs' ) ) {
 
 			$_configs = array(
 
-				/**
-				 * Option: Header Styling
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[primary-header-typography-styling-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-primary-menu',
-					'priority' => 71,
-					'settings' => array(),
-				),
-
 				array(
 					'name'      => ASTRA_THEME_SETTINGS . '[primary-header-menu-typography]',
 					'default'   => astra_get_option( 'primary-header-menu-typography' ),
@@ -59,15 +47,7 @@ if ( ! class_exists( 'Astra_Primary_Menu_Typo_Configs' ) ) {
 					'section'   => 'section-primary-menu',
 					'transport' => 'postMessage',
 					'priority'  => 72,
-				),
-
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[primary-header-menu-typography-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-primary-menu',
-					'priority' => 72,
-					'settings' => array(),
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				array(
@@ -79,15 +59,7 @@ if ( ! class_exists( 'Astra_Primary_Menu_Typo_Configs' ) ) {
 					'section'   => 'section-primary-menu',
 					'transport' => 'postMessage',
 					'priority'  => 72,
-				),
-
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[primary-sub-menu-typography-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-primary-menu',
-					'priority' => 72,
-					'settings' => array(),
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**

@@ -192,9 +192,6 @@
 	</tfoot>
 </table>
 
-
-hallo ich bi nhier
-
 <div class="bottom-spacer"></div>
 
 <?php do_action( 'wpo_wcpdf_after_order_details', $this->type, $this->order ); ?>

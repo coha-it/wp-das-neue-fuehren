@@ -19,6 +19,7 @@ use Elementor\Group_Control_Background;
 
 // UltimateElementor Classes.
 use UltimateElementor\Base\Common_Widget;
+use UltimateElementor\Classes\UAEL_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;   // Exit if accessed directly.
@@ -1903,9 +1904,10 @@ class FfStyler extends Common_Widget {
 			<?php
 
 			if ( '' !== $form_title ) {
+				$title_size_tag = UAEL_Helper::validate_html_tag( $settings['form_title_tag'] );
 				?>
 
-				<<?php echo esc_attr( $settings['form_title_tag'] ); ?> class="uael-ff-form-title"><?php echo wp_kses_post( $form_title ); ?></<?php echo esc_attr( $settings['form_title_tag'] ); ?>>
+				<<?php echo esc_attr( $title_size_tag ); ?> class="uael-ff-form-title"><?php echo wp_kses_post( $form_title ); ?></<?php echo esc_attr( $title_size_tag ); ?>>
 				<?php
 			}
 

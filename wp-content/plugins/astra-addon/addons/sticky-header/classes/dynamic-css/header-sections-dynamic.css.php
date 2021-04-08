@@ -33,10 +33,9 @@ function astra_ext_above_header_sections_dynamic_css( $dynamic_css, $dynamic_css
 	/**
 	 * Above Header.
 	 */
-	if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+	$default_desktop_sticky_above_header_bg_color = '#ffffff';
+	if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 		$default_desktop_sticky_above_header_bg_color = '';
-	} else {
-		$default_desktop_sticky_above_header_bg_color = '#ffffff';
 	}
 	$desktop_sticky_above_header_bg_color = astra_get_prop( astra_get_option( 'sticky-above-header-bg-color-responsive' ), 'desktop', $default_desktop_sticky_above_header_bg_color );
 
@@ -61,10 +60,9 @@ function astra_ext_above_header_sections_dynamic_css( $dynamic_css, $dynamic_css
 		return $dynamic_css;
 	}
 
-	if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+	$above_header_sticky_selector = '.ast-above-sticky-header-active .ast-above-header-wrap .ast-above-header';
+	if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 		$above_header_sticky_selector = '.ast-above-sticky-header-active .ast-above-header.ast-header-sticked';
-	} else {
-		$above_header_sticky_selector = '.ast-above-sticky-header-active .ast-above-header-wrap .ast-above-header';
 	}
 
 	$parse_css = '';
@@ -497,7 +495,7 @@ function astra_ext_below_header_sections_dynamic_css( $dynamic_css, $dynamic_css
 	/**
 	 * Below Header.
 	 */
-	$default_sticky_below_header_bg_color = ( astra_addon_builder_helper()->is_header_footer_builder_active ) ? '' : '#414042';
+	$default_sticky_below_header_bg_color = ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ? '' : '#414042';
 	$desktop_sticky_below_header_bg_color = astra_get_prop( astra_get_option( 'sticky-below-header-bg-color-responsive' ), 'desktop', $default_sticky_below_header_bg_color );
 	$tablet_sticky_below_header_bg_color  = astra_get_prop( astra_get_option( 'sticky-below-header-bg-color-responsive' ), 'tablet' );
 	$mobile_sticky_below_header_bg_color  = astra_get_prop( astra_get_option( 'sticky-below-header-bg-color-responsive' ), 'mobile' );

@@ -27,7 +27,7 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 	/**
 	 * Merge Header Section when there is no primary menu
 	 */
-	if ( $disable_primary_nav && ( $above_header_merged || $below_header_merged ) && ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+	if ( $disable_primary_nav && ( $above_header_merged || $below_header_merged ) && false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 		$header_bg_obj           = astra_get_option( 'header-bg-obj-responsive' );
 		$desktop_header_bg_color = isset( $header_bg_obj['desktop']['background-color'] ) ? $header_bg_obj['desktop']['background-color'] : '';
@@ -233,7 +233,7 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 		$parse_css .= astra_parse_css( $mobile_colors, '', astra_addon_get_mobile_breakpoint() );
 	}
 
-	if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+	if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 		/**
 		 * Header - Menu
 		 */
@@ -392,7 +392,11 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 		 */
 		$_section = 'section-header-mobile-menu';
 
-		$selector = '.astra-hfb-header .ast-builder-menu-mobile .main-header-menu';
+		$selector = '.ast-builder-menu-mobile .main-header-menu';
+
+		if ( version_compare( ASTRA_THEME_VERSION, '3.2.0', '<' ) ) {
+			$selector = '.astra-hfb-header .ast-builder-menu-mobile .main-header-menu';
+		}
 
 		$submenu_resp_color           = astra_get_option( 'header-mobile-menu-submenu-color-responsive' );
 		$submenu_resp_bg_color        = astra_get_option( 'header-mobile-menu-submenu-bg-color-responsive' );
@@ -401,23 +405,59 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 		$submenu_resp_color_active    = astra_get_option( 'header-mobile-menu-submenu-a-color-responsive' );
 		$submenu_resp_bg_color_active = astra_get_option( 'header-mobile-menu-submenu-a-bg-color-responsive' );
 
-		$submenu_resp_color_tablet = ( isset( $submenu_resp_color['tablet'] ) ) ? $submenu_resp_color['tablet'] : '';
-		$submenu_resp_color_mobile = ( isset( $submenu_resp_color['mobile'] ) ) ? $submenu_resp_color['mobile'] : '';
+		$submenu_resp_color_desktop = ( isset( $submenu_resp_color['desktop'] ) ) ? $submenu_resp_color['desktop'] : '';
+		$submenu_resp_color_tablet  = ( isset( $submenu_resp_color['tablet'] ) ) ? $submenu_resp_color['tablet'] : '';
+		$submenu_resp_color_mobile  = ( isset( $submenu_resp_color['mobile'] ) ) ? $submenu_resp_color['mobile'] : '';
 
-		$submenu_resp_bg_color_tablet = ( isset( $submenu_resp_bg_color['tablet'] ) ) ? $submenu_resp_bg_color['tablet'] : '';
-		$submenu_resp_bg_color_mobile = ( isset( $submenu_resp_bg_color['mobile'] ) ) ? $submenu_resp_bg_color['mobile'] : '';
+		$submenu_resp_bg_color_desktop = ( isset( $submenu_resp_bg_color['desktop'] ) ) ? $submenu_resp_bg_color['desktop'] : '';
+		$submenu_resp_bg_color_tablet  = ( isset( $submenu_resp_bg_color['tablet'] ) ) ? $submenu_resp_bg_color['tablet'] : '';
+		$submenu_resp_bg_color_mobile  = ( isset( $submenu_resp_bg_color['mobile'] ) ) ? $submenu_resp_bg_color['mobile'] : '';
 
-		$submenu_resp_color_hover_tablet = ( isset( $submenu_resp_color_hover['tablet'] ) ) ? $submenu_resp_color_hover['tablet'] : '';
-		$submenu_resp_color_hover_mobile = ( isset( $submenu_resp_color_hover['mobile'] ) ) ? $submenu_resp_color_hover['mobile'] : '';
+		$submenu_resp_color_hover_desktop = ( isset( $submenu_resp_color_hover['desktop'] ) ) ? $submenu_resp_color_hover['desktop'] : '';
+		$submenu_resp_color_hover_tablet  = ( isset( $submenu_resp_color_hover['tablet'] ) ) ? $submenu_resp_color_hover['tablet'] : '';
+		$submenu_resp_color_hover_mobile  = ( isset( $submenu_resp_color_hover['mobile'] ) ) ? $submenu_resp_color_hover['mobile'] : '';
 
-		$submenu_resp_bg_color_hover_tablet = ( isset( $submenu_resp_bg_color_hover['tablet'] ) ) ? $submenu_resp_bg_color_hover['tablet'] : '';
-		$submenu_resp_bg_color_hover_mobile = ( isset( $submenu_resp_bg_color_hover['mobile'] ) ) ? $submenu_resp_bg_color_hover['mobile'] : '';
+		$submenu_resp_bg_color_hover_desktop = ( isset( $submenu_resp_bg_color_hover['desktop'] ) ) ? $submenu_resp_bg_color_hover['desktop'] : '';
+		$submenu_resp_bg_color_hover_tablet  = ( isset( $submenu_resp_bg_color_hover['tablet'] ) ) ? $submenu_resp_bg_color_hover['tablet'] : '';
+		$submenu_resp_bg_color_hover_mobile  = ( isset( $submenu_resp_bg_color_hover['mobile'] ) ) ? $submenu_resp_bg_color_hover['mobile'] : '';
 
-		$submenu_resp_color_active_tablet = ( isset( $submenu_resp_color_active['tablet'] ) ) ? $submenu_resp_color_active['tablet'] : '';
-		$submenu_resp_color_active_mobile = ( isset( $submenu_resp_color_active['mobile'] ) ) ? $submenu_resp_color_active['mobile'] : '';
+		$submenu_resp_color_active_desktop = ( isset( $submenu_resp_color_active['desktop'] ) ) ? $submenu_resp_color_active['desktop'] : '';
+		$submenu_resp_color_active_tablet  = ( isset( $submenu_resp_color_active['tablet'] ) ) ? $submenu_resp_color_active['tablet'] : '';
+		$submenu_resp_color_active_mobile  = ( isset( $submenu_resp_color_active['mobile'] ) ) ? $submenu_resp_color_active['mobile'] : '';
 
-		$submenu_resp_bg_color_active_tablet = ( isset( $submenu_resp_bg_color_active['tablet'] ) ) ? $submenu_resp_bg_color_active['tablet'] : '';
-		$submenu_resp_bg_color_active_mobile = ( isset( $submenu_resp_bg_color_active['mobile'] ) ) ? $submenu_resp_bg_color_active['mobile'] : '';
+		$submenu_resp_bg_color_active_desktop = ( isset( $submenu_resp_bg_color_active['desktop'] ) ) ? $submenu_resp_bg_color_active['desktop'] : '';
+		$submenu_resp_bg_color_active_tablet  = ( isset( $submenu_resp_bg_color_active['tablet'] ) ) ? $submenu_resp_bg_color_active['tablet'] : '';
+		$submenu_resp_bg_color_active_mobile  = ( isset( $submenu_resp_bg_color_active['mobile'] ) ) ? $submenu_resp_bg_color_active['mobile'] : '';
+
+		$css_output_desktop = array(
+
+			$selector . '.ast-nav-menu .sub-menu' => array(
+				'background' => $submenu_resp_bg_color_desktop,
+			),
+			$selector . '.ast-nav-menu .sub-menu' => array(
+				'background' => $submenu_resp_bg_color_desktop,
+			),
+			$selector . '.ast-nav-menu .sub-menu .menu-item .menu-link' => array(
+				'color' => $submenu_resp_color_desktop,
+			),
+			$selector . ' .sub-menu .menu-item > .ast-menu-toggle' => array(
+				'color' => $submenu_resp_color_desktop,
+			),
+			$selector . '.ast-nav-menu .sub-menu .menu-item .menu-link:hover' => array(
+				'color'      => $submenu_resp_color_hover_desktop,
+				'background' => $submenu_resp_bg_color_hover_desktop,
+			),
+			$selector . ' .sub-menu .menu-item:hover > .ast-menu-toggle' => array(
+				'color' => $submenu_resp_color_hover_desktop,
+			),
+			$selector . '.ast-nav-menu .sub-menu .menu-item.current-menu-item > .menu-link' => array(
+				'color'      => $submenu_resp_color_active_desktop,
+				'background' => $submenu_resp_bg_color_active_desktop,
+			),
+			$selector . ' .sub-menu .current-menu-item > .ast-menu-toggle' => array(
+				'color' => $submenu_resp_color_active_desktop,
+			),
+		);
 
 		$css_output_tablet = array(
 
@@ -479,6 +519,7 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 			),
 		);
 
+		$parse_css .= astra_parse_css( $css_output_desktop );
 		$parse_css .= astra_parse_css( $css_output_tablet, '', astra_addon_get_tablet_breakpoint() );
 		$parse_css .= astra_parse_css( $css_output_mobile, '', astra_addon_get_mobile_breakpoint() );
 
@@ -545,6 +586,30 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 			$menu_resp_bg_color_active_desktop = ( isset( $menu_resp_bg_color_active['desktop'] ) ) ? $menu_resp_bg_color_active['desktop'] : '';
 			$menu_resp_bg_color_active_tablet  = ( isset( $menu_resp_bg_color_active['tablet'] ) ) ? $menu_resp_bg_color_active['tablet'] : '';
 			$menu_resp_bg_color_active_mobile  = ( isset( $menu_resp_bg_color_active['mobile'] ) ) ? $menu_resp_bg_color_active['mobile'] : '';
+
+			if ( false === Astra_Icons::is_svg_icons() ) {
+				$account__menu_css = array(
+					'.ast-desktop .ast-account-nav-menu .menu-item-has-children > .menu-link:after' => array(
+						'content'        => '"\e900"',
+						'display'        => 'inline-block',
+						'font-family'    => 'Astra',
+						'font-size'      => '.6rem',
+						'font-weight'    => '700',
+						'text-rendering' => 'auto',
+						'margin-left'    => '10px',
+						'line-height'    => 'normal',
+					),
+				);
+			} else {
+				$account__menu_css = array(
+					'.account-main-header-bar-navigation .menu-item.menu-item-has-children > .menu-link .icon-arrow svg' => array(
+						'position'  => 'absolute',
+						'right'     => '.60em',
+						'top'       => '50%',
+						'transform' => 'translate(0, -50%) rotate( 270deg )',
+					),
+				);
+			}
 
 			/**
 			 * Account CSS.
@@ -626,6 +691,7 @@ function astra_ext_header_sections_colors_dynamic_css( $dynamic_css, $dynamic_cs
 				),
 			);
 
+			$parse_css .= astra_parse_css( $account__menu_css );
 			$parse_css .= astra_parse_css( $account_css_desktop );
 			$parse_css .= astra_parse_css( $account_css_tablet, '', astra_get_tablet_breakpoint() );
 			$parse_css .= astra_parse_css( $account_css_mobile, '', astra_get_mobile_breakpoint() );

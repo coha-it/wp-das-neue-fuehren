@@ -44,24 +44,6 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Primary_Menu' ) ) {
 			$_configs = array(
 
 				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[primary-menu-colors-divider]',
-					'type'     => 'control',
-					'section'  => 'section-primary-menu',
-					'control'  => 'ast-divider',
-					'priority' => 69,
-					'settings' => array(),
-				),
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[primary-menu-colors-title-divider]',
-					'section'  => 'section-primary-menu',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'title'    => __( 'Menu', 'astra-addon' ),
-					'priority' => 69,
-					'settings' => array(),
-				),
-
-				array(
 					'name'       => ASTRA_THEME_SETTINGS . '[primary-menu-link-colors]',
 					'default'    => astra_get_option( 'primary-menu-colors' ),
 					'type'       => 'control',
@@ -71,6 +53,10 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Primary_Menu' ) ) {
 					'transport'  => 'postMessage',
 					'priority'   => 70,
 					'responsive' => true,
+					'divider'    => array(
+						'ast_class' => 'ast-top-divider',
+						'ast_title' => __( 'Menu Color', 'astra-addon' ),
+					),
 				),
 
 				array(
@@ -84,15 +70,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Primary_Menu' ) ) {
 					'priority'   => 70,
 					'responsive' => true,
 				),
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[primary-submenu-colors-title-divider]',
-					'section'  => 'section-primary-menu',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'title'    => __( 'Submenu', 'astra-addon' ),
-					'priority' => 70,
-					'settings' => array(),
-				),
+
 				array(
 					'name'       => ASTRA_THEME_SETTINGS . '[primary-submenu-link-colors]',
 					'default'    => astra_get_option( 'primary-submenu-colors' ),
@@ -103,6 +81,10 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Primary_Menu' ) ) {
 					'transport'  => 'postMessage',
 					'priority'   => 70,
 					'responsive' => true,
+					'divider'    => array(
+						'ast_class' => 'ast-top-divider',
+						'ast_title' => __( 'Submenu Color', 'astra-addon' ),
+					),
 				),
 				array(
 					'name'       => ASTRA_THEME_SETTINGS . '[primary-submenu-background-colors]',
@@ -114,15 +96,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Primary_Menu' ) ) {
 					'transport'  => 'postMessage',
 					'priority'   => 70,
 					'responsive' => true,
-				),
-
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[primary-submenu-after-colors-divider]',
-					'type'     => 'control',
-					'section'  => 'section-primary-menu',
-					'control'  => 'ast-divider',
-					'priority' => 70,
-					'settings' => array(),
+					'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				// Option: Primary Menu Color.

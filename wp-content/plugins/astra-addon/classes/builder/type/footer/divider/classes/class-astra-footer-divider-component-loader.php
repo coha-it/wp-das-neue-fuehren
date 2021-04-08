@@ -52,6 +52,12 @@ class Astra_Footer_Divider_Component_Loader {
 				'mobile'  => '50',
 			);
 
+			$defaults[ 'footer-vertical-divider-' . $index . '-size' ] = array(
+				'desktop' => '50',
+				'tablet'  => '50',
+				'mobile'  => '50',
+			);
+
 			$defaults[ 'footer-divider-' . $index . '-thickness' ] = array(
 				'desktop' => '1',
 				'tablet'  => '1',

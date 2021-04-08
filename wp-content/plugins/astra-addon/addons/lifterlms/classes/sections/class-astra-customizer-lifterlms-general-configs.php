@@ -48,10 +48,13 @@ if ( ! class_exists( 'Astra_Customizer_Lifterlms_General_Configs' ) ) {
 				 */
 				array(
 					'name'              => ASTRA_THEME_SETTINGS . '[llms-course-grid]',
-					'default'           => array(
-						'desktop' => 3,
-						'tablet'  => 2,
-						'mobile'  => 1,
+					'default'           => astra_get_option(
+						'llms-course-grid',
+						array(
+							'desktop' => 3,
+							'tablet'  => 2,
+							'mobile'  => 1,
+						)
 					),
 					'type'              => 'control',
 					'control'           => 'ast-responsive-slider',
@@ -64,18 +67,7 @@ if ( ! class_exists( 'Astra_Customizer_Lifterlms_General_Configs' ) ) {
 						'min'  => 1,
 						'max'  => 6,
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[llms-course-grid-divider]',
-					'type'     => 'control',
-					'section'  => 'section-lifterlms-general',
-					'control'  => 'ast-divider',
-					'priority' => 5,
-					'settings' => array(),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -83,10 +75,13 @@ if ( ! class_exists( 'Astra_Customizer_Lifterlms_General_Configs' ) ) {
 				 */
 				array(
 					'name'              => ASTRA_THEME_SETTINGS . '[llms-membership-grid]',
-					'default'           => array(
-						'desktop' => 3,
-						'tablet'  => 2,
-						'mobile'  => 1,
+					'default'           => astra_get_option(
+						'llms-membership-grid',
+						array(
+							'desktop' => 3,
+							'tablet'  => 2,
+							'mobile'  => 1,
+						)
 					),
 					'type'              => 'control',
 					'control'           => 'ast-responsive-slider',
@@ -99,18 +94,7 @@ if ( ! class_exists( 'Astra_Customizer_Lifterlms_General_Configs' ) ) {
 						'min'  => 1,
 						'max'  => 6,
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[llms-membership-grid-divider]',
-					'type'     => 'control',
-					'section'  => 'section-lifterlms-general',
-					'control'  => 'ast-divider',
-					'priority' => 5,
-					'settings' => array(),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -127,31 +111,6 @@ if ( ! class_exists( 'Astra_Customizer_Lifterlms_General_Configs' ) ) {
 				),
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[lifterlms-before-distraction-free-checkout-divider]',
-					'type'     => 'control',
-					'section'  => 'section-lifterlms-general',
-					'control'  => 'ast-divider',
-					'priority' => 10,
-					'settings' => array(),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[lifterlms-distraction-free-checkout-divider]',
-					'section'  => 'section-lifterlms-general',
-					'title'    => __( 'Checkout', 'astra-addon' ),
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'priority' => 10,
-					'settings' => array(),
-				),
-
-				/**
 				 * Option: Distraction Free Checkout
 				 */
 				array(
@@ -162,31 +121,10 @@ if ( ! class_exists( 'Astra_Customizer_Lifterlms_General_Configs' ) ) {
 					'section'  => 'section-lifterlms-general',
 					'title'    => __( 'Distraction Free Checkout', 'astra-addon' ),
 					'priority' => 10,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[lifterlms-before-my-account-vertical-divider]',
-					'type'     => 'control',
-					'section'  => 'section-lifterlms-general',
-					'control'  => 'ast-divider',
-					'priority' => 10,
-					'settings' => array(),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[lifterlms-my-account-vertical-divider]',
-					'section'  => 'section-lifterlms-general',
-					'title'    => __( 'My Account', 'astra-addon' ),
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'priority' => 15,
-					'settings' => array(),
+					'divider'  => array(
+						'ast_class' => 'ast-top-divider',
+						'ast_title' => __( 'Checkout', 'astra-addon' ),
+					),
 				),
 
 				/**
@@ -200,6 +138,10 @@ if ( ! class_exists( 'Astra_Customizer_Lifterlms_General_Configs' ) ) {
 					'section'  => 'section-lifterlms-general',
 					'title'    => __( 'Display Tabs Vertically', 'astra-addon' ),
 					'priority' => 15,
+					'divider'  => array(
+						'ast_class' => 'ast-top-divider',
+						'ast_title' => __( 'My Account', 'astra-addon' ),
+					),
 				),
 
 			);

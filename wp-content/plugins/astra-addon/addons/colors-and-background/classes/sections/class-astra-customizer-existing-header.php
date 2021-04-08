@@ -42,19 +42,6 @@ if ( ! class_exists( 'Astra_Customizer_Existing_Header' ) ) {
 		public function register_configuration( $configurations, $wp_customize ) {
 
 			$_configs = array(
-
-				/**
-				 * Option: Primary Header color and background divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[primary-header-colors-and-background-divider]',
-					'type'     => 'control',
-					'section'  => 'section-header',
-					'control'  => 'ast-divider',
-					'priority' => 71,
-					'settings' => array(),
-				),
-
 				array(
 					'name'       => ASTRA_THEME_SETTINGS . '[header-bg-obj-responsive]',
 					'section'    => 'section-header',
@@ -67,6 +54,7 @@ if ( ! class_exists( 'Astra_Customizer_Existing_Header' ) ) {
 					'default'    => astra_get_option( 'header-bg-obj-responsive' ),
 					'label'      => __( 'Background', 'astra-addon' ),
 					'priority'   => 71,
+					'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 			);
 

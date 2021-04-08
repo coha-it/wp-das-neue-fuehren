@@ -169,7 +169,7 @@ if ( ! class_exists( 'ASTRA_Ext_WooCommerce_Markup' ) ) {
 		 */
 		public function get_off_canvas_sidebar() {
 			if ( 'disable' != astra_get_option( 'shop-off-canvas-trigger-type' ) && ( is_shop() || is_product_taxonomy() ) ) {
-				echo '<div class="astra-off-canvas-sidebar-wrapper from-left"><div class="astra-off-canvas-sidebar"><span class="ast-shop-filter-close close"></span>';
+				echo '<div class="astra-off-canvas-sidebar-wrapper from-left"><div class="astra-off-canvas-sidebar"><span class="ast-shop-filter-close close">' . Astra_Icons::get_icons( 'close' ) . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				astra_get_footer_widget( 'astra-woo-product-off-canvas-sidebar' );
 				echo '</div></div>';
 			}
@@ -522,11 +522,11 @@ if ( ! class_exists( 'ASTRA_Ext_WooCommerce_Markup' ) ) {
 
 			switch ( astra_get_option( 'shop-off-canvas-trigger-type' ) ) {
 				case 'link':
-					echo '<a href="#" class="astra-shop-filter-button" data-selector="astra-off-canvas-sidebar-wrapper"><span class="' . $icon_class . '"></span>' . $filter_text . '</a>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo '<a href="#" class="astra-shop-filter-button" data-selector="astra-off-canvas-sidebar-wrapper"><span class="' . $icon_class . '">' . Astra_Icons::get_icons( 'menu-bars' ) . '</span>' . $filter_text . '</a>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					break;
 
 				case 'button':
-					echo '<button class="button astra-shop-filter-button" data-selector="astra-off-canvas-sidebar-wrapper"><span class="' . $icon_class . '"></span>' . $filter_text . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo '<button class="button astra-shop-filter-button" data-selector="astra-off-canvas-sidebar-wrapper"><span class="' . $icon_class . '">' . Astra_Icons::get_icons( 'menu-bars' ) . '</span>' . $filter_text . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					break;
 			}
 		}
@@ -930,7 +930,7 @@ if ( ! class_exists( 'ASTRA_Ext_WooCommerce_Markup' ) ) {
 			if ( astra_get_option( 'checkout-distraction-free' ) ) {
 
 				// HFB Support for distration free checkout.
-				if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+				if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 					remove_action( 'astra_header', array( Astra_Builder_Header::get_instance(), 'prepare_header_builder_markup' ) );
 					remove_action( 'astra_footer', array( Astra_Builder_Footer::get_instance(), 'footer_markup' ), 10 );
 				}
@@ -1030,15 +1030,18 @@ if ( ! class_exists( 'ASTRA_Ext_WooCommerce_Markup' ) ) {
 			/*** End Path Logic */
 
 			/* Add style.css */
-			Astra_Minify::add_css( $gen_path . 'style' . $file_prefix . '.css' );
+			$style = ( true === Astra_Addon_Builder_Helper::apply_flex_based_css() ) ? 'style-grid' : 'style';
+			Astra_Minify::add_css( $gen_path . $style . $file_prefix . '.css' );
 
 			// Shop page style.
 			$shop_page_style = astra_get_option( 'shop-style' );
 
 			if ( 'shop-page-list-style' == $shop_page_style ) {
+				$shop_page_style = Astra_Addon_Builder_Helper::apply_flex_based_css() ? $shop_page_style . '-grid' : $shop_page_style;
 				Astra_Minify::add_css( $gen_path . $shop_page_style . $file_prefix . '.css' );
 				// Single Product related & upsell product style.
-				Astra_Minify::add_css( $gen_path . 'related-upsell-list-style' . $file_prefix . '.css' );
+				$related_upsell_list_style = ( true === Astra_Addon_Builder_Helper::apply_flex_based_css() ) ? 'related-upsell-list-style-grid' : 'related-upsell-list-style';
+				Astra_Minify::add_css( $gen_path . $related_upsell_list_style . $file_prefix . '.css' );
 			}
 
 			if ( astra_get_option( 'two-step-checkout' ) ) {

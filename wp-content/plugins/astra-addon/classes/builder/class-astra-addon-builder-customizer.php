@@ -29,7 +29,7 @@ final class Astra_Addon_Builder_Customizer {
 
 		add_action( 'customize_preview_init', array( $this, 'enqueue_customizer_preview_scripts' ) );
 
-		if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+		if ( false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 			return;
 		}
 
@@ -52,9 +52,12 @@ final class Astra_Addon_Builder_Customizer {
 		// @codingStandardsIgnoreStart WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
 
 		// Base Config Files.
+
+		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/configurations/class-astra-addon-base-configs.php';
+		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/dynamic-css/class-astra-addon-base-dynamic-css.php';
+
 		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/configurations/class-astra-divider-component-configs.php';
-		
-		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/configurations/class-astra-ext-button-component-configs.php';
+		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/configurations/class-astra-addon-button-component-configs.php';
 		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/configurations/class-astra-social-component-configs.php';
 		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/configurations/class-astra-language-switcher-component-configs.php';
 
@@ -62,6 +65,7 @@ final class Astra_Addon_Builder_Customizer {
 		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/dynamic-css/divider/class-astra-divider-component-dynamic-css.php';
 		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/dynamic-css/language-switcher/class-astra-language-switcher-component-dynamic-css.php';
 		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/dynamic-css/social-icon/class-astra-social-icon-component-dynamic-css.php';
+		require_once ASTRA_EXT_DIR . 'classes/builder/type/base/dynamic-css/button/class-astra-addon-button-component-dynamic-css.php';
 
 		$this->load_header_components();
 		$this->load_footer_components();
@@ -79,9 +83,11 @@ final class Astra_Addon_Builder_Customizer {
 		$header_config_path = ASTRA_EXT_DIR . 'classes/builder/type/header';
 		require_once $header_config_path . '/divider/class-astra-header-divider-component-configs.php';
 		require_once $header_config_path . '/account/class-astra-ext-header-account-component-configs.php';
-		require_once $header_config_path . '/button/class-astra-ext-header-button-component-configs.php';
+		require_once $header_config_path . '/menu/class-astra-addon-header-menu-component-configs.php';
+		require_once $header_config_path . '/button/class-astra-addon-header-button-component-configs.php';
 		require_once $header_config_path . '/social-icon/class-astra-header-social-component-configs.php';
 		require_once $header_config_path . '/language-switcher/class-astra-header-language-switcher-configs.php';
+		require_once $header_config_path . '/off-canvas/class-astra-addon-offcanvas-configs.php';
 		// @codingStandardsIgnoreEnd WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
 	}
 
@@ -113,10 +119,12 @@ final class Astra_Addon_Builder_Customizer {
 		if ( ! class_exists( 'Astra_Header_Divider_Component' ) ) {
 			require_once $header_components_path . '/divider/class-astra-header-divider-component.php';
 		}
-		require_once $header_components_path . '/button/class-astra-ext-header-button-component.php';		
+		require_once $header_components_path . '/button/class-astra-addon-header-button-component.php';		
 		require_once $header_components_path . '/account/class-astra-ext-header-account-component.php';
+		require_once $header_components_path . '/menu/class-astra-addon-header-menu-component.php';
 		require_once $header_components_path . '/social-icon/class-astra-header-social-component.php';
 		require_once $header_components_path . '/language-switcher/class-astra-header-language-switcher-component.php';
+		require_once $header_components_path . '/off-canvas/class-astra-addon-offcanvas-component.php';
 
 		// @codingStandardsIgnoreEnd WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
 	}

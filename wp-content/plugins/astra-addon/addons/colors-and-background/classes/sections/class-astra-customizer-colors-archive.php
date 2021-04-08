@@ -41,10 +41,9 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Archive' ) ) {
 		 */
 		public function register_configuration( $configurations, $wp_customize ) {
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			$content_colors_config_title = __( 'Content', 'astra-addon' );
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 				$content_colors_config_title = __( 'Content Color', 'astra-addon' );
-			} else {
-				$content_colors_config_title = __( 'Content', 'astra-addon' );
 			}
 
 			$_configs = array(
@@ -61,7 +60,8 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Archive' ) ) {
 					'section'   => 'section-blog',
 					'transport' => 'postMessage',
 					'priority'  => 130,
-					'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
+					'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
@@ -77,7 +77,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Archive' ) ) {
 					'tab'      => __( 'Normal', 'astra-addon' ),
 					'priority' => 11,
 					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'context'  => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
@@ -94,7 +94,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Archive' ) ) {
 					'control'     => 'ast-color',
 					'title'       => __( 'Background Color', 'astra-addon' ),
 					'description' => __( 'This background color will not work on full-width layout.', 'astra-addon' ),
-					'context'     => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'context'     => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
@@ -189,7 +189,7 @@ if ( ! class_exists( 'Astra_Customizer_Colors_Archive' ) ) {
 				),
 			);
 
-			if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				array_push(
 					$_configs,

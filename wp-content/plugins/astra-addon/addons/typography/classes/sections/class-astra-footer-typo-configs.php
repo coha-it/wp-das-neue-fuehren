@@ -39,27 +39,6 @@ if ( ! class_exists( 'Astra_Footer_Typo_Configs' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option: Footer Bar typo Section heading
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[footer-bar-typography-heading-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-footer-small',
-					'priority' => 47,
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[footer-sml-layout]',
-							'operator' => '!=',
-							'value'    => 'disabled',
-						),
-					),
-
-					'settings' => array(),
-				),
-
-				/**
 				 * Option: Footer Bar Typography Group
 				 */
 				array(
@@ -71,6 +50,7 @@ if ( ! class_exists( 'Astra_Footer_Typo_Configs' ) ) {
 					'section'   => 'section-footer-small',
 					'transport' => 'postMessage',
 					'priority'  => 47,
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'   => array(
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[footer-sml-layout]',

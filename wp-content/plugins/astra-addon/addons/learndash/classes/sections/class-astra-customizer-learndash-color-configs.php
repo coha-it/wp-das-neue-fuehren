@@ -52,18 +52,6 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_Color_Configs' ) ) {
 				$_configs = array(
 
 					/**
-					 * Option: Divider
-					 */
-					array(
-						'name'     => ASTRA_THEME_SETTINGS . '[learndash-color-divider-divider]',
-						'type'     => 'control',
-						'section'  => 'section-learndash',
-						'control'  => 'ast-divider',
-						'priority' => 40,
-						'settings' => array(),
-					),
-
-					/**
 					 * Group: Learndash Colors Group
 					 */
 					array(
@@ -75,6 +63,7 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_Color_Configs' ) ) {
 						'section'   => 'section-learndash',
 						'transport' => 'postMessage',
 						'priority'  => 41,
+						'divider'   => array( 'ast_class' => 'ast-top-divider' ),
 					),
 					array(
 						'name'      => ASTRA_THEME_SETTINGS . '[learndash-title-color-group]',
@@ -205,9 +194,8 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_Color_Configs' ) ) {
 						'control'  => Astra_Theme_Extension::$switch_control,
 						'section'  => 'section-learndash',
 						'title'    => __( 'Check this if you wish to overwrite LearnDash Colors', 'astra-addon' ),
-						'default'  => false,
+						'default'  => astra_get_option( 'learndash-overwrite-colors' ),
 						'priority' => 41,
-						'section'  => 'section-learndash',
 					),
 
 					array(

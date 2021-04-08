@@ -38,7 +38,7 @@ if ( ! class_exists( 'Astra_Nav_Menu_Below_Header_Colors' ) ) {
 
 			$_configs = array();
 
-			if ( is_callable( 'Astra_Sticky_Header_Configs::is_header_section_active' ) && Astra_Sticky_Header_Configs::is_header_section_active() && ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( is_callable( 'Astra_Sticky_Header_Configs::is_header_section_active' ) && Astra_Sticky_Header_Configs::is_header_section_active() && false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				$_configs = array(
 
@@ -53,9 +53,10 @@ if ( ! class_exists( 'Astra_Nav_Menu_Below_Header_Colors' ) ) {
 						'title'     => __( 'Mega Menu Heading', 'astra-addon' ),
 						'section'   => 'section-sticky-header',
 						'transport' => 'postMessage',
+						'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 						'priority'  => 130,
-						'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
-							astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
+						'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
+						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 					),
 
 				);

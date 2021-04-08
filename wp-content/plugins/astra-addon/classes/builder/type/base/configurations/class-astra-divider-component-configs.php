@@ -41,11 +41,13 @@ class Astra_Divider_Component_Configs {
 		$divider_config = array();
 
 		if ( 'footer' === $builder_type ) {
-			$class_obj         = Astra_Addon_Builder_Footer::get_instance();
-			$number_of_divider = astra_addon_builder_helper()->num_of_footer_divider;
+			$class_obj           = Astra_Addon_Builder_Footer::get_instance();
+			$number_of_divider   = astra_addon_builder_helper()->num_of_footer_divider;
+			$divider_size_layout = 'horizontal';
 		} else {
-			$class_obj         = Astra_Addon_Builder_Header::get_instance();
-			$number_of_divider = astra_addon_builder_helper()->num_of_header_divider;
+			$class_obj           = Astra_Addon_Builder_Header::get_instance();
+			$number_of_divider   = astra_addon_builder_helper()->num_of_header_divider;
+			$divider_size_layout = 'vertical';
 		}
 
 		$component_limit = astra_addon_builder_helper()->component_limit;
@@ -131,18 +133,6 @@ class Astra_Divider_Component_Configs {
 				),
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-divider-' . $index . '-layout-divider]',
-					'type'     => 'control',
-					'section'  => $_section,
-					'control'  => 'ast-divider',
-					'priority' => 30,
-					'settings' => array(),
-				),
-
-				/**
 				 * Option:  Divider Style
 				 */
 				array(
@@ -162,6 +152,7 @@ class Astra_Divider_Component_Configs {
 					'transport'  => 'postMessage',
 					'responsive' => false,
 					'renderAs'   => 'text',
+					'divider'    => array( 'ast_class' => 'ast-top-divider' ),
 				),
 
 				// Section: Above Footer Border.
@@ -180,21 +171,9 @@ class Astra_Divider_Component_Configs {
 						'step' => 1,
 						'max'  => 60,
 					),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'suffix'            => 'px',
 					'context'           => astra_addon_builder_helper()->design_tab,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-divider-' . $index . '-thickness-divider]',
-					'type'     => 'control',
-					'section'  => $_section,
-					'control'  => 'ast-divider',
-					'priority' => 40,
-					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->design_tab,
 				),
 
 				// Section: Above Footer Border.
@@ -214,7 +193,14 @@ class Astra_Divider_Component_Configs {
 						'max'  => 100,
 					),
 					'suffix'            => '%',
-					'context'           => astra_addon_builder_helper()->design_tab,
+					'context'           => array(
+						astra_addon_builder_helper()->design_tab_config,
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-divider-' . $index . '-layout]',
+							'operator' => '==',
+							'value'    => $divider_size_layout,
+						),
+					),
 				),
 
 				/**
@@ -231,32 +217,7 @@ class Astra_Divider_Component_Configs {
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
 					'title'             => __( 'Color', 'astra-addon' ),
 					'context'           => astra_addon_builder_helper()->design_tab,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-divider-' . $index . '-color-divider]',
-					'type'     => 'control',
-					'section'  => $_section,
-					'control'  => 'ast-divider',
-					'priority' => 8,
-					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->design_tab,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-divider-' . $index . '-margin-divider]',
-					'type'     => 'control',
-					'section'  => $_section,
-					'control'  => 'ast-divider',
-					'priority' => 210,
-					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->design_tab,
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -272,6 +233,7 @@ class Astra_Divider_Component_Configs {
 					'section'           => $_section,
 					'priority'          => 220,
 					'title'             => __( 'Margin', 'astra-addon' ),
+					'divider'           => array( 'ast_class' => 'ast-top-divider' ),
 					'linked_choices'    => true,
 					'unit_choices'      => array( 'px', 'em', '%' ),
 					'choices'           => array(
@@ -296,12 +258,69 @@ class Astra_Divider_Component_Configs {
 					'title'      => __( 'Alignment', 'astra-addon' ),
 					'choices'    => array(
 						'flex-start' => __( 'Left', 'astra-addon' ),
-						'flex-end'   => __( 'Right', 'astra-addon' ),
 						'center'     => __( 'Center', 'astra-addon' ),
+						'flex-end'   => __( 'Right', 'astra-addon' ),
 					),
 					'transport'  => 'postMessage',
 					'responsive' => true,
 					'renderAs'   => 'text',
+				);
+
+				// Footer vertical divider size.
+				$_configs[] = array(
+					'name'              => ASTRA_THEME_SETTINGS . '[footer-vertical-divider-' . $index . '-size]',
+					'section'           => $_section,
+					'priority'          => 40,
+					'transport'         => 'postMessage',
+					'default'           => astra_get_option( 'footer-vertical-divider-' . $index . '-size' ),
+					'title'             => __( 'Size', 'astra-addon' ),
+					'type'              => 'control',
+					'control'           => 'ast-responsive-slider',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_responsive_slider' ),
+					'input_attrs'       => array(
+						'min'  => 0,
+						'step' => 1,
+						'max'  => 1000,
+					),
+					'suffix'            => 'px',
+					'context'           => array(
+						astra_addon_builder_helper()->design_tab_config,
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-divider-' . $index . '-layout]',
+							'operator' => '==',
+							'value'    => 'vertical',
+						),
+					),
+				);
+			}
+
+			if ( 'header' === $builder_type ) {
+
+				// Header horizontal divider size.
+				$_configs[] = array(
+					'name'              => ASTRA_THEME_SETTINGS . '[header-horizontal-divider-' . $index . '-size]',
+					'section'           => $_section,
+					'priority'          => 40,
+					'transport'         => 'postMessage',
+					'default'           => astra_get_option( 'header-horizontal-divider-' . $index . '-size' ),
+					'title'             => __( 'Size', 'astra-addon' ),
+					'type'              => 'control',
+					'control'           => 'ast-responsive-slider',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_responsive_slider' ),
+					'input_attrs'       => array(
+						'min'  => 0,
+						'step' => 1,
+						'max'  => 1000,
+					),
+					'suffix'            => 'px',
+					'context'           => array(
+						astra_addon_builder_helper()->design_tab_config,
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-divider-' . $index . '-layout]',
+							'operator' => '==',
+							'value'    => 'horizontal',
+						),
+					),
 				);
 			}
 

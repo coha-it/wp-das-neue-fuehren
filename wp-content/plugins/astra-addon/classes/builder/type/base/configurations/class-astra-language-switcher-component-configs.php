@@ -105,18 +105,7 @@ class Astra_Language_Switcher_Component_Configs {
 				),
 				'context'   => $type_context,
 			),
-			/**
-			 * Option: Divider
-			 */
-			array(
-				'name'     => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-language-switcher-divider]',
-				'type'     => 'control',
-				'control'  => 'ast-divider',
-				'section'  => $_section,
-				'priority' => 2,
-				'settings' => array(),
-				'context'  => $type_context,
-			),
+
 			/**
 			 * Option: Position
 			 */
@@ -140,19 +129,7 @@ class Astra_Language_Switcher_Component_Configs {
 				'context'    => astra_addon_builder_helper()->general_tab,
 				'responsive' => false,
 				'renderAs'   => 'text',
-			),
-
-			/**
-			 * Option: Divider
-			 */
-			array(
-				'name'     => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-language-switcher-layout-divider]',
-				'type'     => 'control',
-				'section'  => $_section,
-				'control'  => 'ast-divider',
-				'priority' => 3,
-				'settings' => array(),
-				'context'  => astra_addon_builder_helper()->general_tab,
+				'divider'    => array( 'ast_class' => 'ast-bottom-divider ast-top-divider' ),
 			),
 
 			array(
@@ -169,19 +146,7 @@ class Astra_Language_Switcher_Component_Configs {
 				),
 				'transport' => 'postMessage',
 				'context'   => astra_addon_builder_helper()->general_tab,
-			),
-
-			/**
-			 * Option: Divider
-			 */
-			array(
-				'name'     => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-language-switcher-show-flag-divider]',
-				'type'     => 'control',
-				'section'  => $_section,
-				'control'  => 'ast-divider',
-				'priority' => 3,
-				'settings' => array(),
-				'context'  => astra_addon_builder_helper()->general_tab,
+				'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 			),
 
 			array(
@@ -260,6 +225,7 @@ class Astra_Language_Switcher_Component_Configs {
 					'step' => 1,
 					'max'  => 50,
 				),
+				'divider'     => array( 'ast_class' => 'ast-bottom-divider' ),
 				'suffix'      => 'px',
 				'context'     => array(
 					array(
@@ -268,31 +234,6 @@ class Astra_Language_Switcher_Component_Configs {
 						'value'    => true,
 					),
 					astra_addon_builder_helper()->design_tab_config,
-				),
-			),
-
-			/**
-			 * Option: Divider
-			 */
-			array(
-				'name'     => ASTRA_THEME_SETTINGS . '[' . $_section . '-flag-size-divider]',
-				'type'     => 'control',
-				'section'  => $_section,
-				'control'  => 'ast-divider',
-				'priority' => 2,
-				'settings' => array(),
-				'context'  => array(
-					astra_addon_builder_helper()->design_tab_config,
-					array(
-						'setting'  => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-language-switcher-show-flag]',
-						'operator' => '==',
-						'value'    => true,
-					),
-					array(
-						'setting'  => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-language-switcher-show-name]',
-						'operator' => '==',
-						'value'    => true,
-					),
 				),
 			),
 
@@ -312,6 +253,7 @@ class Astra_Language_Switcher_Component_Configs {
 					'step' => 1,
 					'max'  => 60,
 				),
+				'divider'     => array( 'ast_class' => 'ast-bottom-divider' ),
 				'context'     => array(
 					array(
 						'setting'  => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-language-switcher-show-name]',
@@ -321,6 +263,7 @@ class Astra_Language_Switcher_Component_Configs {
 					astra_addon_builder_helper()->design_tab_config,
 				),
 			),
+
 		);
 
 		if ( count( $language_choices ) > 1 ) {
@@ -328,7 +271,7 @@ class Astra_Language_Switcher_Component_Configs {
 				'name'      => ASTRA_THEME_SETTINGS . '[' . $builder_type . '-language-switcher-type]',
 				'default'   => astra_get_option( $builder_type . '-language-switcher-type' ),
 				'type'      => 'control',
-				'control'   => 'select',
+				'control'   => 'ast-select',
 				'section'   => $_section,
 				'priority'  => 1,
 				'title'     => __( 'Type', 'astra-addon' ),
@@ -344,16 +287,6 @@ class Astra_Language_Switcher_Component_Configs {
 		if ( 'footer' === $builder_type ) {
 
 			$_configs[] = array(
-				'name'     => ASTRA_THEME_SETTINGS . '[footer-language-switcher-align-divider]',
-				'type'     => 'control',
-				'control'  => 'ast-divider',
-				'section'  => $_section,
-				'priority' => 35,
-				'settings' => array(),
-				'context'  => astra_addon_builder_helper()->general_tab,
-			);
-
-			$_configs[] = array(
 				'name'       => ASTRA_THEME_SETTINGS . '[footer-language-switcher-alignment]',
 				'default'    => astra_get_option( 'footer-language-switcher-alignment' ),
 				'type'       => 'control',
@@ -362,6 +295,7 @@ class Astra_Language_Switcher_Component_Configs {
 				'priority'   => 35,
 				'title'      => __( 'Alignment', 'astra-addon' ),
 				'context'    => astra_addon_builder_helper()->general_tab,
+				'divider'    => array( 'ast_class' => 'ast-top-divider' ),
 				'transport'  => 'postMessage',
 				'responsive' => true,
 				'choices'    => array(

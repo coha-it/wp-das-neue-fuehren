@@ -44,25 +44,6 @@ if ( ! class_exists( 'Astra_Customizer_Above_Header_Spacing_Configs' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option - Top Menu Space
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[above-header-spacing-divider]',
-					'section'  => 'section-above-header',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'priority' => 150,
-					'settings' => array(),
-					'context'  => array(
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[above-header-layout]',
-							'operator' => '!=',
-							'value'    => 'disabled',
-						),
-					),
-				),
-
-				/**
 				 * Option - Above Header Space
 				 */
 				array(
@@ -74,6 +55,7 @@ if ( ! class_exists( 'Astra_Customizer_Above_Header_Spacing_Configs' ) ) {
 					'transport'         => 'postMessage',
 					'section'           => 'section-above-header',
 					'priority'          => 160,
+					'divider'           => array( 'ast_class' => 'ast-top-divider' ),
 					'title'             => __( 'Header Space', 'astra-addon' ),
 					'context'           => array(
 						array(

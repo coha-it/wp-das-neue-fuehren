@@ -407,9 +407,12 @@ class Skin_Style {
 												</div>
 											</div>
 											<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'timeline_content' . esc_attr( $post_id ) ) ); ?>>
-												<?php if ( 'yes' === $settings['post_title'] && '' !== get_the_title( $post_id ) ) { ?>
+												<?php
+												if ( 'yes' === $settings['post_title'] && '' !== get_the_title( $post_id ) ) {
+													$heading_size_tag = UAEL_Helper::validate_html_tag( $settings['timeline_heading_tag'] );
+													?>
 													<div class="uael-timeline-heading-text">
-														<<?php echo esc_attr( $settings['timeline_heading_tag'] ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( 'heading_setting_key' ) ); ?>><?php echo wp_kses_post( $this->render_title() ); ?></<?php echo esc_attr( $settings['timeline_heading_tag'] ); ?>>
+														<<?php echo esc_attr( $heading_size_tag ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( 'heading_setting_key' ) ); ?>><?php echo wp_kses_post( $this->render_title() ); ?></<?php echo esc_attr( $heading_size_tag ); ?>>
 													</div>
 												<?php } ?>
 												<?php if ( 'yes' === $settings['post_excerpt'] ) { ?>

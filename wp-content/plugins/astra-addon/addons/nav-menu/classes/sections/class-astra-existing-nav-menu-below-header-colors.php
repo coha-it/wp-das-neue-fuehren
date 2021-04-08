@@ -49,6 +49,7 @@ if ( ! class_exists( 'Astra_Existing_Nav_Menu_Below_Header_Colors' ) ) {
 					'title'     => __( 'Mega Menu Heading', 'astra-addon' ),
 					'section'   => 'section-below-header',
 					'transport' => 'postMessage',
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 					'priority'  => 136,
 					'context'   => array(
 						'relation' => 'AND',

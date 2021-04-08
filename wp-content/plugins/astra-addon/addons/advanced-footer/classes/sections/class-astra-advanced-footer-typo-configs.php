@@ -39,26 +39,6 @@ if ( ! class_exists( 'Astra_Advanced_Footer_Typo_Configs' ) ) {
 			$_config = array(
 
 				/**
-				 * Option: Footer Widget Typography Section heading
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[footer-widget-typography-heading-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-footer-adv',
-					'priority' => 48,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[footer-adv]',
-							'operator' => '!=',
-							'value'    => 'disabled',
-						),
-					),
-				),
-
-				/**
 				 * Option: Footer Widget Title Typography Group
 				 */
 				array(
@@ -69,6 +49,7 @@ if ( ! class_exists( 'Astra_Advanced_Footer_Typo_Configs' ) ) {
 					'title'     => __( 'Widget Title Font', 'astra-addon' ),
 					'section'   => 'section-footer-adv',
 					'transport' => 'postMessage',
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 					'priority'  => 48,
 					'context'   => array(
 						astra_addon_builder_helper()->general_tab_config,
@@ -153,23 +134,6 @@ if ( ! class_exists( 'Astra_Advanced_Footer_Typo_Configs' ) ) {
 						'min'  => 1,
 						'step' => 0.01,
 						'max'  => 5,
-					),
-				),
-
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[footer-widget-content-typography-group-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-footer-adv',
-					'priority' => 48,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[footer-adv]',
-							'operator' => '!=',
-							'value'    => 'disabled',
-						),
 					),
 				),
 

@@ -45,9 +45,10 @@ if ( ! class_exists( 'Astra_Site_Layout_Configuration' ) ) {
 					'name'     => ASTRA_THEME_SETTINGS . '[site-layout]',
 					'default'  => astra_get_option( 'site-layout' ),
 					'type'     => 'control',
-					'control'  => 'select',
+					'control'  => 'ast-select',
 					'section'  => 'section-container-layout',
 					'priority' => 5,
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 					'title'    => __( 'Site Layout', 'astra-addon' ),
 					'choices'  => array(
 						'ast-full-width-layout'  => __( 'Full Width', 'astra-addon' ),
@@ -55,18 +56,6 @@ if ( ! class_exists( 'Astra_Site_Layout_Configuration' ) ) {
 						'ast-padded-layout'      => __( 'Padded', 'astra-addon' ),
 						'ast-fluid-width-layout' => __( 'Fluid', 'astra-addon' ),
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[site-layout-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-container-layout',
-					'priority' => 5,
-					'settings' => array(),
 				),
 
 				/**
@@ -89,26 +78,6 @@ if ( ! class_exists( 'Astra_Site_Layout_Configuration' ) ) {
 						'max'  => 1920,
 					),
 					'context'           => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[site-layout]',
-							'operator' => '==',
-							'value'    => 'ast-padded-layout',
-						),
-					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[site-layout-padded-width-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-container-layout',
-					'priority' => 15,
-					'settings' => array(),
-					'context'  => array(
 						astra_addon_builder_helper()->general_tab_config,
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[site-layout]',
@@ -147,26 +116,6 @@ if ( ! class_exists( 'Astra_Site_Layout_Configuration' ) ) {
 				),
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[site-layout-box-width-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-container-layout',
-					'priority' => 25,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[site-layout]',
-							'operator' => '==',
-							'value'    => 'ast-box-layout',
-						),
-					),
-				),
-
-				/**
 				 * Option: Padded Layout Custom Width
 				 */
 				array(
@@ -179,6 +128,7 @@ if ( ! class_exists( 'Astra_Site_Layout_Configuration' ) ) {
 					'section'           => 'section-container-layout',
 					'priority'          => 20,
 					'title'             => __( 'Space Outside Body', 'astra-addon' ),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider ast-top-divider' ),
 					'context'           => array(
 						astra_addon_builder_helper()->general_tab_config,
 						array(
@@ -208,6 +158,7 @@ if ( ! class_exists( 'Astra_Site_Layout_Configuration' ) ) {
 					'control'     => 'ast-slider',
 					'section'     => 'section-container-layout',
 					'priority'    => 30,
+					'divider'     => array( 'ast_class' => 'ast-bottom-divider ast-top-divider' ),
 					'title'       => __( 'Top & Bottom Margin', 'astra-addon' ),
 					'context'     => array(
 						astra_addon_builder_helper()->general_tab_config,
@@ -239,6 +190,7 @@ if ( ! class_exists( 'Astra_Site_Layout_Configuration' ) ) {
 					'transport'   => 'postMessage',
 					'control'     => 'ast-slider',
 					'section'     => 'section-container-layout',
+					'divider'     => array( 'ast_class' => 'ast-bottom-divider' ),
 					'priority'    => 35,
 					'title'       => __( 'Left & Right Padding', 'astra-addon' ),
 					'context'     => array(

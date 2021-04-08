@@ -370,6 +370,7 @@ if ( ! class_exists( 'Astra_Ext_Colors_Loader' ) ) {
 				'tablet_break_point' => astra_get_tablet_breakpoint(),
 				'mobile_break_point' => astra_get_mobile_breakpoint(),
 				'component_limit'    => astra_addon_builder_helper()->component_limit,
+				'astra_not_updated'  => version_compare( ASTRA_THEME_VERSION, '3.2.0', '<' ),
 			);
 
 			wp_localize_script( 'astra-ext-colors-customize-preview-js', 'astColors', $localize_array );

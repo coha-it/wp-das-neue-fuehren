@@ -133,6 +133,35 @@ final class Astra_Builder_Helper {
 	);
 
 	/**
+	 * Default responsive spacing control value.
+	 *
+	 * @var string[][]
+	 */
+	public static $default_responsive_spacing = array(
+		'desktop'      => array(
+			'top'    => '',
+			'right'  => '',
+			'bottom' => '',
+			'left'   => '',
+		),
+		'tablet'       => array(
+			'top'    => '',
+			'right'  => '',
+			'bottom' => '',
+			'left'   => '',
+		),
+		'mobile'       => array(
+			'top'    => '',
+			'right'  => '',
+			'bottom' => '',
+			'left'   => '',
+		),
+		'desktop-unit' => 'px',
+		'tablet-unit'  => 'px',
+		'mobile-unit'  => 'px',
+	);
+
+	/**
 	 * Config Tablet device context.
 	 *
 	 * @var string[][]
@@ -671,7 +700,7 @@ final class Astra_Builder_Helper {
 					'section' => 'section-header-mobile-trigger',
 				),
 				'mobile-menu'    => array(
-					'name'    => __( 'Mobile Menu', 'astra' ),
+					'name'    => __( 'Off-Canvas Menu', 'astra' ),
 					'icon'    => 'menu-alt',
 					'section' => 'section-header-mobile-menu',
 				),
@@ -771,9 +800,9 @@ final class Astra_Builder_Helper {
 	 */
 	public static function is_header_footer_builder_active() {
 
-		$astra_settings                             = get_option( ASTRA_THEME_SETTINGS );
-		$astra_settings['is-header-footer-builder'] = isset( $astra_settings['is-header-footer-builder'] ) ? $astra_settings['is-header-footer-builder'] : true;
-		return apply_filters( 'astra_is_header_footer_builder_active', $astra_settings['is-header-footer-builder'] );
+		$astra_settings           = get_option( ASTRA_THEME_SETTINGS );
+		$is_header_footer_builder = isset( $astra_settings['is-header-footer-builder'] ) ? (bool) $astra_settings['is-header-footer-builder'] : true;
+		return apply_filters( 'astra_is_header_footer_builder_active', $is_header_footer_builder );
 	}
 
 	/**
@@ -904,6 +933,14 @@ final class Astra_Builder_Helper {
 							 * Astra Off-Canvas
 							 */
 							do_action( 'astra_render_mobile_popup', 'popup', 'content' );
+						?>
+					</div>
+					<div class="ast-desktop-popup-content">
+						<?php
+							/**
+							 * Astra Off-Canvas
+							 */
+							do_action( 'astra_render_desktop_popup', 'popup', 'content' );
 						?>
 					</div>
 				</div>
@@ -1070,6 +1107,18 @@ final class Astra_Builder_Helper {
 		}
 
 		return $is_loaded || is_customize_preview();
+	}
+
+	/**
+	 * For existing users, do not apply dynamic CSS chages.
+	 *
+	 * @since 3.3.0
+	 * @return boolean true if it is an existing user , false if not.
+	 */
+	public static function apply_flex_based_css() {
+		$astra_settings                      = get_option( ASTRA_THEME_SETTINGS );
+		$astra_settings['is-flex-based-css'] = isset( $astra_settings['is-flex-based-css'] ) ? $astra_settings['is-flex-based-css'] : true;
+		return apply_filters( 'astra_apply_flex_based_css', $astra_settings['is-flex-based-css'] );
 	}
 }
 

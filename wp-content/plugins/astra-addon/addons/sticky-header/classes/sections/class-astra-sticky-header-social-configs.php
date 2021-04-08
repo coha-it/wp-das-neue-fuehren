@@ -107,6 +107,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Social_Configs' ) ) {
 							),
 						),
 						'responsive' => true,
+						'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 					),
 
 					/**

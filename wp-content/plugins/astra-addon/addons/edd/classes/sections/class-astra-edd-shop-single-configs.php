@@ -39,18 +39,6 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Configs' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[disable-edd-single-product-nav-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-single',
-					'control'  => 'ast-divider',
-					'priority' => 10,
-					'settings' => array(),
-				),
-
-				/**
 				 * Option: Enable Ajax add to cart.
 				 */
 				array(
@@ -59,32 +47,9 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Configs' ) ) {
 					'type'     => 'control',
 					'section'  => 'section-edd-single',
 					'title'    => __( 'Disable Add To Cart Button', 'astra-addon' ),
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 					'priority' => 18,
 					'control'  => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-single-product-colors-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-single',
-					'control'  => 'ast-divider',
-					'priority' => 230,
-					'settings' => array(),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-single-typo-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-single',
-					'control'  => 'ast-divider',
-					'priority' => 232,
-					'settings' => array(),
 				),
 
 				/**
@@ -99,6 +64,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Single_Configs' ) ) {
 					'section'   => 'section-edd-single',
 					'transport' => 'postMessage',
 					'priority'  => 233,
+					'divider'   => array( 'ast_class' => 'ast-top-divider' ),
 				),
 
 				/**

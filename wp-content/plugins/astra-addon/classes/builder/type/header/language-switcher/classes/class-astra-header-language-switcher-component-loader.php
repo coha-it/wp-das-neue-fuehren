@@ -66,6 +66,8 @@ class Astra_Header_Language_Switcher_Component_Loader {
 			),
 		);
 
+		$defaults['section-hb-language-switcher-margin'] = astra_addon_builder_helper()->default_responsive_spacing;
+
 		return $defaults;
 	}
 

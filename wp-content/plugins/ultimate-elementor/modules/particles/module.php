@@ -160,7 +160,7 @@ class Module extends Module_Base {
 										}
 									});
 								});
-								jQuery(document).ready(function(){
+								 jQuery( document ).on( "ready elementor/popup/show", () => {
 									if ( jQuery.find( ".uael-particle-yes" ).length < 1 ) {
 										return;
 									}

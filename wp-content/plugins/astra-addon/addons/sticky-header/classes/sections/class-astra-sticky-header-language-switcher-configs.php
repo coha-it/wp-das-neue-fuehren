@@ -78,6 +78,7 @@ class Astra_Sticky_Header_Language_Switcher_Configs extends Astra_Customizer_Con
 					),
 					astra_addon_builder_helper()->design_tab_config,
 				),
+				'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 			),
 		);
 

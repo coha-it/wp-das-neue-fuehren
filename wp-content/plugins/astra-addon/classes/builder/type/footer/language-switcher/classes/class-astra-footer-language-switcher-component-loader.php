@@ -71,6 +71,7 @@ class Astra_Footer_Language_Switcher_Component_Loader {
 			'tablet'  => 'flex-start',
 			'mobile'  => 'flex-start',
 		);
+		$defaults['section-fb-language-switcher-margin']       = astra_addon_builder_helper()->default_responsive_spacing;
 
 		return $defaults;
 	}

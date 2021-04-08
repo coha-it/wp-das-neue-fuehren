@@ -547,6 +547,7 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 			if ( ! defined( 'ASTRA_THEME_VERSION' ) ) {
 				return;
 			}
+			require_once ASTRA_EXT_DIR . 'classes/class-astra-icons.php';
 
 			if ( version_compare( ASTRA_THEME_VERSION, '3.1.0', '>=' ) ) {
 				self::$switch_control   = 'ast-toggle-control';
@@ -575,6 +576,7 @@ if ( ! class_exists( 'Astra_Theme_Extension' ) ) {
 				require_once ASTRA_EXT_DIR . 'classes/cache/class-astra-addon-cache.php';
 			}
 			require_once ASTRA_EXT_DIR . 'classes/class-astra-ext-model.php';
+
 		}
 		/**
 		 * Load Gutenberg assets

@@ -56,18 +56,7 @@ if ( ! class_exists( 'Astra_Scroll_To_Top_Configs' ) ) {
 					),
 					'renderAs'   => 'text',
 					'responsive' => false,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[scroll-to-top-on-devices-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-scroll-to-top',
-					'priority' => 10,
-					'settings' => array(),
+					'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -88,18 +77,7 @@ if ( ! class_exists( 'Astra_Scroll_To_Top_Configs' ) ) {
 					'priority'   => 11,
 					'responsive' => false,
 					'renderAs'   => 'text',
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[scroll-to-top-icon-position-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-scroll-to-top',
-					'priority' => 11,
-					'settings' => array(),
+					'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -130,21 +108,8 @@ if ( ! class_exists( 'Astra_Scroll_To_Top_Configs' ) ) {
 					'title'     => __( 'Border Radius', 'astra-addon' ),
 					'suffix'    => 'px',
 					'priority'  => 1,
-					'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
-						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[scroll-to-top-icon-size-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-scroll-to-top',
-					'priority' => 2,
-					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
+					'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
@@ -159,20 +124,7 @@ if ( ! class_exists( 'Astra_Scroll_To_Top_Configs' ) ) {
 					'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 					'priority'  => 15,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[scroll-on-top-color-group-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-scroll-to-top',
-					'priority' => 15,
-					'settings' => array(),
-					'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
-						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				array(
@@ -183,7 +135,7 @@ if ( ! class_exists( 'Astra_Scroll_To_Top_Configs' ) ) {
 					'title'     => __( 'Background Color', 'astra-addon' ),
 					'section'   => 'section-scroll-to-top',
 					'transport' => 'postMessage',
-					'context'   => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'context'   => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 					'priority'  => 16,
 				),
@@ -257,37 +209,15 @@ if ( ! class_exists( 'Astra_Scroll_To_Top_Configs' ) ) {
 
 			);
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
-				array_push(
-					$_configs,
-					/**
-					 * Option: Scroll To Top Tabs
-					 */
-					array(
-						'name'        => 'section-scroll-to-top-ast-context-tabs',
-						'section'     => 'section-scroll-to-top',
-						'type'        => 'control',
-						'control'     => 'ast-builder-header-control',
-						'priority'    => 0,
-						'description' => '',
-					)
-				);
-			} else {
-
-				array_push(
-					$_configs,
-					/**
-					 * Option: Divider
-					 */
-					array(
-						'name'     => ASTRA_THEME_SETTINGS . '[scroll-to-top-icon-radius-divider]',
-						'type'     => 'control',
-						'control'  => 'ast-divider',
-						'section'  => 'section-scroll-to-top',
-						'priority' => 14,
-						'settings' => array(),
-					)
+				$_configs[] = array(
+					'name'        => 'section-scroll-to-top-ast-context-tabs',
+					'section'     => 'section-scroll-to-top',
+					'type'        => 'control',
+					'control'     => 'ast-builder-header-control',
+					'priority'    => 0,
+					'description' => '',
 				);
 			}
 
