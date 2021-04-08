@@ -90,6 +90,7 @@ if ( ! class_exists( 'Astra_Edd_Archive_Colors_Configs' ) ) {
 					'section'           => 'section-edd-archive',
 					'default'           => astra_get_option( 'edd-archive-product-content-color' ),
 					'type'              => 'control',
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'control'           => 'ast-color',
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
 					'transport'         => 'postMessage',

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'cd4ab62aa564b94a7892f011699546946ad87a82',
+    'reference' => '8d386c025b5058bf8c9619a06df079d7c0794aec',
     'name' => 'updraftplus/updraftplus',
   ),
   'versions' => 
@@ -321,7 +321,16 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'cd4ab62aa564b94a7892f011699546946ad87a82',
+      'reference' => '8d386c025b5058bf8c9619a06df079d7c0794aec',
+    ),
+    'vakata/jstree' => 
+    array (
+      'pretty_version' => 'dev-3.3.12-rc.0-distributable',
+      'version' => 'dev-3.3.12-rc.0-distributable',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9342b0a31b0abd126f2e201a4318328f25673249',
     ),
     'yahnis-elsts/plugin-update-checker' => 
     array (

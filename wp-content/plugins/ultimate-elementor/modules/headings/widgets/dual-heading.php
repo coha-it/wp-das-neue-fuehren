@@ -19,6 +19,7 @@ use Elementor\Utils;
 
 // UltimateElementor Classes.
 use UltimateElementor\Base\Common_Widget;
+use UltimateElementor\Classes\UAEL_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;   // Exit if accessed directly.
@@ -817,9 +818,11 @@ class Dual_Heading extends Common_Widget {
 		}
 
 		$this->add_render_attribute( 'uael-dual-heading', 'class', 'uael-heading-stack-' . $settings['heading_stack_on'] );
+
+		$dual_html_tag = UAEL_Helper::validate_html_tag( $settings['dual_tag_selection'] );
 		?>
 		<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael-dual-heading' ) ); ?>>
-			<<?php echo esc_attr( $settings['dual_tag_selection'] ); ?>>
+			<<?php echo esc_attr( $dual_html_tag ); ?>>
 				<?php if ( ! empty( $settings['heading_link']['url'] ) ) { ?>
 					<a <?php echo wp_kses_post( $link ); ?> >
 				<?php } ?>
@@ -832,7 +835,7 @@ class Dual_Heading extends Common_Widget {
 				<?php if ( ! empty( $settings['heading_link']['url'] ) ) { ?>
 					</a>
 				<?php } ?>
-			</<?php echo esc_attr( $settings['dual_tag_selection'] ); ?>>
+			</<?php echo esc_attr( $dual_html_tag ); ?>>
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -870,9 +873,18 @@ class Dual_Heading extends Common_Widget {
 			}
 
 			view.addRenderAttribute( 'uael-dual-heading', 'class', 'uael-heading-stack-' + settings.heading_stack_on );
+
+			var dual_html_tag = settings.dual_tag_selection;
+			if ( typeof elementor.helpers.validateHTMLTag === "function" ) {
+				dual_html_tag = elementor.helpers.validateHTMLTag( dual_html_tag );
+			} else if( UAEWidgetsData.allowed_tags ) {
+				dual_html_tag = UAEWidgetsData.allowed_tags.includes( dual_html_tag.toLowerCase() ) ? dual_html_tag : 'div';
+			}
+
+
 		#>
 		<div {{{ view.getRenderAttributeString( 'uael-dual-heading') }}} >
-			<{{ settings.dual_tag_selection }}>
+			<{{ dual_html_tag }}>
 				<# if ( '' != settings.heading_link.url ) { #>
 					<a href= {{ settings.heading_link.url }}>
 				<# } #>
@@ -881,7 +893,7 @@ class Dual_Heading extends Common_Widget {
 				<# if ( '' !== settings.heading_link.url ) { #>
 					</a>
 				<# } #>
-			</{{ settings.dual_tag_selection }}>
+			</{{ dual_html_tag }}>
 		</div>
 		<?php
 	}

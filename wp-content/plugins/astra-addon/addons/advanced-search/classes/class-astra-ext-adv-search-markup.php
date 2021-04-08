@@ -50,7 +50,7 @@ if ( ! class_exists( 'Astra_Ext_Adv_Search_Markup' ) ) {
 			/**
 			 * Compatibility with Default Astra & Astra Header Builder > Search.
 			 */
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 				add_action( 'astra_main_header_bar_top', array( $this, 'header_builder_cover_search' ) );
 				add_action( 'astra_mobile_header_bar_top', array( $this, 'header_builder_cover_search' ) );
 
@@ -218,7 +218,7 @@ if ( ! class_exists( 'Astra_Ext_Adv_Search_Markup' ) ) {
 				'full-screen' === astra_get_option( 'header-main-rt-section-search-box-type' ) ||
 				'full-screen' === astra_get_option( 'below-header-section-1-search-box-type' ) ||
 				'full-screen' === astra_get_option( 'below-header-section-2-search-box-type' ) ||
-				( astra_addon_builder_helper()->is_header_footer_builder_active && 'full-screen' === astra_get_option( 'header-search-box-type' ) )
+				( true === astra_addon_builder_helper()->is_header_footer_builder_active && 'full-screen' === astra_get_option( 'header-search-box-type' ) )
 			) {
 				$this->get_search_form( 'full-screen', true );
 			}
@@ -236,7 +236,7 @@ if ( ! class_exists( 'Astra_Ext_Adv_Search_Markup' ) ) {
 		 */
 		public function get_search_markup( $search_markup, $option = '', $device = '' ) {
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				$search_box_style = astra_get_option( 'header-search-box-type', 'slide-search' );
 				$search_box_style = apply_filters( 'astra_search_style_hs', $search_box_style );
@@ -285,7 +285,7 @@ if ( ! class_exists( 'Astra_Ext_Adv_Search_Markup' ) ) {
 		 * @return mixed        HTML Markup.
 		 */
 		public function get_search_icon( $style ) {
-			return '<div class="ast-search-icon"><a class="' . esc_attr( $style ) . ' astra-search-icon" aria-label="Search icon link" href="#"></a></div>';
+			return '<div class="ast-search-icon"><a class="' . esc_attr( $style ) . ' astra-search-icon" aria-label="Search icon link" href="#">' . Astra_Icons::get_icons( 'search' ) . '</a></div>';
 		}
 
 		/**

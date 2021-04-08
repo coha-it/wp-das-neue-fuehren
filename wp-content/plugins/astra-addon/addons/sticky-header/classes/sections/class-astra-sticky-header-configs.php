@@ -42,7 +42,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 			$header_color_label            = __( 'Header', 'astra-addon' );
 			$header_primary_color_priority = 85;
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				$header_above_section          = 'section-above-header-builder';
 				$header_below_section          = 'section-below-header-builder';
@@ -64,7 +64,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 					'title'    => __( 'Primary Header Colors', 'astra-addon' ),
 					'settings' => array(),
 					'priority' => 80,
-					'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+					'context'  => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 						astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 				),
 
@@ -80,18 +80,9 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 					'priority'  => 10,
 					'control'   => Astra_Theme_Extension::$switch_control,
 					'transport' => 'refresh',
+					'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[header-main-stick-divider]',
-					'type'     => 'control',
-					'section'  => 'section-sticky-header',
-					'control'  => 'ast-divider',
-					'priority' => 10,
-					'settings' => array(),
-				),
+
 				array(
 					'name'     => ASTRA_THEME_SETTINGS . '[different-sticky-logo]',
 					'default'  => astra_get_option( 'different-sticky-logo' ),
@@ -100,17 +91,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 					'title'    => __( 'Different Logo for Sticky Header?', 'astra-addon' ),
 					'priority' => 15,
 					'control'  => Astra_Theme_Extension::$switch_control,
-				),
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[different-sticky-logo-divider]',
-					'type'     => 'control',
-					'section'  => 'section-sticky-header',
-					'control'  => 'ast-divider',
-					'priority' => 15,
-					'settings' => array(),
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -136,31 +117,11 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 				),
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-logo-divider]',
-					'type'     => 'control',
-					'section'  => 'section-sticky-header',
-					'control'  => 'ast-divider',
-					'priority' => 16,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[different-sticky-logo]',
-							'operator' => '==',
-							'value'    => 1,
-						),
-					),
-				),
-
-				/**
 				 * Option: Different retina logo
 				 */
 				array(
 					'name'     => ASTRA_THEME_SETTINGS . '[different-sticky-retina-logo]',
-					'default'  => false,
+					'default'  => astra_get_option( 'different-sticky-retina-logo' ),
 					'type'     => 'control',
 					'section'  => 'section-sticky-header',
 					'title'    => __( 'Different Logo for retina devices?', 'astra-addon' ),
@@ -174,26 +135,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'value'    => 1,
 						),
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[different-sticky-retina-logo-divider]',
-					'type'     => 'control',
-					'section'  => 'section-sticky-header',
-					'control'  => 'ast-divider',
-					'priority' => 20,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[different-sticky-logo]',
-							'operator' => '==',
-							'value'    => 1,
-						),
-					),
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider ast-top-divider' ),
 				),
 
 				/**
@@ -251,27 +193,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'value'    => 1,
 						),
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-logo-width-divider]',
-					'type'     => 'control',
-					'section'  => 'section-sticky-header',
-					'control'  => 'ast-divider',
-					'priority' => 25,
-					'settings' => array(),
-					'context'  => array(
-						'relation' => 'AND',
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[different-sticky-logo]',
-							'operator' => '==',
-							'value'    => 1,
-						),
-					),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -285,19 +207,8 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 					'title'       => __( 'Enable Shrink Effect', 'astra-addon' ),
 					'priority'    => 13.1,
 					'control'     => Astra_Theme_Extension::$switch_control,
+					'divider'     => array( 'ast_class' => 'ast-bottom-divider' ),
 					'description' => __( 'It will shrink the sticky header height, logo, and menu size. Sticky header will display in a compact size.', 'astra-addon' ),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[header-main-shrink-divider]',
-					'type'     => 'control',
-					'section'  => 'section-sticky-header',
-					'control'  => 'ast-divider',
-					'priority' => 13.1,
-					'settings' => array(),
 				),
 
 				/**
@@ -311,18 +222,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 					'title'    => __( 'Hide When Scrolling Down', 'astra-addon' ),
 					'priority' => 13.2,
 					'control'  => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[sticky-hide-on-scroll-divider]',
-					'type'     => 'control',
-					'section'  => 'section-sticky-header',
-					'control'  => 'ast-divider',
-					'priority' => 13.2,
-					'settings' => array(),
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -351,25 +251,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 					'transport'  => 'refresh',
 					'responsive' => false,
 					'renderAs'   => 'text',
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-style-divider]',
-					'type'     => 'control',
-					'section'  => 'section-sticky-header',
-					'control'  => 'ast-divider',
-					'priority' => 40,
-					'settings' => array(),
-					'context'  => array(
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[sticky-hide-on-scroll]',
-							'operator' => '!=',
-							'value'    => 1,
-						),
-					),
+					'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -392,31 +274,6 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 					'renderAs'   => 'text',
 				),
 
-				/**
-				 * Option: Sticky Header Button Colors Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-button-color-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-heading',
-					'section'  => 'section-sticky-header',
-					'title'    => __( 'Header Button', 'astra-addon' ),
-					'settings' => array(),
-					'priority' => 55,
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[header-main-rt-section]',
-							'operator' => '==',
-							'value'    => 'button',
-						),
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[header-main-rt-section-button-style]',
-							'operator' => '===',
-							'value'    => 'custom-button',
-						),
-					),
-				),
 				/**
 				 * Group: Theme Button Colors Group
 				 */
@@ -486,7 +343,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 						'title'    => __( 'Above Header Colors', 'astra-addon' ),
 						'settings' => array(),
 						'priority' => 60,
-						'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+						'context'  => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 							astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 					),
 
@@ -501,11 +358,11 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 						'title'    => __( 'Below Header Colors', 'astra-addon' ),
 						'settings' => array(),
 						'priority' => 110,
-						'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+						'context'  => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 							astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 					),
 				);
-				if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+				if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 					$sticky_individual_configs = array(
 
@@ -520,7 +377,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'title'    => __( 'Sticky Header Option', 'astra-addon' ),
 							'settings' => array(),
 							'priority' => 80,
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'  => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
 
@@ -535,7 +392,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'title'    => __( 'Sticky Header Option', 'astra-addon' ),
 							'settings' => array(),
 							'priority' => 80,
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'  => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
 
@@ -550,7 +407,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'title'    => __( 'Sticky Header Option', 'astra-addon' ),
 							'settings' => array(),
 							'priority' => 80,
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'  => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
 						/**
@@ -592,6 +449,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'section'   => 'title_tagline',
 							'transport' => 'postMessage',
 							'priority'  => 21,
+							'divider'   => array( 'ast_class' => 'ast-bottom-divider' ),
 							'context'   => array(
 								astra_addon_builder_helper()->design_tab_config,
 								array(
@@ -634,6 +492,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'default'           => astra_get_option( 'sticky-header-builder-site-tagline-color' ),
 							'title'             => __( 'Tagline', 'astra-addon' ),
 							'section'           => 'title_tagline',
+							'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 							'context'           => array(
 								astra_addon_builder_helper()->design_tab_config,
 								array(
@@ -655,7 +514,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'title'      => __( 'Background Color', 'astra-addon' ),
 							'responsive' => true,
 							'rgba'       => true,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 							astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
 					);
@@ -684,16 +543,6 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 								'context'  => astra_addon_builder_helper()->design_tab,
 							),
 
-							// Option Divider.
-							array(
-								'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-' . $_prefix . '-divider]',
-								'type'     => 'control',
-								'control'  => 'ast-divider',
-								'title'    => __( 'Menu Color', 'astra-addon' ),
-								'section'  => $_section,
-								'priority' => 101,
-								'context'  => astra_addon_builder_helper()->design_tab,
-							),
 							// Option Group: Menu Color.
 							array(
 								'name'       => ASTRA_THEME_SETTINGS . '[sticky-header-' . $_prefix . '-link-colors]',
@@ -704,6 +553,10 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 								'priority'   => 101,
 								'context'    => astra_addon_builder_helper()->design_tab,
 								'responsive' => true,
+								'divider'    => array(
+									'ast_class' => 'ast-top-divider',
+									'ast_title' => __( 'Menu Color', 'astra-addon' ),
+								),
 							),
 
 							array(
@@ -813,24 +666,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 								'priority'   => 33,
 								'context'    => astra_addon_builder_helper()->design_tab,
 							),
-							// Option Group: Sub Menu Divider.
-							array(
-								'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-' . $_prefix . '-submenu-divider]',
-								'type'     => 'control',
-								'control'  => 'ast-divider',
-								'section'  => $_section,
-								'priority' => 102,
-								'context'  => astra_addon_builder_helper()->design_tab,
-							),
-							array(
-								'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-' . $_prefix . '-submenu-title-divider]',
-								'type'     => 'control',
-								'control'  => 'ast-divider',
-								'title'    => __( 'Submenu Color', 'astra-addon' ),
-								'section'  => $_section,
-								'priority' => 102,
-								'context'  => astra_addon_builder_helper()->design_tab,
-							),
+
 							// Option Group: Sub Menu Colors.
 							array(
 								'name'       => ASTRA_THEME_SETTINGS . '[sticky-header-' . $_prefix . '-submenu-link-colors]',
@@ -841,6 +677,10 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 								'priority'   => 102,
 								'context'    => astra_addon_builder_helper()->design_tab,
 								'responsive' => true,
+								'divider'    => array(
+									'ast_class' => 'ast-top-divider',
+									'ast_title' => __( 'Submenu Color', 'astra-addon' ),
+								),
 							),
 							array(
 								'name'       => ASTRA_THEME_SETTINGS . '[sticky-header-' . $_prefix . '-submenu-background-colors]',
@@ -851,6 +691,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 								'priority'   => 102,
 								'context'    => astra_addon_builder_helper()->design_tab,
 								'responsive' => true,
+								'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 							),
 
 							// Option: Submenu Color.
@@ -957,7 +798,8 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 									'title'    => __( 'Mega Menu Heading', 'astra-addon' ),
 									'section'  => $_section,
 									'priority' => 103,
-									'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
+									'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
+									'context'  => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 									astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 								),
 
@@ -1008,30 +850,11 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'transport'  => 'postMessage',
 							'priority'   => 86,
 							'responsive' => true,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'divider'    => array( 'ast_class' => 'ast-top-divider' ),
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-above-menus-link-colors-title-divider]',
-							'section'  => 'section-sticky-header',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'priority' => 61,
-							'settings' => array(),
-						),
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-above-menu-colors-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 61,
-							'title'    => __( 'Menu', 'astra-addon' ),
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ? astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						),
+
 						/**
 						 * Option: Sticky Header Above Menu Link Color Group
 						 */
@@ -1045,7 +868,11 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'transport'  => 'postMessage',
 							'priority'   => 61,
 							'responsive' => true,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'divider'    => array(
+								'ast_class' => 'ast-top-divider',
+								'ast_title' => __( 'Menu', 'astra-addon' ),
+							),
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
 						/**
@@ -1061,30 +888,10 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'transport'  => 'postMessage',
 							'priority'   => 61,
 							'responsive' => true,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-above-submenus-link-colors-title-divider]',
-							'section'  => 'section-sticky-header',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'title'    => __( 'Submenu', 'astra-addon' ),
-							'priority' => 65,
-							'settings' => array(),
-						),
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-above-submenu-colors-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 61,
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ? astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						),
+
 						/**
 						 * Option: Sticky Header Above Menu Color Group
 						 */
@@ -1098,7 +905,11 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'transport'  => 'postMessage',
 							'priority'   => 65,
 							'responsive' => true,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'divider'    => array(
+								'ast_class' => 'ast-top-divider',
+								'ast_title' => __( 'Submenu', 'astra-addon' ),
+							),
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
 						/**
@@ -1114,30 +925,10 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'transport'  => 'postMessage',
 							'priority'   => 65,
 							'responsive' => true,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-primary-menus-link-colors-title-divider]',
-							'section'  => 'section-sticky-header',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'priority' => 90,
-							'settings' => array(),
-						),
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-primary-menu-colors-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 90,
-							'title'    => __( 'Menu', 'astra-addon' ),
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ? astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						),
+
 						/**
 						 * Option: Sticky Header primary Link Color Group
 						 */
@@ -1150,8 +941,12 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'section'    => 'section-sticky-header',
 							'transport'  => 'postMessage',
 							'priority'   => 90,
+							'divider'    => array(
+								'ast_class' => 'ast-top-divider',
+								'ast_title' => __( 'Menu', 'astra-addon' ),
+							),
 							'responsive' => true,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
 						/**
@@ -1167,30 +962,10 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'transport'  => 'postMessage',
 							'priority'   => 90,
 							'responsive' => true,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-primary-submenus-colors-title-divider]',
-							'section'  => 'section-sticky-header',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'priority' => 95,
-							'settings' => array(),
-						),
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-primary-submenu-colors-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 95,
-							'title'    => __( 'Submenu', 'astra-addon' ),
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ? astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						),
+
 						/**
 						 * Option: Sticky Header primary Color Group
 						 */
@@ -1203,8 +978,12 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'section'    => 'section-sticky-header',
 							'transport'  => 'postMessage',
 							'priority'   => 95,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
-								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
+							'divider'    => array(
+								'ast_class' => 'ast-top-divider',
+								'ast_title' => __( 'Submenu', 'astra-addon' ),
+							),
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
+							astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 							'responsive' => true,
 						),
 						array(
@@ -1216,31 +995,11 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'section'    => 'section-sticky-header',
 							'transport'  => 'postMessage',
 							'priority'   => 95,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 							'responsive' => true,
 						),
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-below-menus-link-colors-title-divider]',
-							'section'  => 'section-sticky-header',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'priority' => 120,
-							'settings' => array(),
-						),
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-below-menu-colors-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 120,
-							'title'    => __( 'Menu', 'astra-addon' ),
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ? astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						),
+
 						/**
 						 * Option: Sticky Header Below Color Group
 						 */
@@ -1253,9 +1012,13 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'section'    => 'section-sticky-header',
 							'transport'  => 'postMessage',
 							'priority'   => 120,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 							'responsive' => true,
+							'divider'    => array(
+								'ast_class' => 'ast-top-divider',
+								'ast_title' => __( 'Menu', 'astra-addon' ),
+							),
 						),
 						array(
 							'name'       => ASTRA_THEME_SETTINGS . '[sticky-header-below-menus-background-colors]',
@@ -1266,32 +1029,11 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'section'    => 'section-sticky-header',
 							'transport'  => 'postMessage',
 							'priority'   => 120,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 							'responsive' => true,
 						),
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-below-submenus-link-colors-title-divider]',
-							'section'  => 'section-sticky-header',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'title'    => __( 'Submenu', 'astra-addon' ),
-							'priority' => 125,
-							'settings' => array(),
-						),
 
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-below-submenu-colors-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 120,
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ? astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						),
 						/**
 						 * Option: Sticky Header Below Submenu Color Group
 						 */
@@ -1304,9 +1046,13 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'section'    => 'section-sticky-header',
 							'transport'  => 'postMessage',
 							'priority'   => 125,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 							'responsive' => true,
+							'divider'    => array(
+								'ast_class' => 'ast-top-divider',
+								'ast_title' => __( 'Submenu', 'astra-addon' ),
+							),
 						),
 						array(
 							'name'       => ASTRA_THEME_SETTINGS . '[sticky-header-below-submenus-background-colors]',
@@ -1317,7 +1063,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'section'    => 'section-sticky-header',
 							'transport'  => 'postMessage',
 							'priority'   => 125,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 							'responsive' => true,
 						),
@@ -1332,6 +1078,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'control'    => 'ast-responsive-color',
 							'transport'  => 'postMessage',
 							'title'      => __( 'Background Color', 'astra-addon' ),
+							'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 							'responsive' => true,
 							'rgba'       => true,
 						),
@@ -1372,19 +1119,6 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 						),
 
 						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-color-site-tagline-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 85,
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ? astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						),
-
-						/**
 						* Option: Site Tagline Color
 						*/
 						array(
@@ -1400,30 +1134,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'rgba'       => true,
 							'connect'    => ASTRA_THEME_SETTINGS . '[sticky-header-color-site-tagline-responsive]',
 						),
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-header-color-site-tagline-after-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 85,
-							'settings' => array(),
-						),
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-below-header-content-section-text-color-before-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 135,
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
-							astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						),
+
 						/**
 						* Option: Content Section Text color.
 						*/
@@ -1438,7 +1149,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'rgba'       => true,
 							'priority'   => 135,
 							'section'    => 'section-sticky-header',
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
 						/**
@@ -1454,22 +1165,10 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'transport'  => 'postMessage',
 							'priority'   => 135,
 							'responsive' => true,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-primary-outside-item-colors-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 105,
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
-							astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						),
+
 						/**
 						 * Option: Sticky Header primary Color Group
 						 */
@@ -1482,23 +1181,11 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'section'    => 'section-sticky-header',
 							'transport'  => 'postMessage',
 							'priority'   => 105,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 							'responsive' => true,
 						),
-						/**
-						 * Option: Divider
-						 */
-						array(
-							'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-above-outside-item-link-colors-divider]',
-							'type'     => 'control',
-							'control'  => 'ast-divider',
-							'section'  => 'section-sticky-header',
-							'priority' => 75,
-							'settings' => array(),
-							'context'  => astra_addon_builder_helper()->is_header_footer_builder_active ?
-							astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						),
+
 						/**
 						 * Option: Sticky Header Above Link Color Group
 						 */
@@ -1512,7 +1199,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 							'transport'  => 'postMessage',
 							'priority'   => 75,
 							'responsive' => true,
-							'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+							'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 								astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 						),
 					);
@@ -1522,7 +1209,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 				$_config      = array_merge( $_config, $_new_configs );
 			}
 
-			if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 				$_new_configs = array(
 					/**
 					 * Option: Button Text Color
@@ -1743,7 +1430,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 		 */
 		public static function is_header_section_active() {
 			$status = false;
-			if ( Astra_Ext_Extension::is_active( 'header-sections' ) || astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( Astra_Ext_Extension::is_active( 'header-sections' ) || true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 				$status = true;
 			}
 			return $status;

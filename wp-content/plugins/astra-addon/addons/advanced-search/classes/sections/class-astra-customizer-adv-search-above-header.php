@@ -51,7 +51,7 @@ if ( ! class_exists( 'Astra_Customizer_Adv_Search_Above_Header' ) ) {
 					'priority' => 45,
 					'title'    => __( 'Search Style', 'astra-addon' ),
 					'type'     => 'control',
-					'control'  => 'select',
+					'control'  => 'ast-select',
 					'choices'  => array(
 						'slide-search' => __( 'Slide', 'astra-addon' ),
 						'full-screen'  => __( 'Full Screen', 'astra-addon' ),
@@ -81,13 +81,14 @@ if ( ! class_exists( 'Astra_Customizer_Adv_Search_Above_Header' ) ) {
 					'priority' => 70,
 					'title'    => __( 'Search Style', 'astra-addon' ),
 					'type'     => 'control',
-					'control'  => 'select',
+					'control'  => 'ast-select',
 					'choices'  => array(
 						'slide-search' => __( 'Slide', 'astra-addon' ),
 						'full-screen'  => __( 'Full Screen', 'astra-addon' ),
 						'header-cover' => __( 'Header Cover', 'astra-addon' ),
 						'search-box'   => __( 'Search Box', 'astra-addon' ),
 					),
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 					'context'  => array(
 						astra_addon_builder_helper()->general_tab_config,
 						array(

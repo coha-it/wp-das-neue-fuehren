@@ -5,6 +5,8 @@
  * @package UAEL
  */
 
+use UltimateElementor\Classes\UAEL_Helper;
+
 // Wrapper.
 if ( 'yes' === $settings['heading_layout'] ) {
 	$this->add_render_attribute(
@@ -130,12 +132,13 @@ $this->add_render_attribute( 'rbs_span_inner_label_box', 'class', 'uael-label-bo
 $this->add_render_attribute( 'rbs_span_inactive_label_box', 'class', 'uael-label-box-inactive' );
 $this->add_render_attribute( 'rbs_span_label_box', 'class', 'uael-label-box-switch' );
 $this->add_render_attribute( 'rbs_span_active_label_box', 'class', 'uael-label-box-active' );
+$rbs_header_size = UAEL_Helper::validate_html_tag( $settings['rbs_header_size'] );
 ?>
 
 <div <?php echo wp_kses_post( $this->get_render_attribute_string( 'rbs_wrapper' ) ); ?>>
 	<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'rbs_toggle' ) ); ?>>
 		<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'sec_1' ) ); ?>>
-			<<?php echo esc_attr( $settings['rbs_header_size'] ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( 'rbs_section_heading_1' ) ); ?> data-elementor-inline-editing-toolbar="basic"><?php echo wp_kses_post( $this->get_settings_for_display( 'rbs_section_heading_1' ) ); ?></<?php echo esc_attr( $settings['rbs_header_size'] ); ?>>
+			<<?php echo esc_attr( $rbs_header_size ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( 'rbs_section_heading_1' ) ); ?> data-elementor-inline-editing-toolbar="basic"><?php echo wp_kses_post( $this->get_settings_for_display( 'rbs_section_heading_1' ) ); ?></<?php echo esc_attr( $rbs_header_size ); ?>>
 		</div>
 		<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'main_btn' ) ); ?>>
 
@@ -173,7 +176,7 @@ $this->add_render_attribute( 'rbs_span_active_label_box', 'class', 'uael-label-b
 
 		</div>
 		<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'sec_2' ) ); ?>>
-			<<?php echo esc_attr( $settings['rbs_header_size'] ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( 'rbs_section_heading_2' ) ); ?> data-elementor-inline-editing-toolbar="basic"><?php echo wp_kses_post( $this->get_settings_for_display( 'rbs_section_heading_2' ) ); ?></<?php echo esc_attr( $settings['rbs_header_size'] ); ?>>
+			<<?php echo esc_attr( $rbs_header_size ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( 'rbs_section_heading_2' ) ); ?> data-elementor-inline-editing-toolbar="basic"><?php echo wp_kses_post( $this->get_settings_for_display( 'rbs_section_heading_2' ) ); ?></<?php echo esc_attr( $rbs_header_size ); ?>>
 		</div>
 	</div>
 	<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'rbs_toggle_sections' ) ); ?>>

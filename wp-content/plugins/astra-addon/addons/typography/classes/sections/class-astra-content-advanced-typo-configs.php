@@ -80,7 +80,7 @@ if ( ! class_exists( 'Astra_Content_Advanced_Typo_Configs' ) ) {
 					'default'   => astra_get_option( 'text-transform-h1' ),
 					'title'     => __( 'Text Transform', 'astra-addon' ),
 					'type'      => 'control',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'priority'  => 8,
 					'choices'   => array(
 						''           => __( 'Inherit', 'astra-addon' ),
@@ -155,7 +155,7 @@ if ( ! class_exists( 'Astra_Content_Advanced_Typo_Configs' ) ) {
 					'default'   => astra_get_option( 'text-transform-h2' ),
 					'title'     => __( 'Text Transform', 'astra-addon' ),
 					'type'      => 'control',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'transport' => 'postMessage',
 					'priority'  => 13,
 					'choices'   => array(
@@ -233,7 +233,7 @@ if ( ! class_exists( 'Astra_Content_Advanced_Typo_Configs' ) ) {
 					'title'     => __( 'Text Transform', 'astra-addon' ),
 					'default'   => astra_get_option( 'text-transform-h3' ),
 					'transport' => 'postMessage',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'priority'  => 18,
 					'choices'   => array(
 						''           => __( 'Inherit', 'astra-addon' ),
@@ -264,7 +264,6 @@ if ( ! class_exists( 'Astra_Content_Advanced_Typo_Configs' ) ) {
 						'step' => 0.01,
 						'max'  => 5,
 					),
-					'transport'         => 'postMessage',
 				),
 
 				/**
@@ -310,7 +309,7 @@ if ( ! class_exists( 'Astra_Content_Advanced_Typo_Configs' ) ) {
 					'title'     => __( 'Text Transform', 'astra-addon' ),
 					'default'   => astra_get_option( 'text-transform-h4' ),
 					'transport' => 'postMessage',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'priority'  => 23,
 					'choices'   => array(
 						''           => __( 'Inherit', 'astra-addon' ),
@@ -341,7 +340,6 @@ if ( ! class_exists( 'Astra_Content_Advanced_Typo_Configs' ) ) {
 						'step' => 0.01,
 						'max'  => 5,
 					),
-					'transport'         => 'postMessage',
 				),
 
 				/**
@@ -384,7 +382,7 @@ if ( ! class_exists( 'Astra_Content_Advanced_Typo_Configs' ) ) {
 					'name'      => ASTRA_THEME_SETTINGS . '[text-transform-h5]',
 					'type'      => 'control',
 					'section'   => 'section-content-typo',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'title'     => __( 'Text Transform', 'astra-addon' ),
 					'transport' => 'postMessage',
 					'default'   => astra_get_option( 'text-transform-h5' ),
@@ -461,7 +459,7 @@ if ( ! class_exists( 'Astra_Content_Advanced_Typo_Configs' ) ) {
 					'name'      => ASTRA_THEME_SETTINGS . '[text-transform-h6]',
 					'section'   => 'section-content-typo',
 					'type'      => 'control',
-					'control'   => 'select',
+					'control'   => 'ast-select',
 					'title'     => __( 'Text Transform', 'astra-addon' ),
 					'transport' => 'postMessage',
 					'priority'  => 33,

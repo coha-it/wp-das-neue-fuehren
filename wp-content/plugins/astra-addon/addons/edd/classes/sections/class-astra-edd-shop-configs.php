@@ -50,6 +50,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Configs' ) ) {
 					'control'           => 'ast-radio-image',
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_choices' ),
 					'priority'          => 5,
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'choices'           => array(
 						'edd-archive-page-grid-style' => array(
 							'label' => __( 'Grid View', 'astra-addon' ),
@@ -63,18 +64,6 @@ if ( ! class_exists( 'Astra_Edd_Shop_Configs' ) ) {
 				),
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-archive-style-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-archive',
-					'control'  => 'ast-divider',
-					'priority' => 5,
-					'settings' => array(),
-				),
-
-				/**
 				 * Option: EDD Archive Post override-heading to display notice
 				 */
 				array(
@@ -85,6 +74,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Configs' ) ) {
 					'section'           => 'section-edd-archive',
 					'default'           => astra_get_option( 'edd-archive-product-structure' ),
 					'priority'          => 30,
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'title'             => __( 'Product Structure', 'astra-addon' ),
 					'description'       => __( 'The Image option cannot be sortable if the Product Style is selected to the List Style ', 'astra-addon' ),
 					'choices'           => array(
@@ -117,6 +107,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Configs' ) ) {
 					'name'       => ASTRA_THEME_SETTINGS . '[edd-archive-product-align]',
 					'default'    => astra_get_option( 'edd-archive-product-align' ),
 					'type'       => 'control',
+					'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 					'transport'  => 'postMessage',
 					'control'    => Astra_Theme_Extension::$selector_control,
 					'section'    => 'section-edd-archive',
@@ -128,18 +119,6 @@ if ( ! class_exists( 'Astra_Edd_Shop_Configs' ) ) {
 						'align-right'  => 'align-right',
 					),
 					'responsive' => false,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-archive-product-align-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-archive',
-					'control'  => 'ast-divider',
-					'priority' => 80,
-					'settings' => array(),
 				),
 
 				/**
@@ -203,6 +182,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Configs' ) ) {
 					'default'           => astra_get_option( 'edd-archive-button-v-padding' ),
 					'type'              => 'control',
 					'transport'         => 'postMessage',
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'section'           => 'section-edd-archive',
 					'title'             => __( 'Vertical Padding', 'astra-addon' ),
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_number_n_blank' ),
@@ -214,18 +194,6 @@ if ( ! class_exists( 'Astra_Edd_Shop_Configs' ) ) {
 						'step' => 1,
 						'max'  => 200,
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-archive-button-v-padding-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-archive',
-					'control'  => 'ast-divider',
-					'priority' => 110,
-					'settings' => array(),
 				),
 
 				/**
@@ -247,18 +215,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Configs' ) ) {
 						'step' => 1,
 						'max'  => 200,
 					),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-archive-meta-divider]',
-					'section'  => 'section-edd-archive',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'priority' => 29,
-					'settings' => array(),
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 				),
 
 				/**
@@ -271,43 +228,8 @@ if ( ! class_exists( 'Astra_Edd_Shop_Configs' ) ) {
 					'section'  => 'section-edd-archive',
 					'title'    => __( 'Display Page Title', 'astra-addon' ),
 					'priority' => 29,
+					'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 					'control'  => Astra_Theme_Extension::$switch_control,
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-archive-page-title-display-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-archive',
-					'control'  => 'ast-divider',
-					'priority' => 29,
-					'settings' => array(),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-archive-colors-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-archive',
-					'control'  => 'ast-divider',
-					'priority' => 230,
-					'settings' => array(),
-				),
-
-				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[edd-archive-typo-divider]',
-					'type'     => 'control',
-					'section'  => 'section-edd-archive',
-					'control'  => 'ast-divider',
-					'priority' => 232,
-					'settings' => array(),
 				),
 
 				/**

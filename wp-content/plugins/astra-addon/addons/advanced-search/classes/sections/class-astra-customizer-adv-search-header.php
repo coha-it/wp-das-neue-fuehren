@@ -51,7 +51,7 @@ if ( ! class_exists( 'Astra_Customizer_Adv_Search_Header' ) ) {
 					'priority' => 20,
 					'title'    => __( 'Search Style', 'astra-addon' ),
 					'type'     => 'control',
-					'control'  => 'select',
+					'control'  => 'ast-select',
 					'choices'  => array(
 						'slide-search' => __( 'Slide Search', 'astra-addon' ),
 						'full-screen'  => __( 'Full Screen Search', 'astra-addon' ),

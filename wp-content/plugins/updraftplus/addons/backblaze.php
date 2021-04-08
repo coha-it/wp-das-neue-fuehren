@@ -400,7 +400,7 @@ class UpdraftPlus_Addons_RemoteStorage_backblaze extends UpdraftPlus_RemoteStora
 	 *
 	 * @param Array $files - the files (basename) to delete
 	 *
-	 * @return Boolean - success/failure status of the delete operation. Throwing exception is also permitted.
+	 * @return Boolean|Array - success/failure status of the delete operation. Throwing exception is also permitted.
 	 */
 	public function do_delete($files) {
 	
@@ -428,7 +428,8 @@ class UpdraftPlus_Addons_RemoteStorage_backblaze extends UpdraftPlus_RemoteStora
 				));
 			}
 		} catch (UpdraftPlus_Backblaze_NotFoundException $e) {
-			$this->log("$file: file not found (so likely already deleted)");
+			// This exception should only be possible on the single file delete path
+			$this->log("$fileName: file not found (so likely already deleted)");
 			return true;
 		}
 

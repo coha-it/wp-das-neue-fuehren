@@ -48,10 +48,12 @@ if ( ! class_exists( 'Astra_Above_Header_Colors_Bg_Configs' ) ) {
 					'control'   => 'ast-responsive-background',
 					'transport' => 'postMessage',
 					'default'   => astra_get_option( 'above-header-bg-obj-responsive' ),
-					'label'     => __( 'Background', 'astra-addon' ),
+					'label'     => __( 'Colors and background', 'astra-addon' ),
 					'priority'  => 130,
+					'divider'   => array(
+						'ast_class' => 'ast-bottom-divider',
+					),
 					'context'   => array(
-
 						array(
 							'setting'  => ASTRA_THEME_SETTINGS . '[above-header-layout]',
 							'operator' => '!=',

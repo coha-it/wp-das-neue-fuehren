@@ -1,6 +1,5 @@
 ( function( $ ) {
 
-
 	var hotspotInterval = [];
 	var hoverFlag = false;
 	var isElEditMode = false;

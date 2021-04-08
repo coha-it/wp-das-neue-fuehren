@@ -93,11 +93,16 @@
 	margin-right: 0;
 	padding: 3px 5px;
 	height: 28px;
-	width: 60px;
+	width: 55px;
 	min-height: 28px;
-	border-radius: 0;
+	border-radius: 2px;
 	border-color: #ddd;
 	-moz-appearance: textfield;
+}
+
+[ID*="-image-apply-sizes"] .button {
+	border-radius: 2px;
+	margin-left: 10px;
 }
 
 #customize-control-astra-settings-blog-archive-image-width input[type="number"]:hover,
@@ -116,6 +121,7 @@
 	border-color: #1e8cbe;
 	border-radius: 2px;
 	outline: none;
+	z-index: 9;
 }
 
 #customize-control-astra-settings-blog-archive-image-width input[type="number"]::-webkit-inner-spin-button,
@@ -139,17 +145,12 @@
         margin-right: 28px;
     }
 }
-#customize-control-astra-settings-blog-archive-image-apply-sizes,
-#customize-control-astra-settings-blog-single-post-image-apply-sizes{
-    margin-left: 1%;
-    vertical-align: top;
-}
 #customize-control-astra-settings-blog-archive-image-width .customize-control-title,
 #customize-control-astra-settings-blog-archive-image-height .customize-control-title,
 #customize-control-astra-settings-blog-single-post-image-width .customize-control-title,
 #customize-control-astra-settings-blog-single-post-image-height .customize-control-title {
     font-weight: normal;
-    margin: 5px 0 0 5px;
+    margin: 5px 0 0 10px;
     font-size: 13px;
 }
 body.rtl #customize-control-astra-settings-blog-archive-image-width .customize-control-title,
@@ -159,27 +160,37 @@ body.rtl #customize-control-astra-settings-blog-single-post-image-height .custom
     margin-right: 10px;
 }
 #customize-control-astra-settings-blog-archive-image-width .customize-control-title:after,
-#customize-control-astra-settings-blog-archive-image-height .customize-control-title:after,
 #customize-control-astra-settings-blog-single-post-image-width .customize-control-title:after,
+#customize-control-astra-settings-blog-archive-image-height .customize-control-title:after,
 #customize-control-astra-settings-blog-single-post-image-height .customize-control-title:after {
-    content: "px";
-    width: 18px;
-    top: 0;
-    left: 60px;
-    position: absolute;
-    display: inline-block;
-    color: #2D3748;
-    background: #fff;
-    height: 26px;
-    border-style: solid;
-    padding: 0 2px;
-    border-color: #ddd;
-    border-width: 1px 1px 1px 0;
-    text-align: center;
-    line-height: 26px;
-    font-size: 11px;
+	line-height: 27px;
     font-weight: 500;
-    text-transform: uppercase;
+	padding: 0 3px;
+	border-radius: 2px;
+	position: absolute;
+	display: inline-block;
+	color: #2D3748;
+	width: 16px;
+}
+#customize-control-astra-settings-blog-archive-image-width .customize-control-title:after,
+#customize-control-astra-settings-blog-single-post-image-width .customize-control-title:after,
+#customize-control-astra-settings-blog-archive-image-height .customize-control-title:after,
+#customize-control-astra-settings-blog-single-post-image-height .customize-control-title:after {
+	content: "PX";
+	top: 0;
+	background: #fff;
+	font-size: 10px;
+	border-radius: 0 2px 2px 0;
+	left: 54px;
+	border: 1px solid #ddd;
+}
+@media(min-width: 2200px) {
+    #customize-control-astra-settings-blog-archive-image-width .customize-control-title:after,
+    #customize-control-astra-settings-blog-single-post-image-width .customize-control-title:after,
+    #customize-control-astra-settings-blog-archive-image-height .customize-control-title:after,
+    #customize-control-astra-settings-blog-single-post-image-height .customize-control-title:after {
+        content: none;
+    }
 }
 
 body.rtl #customize-control-astra-settings-blog-archive-image-width .customize-control-title:after,
@@ -248,6 +259,9 @@ body.rtl #customize-control-astra-settings-mobile-header-logo .customize-control
 .ahfb-sorter-drop-language_selector_group .ahfb-sorter-item-panel-header .ahfb-sorter-visiblity svg {
     max-width: 12px;
     fill: #556068;
+}
+.customize-control-ast-box-shadow .ast-box-shadow-inset-wrapper Select.components-input-control__container  {
+    line-height: inherit;
 }
 
 .ahfb-sorter-drop-language_selector_group .ahfb-sorter-item-panel-header .ahfb-sorter-visiblity.item-is-hidden {

@@ -124,11 +124,17 @@
 				if ( header_builder_active ) {
 
 					var mobile_parent = selector.closest( '.ast-mobile-header-wrap' );
+					var desktop_parent = selector.closest( '#ast-desktop-header' );
 
 					mobile_parent = ( 0 === mobile_parent.length ) ? selector.find( '.ast-mobile-header-wrap' ) : mobile_parent;
 
+					desktop_parent = ( 0 === desktop_parent.length ) ? selector.find( '#ast-desktop-header' ) : desktop_parent;
+
 					mobile_parent.find( '.ast-mobile-header-content' ).css( 'top', selector.outerHeight() + gutter );
 					mobile_parent.find( '.ast-mobile-header-content' ).css( 'width', max_width );
+
+					desktop_parent.find( '.ast-desktop-header-content' ).css( 'top', selector.outerHeight() + gutter );
+					desktop_parent.find( '.ast-desktop-header-content' ).css( 'width', max_width );
 				}
 
 				if ( '1' === self.options.hide_on_scroll ) {

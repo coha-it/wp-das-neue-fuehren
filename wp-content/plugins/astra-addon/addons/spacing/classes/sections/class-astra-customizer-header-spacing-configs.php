@@ -44,18 +44,6 @@ if ( ! class_exists( 'Astra_Customizer_Header_Spacing_Configs' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option: Mobile Menu label Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[header-spacing-divider]',
-					'type'     => 'control',
-					'section'  => 'section-header',
-					'control'  => 'ast-divider',
-					'priority' => 100,
-					'settings' => array(),
-				),
-
-				/**
 				 * Option - Header Space
 				 */
 				array(

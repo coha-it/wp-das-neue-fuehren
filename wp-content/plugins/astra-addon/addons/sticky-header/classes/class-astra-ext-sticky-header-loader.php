@@ -397,7 +397,7 @@ if ( ! class_exists( 'Astra_Ext_Sticky_Header_Loader' ) ) {
 				require_once ASTRA_EXT_STICKY_HEADER_DIR . 'classes/sections/class-astra-sticky-below-header-colors-bg-configs.php';
 			}
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				// Button Sticky Configs.
 				require_once ASTRA_EXT_STICKY_HEADER_DIR . 'classes/sections/class-astra-sticky-header-button-configs.php';
@@ -441,6 +441,7 @@ if ( ! class_exists( 'Astra_Ext_Sticky_Header_Loader' ) ) {
 				'stickyHeaderStyle'  => $sticky_header_style,
 				'stickyHideOnScroll' => $sticky_hide_on_scroll,
 				'component_limit'    => astra_addon_builder_helper()->component_limit,
+				'is_flex_based_css'  => Astra_Addon_Builder_Helper::apply_flex_based_css(),
 			);
 
 			wp_localize_script( 'astra-sticky-header-customizer-preview-js', 'astSticky', $localize_array );

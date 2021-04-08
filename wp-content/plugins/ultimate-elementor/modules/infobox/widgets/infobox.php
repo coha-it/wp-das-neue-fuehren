@@ -32,6 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Infobox extends Common_Widget {
 
+
 	/**
 	 * Retrieve Infobox Widget name.
 	 *
@@ -159,7 +160,6 @@ class Infobox extends Common_Widget {
 		);
 
 		$this->end_controls_section();
-
 	}
 
 	/**
@@ -345,7 +345,6 @@ class Infobox extends Common_Widget {
 		);
 
 		if ( UAEL_Helper::is_elementor_updated() ) {
-
 			$this->add_control(
 				'new_infobox_select_icon',
 				array(
@@ -1289,7 +1288,6 @@ class Infobox extends Common_Widget {
 		);
 
 		if ( UAEL_Helper::is_elementor_updated() ) {
-
 			$this->add_control(
 				'new_infobox_button_icon',
 				array(
@@ -2140,7 +2138,6 @@ class Infobox extends Common_Widget {
 		}
 		if ( $position === $set_pos ) {
 			if ( 'icon' === $settings['uael_infobox_image_type'] || 'photo' === $settings['uael_infobox_image_type'] ) {
-
 				if ( 'normal' !== $settings['infobox_imgicon_style'] ) {
 					$anim_class = 'elementor-animation-' . $settings['infobox_imgicon_animation'];
 				} elseif ( 'normal' === $settings['infobox_imgicon_style'] ) {
@@ -2192,7 +2189,6 @@ class Infobox extends Common_Widget {
 					if ( 'photo' === $settings['uael_infobox_image_type'] ) {
 						if ( 'media' === $settings['uael_infobox_photo_type'] ) {
 							if ( ! empty( $settings['infobox_image']['url'] ) ) {
-
 								$this->add_render_attribute( 'image', 'src', $settings['infobox_image']['url'] );
 								$this->add_render_attribute( 'image', 'alt', Control_Media::get_image_alt( $settings['infobox_image'] ) );
 								$this->add_render_attribute( 'image', 'title', Control_Media::get_image_title( $settings['infobox_image'] ) );
@@ -2202,7 +2198,6 @@ class Infobox extends Common_Widget {
 						}
 						if ( 'url' === $settings['uael_infobox_photo_type'] ) {
 							if ( ! empty( $settings['infobox_image_link'] ) ) {
-
 								$this->add_render_attribute( 'infobox_image_link', 'src', $settings['infobox_image_link']['url'] );
 
 								$image_html = '<img ' . $this->get_render_attribute_string( 'infobox_image_link' ) . '>';
@@ -2243,7 +2238,8 @@ class Infobox extends Common_Widget {
 				$this->render_image( 'left-title', $settings );
 				echo "<div class='uael-infobox-title-wrap'>";
 		if ( ! empty( $dynamic_settings['infobox_title_prefix'] ) ) {
-			echo '<' . esc_attr( $settings['infobox_prefix_tag'] ) . ' class="uael-infobox-title-prefix elementor-inline-editing" data-elementor-setting-key="infobox_title_prefix" data-elementor-inline-editing-toolbar="basic" >' . wp_kses_post( $this->get_settings_for_display( 'infobox_title_prefix' ) ) . '</' . esc_attr( $settings['infobox_prefix_tag'] ) . '>';
+			$prefix_size_tag = UAEL_Helper::validate_html_tag( $settings['infobox_prefix_tag'] );
+			echo '<' . esc_attr( $prefix_size_tag ) . ' class="uael-infobox-title-prefix elementor-inline-editing" data-elementor-setting-key="infobox_title_prefix" data-elementor-inline-editing-toolbar="basic" >' . wp_kses_post( $this->get_settings_for_display( 'infobox_title_prefix' ) ) . '</' . esc_attr( $prefix_size_tag ) . '>';
 		}
 
 		if ( 'after_prefix' === $settings['infobox_separator_position'] ) {
@@ -2251,9 +2247,11 @@ class Infobox extends Common_Widget {
 		}
 
 		if ( ! empty( $dynamic_settings['infobox_title'] ) ) {
-			echo '<' . esc_attr( $settings['infobox_title_tag'] ) . ' class="uael-infobox-title elementor-inline-editing" data-elementor-setting-key="infobox_title" data-elementor-inline-editing-toolbar="basic" >';
+			$heading_size_tag = UAEL_Helper::validate_html_tag( $settings['infobox_title_tag'] );
+
+			echo '<' . esc_attr( $heading_size_tag ) . ' class="uael-infobox-title elementor-inline-editing" data-elementor-setting-key="infobox_title" data-elementor-inline-editing-toolbar="basic" >';
 			echo wp_kses_post( $this->get_settings_for_display( 'infobox_title' ) );
-			echo '</' . esc_attr( $settings['infobox_title_tag'] ) . '>';
+			echo '</' . esc_attr( $heading_size_tag ) . '>';
 		}
 			echo '</div>';
 			$this->render_image( 'right-title', $settings );
@@ -2284,7 +2282,6 @@ class Infobox extends Common_Widget {
 					if ( 'left' === $settings['infobox_button_icon_position'] ) {
 						if ( UAEL_Helper::is_elementor_updated() ) {
 							if ( ( ! empty( $settings['infobox_button_icon'] ) || ! empty( $settings['new_infobox_button_icon'] ) ) ) {
-
 								$migrated = isset( $settings['__fa4_migrated']['new_infobox_button_icon'] );
 								$is_new   = ! isset( $settings['infobox_button_icon'] );
 								?>
@@ -2422,7 +2419,7 @@ class Infobox extends Common_Widget {
 		if ( 'yes' === $settings['infobox_separator'] ) {
 			?>
 			<div class="uael-separator-parent">
-				<div class="uael-separator"></div>		
+				<div class="uael-separator"></div>      
 			</div>
 			<?php
 		}
@@ -2444,7 +2441,6 @@ class Infobox extends Common_Widget {
 		include 'template.php';
 		$html = ob_get_clean();
 		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
 	}
 	/**
 	 * Render Info Box widget output in the editor.
@@ -2459,6 +2455,8 @@ class Infobox extends Common_Widget {
 		<#
 		function render_title() {
 			var flag = false;
+			var headingSizeTag = render_html_tag( settings.infobox_title_tag );
+
 			if ( ( 'photo' == settings.uael_infobox_image_type && 'left-title' == settings.infobox_image_position ) || ( 'icon' == settings.uael_infobox_image_type && 'left-title' == settings.infobox_image_position ) ) {
 				#>
 				<div class="left-title-image">
@@ -2473,25 +2471,35 @@ class Infobox extends Common_Widget {
 			} #>
 			<# render_image( 'left-title' ); #>
 			<div class='uael-infobox-title-wrap'>
-				<# if ( '' != settings.infobox_title_prefix ) { #>
-					<{{ settings.infobox_prefix_tag }} class="uael-infobox-title-prefix elementor-inline-editing" data-elementor-setting-key="infobox_title_prefix" data-elementor-inline-editing-toolbar="basic" >
+				<# if ( '' != settings.infobox_title_prefix ) { 
+					var prefixSizeTag = render_html_tag( settings.infobox_prefix_tag ); #>
+
+					<{{ prefixSizeTag }} class="uael-infobox-title-prefix elementor-inline-editing" data-elementor-setting-key="infobox_title_prefix" data-elementor-inline-editing-toolbar="basic" >
 						{{{ settings.infobox_title_prefix }}}
-					</{{ settings.infobox_prefix_tag }}>
+					</{{ prefixSizeTag }}>
 				<# } #>
 				<# if( 'after_prefix' == settings.infobox_separator_position ) {
 					render_separator(); 
 				} #>
-				<{{ settings.infobox_title_tag }} class="uael-infobox-title elementor-inline-editing" data-elementor-setting-key="infobox_title" data-elementor-inline-editing-toolbar="basic" >
+				<{{ headingSizeTag }} class="uael-infobox-title elementor-inline-editing" data-elementor-setting-key="infobox_title" data-elementor-inline-editing-toolbar="basic" >
 					{{{ settings.infobox_title }}}
-				</{{ settings.infobox_title_tag }}>
+				</{{ headingSizeTag }}>
 			</div>
 			<# render_image( 'right-title' ); #>
 			<# if ( flag ) { #>
 			</div>
 			<# }
 		} #>
-
 		<#
+		function render_html_tag( htmlSizeTag ) {
+			if ( typeof elementor.helpers.validateHTMLTag === "function" ) { 
+				htmlSizeTag = elementor.helpers.validateHTMLTag( htmlSizeTag );
+			} else if( UAEWidgetsData.allowed_tags ) {
+				htmlSizeTag = UAEWidgetsData.allowed_tags.includes( htmlSizeTag.toLowerCase() ) ? htmlSizeTag : 'div';
+			}
+			return htmlSizeTag;
+		}
+
 		function render_image( position ) {
 			var set_pos = '';
 			var media_img = '';
@@ -2603,7 +2611,7 @@ class Infobox extends Common_Widget {
 						<span class="elementor-inline-editing" data-elementor-setting-key="infobox_link_text" data-elementor-inline-editing-toolbar="basic">{{ settings.infobox_link_text }}</span>
 
 						<# if ( 'right' == settings.infobox_button_icon_position ) {
-						#>	
+						#>  
 							<span class="uael-infobox-link-icon uael-infobox-link-icon-after">
 								<?php if ( UAEL_Helper::is_elementor_updated() ) { ?>
 									<# 
@@ -2680,10 +2688,10 @@ class Infobox extends Common_Widget {
 		#>
 
 		<# function render_separator() {
-			if ( 'yes' == settings.infobox_separator ) { #>	
+			if ( 'yes' == settings.infobox_separator ) { #> 
 				<div class="uael-separator-parent">
-					<div class="uael-separator"></div>		
-				</div>				
+					<div class="uael-separator"></div>      
+				</div>              
 			<# }
 		} #>
 

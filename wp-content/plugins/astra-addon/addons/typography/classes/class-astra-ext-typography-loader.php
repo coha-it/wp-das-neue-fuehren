@@ -134,7 +134,7 @@ if ( ! class_exists( 'Astra_Ext_Typography_Loader' ) ) {
 			$font_weight_button = astra_get_option( 'font-weight-button' );
 			Astra_Fonts::add_font( $font_family_button, $font_weight_button );
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				/**
 				 * Footer - Copyright
@@ -697,6 +697,8 @@ if ( ! class_exists( 'Astra_Ext_Typography_Loader' ) ) {
 				'includeAnchorsInHeadindsCss'         => astra_addon_typography_anchors_in_css_selectors_heading(),
 				'addon_page_builder_button_style_css' => page_builder_addon_button_style_css(),
 				'component_limit'                     => astra_addon_builder_helper()->component_limit,
+				'is_flex_based_css'                   => Astra_Addon_Builder_Helper::apply_flex_based_css(),
+				'astra_not_updated'                   => version_compare( ASTRA_THEME_VERSION, '3.2.0', '<' ),
 			);
 
 			wp_localize_script( 'astra-ext-typography-customize-preview-js', 'astTypography', $localize_array );

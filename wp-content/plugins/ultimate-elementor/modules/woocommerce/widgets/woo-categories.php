@@ -1400,6 +1400,9 @@ class Woo_Categories extends Common_Widget {
 	 * @param object $category Category object.
 	 */
 	public function template_loop_category_title( $category ) {
+		$single_product_string = apply_filters( 'uael_woo_cat_product_string', __( 'Product', 'uael' ) );
+		$product_string        = apply_filters( 'uael_woo_cat_products_string', __( 'Products', 'uael' ) );
+
 		$output          = '<div class="uael-category__title-wrap">';
 			$output     .= '<h2 class="woocommerce-loop-category__title">';
 				$output .= esc_html( $category->name );
@@ -1408,8 +1411,10 @@ class Woo_Categories extends Common_Widget {
 		if ( $category->count > 0 ) {
 				$output .= sprintf( // WPCS: XSS OK.
 					/* translators: 1: number of products */
-					_nx( '<mark class="uael-count">%1$s Product</mark>', '<mark class="uael-count">%1$s Products</mark>', $category->count, 'product categories', 'uael' ), // phpcs:ignore WordPress.WP.I18n.NoHtmlWrappedStrings
-					number_format_i18n( $category->count )
+					_nx( '<mark class="uael-count">%1$s %2$s</mark>', '<mark class="uael-count">%1$s %3$s</mark>', $category->count, 'product categories', 'uael' ), // phpcs:ignore WordPress.WP.I18n.MismatchedPlaceholders, WordPress.WP.I18n.NoHtmlWrappedStrings
+					number_format_i18n( $category->count ),
+					$single_product_string,
+					$product_string
 				);
 		}
 		$output .= '</div>';

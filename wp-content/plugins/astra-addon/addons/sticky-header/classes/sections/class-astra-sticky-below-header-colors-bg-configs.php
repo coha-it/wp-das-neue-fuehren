@@ -40,7 +40,7 @@ if ( ! class_exists( 'Astra_Sticky_Below_Header_Colors_Bg_Configs' ) ) {
 			$header_below_color_priority = 115;
 			$context                     = astra_addon_builder_helper()->general_tab_config;
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				$header_below_section        = 'section-below-header-builder';
 				$header_below_color_priority = 90;

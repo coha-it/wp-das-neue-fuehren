@@ -1453,6 +1453,7 @@ class Advanced_Heading extends Common_Widget {
 	 * @param object $settings for settings.
 	 */
 	public function render_separator( $pos, $settings ) {
+
 		if ( 'none' !== $settings['heading_separator_style'] && $pos === $settings['heading_separator_position'] ) {
 			?>
 			<div class="uael-module-content uael-separator-parent">
@@ -1465,7 +1466,9 @@ class Advanced_Heading extends Common_Widget {
 						<?php $this->render_image(); ?>
 						<?php
 						if ( 'line_text' === $settings['heading_separator_style'] ) {
-								echo '<' . esc_attr( $settings['text_tag'] ) . ' class="uael-divider-text elementor-inline-editing" data-elementor-setting-key="heading_line_text" data-elementor-inline-editing-toolbar="basic">' . wp_kses_post( $this->get_settings_for_display( 'heading_line_text' ) ) . '</' . esc_attr( $settings['text_tag'] ) . '>';
+							$text_tag = UAEL_Helper::validate_html_tag( $settings['text_tag'] );
+
+								echo '<' . esc_attr( $text_tag ) . ' class="uael-divider-text elementor-inline-editing" data-elementor-setting-key="heading_line_text" data-elementor-inline-editing-toolbar="basic">' . wp_kses_post( $this->get_settings_for_display( 'heading_line_text' ) ) . '</' . esc_attr( $text_tag ) . '>';
 						}
 						?>
 
@@ -1639,6 +1642,8 @@ class Advanced_Heading extends Common_Widget {
 		if ( 'gradient' === $settings['heading_color_type'] ) {
 			$this->add_render_attribute( 'uael-heading-wrapper', 'class', 'uael-heading-fill-gradient' );
 		}
+
+		$heading_size_tag = UAEL_Helper::validate_html_tag( $settings['heading_tag'] );
 		?>
 
 		<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael-heading-wrapper' ) ); ?>>
@@ -1646,7 +1651,7 @@ class Advanced_Heading extends Common_Widget {
 
 			<?php $this->render_subheading( 'top', $settings, $dynamic_settings ); ?>
 
-			<<?php echo esc_attr( $settings['heading_tag'] ); ?> class="uael-heading">
+			<<?php echo esc_attr( $heading_size_tag ); ?> class="uael-heading">
 				<?php if ( ! empty( $dynamic_settings['heading_link']['url'] ) ) { ?>
 					<a <?php echo wp_kses_post( $link ); ?> >
 				<?php } ?>
@@ -1654,7 +1659,7 @@ class Advanced_Heading extends Common_Widget {
 				<?php if ( ! empty( $dynamic_settings['heading_link']['url'] ) ) { ?>
 					</a>
 				<?php } ?>
-			</<?php echo esc_attr( $settings['heading_tag'] ); ?>>
+			</<?php echo esc_attr( $heading_size_tag ); ?>>
 
 			<?php $this->render_subheading( 'bottom', $settings, $dynamic_settings ); ?>
 
@@ -1682,6 +1687,16 @@ class Advanced_Heading extends Common_Widget {
 	protected function content_template() {
 		?>
 		<#
+
+		function render_html_tag( htmlTag ) {
+			if ( typeof elementor.helpers.validateHTMLTag === "function" ) {
+				html_Tag = elementor.helpers.validateHTMLTag( htmlTag );
+			} else if( UAEWidgetsData.allowed_tags ) {
+				html_Tag = UAEWidgetsData.allowed_tags.includes( htmlTag.toLowerCase() ) ? htmlTag : 'div';
+			}
+			return html_Tag;
+		}
+
 		function render_separator( pos ) {
 			if ( 'none' != settings.heading_separator_style && pos == settings.heading_separator_position ) {
 			#>
@@ -1694,8 +1709,10 @@ class Advanced_Heading extends Common_Widget {
 							<div class="uael-divider-content">
 								<#
 								render_image();
-								if ( 'line_text' == settings.heading_separator_style ) { #>
-									<{{{settings.text_tag}}} class="uael-divider-text elementor-inline-editing" data-elementor-setting-key="heading_line_text" data-elementor-inline-editing-toolbar="basic">{{{ settings.heading_line_text }}}</{{{settings.text_tag}}}>
+								if ( 'line_text' == settings.heading_separator_style ) {
+								var text_tag = render_html_tag( settings.text_tag );
+								#>
+									<{{{text_tag}}} class="uael-divider-text elementor-inline-editing" data-elementor-setting-key="heading_line_text" data-elementor-inline-editing-toolbar="basic">{{{ settings.heading_line_text }}}</{{{text_tag}}}>
 								<# } #>
 							</div>
 							<div class="uael-separator-line uael-side-right">
@@ -1808,13 +1825,16 @@ class Advanced_Heading extends Common_Widget {
 		if ( 'gradient' == settings.heading_color_type ) {
 			view.addRenderAttribute( 'uael-heading-wrapper', 'class', 'uael-heading-fill-gradient' );
 		}
+
+		var headingSizeTag = render_html_tag( settings.heading_tag );
+
 		#>
 		<div {{{ view.getRenderAttributeString( 'uael-heading-wrapper') }}}>
 			<# render_separator( 'top' ); #>
 
 			<# render_subheading( 'top' ); #> 
 
-			<{{{ settings.heading_tag }}} class="uael-heading">
+			<{{{ headingSizeTag }}} class="uael-heading">
 				<# if ( '' != settings.heading_link.url ) { #>
 					<a {{{ view.getRenderAttributeString( 'url' ) }}} >
 				<# } #>
@@ -1822,7 +1842,7 @@ class Advanced_Heading extends Common_Widget {
 				<# if ( '' != settings.heading_link.url ) { #>
 					</a>
 				<# } #>
-			</{{{ settings.heading_tag }}}>
+			</{{{ headingSizeTag }}}>
 
 			<# render_subheading( 'bottom' ); #> 
 

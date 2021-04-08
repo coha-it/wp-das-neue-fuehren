@@ -44,7 +44,7 @@ if ( ! class_exists( 'Astra_Customizer_Notices_Configs' ) ) :
 
 				if ( $this->is_custom_layout_header() ) {
 
-					if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+					if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 						$_configs = array(
 

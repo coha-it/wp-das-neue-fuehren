@@ -159,12 +159,13 @@ $this->add_render_attribute( 'line-inner', 'class', 'uael-timeline__line__inner'
 											</div>
 										<?php } ?>
 										<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'timeline_content' . esc_attr( $item['_id'] ) ) ); ?>>
-											<?php do_action( 'uael_timeline_above_heading', $item ); ?>	
+											<?php do_action( 'uael_timeline_above_heading', $item ); ?>
 											<?php
 											if ( '' !== $item['timeline_single_heading'] ) {
+												$heading_size_tag = UAEL_Helper::validate_html_tag( $settings['timeline_heading_tag'] );
 												?>
 											<div class="uael-timeline-heading-text">
-												<<?php echo esc_attr( $settings['timeline_heading_tag'] ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( $heading_setting_key ) ); ?>><?php echo $this->parse_text_editor( $item['timeline_single_heading'] ); ?></<?php echo esc_attr( $settings['timeline_heading_tag'] ); ?>> <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+												<<?php echo esc_attr( $heading_size_tag ); ?> <?php echo wp_kses_post( $this->get_render_attribute_string( $heading_setting_key ) ); ?>><?php echo $this->parse_text_editor( $item['timeline_single_heading'] ); ?></<?php echo esc_attr( $heading_size_tag ); ?>> <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 											</div>
 											<?php } ?>
 											<?php do_action( 'uael_timeline_below_heading', $item ); ?>

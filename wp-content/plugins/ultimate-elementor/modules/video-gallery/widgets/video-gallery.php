@@ -2025,11 +2025,12 @@ class Video_Gallery extends Common_Widget {
 				);
 			}
 		}
+		$slick_param = apply_filters( 'uael_video_gallery_slick_options', $slick_options );
 
 		$this->add_render_attribute(
 			'uael-vg-slider',
 			array(
-				'data-vg_slider' => wp_json_encode( $slick_options ),
+				'data-vg_slider' => wp_json_encode( $slick_param ),
 			)
 		);
 
@@ -2514,10 +2515,13 @@ class Video_Gallery extends Common_Widget {
 
 		?>
 		<div class="uael-video-gallery-filters-wrap<?php echo esc_attr( $tab_responsive ); ?>">
-			<?php if ( 'yes' === $settings['show_filter_title'] ) { ?>
+			<?php
+			if ( 'yes' === $settings['show_filter_title'] ) {
+				$heading_size_tag = UAEL_Helper::validate_html_tag( $settings['filter_title_tag'] );
+				?>
 				<div class="uael-video-gallery-title-filters">
 					<div class="uael-video-gallery-title">
-						<<?php echo wp_kses_post( $settings['filter_title_tag'] ); ?> class="uael-video-gallery-title-text"><?php echo wp_kses_post( $settings['filters_heading_text'] ); ?></<?php echo wp_kses_post( $settings['filter_title_tag'] ); ?>>
+						<<?php echo wp_kses_post( $heading_size_tag ); ?> class="uael-video-gallery-title-text"><?php echo wp_kses_post( $settings['filters_heading_text'] ); ?></<?php echo wp_kses_post( $heading_size_tag ); ?>>
 					</div>
 			<?php } ?>
 					<ul class="uael-video__gallery-filters" data-default="<?php echo esc_attr( $default ); ?>">

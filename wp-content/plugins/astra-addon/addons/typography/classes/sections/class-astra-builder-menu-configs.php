@@ -63,6 +63,7 @@ if ( ! class_exists( 'Astra_Builder_Menu_Configs' ) ) {
 								'value'   => 'design',
 							),
 						),
+						'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 					),
 
 					// Option: Primary Submenu Font Family.
@@ -199,6 +200,7 @@ if ( ! class_exists( 'Astra_Builder_Menu_Configs' ) ) {
 							'title'    => __( 'Mega Menu Heading', 'astra-addon' ),
 							'section'  => $_section,
 							'priority' => 131,
+							'divider'  => array( 'ast_class' => 'ast-bottom-divider' ),
 							'context'  => array(
 								array(
 									'setting' => 'ast_selected_tab',

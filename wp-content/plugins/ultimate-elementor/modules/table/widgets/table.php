@@ -2121,7 +2121,7 @@ class Table extends Common_Widget {
 								<span class="sort-style">
 								<span <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael_table__text' ) ); ?>>
 
-									<span <?php echo wp_kses_post( $this->get_render_attribute_string( $repeater_heading_text ) ); ?>><?php echo esc_attr( $head ); ?></span>
+									<span <?php echo wp_kses_post( $this->get_render_attribute_string( $repeater_heading_text ) ); ?>><?php echo wp_kses_post( $head ); ?></span>
 								</span>
 								<?php if ( 'yes' === $settings['sortable'] && true === $first_row_h ) { ?>
 									<span <?php echo wp_kses_post( $this->get_render_attribute_string( 'icon_sort_' . esc_attr( $hkey ) ) ); ?>></span>

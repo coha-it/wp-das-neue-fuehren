@@ -2826,6 +2826,8 @@ class Modal_Popup extends Common_Widget {
 		$this->add_inline_editing_attributes( 'modal_text', 'basic' );
 		$this->add_inline_editing_attributes( 'btn_text', 'none' );
 
+		$title_tag = UAEL_Helper::validate_html_tag( $settings['title_tag'] );
+
 		ob_start();
 		include 'template.php';
 		$html = ob_get_clean();

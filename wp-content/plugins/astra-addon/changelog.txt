@@ -1,3 +1,26 @@
+v3.3.1
+- Fix: Builder - Illegal offset warning for footer divider with invalid vertical size.
+- Fix: Icons not appearing for WooCommerce Off-Canvas filter on Shop Page.
+
+v3.3.0
+- New: Builder - Introduced new element Toggle for Desktop. (https://wpastra.com/docs/toggle-button-for-desktop/)
+- New: SVG Icons support ( deprecating astra.woff font file ). (https://wpastra.com/docs/ast-font-icons-to-svg/)
+- Improvement: Redesigned the image resize control UI in customizer for better user experience.
+- Improvement: Builder - Menu - Added box shadow option for submenu container.
+- Improvement: Code quality improvements for better performance.
+- Improvement: WordPress 5.7 compatibility.
+- Improvement: Frontend optimization - WooCommerce - Shop Page, Single Product Page. (https://wpastra.com/docs/optimize-css-html-before-3-3/)
+- Improvement: Frontend optimization - EDD - Shop Page, Single Product Page.
+- Improvement: Frontend optimization - LifterLMS - All Courses Page.
+- Improvement: Frontend optimization - LearnDash - All Courses Page, Single Course Page.
+- Fix: Builder - Account Element - Added better notices for user understanding when Profile Action is set to Menu.
+- Fix: Above Header and Below Header compatibility in Page Header.
+- Fix: Menu container width not caculated properly when Mega Menu Width is set to Menu Container Width.
+- Fix: Vertical Alignment for Above, Below, and Primary footer not working when the addon is active.
+- Fix: Divider being invisible in some cases due to invalid width/height references.
+- Deprecated: Footer Divider - Deprecated the vertical layout size in percentage and added it in px.
+- Deprecated: Header Divider - Deprecated the horizontal layout size in percentage and added it in px.
+
 v3.2.0
 - New: Introduced Inside Post/Page content option in Custom Layouts.
 

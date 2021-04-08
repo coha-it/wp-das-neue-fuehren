@@ -41,7 +41,7 @@ if ( ! class_exists( 'Astra_Ext_Advanced_Footer' ) ) {
 		 */
 		public function __construct() {
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 				return;
 			}
 

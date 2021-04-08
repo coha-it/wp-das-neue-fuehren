@@ -100,7 +100,7 @@ if ( ! class_exists( 'Astra_Nav_Menu_Above_Header_Colors' ) ) {
 
 			);
 
-			if ( is_callable( 'Astra_Sticky_Header_Configs::is_header_section_active' ) && Astra_Sticky_Header_Configs::is_header_section_active() && ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( is_callable( 'Astra_Sticky_Header_Configs::is_header_section_active' ) && Astra_Sticky_Header_Configs::is_header_section_active() && false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				$_new_config = array(
 					/**
@@ -116,7 +116,8 @@ if ( ! class_exists( 'Astra_Nav_Menu_Above_Header_Colors' ) ) {
 						'transport'  => 'postMessage',
 						'priority'   => 70,
 						'responsive' => false,
-						'context'    => astra_addon_builder_helper()->is_header_footer_builder_active ?
+						'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
+						'context'    => ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) ?
 							astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
 					),
 				);

@@ -5,7 +5,7 @@
  * @package Astra Addon
  */
 
-add_filter( 'astra_dynamic_css', 'astra_sticky_header_widget_dynamic_css' );
+add_filter( 'astra_dynamic_css', 'astra_sticky_header_widget_dynamic_css', 30 );
 
 /**
  * Dynamic CSS
@@ -29,18 +29,23 @@ function astra_sticky_header_widget_dynamic_css( $dynamic_css, $dynamic_css_filt
 		/**
 		 * Copyright CSS.
 		 */
+		if ( Astra_Addon_Builder_Helper::apply_flex_based_css() ) {
+			$header_widget_selector = $selector . '.header-widget-area-inner';
+		} else {
+			$header_widget_selector = $selector . ' .header-widget-area-inner';
+		}
 		$css_output_desktop = array(
 
-			$selector . ' .header-widget-area-inner'   => array(
+			$header_widget_selector              => array(
 				'color' => astra_get_option( 'sticky-header-widget-' . $index . '-color' ),
 			),
-			$selector . ' .header-widget-area-inner a' => array(
+			$header_widget_selector . ' a'       => array(
 				'color' => astra_get_option( 'sticky-header-widget-' . $index . '-link-color' ),
 			),
-			$selector . ' .header-widget-area-inner a:hover' => array(
+			$header_widget_selector . ' a:hover' => array(
 				'color' => astra_get_option( 'sticky-header-widget-' . $index . '-link-h-color' ),
 			),
-			$selector . ' .widget-title'               => array(
+			$selector . ' .widget-title'         => array(
 				'color' => astra_get_option( 'sticky-header-widget-' . $index . '-title-color' ),
 			),
 		);

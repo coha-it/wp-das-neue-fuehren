@@ -77,6 +77,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Button_Configs' ) ) {
 						'priority'   => 101,
 						'context'    => astra_addon_builder_helper()->design_tab,
 						'responsive' => true,
+
 					),
 
 					array(
@@ -90,17 +91,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Button_Configs' ) ) {
 						'priority'   => 101,
 						'context'    => astra_addon_builder_helper()->design_tab,
 						'responsive' => true,
-					),
-
-					array(
-						'name'      => ASTRA_THEME_SETTINGS . '[sticky-header-' . $_prefix . '-background-color-divider]',
-						'default'   => astra_get_option( 'sticky-header-' . $_prefix . '-background-color-divider' ),
-						'type'      => 'control',
-						'section'   => $_section,
-						'priority'  => 101,
-						'control'   => 'ast-divider',
-						'transport' => 'postMessage',
-						'context'   => astra_addon_builder_helper()->design_tab,
+						'divider'    => array( 'ast_class' => 'ast-bottom-divider' ),
 					),
 
 					/**
@@ -268,19 +259,7 @@ if ( ! class_exists( 'Astra_Sticky_Header_Button_Configs' ) ) {
 							'step' => 1,
 							'max'  => 100,
 						),
-					),
-
-					/**
-					 * Option: Divider
-					 */
-					array(
-						'name'     => ASTRA_THEME_SETTINGS . '[sticky-header-' . $_prefix . '-padding-divider]',
-						'type'     => 'control',
-						'section'  => $_section,
-						'control'  => 'ast-divider',
-						'priority' => 120,
-						'settings' => array(),
-						'context'  => astra_addon_builder_helper()->design_tab,
+						'divider'     => array( 'ast_class' => 'ast-bottom-divider' ),
 					),
 
 					// Padding.

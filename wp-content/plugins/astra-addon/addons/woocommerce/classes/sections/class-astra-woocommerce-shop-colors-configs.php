@@ -39,26 +39,6 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Colors_Configs' ) ) {
 			$_configs = array(
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[woo-shop-color-divider]',
-					'type'     => 'control',
-					'section'  => 'woocommerce_product_catalog',
-					'control'  => 'ast-divider',
-					'priority' => 228,
-					'settings' => array(),
-					'context'  => array(
-						astra_addon_builder_helper()->general_tab_config,
-						array(
-							'setting'  => ASTRA_THEME_SETTINGS . '[shop-product-structure]',
-							'operator' => 'contains',
-							'value'    => 'title',
-						),
-					),
-				),
-
-				/**
 				 * Shop Product Title Color
 				 */
 				array(
@@ -111,6 +91,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Colors_Configs' ) ) {
 					'type'              => 'control',
 					'section'           => 'woocommerce_product_catalog',
 					'control'           => 'ast-color',
+					'divider'           => array( 'ast_class' => 'ast-bottom-divider' ),
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
 					'transport'         => 'postMessage',
 					'title'             => __( 'Product Content', 'astra-addon' ),

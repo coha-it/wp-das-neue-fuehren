@@ -2005,15 +2005,17 @@ class Image_Gallery extends Common_Widget {
 
 		$settings = $this->get_settings();
 
+		$caption_tag = UAEL_Helper::validate_html_tag( $settings['caption_tag'] );
+
 		if ( '' === $settings['gallery_caption'] || ! $image['caption'] ) {
 			return;
 		}
 
 		$output              = '<figcaption class="uael-grid-img-content">';
 			$output         .= '<div class="uael-grid-img-caption">';
-				$output     .= '<' . $settings['caption_tag'] . ' class="uael-grid-caption-text">';
+				$output     .= '<' . $caption_tag . ' class="uael-grid-caption-text">';
 					$output .= $image['caption'];
-				$output     .= '</' . $settings['caption_tag'] . '>';
+				$output     .= '</' . $caption_tag . '>';
 			$output         .= '</div>';
 		$output             .= '</figcaption>';
 

@@ -330,6 +330,38 @@ if ( isset( $settings['yelp_api'] ) && ! empty( $settings['yelp_api'] ) ) {
 									</div>
 								</div>
 							</div>
+							<div class="widgets postbox">
+								<div class="inside">
+									<div class="form-wrap">
+										<div class="form-field">
+											<label class="uael-integration-heading"><?php esc_attr_e( 'Social Share - Facebook Access Token', 'uael' ); ?></label>
+											<p class="install-help uael-p"><strong><?php esc_attr_e( 'Note:', 'uael' ); ?></strong>
+											<?php
+												$a_tag_open  = '<a target="_blank" rel="noopener" href="' . esc_url( UAEL_DOMAIN . 'docs/display-share-count-for-facebook/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin' ) . '">';
+												$a_tag_close = '</a>';
+
+												printf(
+													/* translators: %1$s: a tag open. */
+													esc_attr__( 'This setting is required if you wish to fetch share count of your post/page from Facebook. Need help? Read %1$s this article %2$s.', 'uael' ),
+													wp_kses_post( $a_tag_open ),
+													wp_kses_post( $a_tag_close )
+												);
+												?>
+											</p>
+											<label for="uael-share-button" class="uael-integration-heading"><?php esc_attr_e( 'Facebook Access Token', 'uael' ); ?></label>
+											<input type="text" name="uael_integration[uael_share_button]" id="uael-share-button-id" class="placeholder placeholder-active" value="<?php echo esc_attr( $settings['uael_share_button'] ); ?>">
+											<?php
+											$response = UAEL_Helper::facebook_token_authentication();
+											if ( 200 === $response && $is_saved && isset( $response ) ) {
+												?>
+												<span class="uael-response-success"><?php esc_attr_e( 'Access Token authenticated successfully!', 'uael' ); ?></span>
+											<?php } elseif ( $is_saved && '' !== $settings['uael_share_button'] ) { ?>
+													<span class="uael-response-warning"><?php esc_attr_e( 'Invalid Access Token', 'uael' ); ?></span>
+											<?php } ?>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 						<?php submit_button( __( 'Save Changes', 'uael' ), 'uael-save-integration-options button-primary button button-hero' ); ?>
 						<?php wp_nonce_field( 'uael-integration', 'uael-integration-nonce' ); ?>

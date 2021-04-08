@@ -40,7 +40,7 @@ if ( ! class_exists( 'Astra_Sticky_Above_Header_Colors_Bg_Configs' ) ) {
 			$header_above_color_priority = 60;
 			$context                     = astra_addon_builder_helper()->general_tab_config;
 
-			if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+			if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 				$header_above_section        = 'section-above-header-builder';
 				$header_above_color_priority = 85;
@@ -317,35 +317,6 @@ if ( ! class_exists( 'Astra_Sticky_Above_Header_Colors_Bg_Configs' ) ) {
 				),
 
 				/**
-				 * Option: Divider
-				 */
-				array(
-					'name'     => ASTRA_THEME_SETTINGS . '[sticky-above-header-content-text-color-divider]',
-					'type'     => 'control',
-					'control'  => 'ast-divider',
-					'section'  => 'section-sticky-header',
-					'priority' => 60,
-					'settings' => array(),
-					'context'  => array(
-						'relation' => 'AND',
-						astra_addon_builder_helper()->is_header_footer_builder_active ? astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,
-						array(
-							'relation' => 'OR',
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[above-header-section-1]',
-								'operator' => 'in',
-								'value'    => array( 'search', 'widget', 'text-html', 'edd' ),
-							),
-							array(
-								'setting'  => ASTRA_THEME_SETTINGS . '[above-header-section-2]',
-								'operator' => 'in',
-								'value'    => array( 'search', 'widget', 'text-html', 'edd' ),
-							),
-						),
-					),
-				),
-
-				/**
 				* Option: Content Section Text color.
 				*/
 				array(
@@ -359,6 +330,7 @@ if ( ! class_exists( 'Astra_Sticky_Above_Header_Colors_Bg_Configs' ) ) {
 					'title'      => __( 'Content Text', 'astra-addon' ),
 					'responsive' => true,
 					'rgba'       => true,
+					'divider'    => array( 'ast_class' => 'ast-top-divider' ),
 					'context'    => array(
 						'relation' => 'AND',
 						astra_addon_builder_helper()->is_header_footer_builder_active ? astra_addon_builder_helper()->design_tab : astra_addon_builder_helper()->general_tab,

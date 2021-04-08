@@ -11,12 +11,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+use Elementor\Utils;
 use UltimateElementor\Classes\UAEL_Config;
 
 /**
  * Class UAEL_Helper.
  */
 class UAEL_Helper {
+
+	/**
+	 * A list of safe tage for `validate_html_tag` method.
+	 */
+	const ALLOWED_HTML_WRAPPER_TAGS = array( 'article', 'aside', 'div', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'main', 'nav', 'p', 'section', 'span' );
 
 	/**
 	 * CSS files folder
@@ -669,6 +675,7 @@ class UAEL_Helper {
 			'google_client_id'       => '',
 			'facebook_app_id'        => '',
 			'facebook_app_secret'    => '',
+			'uael_share_button'      => '',
 		);
 
 		$integrations = self::get_admin_settings_option( '_uael_integration', array(), true );
@@ -1052,6 +1059,55 @@ class UAEL_Helper {
 	}
 
 	/**
+	 * Authenticate Facebook Access Token.
+	 *
+	 * @since 1.30.0
+	 */
+	public static function facebook_token_authentication() {
+		$integration_settings = self::get_integrations_options();
+
+		if ( '' !== $integration_settings['uael_share_button'] ) {
+			$access_token_validation = UAEL_FACEBOOK_GRAPH_API_ENDPOINT . '?id=https://facebook.com&access_token=' . $integration_settings['uael_share_button'];
+
+			$response = wp_remote_get( $access_token_validation );
+
+			if ( is_wp_error( $response ) ) {
+
+				return false;
+
+			}
+
+			return $response['response']['code'];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Social account share count.
+	 *
+	 * @since 1.30.0
+	 *
+	 * @return response.
+	 * @param string $response response.
+	 * @param string $args arguments.
+	 */
+	public static function get_social_share_count( $response, $args ) {
+
+		$response = wp_remote_get( $response, $args );
+
+		if ( is_wp_error( $response ) ) {
+
+			return false;
+		}
+
+		$response = wp_remote_retrieve_body( $response );
+
+		return $response;
+
+	}
+
+	/**
 	 * Check if the Elementor is updated.
 	 *
 	 * @since 1.16.1
@@ -1379,5 +1435,22 @@ class UAEL_Helper {
 		}
 		$wp_filesystem->put_contents( $combined_path, $style, FS_CHMOD_FILE );
 		$wp_filesystem->put_contents( $combined_rtl_path, $rtl_style, FS_CHMOD_FILE );
+	}
+
+	/**
+	 * Validate an HTML tag against a safe allowed list.
+	 *
+	 * @since 1.30.0
+	 * @param string $tag specifies the HTML Tag.
+	 * @access public
+	 */
+	public static function validate_html_tag( $tag ) {
+
+		// Check if Elementor method exists, else we will run custom validation code.
+		if ( method_exists( 'Elementor\Utils', 'validate_html_tag' ) ) {
+			return Utils::validate_html_tag( $tag );
+		} else {
+			return in_array( strtolower( $tag ), self::ALLOWED_HTML_WRAPPER_TAGS, true ) ? $tag : 'div';
+		}
 	}
 }

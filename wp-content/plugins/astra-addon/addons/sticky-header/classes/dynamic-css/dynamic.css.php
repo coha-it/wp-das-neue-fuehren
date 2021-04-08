@@ -497,7 +497,7 @@ function astra_ext_sticky_header_dynamic_css( $dynamic_css, $dynamic_css_filtere
 			),
 		);
 
-		if ( ! astra_addon_builder_helper()->is_header_footer_builder_active ) {
+		if ( false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 			$desktop_css_output = array_merge( $desktop_css_output, $old_sticky_header_desktop_output );
 			$tablet_css_output  = array_merge( $tablet_css_output, $old_sticky_header_tablet_output );
 			$mobile_css_output  = array_merge( $mobile_css_output, $old_sticky_header_mobile_output );
@@ -802,7 +802,7 @@ function astra_ext_sticky_header_dynamic_css( $dynamic_css, $dynamic_css_filtere
 	/**
 	 * Sticky Header with Builder > Site Identity colors.
 	 */
-	if ( astra_addon_builder_helper()->is_header_footer_builder_active ) {
+	if ( true === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 
 		/* Site Identity Sticky Color Options */
 		$sticky_site_title_color       = astra_get_option( 'sticky-header-builder-site-title-color', '#222' );
@@ -991,6 +991,82 @@ function astra_ext_sticky_header_dynamic_css( $dynamic_css, $dynamic_css_filtere
 			$parse_css .= astra_parse_css( $sticky_builder_menu_tablet_css, '', astra_addon_get_tablet_breakpoint() );
 			$parse_css .= astra_parse_css( $sticky_builder_menu_mobile_css, '', astra_addon_get_mobile_breakpoint() );
 		}
+	}
+
+	if ( version_compare( ASTRA_THEME_VERSION, '3.2.0', '<' ) ) {
+
+		$sticky_static_css = '
+		.ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content {
+			display: none;
+		}
+		
+		.ast-main-header-nav-open.astra-hfb-header .ast-mobile-header-wrap .ast-mobile-header-content {
+			display: block;
+		}
+		
+		.ast-header-stick-slide-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content,
+		.ast-header-stick-fade-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content,
+		.ast-header-stick-scroll-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content {
+			display: block;
+		}
+		
+		.ast-header-stick-slide-active .ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content,
+		.ast-header-stick-fade-active .ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content,
+		.ast-header-stick-scroll-active .ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content {
+			display: none;
+		}
+		
+		.ast-header-stick-slide-active.ast-off-canvas-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content,
+		.ast-header-stick-fade-active.ast-off-canvas-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content,
+		.ast-header-stick-scroll-active.ast-off-canvas-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content {
+			display: none;
+		}
+		
+		.ast-primary-sticky-header-active.ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content,
+		.ast-above-sticky-header-active.ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content,
+		.ast-below-sticky-header-active.ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content {
+			position: fixed;
+		}
+		';
+
+		if ( is_rtl() ) {
+
+			$sticky_static_css .= '
+			.ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content {
+				display: none;
+			}
+			
+			.ast-main-header-nav-open.astra-hfb-header .ast-mobile-header-wrap .ast-mobile-header-content {
+				display: block;
+			}
+			
+			.ast-header-stick-slide-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content,
+			.ast-header-stick-fade-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content,
+			.ast-header-stick-scroll-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content {
+				display: block;
+			}
+			
+			.ast-header-stick-slide-active .ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content,
+			.ast-header-stick-fade-active .ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content,
+			.ast-header-stick-scroll-active .ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content {
+				display: none;
+			}
+			
+			.ast-header-stick-slide-active.ast-off-canvas-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content,
+			.ast-header-stick-fade-active.ast-off-canvas-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content,
+			.ast-header-stick-scroll-active.ast-off-canvas-active .ast-main-header-nav-open.astra-hfb-header #ast-fixed-header .ast-mobile-header-wrap .ast-mobile-header-content {
+				display: none;
+			}
+			
+			.ast-primary-sticky-header-active.ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content,
+			.ast-above-sticky-header-active.ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content,
+			.ast-below-sticky-header-active.ast-main-header-nav-open.astra-hfb-header #masthead > .ast-mobile-header-wrap .ast-mobile-header-content {
+				position: fixed;
+			}
+			';
+		}
+
+		$parse_css .= Astra_Enqueue_Scripts::trim_css( $sticky_static_css );
 	}
 
 	/* Parse CSS from array() */
