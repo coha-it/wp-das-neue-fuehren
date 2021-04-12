@@ -21,44 +21,54 @@ class OMGF_Optimize
     /** @var string */
     private $plugin_text_domain = 'host-webfonts-local';
 
-    /** @var mixed|string */
-    private $optimization_mode = '';
+    /** @var string */
+    private $settings_page = '';
+
+    /** @var string */
+    private $settings_updated = '';
 
     /**
      * OMGF_Optimize constructor.
      */
     public function __construct()
     {
-        $option_page             = $_POST['option_page'] ?? '';
-        $this->optimization_mode = $_POST[OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_OPTIMIZATION_MODE] ?? '';
+        $this->settings_page    = $_GET['page'] ?? '';
+        $this->settings_updated = $_GET['settings-updated'] ?? '';
 
+        $this->init();
+    }
+
+    /**
+     * Run either manual or auto mode after settings are updated.
+     * 
+     * @return void 
+     */
+    private function init()
+    {
         if (
-            OMGF_Admin_Settings::OMGF_SETTINGS_FIELD_OPTIMIZE != $option_page
-            && !$this->optimization_mode
+            OMGF_Admin_Settings::OMGF_ADMIN_PAGE != $this->settings_page
+            || !$this->settings_updated
         ) {
             return;
         }
 
-        // Will die when it fails.
-        check_admin_referer('omgf-optimize-settings-options');
+        add_filter('http_request_args', [$this, 'verify_ssl']);
 
-        update_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_CACHE_KEYS, $_POST[OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_CACHE_KEYS] ?? '');
-        update_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_UNLOAD_FONTS, $_POST[OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_UNLOAD_FONTS] ?? '');
-        update_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_PRELOAD_FONTS, $_POST[OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_PRELOAD_FONTS] ?? '');
-        update_option(OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_UNLOAD_STYLESHEETS, $_POST[OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_UNLOAD_STYLESHEETS] ?? '');
-
-        if ('manual' == $this->optimization_mode) {
+        if ('manual' == OMGF_OPTIMIZATION_MODE) {
             $this->run_manual();
         }
 
-        if ('auto' == $this->optimization_mode) {
+        if ('auto' == OMGF_OPTIMIZATION_MODE) {
             $this->run_auto();
         }
     }
 
+    /**
+     * @return void
+     */
     private function run_manual()
     {
-        $url = esc_url_raw($_POST[OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_MANUAL_OPTIMIZE_URL]);
+        $url = esc_url_raw(OMGF_MANUAL_OPTIMIZE_URL);
 
         $front_html = $this->remote_get($url);
 
@@ -93,6 +103,9 @@ class OMGF_Optimize
         $this->optimization_succeeded();
     }
 
+    /**
+     * @return void
+     */
     private function optimization_succeeded()
     {
         add_settings_error('general', 'omgf_optimization_success', __('Optimization completed successfully.'), 'success');
@@ -121,11 +134,17 @@ class OMGF_Optimize
         add_settings_error('general', 'omgf_frontend_fetch_failed', __('OMGF encountered an error while fetching this site\'s frontend HTML', $this->plugin_text_domain) . ': ' . $front_html->get_error_code() . ' - ' . $front_html->get_error_message(), 'error');
     }
 
+    /**
+     * @return void
+     */
     private function no_urls_found()
     {
         add_settings_error('general', 'omgf_no_urls_found', sprintf(__('No (additional) Google Fonts found to optimize. If you believe this is an error, please refer to the %stroubleshooting%s section of the documentation for possible solutions.', $this->plugin_text_domain), '<a href="https://ffw.press/docs/omgf-pro/troubleshooting">', '</a>'), 'info');
     }
 
+    /**
+     *
+     */
     private function run_auto()
     {
         OMGF_Admin_Notice::set_notice(
@@ -137,30 +156,34 @@ class OMGF_Optimize
 
     /**
      * Wrapper for wp_remote_get() with preset params.
-     * 
-     * @param mixed $url 
-     * @return array|WP_Error 
+     *
+     * @param mixed $url
+     * @return array|WP_Error
      */
     private function remote_get($url)
     {
         return wp_remote_get(
             $this->no_cache_optimize_url($url),
             [
-                'timeout' => 30,
-                'sslverify' => $this->verify_ssl($url)
+                'timeout' => 30
             ]
         );
     }
 
     /**
-     * If URL is non-SSL, return false.
-     * 
-     * @param mixed $url 
-     * @return bool 
+     * If this site is non-SSL it makes no sense to verify its SSL certificates.
+     *
+     * Settings sslverify to false will set CURLOPT_SSL_VERIFYPEER and CURLOPT_SSL_VERIFYHOST
+     * to 0 further down the road.
+     *
+     * @param mixed $url
+     * @return bool
      */
-    private function verify_ssl($url)
+    public function verify_ssl($args)
     {
-        return strpos($url, 'https:') !== false;
+        $args['sslverify'] = strpos(home_url(), 'https:') !== false;
+
+        return $args;
     }
 
     /**

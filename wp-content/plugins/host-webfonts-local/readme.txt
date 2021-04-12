@@ -3,7 +3,7 @@ Contributors: DaanvandenBergh
 Tags: google, fonts, gdpr, cache, speed, preload, font-display, webfonts, subsets, remove, minimize, external, requests
 Requires at least: 4.6
 Tested up to: 5.7
-Stable tag: 4.3.2
+Stable tag: 4.4.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -123,9 +123,18 @@ No, not yet. But I will definitely try to make it compatible in the future!
 
 == Changelog ==
 
+= 4.4.0 | April 10th, 2021 =
+* Moved sidebar to its own 'Help' tab to clean up the interface.
+* Manage Optimize Fonts panel is now shown inline with other options (and has its own label).
+* Each stylesheet's handle is now more prominently visible and the font family is better readable.
+* Added mass actions to each font family for easier management of each stylesheet.
+* Took a different approach to deal with SSL/Non-SSL for local Dev environments.
+* Performance improvements to manual detection mode (decreased risk of timeouts!)
+* Overall UX tweaks and performance improvements.
+
 = 4.3.2 | April 5th, 2021 =
 * Fixed MIME type (`X-Content-Type-Options: nosniff`) related errors when using Download API.
-* When site is not using SSL, SSL verification (`sslverify`) is disabled while contacting the Download API.
+* When site is not using SSL, sslverify is disabled when contacting the Download API.
 * When OMGF Pro is running in Automatic Mode, only preloads for the currently used stylesheet are loaded.
 
 = 4.3.1 | March 29th, 2021 =
