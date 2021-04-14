@@ -181,6 +181,10 @@ export function isDocumentTemplate() {
 	return false;
 }
 
+export function getAllowedBlockTypes() {
+	return getSetting( 'allowedBlockTypes' );
+}
+
 export function getDocumentStylesBlock() {
 	const { getBlocks } = select( 'core/block-editor' );
 	let blocks = getBlocks();
@@ -381,6 +385,14 @@ export function getShortcodeTitle( shortcode ) {
 
 export function getDateTypes() {
 	return getSetting( 'dateTypes' );
+}
+
+export function getBarcodeTypes() {
+	return getSetting( 'barcodeTypes' );
+}
+
+export function getBarcodeCodeTypes() {
+	return getSetting( 'barcodeCodeTypes' );
 }
 
 export function getDateTypeTitle( dateType ) {

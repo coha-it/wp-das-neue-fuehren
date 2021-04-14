@@ -85,13 +85,18 @@ class OrderItem implements SyncableReferenceItem {
 			'quantity'       => 1,
 			'reference_id'   => $this->get_id(),
 			'name'           => $this->get_name(),
-			'attributes'     => $this->get_attributes()
+			'attributes'     => $this->get_attributes( $document_item )
 		) );
 
 		$document_item->set_props( $args );
 	}
 
-	public function get_attributes() {
+	/**
+	 * @param Item $document_item
+	 *
+	 * @return array
+	 */
+	public function get_attributes( $document_item ) {
 		$meta       = $this->order_item->get_formatted_meta_data();
 		$attributes = array();
 		$order      = 0;

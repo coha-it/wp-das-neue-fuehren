@@ -187,7 +187,7 @@ class Helper {
 	 *
 	 * @return mixed
 	 */
-	public static function attach_invoice_to_mail( $attachments, $email_id, $object, $email ) {
+	public static function attach_invoice_to_mail( $attachments, $email_id, $object, $email = false ) {
 		if ( 'customer_invoice' === $email_id ) {
 			if ( is_a( $object, 'WC_Order' ) ) {
 				if ( $order = self::get_order( $object ) ) {
@@ -210,7 +210,7 @@ class Helper {
 	public static function search_order_invoices( $wp ) {
 		global $pagenow;
 
-		if ( 'edit.php' !== $pagenow || 'shop_order' !== $wp->query_vars['post_type'] || ! isset( $_GET['s'] ) ) { // phpcs:ignore  WordPress.Security.NonceVerification.Recommended
+		if ( 'edit.php' !== $pagenow || ! isset( $wp->query_vars['post_type'], $_GET['s'] ) || 'shop_order' !== $wp->query_vars['post_type'] ) { // phpcs:ignore  WordPress.Security.NonceVerification.Recommended
 			return;
 		}
 

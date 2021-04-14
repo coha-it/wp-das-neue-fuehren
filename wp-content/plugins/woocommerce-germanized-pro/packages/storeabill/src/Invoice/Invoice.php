@@ -401,9 +401,9 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		foreach( $total_types as $total_type ) {
 
 			if ( 'nets' === $total_type ) {
-				$net_total_left = $this->get_total_net( 'total', false );
-				$taxes          = $this->get_tax_totals();
-				$has_zero_rate  = false;
+				$net_total_zero_rate = $this->get_total_net( 'total', false );
+				$taxes               = $this->get_tax_totals();
+				$has_zero_rate       = false;
 
 				foreach ( $taxes as $tax_total ) {
 					$net_total_tax = $tax_total->get_total_net( false );
@@ -416,19 +416,33 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 						$net_total_tax = 0;
 					}
 
-					$net_total_left -= $net_total_tax;
-					$net_inner_total = 0;
+					$net_total_zero_rate -= $net_total_tax;
+
+					if ( empty( $tax_total->get_tax_rate()->get_percent() ) ) {
+						$has_zero_rate = key( array_slice( $document_totals, -1, 1, true ) );
+					}
+				}
+
+				$net_total_zero_rate = sab_format_decimal( $net_total_zero_rate, '' );
+
+				/**
+				 * Prevent rounding issues while re-calculating zero nets.
+				 */
+				if ( $net_total_zero_rate <= 0.01 ) {
+					$net_total_zero_rate = 0;
+				}
+
+				foreach ( $taxes as $tax_total ) {
+					$net_inner_total = $tax_total->get_total_net();
+
+					if ( $this->has_voucher() ) {
+						$net_inner_total += $this->get_voucher_total();
+					}
 
 					/**
 					 * In case only one tax rate is included - use global net total to prevent rounding display issues
 					 */
-					if ( sizeof( $taxes ) > 1 ) {
-						$net_inner_total = $tax_total->get_total_net();
-
-						if ( $this->has_voucher() ) {
-							$net_inner_total += $this->get_voucher_total();
-						}
-					} else {
+					if ( sizeof( $taxes ) == 1 && $net_total_zero_rate <= 0 ) {
 						$net_inner_total = $this->get_total_net();
 					}
 
@@ -440,29 +454,16 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 						),
 						'type'         => 'nets',
 					) );
-
-					if ( empty( $tax_total->get_tax_rate()->get_percent() ) ) {
-						$has_zero_rate = key( array_slice( $document_totals, -1, 1, true ) );
-					}
-				}
-
-				$net_total_left = sab_format_decimal( $net_total_left, '' );
-
-				/**
-				 * Prevent rounding issues while re-calculating zero nets.
-				 */
-				if ( $net_total_left <= 0.01 ) {
-					$net_total_left = 0;
 				}
 
 				/**
 				 * Seems like zero tax rates or non-taxable products are involved.
 				 * Make sure to add the non-taxed total net amount left (e.g. non-taxable products) too.
 				 */
-				if ( $net_total_left > 0 ) {
+				if ( $net_total_zero_rate > 0 ) {
 					if ( false === $has_zero_rate || ! isset( $document_totals[ $has_zero_rate ] ) ) {
 						$document_totals[] = new Total( $this, array(
-							'total'        => $net_total_left,
+							'total'        => $net_total_zero_rate,
 							'placeholders' => array(
 								'{rate}'           => '0',
 								'{formatted_rate}' => sab_format_tax_rate_percentage( 0 ),
@@ -470,7 +471,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 							'type'         => 'nets',
 						) );
 					} else {
-						$document_totals[ $has_zero_rate ]->set_total( $document_totals[ $has_zero_rate ]->get_total() + $net_total_left );
+						$document_totals[ $has_zero_rate ]->set_total( $document_totals[ $has_zero_rate ]->get_total() + $net_total_zero_rate );
 					}
 				}
 			} elseif( 'taxes' === $total_type ) {
@@ -2881,7 +2882,14 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 			'payment_transaction_id'
 		);
 
-		if ( ! $this->has_file() || empty( $this->data['relative_path'] ) ) {
+		$path 	= ! empty( $this->data['relative_path'] ) ? sab_get_absolute_file_path( $this->data['relative_path'] ) : false;
+		$exists = false;
+
+		if ( $path && file_exists( $path ) ) {
+			$exists = true;
+		}
+
+		if ( ! $this->has_file() || ! $exists ) {
 			$excluded = array_merge( $excluded, array( 'relative_path' ) );
 		}
 

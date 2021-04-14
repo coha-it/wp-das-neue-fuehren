@@ -43,6 +43,34 @@ class OrderItemProduct extends OrderItemTaxable {
 		do_action( "{$this->get_hook_prefix()}synced", $this, $document_item, $args );
 	}
 
+	protected function get_attribute_name() {
+
+	}
+
+	public function get_attributes( $document_item ) {
+		$attributes             = parent::get_attributes( $document_item );
+		$existing_slugs         = array();
+		$custom_attribute_slugs = array();
+
+		foreach( $attributes as $attribute ) {
+			$existing_slugs[] = $attribute->get_key();
+		}
+
+		if ( $document = $document_item->get_document() ) {
+			if ( $template = $document->get_template() ) {
+				$custom_attribute_slugs = $template->get_additional_attribute_slugs();
+			}
+		}
+
+		if ( ! empty( $custom_attribute_slugs ) ) {
+			if ( $product = \Vendidero\StoreaBill\References\Product::get_product( $this->order_item->get_product(), 'woocommerce' ) ) {
+				$attributes = array_merge( $attributes, $product->get_additional_attributes( $custom_attribute_slugs, $existing_slugs ) );
+			}
+		}
+
+		return $attributes;
+	}
+
 	public function get_product_id() {
 		if ( is_callable( array( $this->order_item, 'get_variation_id' ) ) && $this->order_item->get_variation_id() ) {
 			return $this->order_item->get_variation_id();

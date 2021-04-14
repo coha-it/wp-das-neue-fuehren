@@ -241,15 +241,23 @@ class Ajax {
 
 		$id             = absint( self::get_request_data( 'id' ) );
 		$response_error = array(
-			'messages' => array( _x( 'Error while deleting the template.', 'storeabill-core', 'woocommerce-germanized-pro' ) ),
+			'messages' => array( _x( 'Error while creating the template.', 'storeabill-core', 'woocommerce-germanized-pro' ) ),
 		);
 
 		if ( ( ! $template = sab_get_document_template( $id ) ) || $template->is_first_page() ) {
 			self::error( $response_error );
 		}
 
+		$content          = $template->get_content();
+		$header_content   = \Vendidero\StoreaBill\Editor\Helper::get_block_content( 'storeabill/header', $content, true );
+		$footer_content   = \Vendidero\StoreaBill\Editor\Helper::get_block_content( 'storeabill/footer', $content, true );
+
 		$tpl = new FirstPageTemplate();
 		$tpl->set_parent_id( $template->get_id() );
+		$tpl->set_status( 'publish' );
+		$tpl->set_content(
+			"<!-- wp:storeabill/document-styles /-->" . $header_content . $footer_content
+		);
 		$tpl->save();
 
 		self::template_success( array(

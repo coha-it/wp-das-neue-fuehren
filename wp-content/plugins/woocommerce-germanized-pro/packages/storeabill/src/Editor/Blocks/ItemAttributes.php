@@ -30,6 +30,10 @@ class ItemAttributes extends ItemTableColumnBlock {
 			'className'       => $this->get_schema_string(),
 			'textColor'       => $this->get_schema_string(),
 			'customTextColor' => $this->get_schema_string(),
+			'customAttributes' =>  array(
+				'type'    => 'array',
+				'default' => array(),
+			),
 			'renderTotal'     => $this->get_schema_number( 1 ),
 			'renderNumber'    => $this->get_schema_number( 1 )
 		);

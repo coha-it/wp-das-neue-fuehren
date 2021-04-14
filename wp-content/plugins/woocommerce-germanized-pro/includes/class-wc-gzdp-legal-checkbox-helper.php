@@ -215,11 +215,10 @@ class WC_GZDP_Legal_Checkbox_Helper {
 		$additional_fields = array(
 			array(
 				'title'             => __( 'Save Status', 'woocommerce-germanized-pro' ),
-				'type'              => 'checkbox',
+				'type'              => 'gzd_toggle',
 				'id'                => $checkbox->get_form_field_id( 'store_status' ),
-				'desc'              => __( 'Register checkbox value within meta data.', 'woocommerce-germanized-pro' ),
-				'desc_tip'          => sprintf( __( 'Store the checkbox status chosen by the user within meta data and display the status in the admin panel (e.g. order data). Find out more about possible customizations %s.', 'woocommerce-germanized-pro' ), '<a href="https://vendidero.de/dokument/status-der-checkbox-dokumentieren" target="_blank">' . __( 'here', 'woocommerce-germanized-pro' ) . '</a>' ),
-				'default'           =>'no',
+				'desc'              => __( 'Register checkbox value within meta data.', 'woocommerce-germanized-pro' ) . '<div class="wc-gzd-additional-desc">' . sprintf( __( 'Store the checkbox status chosen by the user within meta data and display the status in the admin panel (e.g. order data). Find out more about possible customizations %s.', 'woocommerce-germanized-pro' ), '<a href="https://vendidero.de/dokument/status-der-checkbox-dokumentieren" target="_blank">' . __( 'here', 'woocommerce-germanized-pro' ) . '</a>' ) . '</div>',
+				'default'           => 'no',
 			),
 
 			array(

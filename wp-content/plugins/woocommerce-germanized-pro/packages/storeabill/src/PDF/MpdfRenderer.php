@@ -373,28 +373,10 @@ class MpdfRenderer implements PDF {
 			$this->render();
 
 			sab_clean_buffers();
+
 			$this->pdf->Output( $filename, Destination::INLINE );
 		} catch( \Exception $e ) {
-			/**
-			 * Rerender document without PDF templates (as it seems to use a compression technique unknown to FPDI)
-			 */
-			if ( is_a( $e, 'setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException' ) ) {
-				$this->remove_template_pdf_background();
-
-				Package::log( sprintf( 'PDF template background for %s cannot be used due to compression and/or version error', $this->get_template()->get_id() ) );
-
-				$this->setup( array(), false );
-				$this->output( $filename );
-			} elseif( is_a( $e, 'Mpdf\Exception\FontException' ) ) {
-				$this->remove_custom_font();
-
-				Package::log( sprintf( 'The font is not supported for template %s.', $this->get_template()->get_id() ) );
-
-				$this->setup( array(), false );
-				$this->output( $filename );
-			}
-
-			throw new DocumentRenderException( $e->getMessage() );
+			$this->handle_error( $e, array( $this, 'output' ), array( $filename ) );
 		}
 	}
 
@@ -458,33 +440,49 @@ class MpdfRenderer implements PDF {
 		do_action( 'storeabill_mpdf_render_pdf', $this, $this->pdf );
 	}
 
+	/**
+	 * @param \Exception $e
+	 *
+	 * @throws DocumentRenderException
+	 */
+	private function handle_error( $e, $callback, $args = array() ) {
+		$message = $e->getMessage();
+
+		/**
+		 * Rerender document without PDF templates (as it seems to use a compression technique unknown to FPDI)
+		 */
+		if ( is_a( $e, 'setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException' ) ) {
+			$this->remove_template_pdf_background();
+
+			Package::log( sprintf( 'PDF template background for %s cannot be used due to compression and/or version error', $this->get_template()->get_id() ) );
+
+			$this->setup( array(), false );
+			call_user_func_array( $callback, $args );
+		} elseif( is_a( $e, 'Mpdf\Exception\FontException' ) ) {
+			$this->remove_custom_font();
+
+			Package::log( sprintf( 'The font is not supported for template %s.', $this->get_template()->get_id() ) );
+
+			$this->setup( array(), false );
+			call_user_func_array( $callback, $args );
+		} elseif ( is_a( $e, 'Mpdf\MpdfException' ) ) {
+			$message = sprintf( 'mPDF error while processing PDF: %1$s (%2$s line %3$s)', $e->getMessage(), $e->getFile(), $e->getLine() );
+
+			Package::log( $message );
+		}
+
+		throw new DocumentRenderException( $message );
+	}
+
 	public function stream() {
 		try {
 			$this->render();
 
 			return $this->pdf->Output( 'doc.pdf', Destination::STRING_RETURN );
 		} catch( \Exception $e ) {
+			$this->handle_error( $e, array( $this, 'stream' ) );
 
-			/**
-			 * Rerender document without PDF templates (as it seems to use a compression technique unknown to FPDI)
-			 */
-			if ( is_a( $e, 'setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException' ) ) {
-				$this->remove_template_pdf_background();
-
-				Package::log( sprintf( 'PDF template background for %s cannot be used due to compression and/or version error', $this->get_template()->get_id() ) );
-
-				$this->setup( array(), false );
-				$this->stream();
-			} elseif( is_a( $e, 'Mpdf\Exception\FontException' ) ) {
-				$this->remove_custom_font();
-
-				Package::log( sprintf( 'The font is not supported for template %s.', $this->get_template()->get_id() ) );
-
-				$this->setup( array(), false );
-				$this->stream();
-			}
-
-			throw new DocumentRenderException( $e->getMessage() );
+			return false;
 		}
 	}
 

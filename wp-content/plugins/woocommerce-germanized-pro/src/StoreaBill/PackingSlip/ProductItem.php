@@ -113,4 +113,12 @@ class ProductItem extends Item implements Summable, Priceable {
 
 		return $this->product;
 	}
+
+	public function get_image_url( $size = '', $placeholder = false ) {
+		if ( $product = $this->get_product() ) {
+			return $product->get_image_url( $size, $placeholder );
+		}
+
+		return parent::get_image_url( $size, $placeholder );
+	}
 }

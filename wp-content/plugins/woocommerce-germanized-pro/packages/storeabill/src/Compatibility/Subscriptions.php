@@ -2,13 +2,10 @@
 
 namespace Vendidero\StoreaBill\Compatibility;
 
-use Vendidero\StoreaBill\Document\Document;
 use Vendidero\StoreaBill\Document\Shortcodes;
 use Vendidero\StoreaBill\Interfaces\Compatibility;
-use Vendidero\StoreaBill\Interfaces\Reference;
-use Vendidero\StoreaBill\Invoice\Invoice;
 use Vendidero\StoreaBill\Invoice\Simple;
-use Vendidero\StoreaBill\WooCommerce\Admin\InvoiceMetaBox;
+use Vendidero\StoreaBill\WooCommerce\Automation;
 use Vendidero\StoreaBill\WooCommerce\Order;
 
 defined( 'ABSPATH' ) || exit;
@@ -39,6 +36,23 @@ class Subscriptions implements Compatibility {
 		 * Register editor shortcodes.
 		 */
 		add_filter( 'storeabill_document_template_editor_available_shortcodes', array( __CLASS__, 'register_editor_shortcodes' ), 10, 2 );
+
+		/**
+		 * On renewals
+		 */
+		add_filter( 'wcs_renewal_order_created', array( __CLASS__, 'maybe_trigger_auto' ), 10, 2 );
+	}
+
+	public static function maybe_trigger_auto( $renewal_order, $subscription ) {
+		/**
+		 * In case the after checkout automation option has been chosen
+		 * lets create invoices for renewals right after they have been created
+		 */
+		if ( Automation::create_invoices() && Automation::has_invoice_timing( 'checkout' ) ) {
+			Automation::sync_invoices( $renewal_order->get_id() );
+		}
+
+		return $renewal_order;
 	}
 
 	public static function register_editor_shortcodes( $shortcodes, $document_type ) {

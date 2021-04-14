@@ -39,4 +39,8 @@ interface Product extends Reference {
 	public function get_parent_id();
 
 	public function get_parent();
+
+	public function get_additional_attributes( $custom_attribute_slugs, $existing_slugs = array() );
+
+	public function get_image_url( $size = '', $placeholder = false );
 }

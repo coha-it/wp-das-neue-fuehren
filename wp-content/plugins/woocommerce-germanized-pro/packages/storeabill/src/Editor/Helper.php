@@ -277,7 +277,7 @@ class Helper {
 		return '';
 	}
 
-	protected static function get_block_content( $block_name, $content, $first_only = false ) {
+	public static function get_block_content( $block_name, $content, $first_only = false ) {
 		$start = self::get_block_regex( $block_name, 'start' );
 		$end   = self::get_block_regex( $block_name, 'end' );
 
@@ -514,6 +514,11 @@ class Helper {
 			self::$asset_data['discountTotalTypes']   = array();
 			self::$asset_data['dynamicContentBlocks'] = self::get_dynamic_content_blocks();
 			self::$asset_data['defaultInnerBlocks']   = self::get_default_inner_blocks( $template->get_document_type() );
+			self::$asset_data['assets_url']           = trailingslashit( Package::get_assets_url() );
+			self::$asset_data['attribute_slugs']      = array_values( wp_list_pluck( wc_get_attribute_taxonomies(), 'attribute_name' ) );
+			self::$asset_data['barcodeTypes']         = sab_get_barcode_types();
+			self::$asset_data['barcodeCodeTypes']     = sab_get_document_type_barcode_code_types( $template->get_document_type() );
+			self::$asset_data['allowedBlockTypes']    = self::allowed_block_types( array(), $post );
 
 			if ( sab_document_type_supports( $template->get_document_type(), 'discounts' ) ) {
 				self::$asset_data['discountTotalTypes'] = array(
@@ -1114,6 +1119,7 @@ class Helper {
 				'ItemTableColumn',
 				'ItemTable',
 				'ItemName',
+				'ItemImage',
 				'ItemPosition',
 				'ItemPrice',
 				'ItemAttributes',
@@ -1133,6 +1139,7 @@ class Helper {
 				'DocumentTitle',
 				'PageNumber',
 				'DocumentDate',
+				'Barcode',
 				'DocumentStyles',
 				'ThirdCountryNotice',
 				'ReverseChargeNotice',
@@ -1358,7 +1365,8 @@ class Helper {
 				$allowed_block_types = array_merge( $allowed_block_types, array(
 					'storeabill/address',
 					'storeabill/document-title',
-					'storeabill/document-date'
+					'storeabill/document-date',
+					'storeabill/barcode'
 				) );
 
 				/**
@@ -1369,6 +1377,7 @@ class Helper {
 						'storeabill/item-table',
 						'storeabill/item-table-column',
 						'storeabill/item-name',
+						'storeabill/item-image',
 						'storeabill/item-position',
 						'storeabill/item-sku',
 						'storeabill/item-meta',

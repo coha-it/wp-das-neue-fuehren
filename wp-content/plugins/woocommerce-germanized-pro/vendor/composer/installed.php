@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'd952297b628a9a6a46bb3a9482e128fccf90396e',
+    'reference' => 'd753d1f4e56c8447889c6e4684882060d14686ba',
     'name' => 'vendidero/woocommerce-germanized-pro',
   ),
   'versions' => 
@@ -37,6 +37,15 @@
       array (
       ),
       'reference' => '1333a962cd2f7ae1a127b7534b7734b58179186f',
+    ),
+    'mpdf/qrcode' => 
+    array (
+      'pretty_version' => 'v1.1.1',
+      'version' => '1.1.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'f3c0a99e37e8489f0b91b7d2c394dcba0b38d71c',
     ),
     'myclabs/deep-copy' => 
     array (
@@ -90,12 +99,12 @@
     ),
     'vendidero/storeabill' => 
     array (
-      'pretty_version' => 'v1.4.2',
-      'version' => '1.4.2.0',
+      'pretty_version' => 'v1.5.0',
+      'version' => '1.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '484e5b6029e1d2a8a03bbb01cfd8c2fabcf79b57',
+      'reference' => '7d5f15abc6da03f2c1bdd407f73748e6ed949f27',
     ),
     'vendidero/storeabill-lexoffice' => 
     array (
@@ -108,12 +117,12 @@
     ),
     'vendidero/storeabill-sevdesk' => 
     array (
-      'pretty_version' => 'v1.0.7',
-      'version' => '1.0.7.0',
+      'pretty_version' => 'v1.0.8',
+      'version' => '1.0.8.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c5bc74f196dacc9b915b2ae09a3afda4081be7ce',
+      'reference' => '865cb24a56e39207a560f286b971d6eb1316dd9c',
     ),
     'vendidero/woocommerce-germanized-pro' => 
     array (
@@ -122,7 +131,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'd952297b628a9a6a46bb3a9482e128fccf90396e',
+      'reference' => 'd753d1f4e56c8447889c6e4684882060d14686ba',
     ),
   ),
 );

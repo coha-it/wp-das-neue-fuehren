@@ -35,6 +35,8 @@ class Sync extends SyncHandler {
 	 */
 	protected $categories = null;
 
+	protected $default_account = false;
+
 	/**
 	 * @var Models
 	 */
@@ -542,41 +544,49 @@ class Sync extends SyncHandler {
 			$account_id     = $this->get_account_id( $invoice->get_payment_method_name() );
 			$purpose        = $invoice->get_order_number();
 			$transaction_id = '';
+			$is_offline     = $this->is_offline_account( $account_id );
+			$accounts       = $this->get_accounts();
 
-			if ( 'yes' === $this->get_setting( 'vouchers_book_transaction' ) ) {
-				/**
-				 * Search the transaction based on purpose and amount.
-				 * In case no account id was provided, search transactions in all accounts.
-				 * By default search for the formatted order number (purpose).
-				 */
-				$transaction = $this->get_api()->search_transactions( $purpose, array(
-					'amount_from' => $invoice->get_total(),
-					'account'     => apply_filters( "{$this->get_hook_prefix()}search_transaction_account_id", $account_id, $invoice, $this )
-				) );
+            /**
+             * Search the transaction based on purpose and amount.
+             * In case no account id was provided, search transactions in all accounts.
+             * By default search for the formatted order number (purpose).
+             */
+            $transaction = $this->get_api()->search_transactions( $purpose, array(
+                'amount_from' => $invoice->get_total(),
+                'account'     => apply_filters( "{$this->get_hook_prefix()}search_transaction_account_id", $account_id, $invoice, $this )
+            ) );
 
-				if ( ! $this->get_api()->has_failed( $transaction ) && ! empty( $transaction['objects'] ) ) {
-					$remote_purpose  = $transaction['objects'][0]['paymtPurpose'];
-					$purpose_numbers = preg_replace( '/[^0-9]/', '', $purpose );
-					$is_match        = true;
+            if ( ! $this->get_api()->has_failed( $transaction ) && ! empty( $transaction['objects'] ) ) {
+                $remote_purpose  = $transaction['objects'][0]['paymtPurpose'];
+                $purpose_numbers = preg_replace( '/[^0-9]/', '', $purpose );
+                $is_match        = true;
 
-					/**
-					 * In case the purpose contains numbers make sure to check whether numbers from the original purpose
-					 * match remote purpose numbers to prevent that searching for 83718 matches 3718.
-					 */
-					if ( ! empty( $purpose_numbers ) ) {
-						$remote_purpose = preg_replace( '/[^0-9]/', '', $remote_purpose );
+                /**
+                 * In case the purpose contains numbers make sure to check whether numbers from the original purpose
+                 * match remote purpose numbers to prevent that searching for 83718 matches 3718.
+                 */
+                if ( ! empty( $purpose_numbers ) ) {
+                    $remote_purpose = preg_replace( '/[^0-9]/', '', $remote_purpose );
 
-						if ( $remote_purpose != $purpose ) {
-							$is_match = false;
-						}
-					}
+                    if ( $remote_purpose != $purpose ) {
+                        $is_match = false;
+                    }
+                }
 
-					if ( $is_match ) {
-						$transaction_id = $transaction['objects'][0]['id'];
-						$account_id     = $transaction['objects'][0]['checkAccount']['id'];
-					}
-				}
+                if ( $is_match ) {
+                    $transaction_id = $transaction['objects'][0]['id'];
+                    $account_id     = $transaction['objects'][0]['checkAccount']['id'];
+                }
             }
+
+			/**
+			 * Online accounts to not allow booking vouchers without a matching transaction.
+             * Use default account as fallback.
+			 */
+			if ( ( ! $is_offline && empty( $transaction_id ) ) || ! array_key_exists( $account_id, $accounts ) ) {
+				$account_id = $this->get_default_sevdesk_account();
+			}
 
 			if ( ! empty( $account_id ) ) {
 				$result = $this->get_api()->book_voucher( $sync_data->get_id(), $amount, array(
@@ -601,6 +611,12 @@ class Sync extends SyncHandler {
 
     protected function get_default_account_id() {
 	    return $this->get_setting( 'vouchers_book_default_account' );
+    }
+
+    protected function is_offline_account( $account_id ) {
+ 	    $accounts = $this->get_accounts( 'offline' );
+
+ 	    return array_key_exists( $account_id, $accounts ) ? true : false;
     }
 
     protected function get_account_id( $payment_method ) {
@@ -701,17 +717,43 @@ class Sync extends SyncHandler {
 		return sab_wp_error_has_errors( $error ) ? $error : $response;
 	}
 
-	protected function get_accounts() {
+	protected function get_default_sevdesk_account() {
+		if ( false === $this->default_account ) {
+			$this->get_accounts();
+		}
+
+		return $this->default_account;
+	}
+
+	protected function get_accounts( $type = '' ) {
 		if ( is_null( $this->accounts ) ) {
-			$this->accounts = array();
+			$this->accounts = array(
+                'offline' => array(),
+                'online'  => array()
+            );
 
 			foreach( $this->api->get_accounts() as $account ) {
 				/* translators: 1: account name  2: account id */
-				$this->accounts[ $account['id'] ] = sprintf( _x( '%1$s (%2$s)', 'sevdesk', 'woocommerce-germanized-pro' ), esc_html( $account['name'] ), esc_html( $account['id'] ) );
+				$title = sprintf( _x( '%1$s (%2$s)', 'sevdesk', 'woocommerce-germanized-pro' ), esc_html( $account['name'] ), esc_html( $account['id'] ) );
+
+				/**
+				 * Set default account
+				 */
+				if ( isset( $account['defaultAccount'] ) && '1' === $account['defaultAccount'] ) {
+			        $this->default_account = $account['id'];
+                }
+
+                if ( 'offline' === $account['type'] ) {
+                    $this->accounts['offline'][ $account['id'] ] = $title;
+                } else {
+	                $this->accounts['online'][ $account['id'] ] = $title;
+                }
 			}
 		}
 
-		return $this->accounts;
+		$accounts = empty( $type ) ? array_merge( $this->accounts['offline'], $this->accounts['online'] ) : $this->accounts[ $type ];
+
+		return $accounts;
 	}
 
 	protected function get_categories( $type = '' ) {
@@ -731,8 +773,8 @@ class Sync extends SyncHandler {
 		return $this->categories;
 	}
 
-	protected function get_account_options() {
-	    $accounts = $this->get_accounts();
+	protected function get_account_options( $type = '' ) {
+	    $accounts = $this->get_accounts( $type );
 	    $options  = array( '' => _x( 'None', 'sevdesk accounts', 'woocommerce-germanized-pro' ) ) + $accounts;
 
 	    return $options;
@@ -790,16 +832,18 @@ class Sync extends SyncHandler {
 	}
 
 	public function get_settings( $context = 'view' ) {
-		$settings         = parent::get_settings( $context );
-		$account_options  = array();
-		$category_options = array();
+		$settings                = parent::get_settings( $context );
+		$account_options         = array();
+		$offline_account_options = array();
+		$category_options        = array();
 
 		/**
 		 * Prevent loops
 		 */
-		if ( ! empty( $this->settings ) && $this->is_enabled() ) {
-		    $account_options  = $this->get_account_options();
-		    $category_options = $this->get_category_options();
+		if ( 'edit' === $context && ! empty( $this->settings ) && $this->is_enabled() ) {
+		    $account_options         = $this->get_account_options();
+			$offline_account_options = $this->get_account_options( 'offline' );
+		    $category_options        = $this->get_category_options();
 		}
 
 		$settings['voucher_section_start'] = array(
@@ -855,18 +899,8 @@ class Sync extends SyncHandler {
 		$settings['vouchers_book'] = array(
 			'title'       => _x( 'Book', 'sevdesk', 'woocommerce-germanized-pro' ),
 			'type'        => 'sab_toggle',
-			'description' => _x( 'Automatically book vouchers.', 'sevdesk', 'woocommerce-germanized-pro' ) . '<div class="sab-additional-desc">' . _x( 'By enabling this option, paid invoices will be booked to a specific sevDesk account.', 'sevdesk', 'woocommerce-germanized-pro' ) . '</div>',
+			'description' => _x( 'Automatically book vouchers.', 'sevdesk', 'woocommerce-germanized-pro' ) . '<div class="sab-additional-desc">' . _x( 'By enabling this option, paid invoices will be booked to a specific sevDesk account. In case you are choosing an online account (such as PayPal) a specific transaction must be available to book the voucher. As a fallback the voucher will be booked to the default account instead.', 'sevdesk', 'woocommerce-germanized-pro' ) . '</div>',
 			'default'     => 'no',
-		);
-
-		$settings['vouchers_book_transaction'] = array(
-			'title'       => _x( 'Link transaction', 'sevdesk', 'woocommerce-germanized-pro' ),
-			'type'        => 'sab_toggle',
-			'description' => _x( 'Link to a specific transaction if possible.', 'sevdesk', 'woocommerce-germanized-pro' ) . '<div class="sab-additional-desc">' . _x( 'By enabling this option, a matching transaction for the voucher is trying to be linked (e.g. based on order number).', 'sevdesk', 'woocommerce-germanized-pro' ) . '</div>',
-			'default'     => 'no',
-			'custom_attributes'  => array(
-				'data-show_if_sync_handler_sevdesk_vouchers_book' => '',
-			),
 		);
 
 		$settings['vouchers_book_default_account'] = array(
@@ -875,7 +909,7 @@ class Sync extends SyncHandler {
 			'class'       => 'sab-enhanced-select',
 			'desc_tip'    => _x( 'Link voucher to a specific transaction if possible.', 'sevdesk', 'woocommerce-germanized-pro' ),
 			'default'     => '',
-			'options'     => $account_options,
+			'options'     => $offline_account_options,
 			'custom_attributes'  => array(
 				'data-allow-clear' => true,
                 'data-placeholder' => _x( 'None', 'sevdesk accounts', 'woocommerce-germanized-pro' ),

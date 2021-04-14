@@ -158,6 +158,7 @@ function sab_register_document_type( $type, $args = array() ) {
 		'additional_blocks'         => array(),
 		'default_line_item_types'   => array(),
 		'available_line_item_types' => array(),
+		'barcode_code_types'        => array(),
 		'shortcodes'                => array(),
 		'date_types'                => array(),
 		'exporters'                 => array(
@@ -225,7 +226,19 @@ function sab_register_document_type( $type, $args = array() ) {
 		)
 	), $args['shortcodes']['document'] );
 
+	/**
+	 * Default barcode code data
+	 */
+	$args['barcode_code_types'] = array_merge( array(
+		'document?data=formatted_number' => _x( 'Formatted document number', 'storeabill-core', 'woocommerce-germanized-pro' ),
+		'document?data=number'           => _x( 'Document number', 'storeabill-core', 'woocommerce-germanized-pro' ),
+	), $args['barcode_code_types'] );
+
 	if ( 'accounting' === $args['group'] ) {
+
+		$args['barcode_code_types'] = array_merge( array(
+			'document?data=total' => _x( 'Total', 'storeabill-barcode-data', 'woocommerce-germanized-pro' ),
+		), $args['barcode_code_types'] );
 
 		$args['additional_blocks'] = array_merge( $args['additional_blocks'], array(
 			'storeabill/reverse-charge-notice',
@@ -883,4 +896,27 @@ function sab_get_document_type_exporter( $document_type, $export_type = 'csv' ) 
 	}
 
 	return apply_filters( "storeabill_{$document_type}_{$export_type}_exporter", $exporter, $document_type, $export_type );
+}
+
+function sab_get_document_type_barcode_code_types( $document_type ) {
+	$code_types = array();
+
+	if ( $type_data = sab_get_document_type( $document_type ) ) {
+		$code_types = $type_data->barcode_code_types;
+	}
+
+	return apply_filters( "storeabill_{$document_type}_barcode_code_types", $code_types, $document_type );
+}
+
+/**
+ * Get the placeholder image.
+ *
+ * Uses wp_get_attachment_image if using an attachment ID @since 3.6.0 to handle responsiveness.
+ *
+ * @param string       $size Image size.
+ * @param string|array $attr Optional. Attributes for the image markup. Default empty.
+ * @return string
+ */
+function sab_placeholder_img( $size = '' ) {
+	return trailingslashit( \Vendidero\StoreaBill\Package::get_assets_url() ) . 'images/placeholder.png';
 }

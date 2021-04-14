@@ -93,6 +93,81 @@ class Product implements \Vendidero\StoreaBill\Interfaces\Product {
 		return false;
 	}
 
+	public function get_additional_attributes( $custom_attribute_slugs, $existing_slugs = array() ) {
+		$attributes = array();
+
+		foreach( $custom_attribute_slugs as $slug ) {
+			$slug           = wc_sanitize_taxonomy_name( $slug );
+			$attribute_name = $slug;
+			$wc_product     = $this->get_product();
+
+			/**
+			 * Slug does already exist
+			 */
+			if ( in_array( $slug, $existing_slugs ) ) {
+				continue;
+			}
+
+			// If this is a global taxonomy (prefixed with pa_) use the prefix to determine the name.
+			if ( taxonomy_exists( wc_attribute_taxonomy_name( $slug ) ) ) {
+				$attribute_name = wc_attribute_taxonomy_name( $slug );
+			}
+
+			if ( $attribute_value = $wc_product->get_attribute( $slug ) ) {
+				$label = wc_attribute_label( $attribute_name, $wc_product );
+
+				$attributes[] = new \Vendidero\StoreaBill\Document\Attribute( array(
+					'key'   => $slug,
+					'value' => $attribute_value,
+					'label' => $label
+				) );
+			} elseif ( $wc_product->get_parent_id() > 0 ) {
+				/*
+				 * In case the product is a child product - lets check the parent product
+				 * for the attribute data in case it was not found for the child.
+				 */
+				if ( $parent = wc_get_product( $wc_product->get_parent_id() ) ) {
+					if ( $attribute_value = $parent->get_attribute( $slug ) ) {
+						$label = wc_attribute_label( $attribute_name, $parent );
+
+						$attributes[] = new \Vendidero\StoreaBill\Document\Attribute( array(
+							'key'   => $slug,
+							'value' => $attribute_value,
+							'label' => $label
+						) );
+					}
+				}
+			}
+		}
+
+		return $attributes;
+	}
+
+	public function get_image_url( $size = '', $placeholder = false ) {
+		$size  = 'woocommerce_thumbnail';
+		$image = '';
+
+		if ( $this->product->get_image_id() ) {
+			$image = wp_get_attachment_image_src( $this->product->get_image_id(), $size, false );
+		} elseif ( $this->get_parent_id() ) {
+			$parent_product = wc_get_product( $this->get_parent_id() );
+
+			if ( $parent_product && $parent_product->get_image_id() ) {
+				$image = wp_get_attachment_image_src( $parent_product->get_image_id(), $size, false );
+			}
+		}
+
+		if ( is_array( $image ) && ! empty( $image ) ) {
+			$image = $image[0];
+		}
+
+		if ( ! $image && $placeholder ) {
+			$image = sab_placeholder_img( $size );
+		}
+
+		return $image;
+	}
+
 	public function get_meta( $key, $single = true, $context = 'view' ) {
 		return $this->product->get_meta( $key, $single, $context );
 	}

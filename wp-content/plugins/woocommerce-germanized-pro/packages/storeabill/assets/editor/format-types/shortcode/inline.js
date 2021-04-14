@@ -127,6 +127,7 @@ const InlineShortcodePicker = ( { name, value, onChange, stopAddingShortcode, re
 					value={ currentShortcode ? currentShortcode : '-1' }
 					options={ availableShortcodes }
 					onChange={ onShortcodeChangeCallback }
+					style={ { minWidth: '200px' } }
 					defaultOption={ { 'value': '-1', 'label': _x( 'Choose a shortcode', 'storeabill-core', 'storeabill' ) } }
 				/>
 				{ currentShortcode &&

@@ -12,6 +12,7 @@ return array(
     'Vendidero\\StoreaBill\\' => array($baseDir . '/packages/storeabill/src'),
     'Vendidero\\Germanized\\Pro\\' => array($baseDir . '/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
+    'Mpdf\\QrCode\\' => array($vendorDir . '/mpdf/qrcode/src'),
     'Mpdf\\' => array($vendorDir . '/mpdf/mpdf/src'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'Composer\\Installers\\' => array($vendorDir . '/composer/installers/src/Composer/Installers'),

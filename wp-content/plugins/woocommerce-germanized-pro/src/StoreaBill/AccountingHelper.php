@@ -94,6 +94,55 @@ class AccountingHelper {
 
 		add_action( 'admin_notices', array( __CLASS__, 'accounting_disabled_notice' ), 20 );
 		add_action( 'admin_init', array( __CLASS__, 'check_accounting_enable' ), 20 );
+
+		/**
+		 * Add additional format support, e.g. for encrypted direct debit meta data.
+		 */
+		add_filter( 'storeabill_format_shortcode_result', array( __CLASS__, 'improve_shortcode_format_support' ), 10, 4 );
+
+		add_filter( 'storeabill_maybe_encrypt_sensitive_data', array( __CLASS__, 'maybe_encrypt' ), 10 );
+		add_filter( 'storeabill_maybe_decrypt_sensitive_data', array( __CLASS__, 'maybe_decrypt' ), 10 );
+	}
+
+	public static function maybe_encrypt( $value ) {
+		if ( class_exists( 'WC_GZD_Secret_Box_Helper' ) ) {
+			$encrypted = \WC_GZD_Secret_Box_Helper::encrypt( $value );
+
+			if ( ! is_wp_error( $encrypted ) ) {
+				$value = $encrypted;
+			}
+		}
+
+		return $value;
+	}
+
+	public static function maybe_decrypt( $value ) {
+		if ( class_exists( 'WC_GZD_Secret_Box_Helper' ) ) {
+			$decrypted = \WC_GZD_Secret_Box_Helper::decrypt( $value );
+
+			if ( ! is_wp_error( $decrypted ) ) {
+				$value = $decrypted;
+			}
+		}
+
+		return $value;
+	}
+
+	public static function improve_shortcode_format_support( $return_data, $format, $data, $atts ) {
+		$maybe_encrypted = array(
+			'direct_debit_iban',
+			'direct_debit_bic'
+		);
+
+		if ( in_array( $atts['data'], $maybe_encrypted ) && ! empty( $return_data ) ) {
+			$gateway = class_exists( 'WC_GZD_Gateway_Direct_Debit' ) ? new \WC_GZD_Gateway_Direct_Debit() : false;
+
+			if ( $gateway && is_callable( array( $gateway, 'maybe_decrypt' ) ) ) {
+				$return_data = $gateway->maybe_decrypt( $return_data );
+			}
+		}
+
+		return $return_data;
 	}
 
 	public static function show_incl_tax( $incl_tax ) {

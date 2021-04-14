@@ -21,7 +21,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.4.2';
+	const VERSION = '1.5.0';
 
 	/**
 	 * Init the package.
@@ -263,6 +263,9 @@ class Package {
 				'date_of_service_period' => _x( 'Date of service', 'storeabill-core', 'woocommerce-germanized-pro' ),
 				'date_of_service_end'    => _x( 'End date of service', 'storeabill-core', 'woocommerce-germanized-pro' ),
 				'date_of_service'        => _x( 'Start date of service', 'storeabill-core', 'woocommerce-germanized-pro' )
+			),
+			'barcode_code_types' => array(
+				'document?data=order_number' => _x( 'Order number', 'storeabill-core', 'woocommerce-germanized-pro' ),
 			),
 			'shortcodes'         => array(
 				'document' => array(

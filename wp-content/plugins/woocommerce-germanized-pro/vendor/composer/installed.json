@@ -275,6 +275,70 @@
             "install-path": "../mpdf/mpdf"
         },
         {
+            "name": "mpdf/qrcode",
+            "version": "v1.1.1",
+            "version_normalized": "1.1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mpdf/qrcode.git",
+                "reference": "f3c0a99e37e8489f0b91b7d2c394dcba0b38d71c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mpdf/qrcode/zipball/f3c0a99e37e8489f0b91b7d2c394dcba0b38d71c",
+                "reference": "f3c0a99e37e8489f0b91b7d2c394dcba0b38d71c",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/random_compat": "^1.4|^2.0|^9.99.99",
+                "php": "^5.6 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.5",
+                "phpunit/phpunit": "^5.0",
+                "squizlabs/php_codesniffer": "^3.4",
+                "tracy/tracy": "^2.5"
+            },
+            "suggest": {
+                "ext-gd": "To output QR codes to PNG files"
+            },
+            "time": "2021-01-12T18:16:41+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Mpdf\\QrCode\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Matěj Humpál",
+                    "role": "maintainer"
+                },
+                {
+                    "name": "Laurent Minguet",
+                    "role": "author"
+                }
+            ],
+            "description": "QR code generator for mPDF",
+            "keywords": [
+                "mpdf",
+                "pdf",
+                "php",
+                "qr",
+                "qrcode"
+            ],
+            "support": {
+                "issues": "https://github.com/mpdf/qrcode/issues",
+                "source": "https://github.com/mpdf/qrcode/tree/v1.1.1"
+            },
+            "install-path": "../mpdf/qrcode"
+        },
+        {
             "name": "myclabs/deep-copy",
             "version": "1.7.0",
             "version_normalized": "1.7.0.0",
@@ -509,27 +573,28 @@
         },
         {
             "name": "vendidero/storeabill",
-            "version": "v1.4.2",
-            "version_normalized": "1.4.2.0",
+            "version": "v1.5.0",
+            "version_normalized": "1.5.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:vendidero/storeabill.git",
-                "reference": "484e5b6029e1d2a8a03bbb01cfd8c2fabcf79b57"
+                "reference": "7d5f15abc6da03f2c1bdd407f73748e6ed949f27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vendidero/storeabill/zipball/484e5b6029e1d2a8a03bbb01cfd8c2fabcf79b57",
-                "reference": "484e5b6029e1d2a8a03bbb01cfd8c2fabcf79b57",
+                "url": "https://api.github.com/repos/vendidero/storeabill/zipball/7d5f15abc6da03f2c1bdd407f73748e6ed949f27",
+                "reference": "7d5f15abc6da03f2c1bdd407f73748e6ed949f27",
                 "shasum": ""
             },
             "require": {
                 "automattic/jetpack-autoloader": "^2.6.0",
-                "mpdf/mpdf": "8.*"
+                "mpdf/mpdf": "8.*",
+                "mpdf/qrcode": "^1.1.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^7.5.14"
+                "phpunit/phpunit": "7.5.14"
             },
-            "time": "2021-03-04T11:42:28+00:00",
+            "time": "2021-04-13T13:18:02+00:00",
             "type": "wordpress-plugin",
             "installation-source": "dist",
             "autoload": {
@@ -539,10 +604,10 @@
             },
             "scripts": {
                 "post-install-cmd": [
-                    "sh ./bin/vendor-font-clean.sh"
+                    "sh ./bin/vendor-clean.sh"
                 ],
                 "post-update-cmd": [
-                    "sh ./bin/vendor-font-clean.sh"
+                    "sh ./bin/vendor-clean.sh"
                 ],
                 "makepot": [
                     "@makepot-audit --skip-audit"
@@ -601,17 +666,17 @@
         },
         {
             "name": "vendidero/storeabill-sevdesk",
-            "version": "v1.0.7",
-            "version_normalized": "1.0.7.0",
+            "version": "v1.0.8",
+            "version_normalized": "1.0.8.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:vendidero/storeabill-sevdesk.git",
-                "reference": "c5bc74f196dacc9b915b2ae09a3afda4081be7ce"
+                "reference": "865cb24a56e39207a560f286b971d6eb1316dd9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vendidero/storeabill-sevdesk/zipball/c5bc74f196dacc9b915b2ae09a3afda4081be7ce",
-                "reference": "c5bc74f196dacc9b915b2ae09a3afda4081be7ce",
+                "url": "https://api.github.com/repos/vendidero/storeabill-sevdesk/zipball/865cb24a56e39207a560f286b971d6eb1316dd9c",
+                "reference": "865cb24a56e39207a560f286b971d6eb1316dd9c",
                 "shasum": ""
             },
             "require": {
@@ -620,7 +685,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^6.5.14"
             },
-            "time": "2021-02-17T10:46:23+00:00",
+            "time": "2021-04-13T12:28:01+00:00",
             "type": "wordpress-plugin",
             "installation-source": "dist",
             "autoload": {

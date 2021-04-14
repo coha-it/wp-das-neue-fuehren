@@ -90,16 +90,16 @@ window.germanized = window.germanized || {};
         },
 
         showOrHideVatIdField: function() {
-            var self            = germanized.pro_checkout,
-                $checkbox       = $( '#ship-to-different-address-checkbox' ),
-                $billing_vat_id = $( '#billing_vat_id' );
+            var self             = germanized.pro_checkout,
+                $checkbox        = $( '#ship-to-different-address-checkbox' ),
+                $billing_vat_id  = $( '#billing_vat_id' );
 
             if ( $checkbox.is( ':checked' ) ) {
                 // Backup real value
                 $billing_vat_id.data( 'field-value', $billing_vat_id.val() );
 
                 // Use placeholder value to make sure billing vat id wont throw empty errors
-                $billing_vat_id.val( '1' ).parents( '.form-row' ).hide();
+                $billing_vat_id.val( '' ).parents( '.form-row' ).hide();
 
                 self.onChangeVatID();
             } else {

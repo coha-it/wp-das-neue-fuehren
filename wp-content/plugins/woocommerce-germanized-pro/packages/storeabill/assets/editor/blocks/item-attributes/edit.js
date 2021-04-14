@@ -11,9 +11,10 @@ import {
     __experimentalUseColors,
 } from '@wordpress/block-editor';
 
-import { getPreviewItem } from '@storeabill/settings';
-import { PanelBody } from "@wordpress/components";
+import { getPreviewItem, getSetting } from '@storeabill/settings';
+import { PanelBody, FormTokenField } from "@wordpress/components";
 import { compose } from "@wordpress/compose";
+import { withState } from '@wordpress/compose';
 
 const ItemAttributesEdit = ( {
     attributes,
@@ -22,7 +23,7 @@ const ItemAttributesEdit = ( {
     setFontSize,
     className
 } ) => {
-    const {} = attributes;
+    const { customAttributes } = attributes;
     let item = getPreviewItem();
 
     const {
@@ -42,6 +43,14 @@ const ItemAttributesEdit = ( {
     return (
         <>
             <InspectorControls>
+                <PanelBody title={ _x( 'Additional Attributes', 'storeabill-core', 'storeabill' ) }>
+                    <FormTokenField
+                        suggestions={ getSetting( 'attribute_slugs' ) }
+                        value={ customAttributes }
+                        onChange={ tokens => setAttributes( { customAttributes: tokens } ) }
+                        label={ _x( 'Add attribute slugs', 'storeabill-core', 'storeabill' ) }
+                    />
+                </PanelBody>
                 <PanelBody title={ _x( 'Typography', 'storeabill-core', 'storeabill' ) }>
                     <FontSizePicker
                         value={ fontSize.size }

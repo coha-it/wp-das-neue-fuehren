@@ -20,62 +20,84 @@ import './editor.scss';
  * Force existence of our global DocumentStyles block which
  * dynamically updates editor wrapper styles on meta updates.
  */
-domReady(() => {
-    if ( ! isDocumentTemplate() ) {
-        return;
-    }
-
-    if ( ! getDocumentStylesBlock() ) {
-        let insertedBlock = createBlock( 'storeabill/document-styles', {} );
-
-        dispatch( 'core/block-editor' ).insertBlock( insertedBlock, null, '', false );
-    }
-
+domReady( () => {
     /**
-     * Find all shortcodes that need refresh and call API for a new result.
+     * Force existence of our global DocumentStyles block which
+     * dynamically updates editor wrapper styles on meta updates.
      */
-    const $shortcodes = jQuery( '.document-shortcode-needs-refresh' );
+    domReady( () => {
+        /**
+         * Use ugly timeout hack until wp.data is set up.
+         * @see https://github.com/WordPress/gutenberg/issues/28032
+         */
+        setTimeout(() => {
+            if ( ! isDocumentTemplate() ) {
+                return;
+            }
 
-    if ( $shortcodes.length > 0 ) {
-        $shortcodes.each( function() {
-            const $shortcode = jQuery( this );
-            $shortcode.hide();
+            const stylesBlock = getDocumentStylesBlock();
 
-            const shortcodeQuery = $shortcode.data( 'shortcode' );
+            if ( ! stylesBlock ) {
+                let insertedBlock = createBlock( 'storeabill/document-styles', {} );
 
-            getShortcodePreview( $shortcode.data( 'shortcode' ) ).then( ( { content, shortcode } ) => {
-                const clientId        = $shortcode.parents( '.wp-block' ).data( 'block' );
-                let   blockAttributes = select( 'core/block-editor' ).getBlockAttributes( clientId );
+                dispatch( 'core/block-editor' ).insertBlock( insertedBlock, null, '', false );
 
-                if ( blockAttributes.length > 0 ) {
-                    for ( var key of Object.keys( blockAttributes ) ) {
-                        let val = blockAttributes[ key ];
+                // Hide the styles block
+                jQuery( 'body' ).find( '.sab-block-hider' ).remove();
+                jQuery( 'body' ).append( '<style type="text/css" class="sab-block-hider">tr#block-navigation-block-' + insertedBlock.clientId + ' { display: none !important }</style>' );
+            } else {
+                jQuery( 'body' ).find( '.sab-block-hider' ).remove();
+                jQuery( 'body' ).append( '<style type="text/css" class="sab-block-hider">tr#block-navigation-block-' + stylesBlock.clientId + ' { display: none !important }</style>' );
+            }
 
-                        if ( ( typeof val === 'string' || val instanceof String ) && val.includes( shortcodeQuery ) ) {
-                            val = replacePreviewWithPlaceholder( val, ( ! isEmpty( content ) ? content : shortcode ), shortcodeQuery, true );
+            /**
+             * Find all shortcodes that need refresh and call API for a new result.
+             */
+            const $shortcodes = jQuery( '.document-shortcode-needs-refresh' );
 
-                            /**
-                             * Update the attribute to make sure further
-                             * shortcode adjustments use the updated content.
-                             */
-                            blockAttributes[ key ] = val;
+            if ( $shortcodes.length > 0 ) {
+                $shortcodes.each( function() {
+                    const $shortcode = jQuery( this );
+                    $shortcode.hide();
 
-                            dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, {
-                                key: val
-                            } );
+                    const shortcodeQuery = $shortcode.data( 'shortcode' );
+
+                    getShortcodePreview( $shortcode.data( 'shortcode' ) ).then( ( { content, shortcode } ) => {
+                        const clientId        = $shortcode.parents( '.wp-block' ).data( 'block' );
+                        let   blockAttributes = select( 'core/block-editor' ).getBlockAttributes( clientId );
+
+                        if ( blockAttributes.length > 0 ) {
+                            for ( var key of Object.keys( blockAttributes ) ) {
+                                let val = blockAttributes[ key ];
+
+                                if ( ( typeof val === 'string' || val instanceof String ) && val.includes( shortcodeQuery ) ) {
+                                    val = replacePreviewWithPlaceholder( val, ( ! isEmpty( content ) ? content : shortcode ), shortcodeQuery, true );
+
+                                    /**
+                                     * Update the attribute to make sure further
+                                     * shortcode adjustments use the updated content.
+                                     */
+                                    blockAttributes[ key ] = val;
+
+                                    dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, {
+                                        key: val
+                                    } );
+                                }
+                            }
                         }
-                    }
-                }
 
-                $shortcode.show();
-            } );
-        } );
-    }
+                        $shortcode.show();
+                    } );
+                } );
+            }
+        }, 0 );
+    });
 });
 
 const excludedFromFirstPageFilter = [
     'storeabill/header',
     'storeabill/footer',
+    'storeabill/document-styles'
 ];
 
 /**

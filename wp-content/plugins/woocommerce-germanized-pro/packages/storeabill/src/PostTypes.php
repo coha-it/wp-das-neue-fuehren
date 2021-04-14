@@ -61,16 +61,17 @@ class PostTypes {
 					'description'         => _x( 'This is where you can add new document templates.', 'storeabill-core', 'woocommerce-germanized-pro' ),
 					'public'              => false,
 					'show_ui'             => true,
-					'publicly_queryable'  => true,
+					'publicly_queryable'  => current_user_can( 'manage_storeabill' ),
 					'exclude_from_search' => true,
 					'hierarchical'        => false,
 					'rewrite'             => false,
 					'query_var'           => true,
+					'delete_with_user'    => false,
 					'supports'            => $supports,
 					'show_in_menu'        => false,
 					'has_archive'         => false,
 					'show_in_nav_menus'   => false,
-					'show_in_rest'        => true,
+					'show_in_rest'        => current_user_can( 'manage_storeabill' ),
 				)
 			)
 		);

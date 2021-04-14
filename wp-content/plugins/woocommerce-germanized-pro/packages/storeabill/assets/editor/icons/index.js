@@ -20,3 +20,6 @@ export { default as title } from './library/title';
 export { default as settings } from './library/settings';
 export { default as arrowRight } from './library/arrow-right';
 export { default as fingerprint } from './library/fingerprint';
+export { default as img } from './library/img';
+export { default as barcode } from './library/barcode';
+export { default as qrCode } from './library/qr-code';

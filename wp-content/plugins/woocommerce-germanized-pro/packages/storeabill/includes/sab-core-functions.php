@@ -429,7 +429,7 @@ function _sab_parse_blocks_recursively( $block ) {
 		$output_type = isset( $_GET['output_type'] ) ? sab_clean( $_GET['output_type'] ) : 'pdf';
 
 		/**
-		 * Do not make transform URLs to paths in HTML mode.
+		 * Do not transform URLs to paths in HTML mode.
 		 */
 		if ( 'html' !== $output_type ) {
 			$block_content = $block['innerContent'][0];
@@ -546,7 +546,14 @@ add_filter( 'render_block_data', '_sab_parse_block_filter', 150, 2 );
 add_filter( 'pre_render_block', '_sab_maybe_render_block_filter', 150, 2 );
 
 function sab_get_asset_path_by_url( $src ) {
-	$path                = wp_make_link_relative( $src );
+	$output_type = isset( $_GET['output_type'] ) ? sab_clean( $_GET['output_type'] ) : 'pdf';
+
+	if ( 'pdf' !== $output_type ) {
+		return $src;
+	}
+
+	// Remove site url from src - allow sub directories
+	$path                = str_replace( untrailingslashit( site_url() ), '', $src );
 	$wp_content_basename = basename( WP_CONTENT_DIR );
 	$pdf_supports_path   = true;
 	$mpdf_version         = \Vendidero\StoreaBill\PDF\MpdfRenderer::get_version();
@@ -562,6 +569,10 @@ function sab_get_asset_path_by_url( $src ) {
 	if ( strpos( $path, $wp_content_basename ) !== false ) {
 		$path = str_replace( '//', '/', str_replace( $wp_content_basename, '', $path ) );
 		$path = untrailingslashit( WP_CONTENT_DIR ) . $path;
+	}
+
+	if ( ! @file_exists( $path ) ) {
+		return $src;
 	}
 
 	return $path;
@@ -989,4 +1000,16 @@ function sab_add_number_precision( $value, $round = true ) {
 
 function sab_remove_number_precision( $value ) {
 	return wc_remove_number_precision( $value );
+}
+
+function sab_get_barcode_types() {
+	/**
+	 * @see https://mpdf.github.io/what-else-can-i-do/barcodes.html
+	 */
+	return apply_filters( 'storeabill_barcode_types', array(
+		'C39'   => _x( 'Code 39', 'storeabill-barcode-type', 'woocommerce-germanized-pro' ),
+		'C93'   => _x( 'Code 93', 'storeabill-barcode-type', 'woocommerce-germanized-pro' ),
+		'C128A' => _x( 'Code 128', 'storeabill-barcode-type', 'woocommerce-germanized-pro' ),
+		'QR'    => _x( 'QR Code', 'storeabill-barcode-type', 'woocommerce-germanized-pro' )
+	) );
 }

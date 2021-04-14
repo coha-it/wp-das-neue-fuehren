@@ -218,7 +218,7 @@ class Shortcodes implements ShortcodeHandleable {
 			$result = $this->get_document_total_data( $atts, $document_total );
 		}
 
-		return apply_filters( 'storeabill_document_total_data_shortcode_result', $this->format_result( $result, $atts['format'] ), $atts, $document_total, $this );
+		return apply_filters( 'storeabill_document_total_data_shortcode_result', $this->format_result( $result, $atts ), $atts, $document_total, $this );
 	}
 
 	public function parse_args( $args, $defaults = array() ) {
@@ -332,7 +332,7 @@ class Shortcodes implements ShortcodeHandleable {
 			$data = $this->get_document_item_data( $atts, $item );
 		}
 
-		return apply_filters( 'storeabill_document_item_data_shortcode_result', $this->format_result( $data, $atts['format'] ), $atts, $item, $this );
+		return apply_filters( 'storeabill_document_item_data_shortcode_result', $this->format_result( $data, $atts ), $atts, $item, $this );
 	}
 
 	public function get_method_return( $object, $getter, $args = array() ) {
@@ -439,19 +439,19 @@ class Shortcodes implements ShortcodeHandleable {
 	public function document_data( $atts ) {
 		$atts = $this->parse_args( $atts );
 
-		return apply_filters( 'storeabill_document_data_shortcode_result', $this->format_result( $this->get_document_data( $atts, $this->get_document() ), $atts['format'] ), $atts, $this->get_document(), $this );
+		return apply_filters( 'storeabill_document_data_shortcode_result', $this->format_result( $this->get_document_data( $atts, $this->get_document() ), $atts ), $atts, $this->get_document(), $this );
 	}
 
 	public function customer_data( $atts ) {
 		$atts = $this->parse_args( $atts );
 
-		return apply_filters( 'storeabill_customer_data_shortcode_result', $this->format_result( $this->get_customer_data( $atts, $this->get_customer() ), $atts['format'] ), $atts, $this->get_customer(), $this );
+		return apply_filters( 'storeabill_customer_data_shortcode_result', $this->format_result( $this->get_customer_data( $atts, $this->get_customer() ), $atts ), $atts, $this->get_customer(), $this );
 	}
 
 	public function document_reference_data( $atts ) {
 		$atts = $this->parse_args( $atts );
 
-		return apply_filters( 'storeabill_document_reference_data_shortcode_result', $this->format_result( $this->get_document_reference_data( $atts, $this->get_document_reference() ), $atts['format'] ), $atts, $this->get_document(), $this );
+		return apply_filters( 'storeabill_document_reference_data_shortcode_result', $this->format_result( $this->get_document_reference_data( $atts, $this->get_document_reference() ), $atts ), $atts, $this->get_document(), $this );
 	}
 
 	/**
@@ -514,19 +514,19 @@ class Shortcodes implements ShortcodeHandleable {
 	public function document_item_reference_data( $atts ) {
 		$atts = $this->parse_args( $atts );
 
-		return apply_filters( 'storeabill_document_item_reference_data_shortcode_result', $this->format_result( $this->get_document_item_reference_data( $atts, $this->get_document_item_reference() ), $atts['format'] ), $atts, $this->get_document(), $this );
+		return apply_filters( 'storeabill_document_item_reference_data_shortcode_result', $this->format_result( $this->get_document_item_reference_data( $atts, $this->get_document_item_reference() ), $atts ), $atts, $this->get_document(), $this );
 	}
 
 	public function document_item_product_data( $atts ) {
 		$atts = $this->parse_args( $atts );
 
-		return apply_filters( 'storeabill_document_item_product_data_shortcode_result', $this->format_result( $this->get_document_item_product_data( $atts, $this->get_document_item_product() ), $atts['format'] ), $atts, $this->get_document(), $this );
+		return apply_filters( 'storeabill_document_item_product_data_shortcode_result', $this->format_result( $this->get_document_item_product_data( $atts, $this->get_document_item_product() ), $atts ), $atts, $this->get_document(), $this );
 	}
 
 	public function document_item_product_parent_data( $atts ) {
 		$atts = $this->parse_args( $atts );
 
-		return apply_filters( 'storeabill_document_item_product_parent_data_shortcode_result', $this->format_result( $this->get_document_item_product_parent_data( $atts, $this->get_document_item_product_parent() ), $atts['format'] ), $atts, $this->get_document(), $this );
+		return apply_filters( 'storeabill_document_item_product_parent_data_shortcode_result', $this->format_result( $this->get_document_item_product_parent_data( $atts, $this->get_document_item_product_parent() ), $atts ), $atts, $this->get_document(), $this );
 	}
 
 	public function document_parent_data( $atts ) {
@@ -537,7 +537,7 @@ class Shortcodes implements ShortcodeHandleable {
 			$data = $this->get_document_data( $atts, $parent );
 		}
 
-		return apply_filters( 'storeabill_document_parent_data_shortcode_result', $this->format_result( $data, $atts['format'] ), $atts, $this->get_document(), $this );
+		return apply_filters( 'storeabill_document_parent_data_shortcode_result', $this->format_result( $data, $atts ), $atts, $this->get_document(), $this );
 	}
 
 	protected function compare( $types, $data, $comparison, $compare = 'OR' ) {
@@ -692,8 +692,20 @@ class Shortcodes implements ShortcodeHandleable {
 		}
 	}
 
-	protected function format_result( $data, $format = '' ) {
+	protected function format_result( $data, $atts = array() ) {
 		$return_data = $data;
+
+		/**
+		 * Legacy support format string as second argument.
+		 */
+		if ( ! empty( $atts ) && ! is_array( $atts ) ) {
+			$atts = array(
+				'format' => $atts
+			);
+		}
+
+		$atts   = $this->parse_args( $atts );
+		$format = $atts['format'];
 
 		if ( is_a( $data, 'WC_DateTime' ) ) {
 			$format = empty( $format ) ? sab_date_format() : $format;
@@ -736,7 +748,7 @@ class Shortcodes implements ShortcodeHandleable {
 
 			foreach( $filtered as $d ) {
 				$count++;
-				$return_data .= ( $count > 1 ? ', ' : '' ) . $this->format_result( $d, $format );
+				$return_data .= ( $count > 1 ? ', ' : '' ) . $this->format_result( $d, $atts );
 			}
 		} elseif ( is_string( $data ) ) {
 			$return_data = wp_kses_post( nl2br( wptexturize( $data ) ) );
@@ -755,7 +767,7 @@ class Shortcodes implements ShortcodeHandleable {
 			}
 		}
 
-		return apply_filters( 'storeabill_format_shortcode_result', $return_data, $format, $data );
+		return apply_filters( 'storeabill_format_shortcode_result', $return_data, $format, $data, $atts, $this );
 	}
 
 	protected function get_current_page_no( $atts ) {

@@ -49,7 +49,7 @@ abstract class WC_GZDP_Theme {
 	public function load_styles() {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$css    = WC_germanized_pro()->plugin_path() . '/themes/assets/css/wc-gzdp-' . $this->name . $suffix . '.css';
-		
+
 		if ( file_exists( $css ) ) {
 			wp_register_style( 'wc-gzdp-' . $this->name, WC_germanized_pro()->plugin_url() . '/themes/assets/css/wc-gzdp-' . $this->name . $suffix . '.css', array(), WC_GERMANIZED_PRO_VERSION );	
 			wp_enqueue_style( 'wc-gzdp-' . $this->name );

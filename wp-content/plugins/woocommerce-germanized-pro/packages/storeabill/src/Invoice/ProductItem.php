@@ -71,6 +71,14 @@ class ProductItem extends TaxableItem implements Discountable {
 		return $this->product;
 	}
 
+	public function get_image_url( $size = '', $placeholder = false ) {
+		if ( $product = $this->get_product() ) {
+			return $product->get_image_url( $size, $placeholder );
+		}
+
+		return parent::get_image_url( $size, $placeholder );
+	}
+
 	public function get_is_virtual( $context = 'view' ) {
 		return $this->get_prop( 'is_virtual', $context );
 	}

@@ -3,13 +3,13 @@
  * Plugin Name: Germanized for WooCommerce Pro
  * Plugin URI: https://vendidero.de/woocommerce-germanized
  * Description: Extends Germanized for WooCommerce with professional features such as PDF invoices, legal text generators and many more.
- * Version: 3.1.7
+ * Version: 3.2.0
  * Author: vendidero
  * Author URI: https://vendidero.de
  * Requires at least: 5.4
  * Tested up to: 5.7
  * WC requires at least: 3.9
- * WC tested up to: 5.1
+ * WC tested up to: 5.2
  *
  * Text Domain: woocommerce-germanized-pro
  * Domain Path: /i18n/languages/
@@ -69,7 +69,7 @@ final class WooCommerce_Germanized_Pro {
 	 *
 	 * @var string
 	 */
-	public $version = '3.1.7';
+	public $version = '3.2.0';
 
 	/**
 	 * Single instance of WooCommerce Germanized Main Class
@@ -305,6 +305,7 @@ final class WooCommerce_Germanized_Pro {
 		$this->load_elementor_module();
 
 		\Vendidero\Germanized\Pro\StoreaBill\LegalPages::init();
+		\Vendidero\Germanized\Pro\Packing\Automation::init();
 	}
 
 	/**

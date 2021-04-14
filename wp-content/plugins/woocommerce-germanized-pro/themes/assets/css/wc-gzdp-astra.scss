@@ -65,6 +65,11 @@ table.shop_table .wc-gzd-item-desc p {
   clear: left;
 }
 
+.wc-gzd-checkbox-placeholder {
+  float: none;
+  clear: both;
+}
+
 @media (min-width: 769px) {
   .woocommerce-page.woocommerce-multistep-checkout form #order_review, .woocommerce-page.woocommerce-multistep-checkout form #order_review_heading {
     width: 100%;
@@ -73,15 +78,33 @@ table.shop_table .wc-gzd-item-desc p {
   }
 }
 
-.woocommerce-page.woocommerce-checkout form #order_review_heading {
+.woocommerce.woocommerce-checkout form #order_review_heading, .woocommerce-page.woocommerce-checkout form #order_review_heading {
   border: none;
   float: none;
   clear: both;
   width: 100%;
   padding-left: 0;
-  font-size: 1.4em;
-  font-weight: 600;
   padding-top: 0;
+  margin-top: 1.5em;
+}
+
+.woocommerce.woocommerce-checkout form #order_review table, .woocommerce-page.woocommerce-checkout form #order_review table {
+  margin-top: 1em;
+  clear: both;
+}
+
+.woocommerce.woocommerce-checkout form #place_order, .woocommerce-page.woocommerce-checkout form #place_order {
+  width: 100%;
+}
+
+.woocommerce.woocommerce-checkout form #order_payment_heading, .woocommerce-page.woocommerce-checkout form #order_payment_heading {
+  font-size: 1.2rem;
+  padding-top: 1.5em;
+}
+
+.woocommerce-page.woocommerce-checkout form #order_review, .woocommerce-page.woocommerce-checkout form #order_review {
+  border-top-width: 2px;
+  padding-bottom: 1.5em;
 }
 
 .woocommerce-page.woocommerce-checkout form #order_review th, .woocommerce-page.woocommerce-checkout form #order_review td {

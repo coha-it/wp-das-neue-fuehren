@@ -91,13 +91,6 @@
       display: none;
     }
   }
-
-  /**
-   * Support new table based layout
-   */
-  table tr:first-child[aria-setsize="11"] {
-    display: none;
-  }
 }
 
 /**
@@ -277,8 +270,6 @@ div:not(.block-editor-inner-blocks) > .block-editor-block-list__layout:not(.wp-b
 
 .editor-styles-wrapper {
   .wp-block-columns {
-    margin-bottom: 0;
-
     .wp-block-column {
       &:not(:first-child) {
         margin-left: $global-margin;
@@ -330,4 +321,13 @@ div:not(.block-editor-inner-blocks) > .block-editor-block-list__layout:not(.wp-b
 .wp-block[data-type="storeabill/third-country-notice"],
 .wp-block[data-type="storeabill/differential-taxation-notice"] {
   margin-bottom: 0;
+}
+
+/**
+ * Hide patterns from inserter
+ */
+.edit-post-layout__inserter-panel-content {
+  #tab-panel-1-patterns, #tab-panel-1-patterns-view {
+    display: none;
+  }
 }

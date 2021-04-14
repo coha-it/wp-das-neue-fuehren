@@ -232,7 +232,7 @@ class Automation {
 	 *
 	 * @return bool|\WP_Error
 	 */
-	protected static function sync_invoices( $order, $args = array() ) {
+	public static function sync_invoices( $order, $args = array() ) {
 		$args = wp_parse_args( $args, array(
 			'allow_defer' => sab_allow_deferring( 'auto' ),
 		) );

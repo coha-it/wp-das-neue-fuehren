@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224
+class ComposerStaticInita1fcfb22c7feaa132de2738ad023cc49
 {
     public static $files = array (
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
@@ -28,6 +28,7 @@ class ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224
         ),
         'M' => 
         array (
+            'Mpdf\\QrCode\\' => 12,
             'Mpdf\\' => 5,
         ),
         'D' => 
@@ -68,6 +69,10 @@ class ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Mpdf\\QrCode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mpdf/qrcode/src',
         ),
         'Mpdf\\' => 
         array (
@@ -286,6 +291,11 @@ class ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224
         'Mpdf\\PageFormat' => __DIR__ . '/..' . '/mpdf/mpdf/src/PageFormat.php',
         'Mpdf\\Pdf\\Protection' => __DIR__ . '/..' . '/mpdf/mpdf/src/Pdf/Protection.php',
         'Mpdf\\Pdf\\Protection\\UniqidGenerator' => __DIR__ . '/..' . '/mpdf/mpdf/src/Pdf/Protection/UniqidGenerator.php',
+        'Mpdf\\QrCode\\Output\\Html' => __DIR__ . '/..' . '/mpdf/qrcode/src/Output/Html.php',
+        'Mpdf\\QrCode\\Output\\Mpdf' => __DIR__ . '/..' . '/mpdf/qrcode/src/Output/Mpdf.php',
+        'Mpdf\\QrCode\\Output\\Png' => __DIR__ . '/..' . '/mpdf/qrcode/src/Output/Png.php',
+        'Mpdf\\QrCode\\QrCode' => __DIR__ . '/..' . '/mpdf/qrcode/src/QrCode.php',
+        'Mpdf\\QrCode\\QrCodeException' => __DIR__ . '/..' . '/mpdf/qrcode/src/QrCodeException.php',
         'Mpdf\\RemoteContentFetcher' => __DIR__ . '/..' . '/mpdf/mpdf/src/RemoteContentFetcher.php',
         'Mpdf\\ServiceFactory' => __DIR__ . '/..' . '/mpdf/mpdf/src/ServiceFactory.php',
         'Mpdf\\Shaper\\Indic' => __DIR__ . '/..' . '/mpdf/mpdf/src/Shaper/Indic.php',
@@ -442,6 +452,7 @@ class ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224
         'Vendidero\\Germanized\\Pro\\Legacy\\Invoice' => __DIR__ . '/../..' . '/src/Legacy/Invoice.php',
         'Vendidero\\Germanized\\Pro\\Legacy\\Pdf' => __DIR__ . '/../..' . '/src/Legacy/Pdf.php',
         'Vendidero\\Germanized\\Pro\\Packages' => __DIR__ . '/../..' . '/src/Packages.php',
+        'Vendidero\\Germanized\\Pro\\Packing\\Automation' => __DIR__ . '/../..' . '/src/Packing/Automation.php',
         'Vendidero\\Germanized\\Pro\\StoreaBill\\AccountingHelper' => __DIR__ . '/../..' . '/src/StoreaBill/AccountingHelper.php',
         'Vendidero\\Germanized\\Pro\\StoreaBill\\Ajax' => __DIR__ . '/../..' . '/src/StoreaBill/Ajax.php',
         'Vendidero\\Germanized\\Pro\\StoreaBill\\DataStores\\PackingSlip' => __DIR__ . '/../..' . '/src/StoreaBill/DataStores/PackingSlip.php',
@@ -513,6 +524,7 @@ class ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224
         'Vendidero\\StoreaBill\\Document\\Total' => __DIR__ . '/../..' . '/packages/storeabill/src/Document/Total.php',
         'Vendidero\\StoreaBill\\DownloadManager' => __DIR__ . '/../..' . '/packages/storeabill/src/DownloadManager.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\Address' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/Address.php',
+        'Vendidero\\StoreaBill\\Editor\\Blocks\\Barcode' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/Barcode.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\Block' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/Block.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\DocumentDate' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/DocumentDate.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\DocumentStyles' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/DocumentStyles.php',
@@ -524,6 +536,7 @@ class ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemAttributes' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemAttributes.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemDifferentialTaxationNotice' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemDifferentialTaxationNotice.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemDiscount' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemDiscount.php',
+        'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemImage' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemImage.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemLineTotal' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemLineTotal.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemMeta' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemMeta.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemName' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemName.php',
@@ -720,9 +733,9 @@ class ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitfdde835a42d9ee0d5b9d1a089f9e1224::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita1fcfb22c7feaa132de2738ad023cc49::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita1fcfb22c7feaa132de2738ad023cc49::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInita1fcfb22c7feaa132de2738ad023cc49::$classMap;
 
         }, null, ClassLoader::class);
     }

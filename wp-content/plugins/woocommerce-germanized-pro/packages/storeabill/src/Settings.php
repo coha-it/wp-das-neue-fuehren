@@ -74,6 +74,10 @@ trait Settings {
 
 		$this->settings[ $key ] = $value;
 
+		if ( $this->setting_supports_encryption( $key ) ) {
+			$this->settings[ $key ] = apply_filters( 'storeabill_maybe_encrypt_sensitive_data', $this->settings[ $key ], $key );
+		}
+
 		return update_option( $this->get_setting_key(), apply_filters( "storeabill_settings_{$this->get_setting_id()}_sanitized_fields", $this->settings ), 'yes' );
 	}
 
@@ -85,6 +89,10 @@ trait Settings {
 	 */
 	public function get_setting_field_key( $key ) {
 		return $this->get_setting_id() . '_' . $key;
+	}
+
+	protected function setting_supports_encryption( $key ) {
+		return strstr( $key, 'token' ) !== false || strstr( $key, 'password' ) !== false;
 	}
 
 	/**
@@ -111,7 +119,13 @@ trait Settings {
 			$this->settings[ $key ] = $empty_value;
 		}
 
-		return $this->settings[ $key ];
+		$return_value = $this->settings[ $key ];
+
+		if ( $this->setting_supports_encryption( $key ) ) {
+			$return_value = apply_filters( 'storeabill_maybe_decrypt_sensitive_data', $return_value, $key );
+		}
+
+		return $return_value;
 	}
 
 	/**
@@ -122,6 +136,16 @@ trait Settings {
 	 */
 	public function get_setting_field_default( $field ) {
 		return empty( $field['default'] ) ? '' : $field['default'];
+	}
+
+	/**
+	 * Get a fields default value. Defaults to "" if not set.
+	 *
+	 * @param  array $field Field key.
+	 * @return string
+	 */
+	public function get_setting_field_type( $field ) {
+		return empty( $field['type'] ) ? '' : $field['type'];
 	}
 
 	/**
@@ -164,6 +188,10 @@ trait Settings {
 			if ( 'title' !== $helper->get_field_type( $field ) ) {
 				try {
 					$this->settings[ $key ] = $helper->get_field_value( $key, $field, $post_data );
+
+					if ( ! empty( $this->settings[ $key ] ) && $this->setting_supports_encryption( $key ) ) {
+						$this->settings[ $key ] = apply_filters( 'storeabill_maybe_encrypt_sensitive_data', $this->settings[ $key ], $key );
+					}
 				} catch ( \Exception $e ) {
 					$this->add_setting_error( $e->getMessage() );
 				}
@@ -172,6 +200,7 @@ trait Settings {
 
 		$result = update_option( $this->get_setting_key(), apply_filters( "storeabill_settings_{$this->get_setting_id()}_sanitized_fields", $this->settings ), 'yes' );
 
+		$this->init_settings();
 		$this->after_save();
 
 		return $result;

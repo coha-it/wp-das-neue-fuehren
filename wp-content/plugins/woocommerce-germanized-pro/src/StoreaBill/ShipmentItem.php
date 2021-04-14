@@ -53,15 +53,21 @@ class ShipmentItem implements SyncableReferenceItem {
 		return 'shipments_product';
 	}
 
-	public function get_attributes() {
+	/**
+	 * @param \Vendidero\Germanized\Pro\StoreaBill\PackingSlip\ProductItem $object
+	 *
+	 * @return array
+	 */
+	public function get_attributes( $object ) {
 		$meta = array();
 
 		if ( $order_item = $this->shipment_item->get_order_item() ) {
 			$meta = $order_item->get_formatted_meta_data();
 		}
 
-		$attributes = array();
-		$order      = 0;
+		$attributes     = array();
+		$order          = 0;
+		$existing_slugs = array();
 
 		foreach( $meta as $entry ) {
 			$order ++;
@@ -72,6 +78,22 @@ class ShipmentItem implements SyncableReferenceItem {
 				'label' => $entry->display_key,
 				'order' => $order,
 			) );
+
+			$existing_slugs[] = $entry->key;
+		}
+
+		$custom_attribute_slugs = array();
+
+		if ( $document = $object->get_document() ) {
+			if ( $template = $document->get_template() ) {
+				$custom_attribute_slugs = $template->get_additional_attribute_slugs();
+			}
+		}
+
+		if ( ! empty( $custom_attribute_slugs ) ) {
+			if ( $product = \Vendidero\StoreaBill\References\Product::get_product( $this->shipment_item->get_product(), 'woocommerce' ) ) {
+				$attributes = array_merge( $attributes, $product->get_additional_attributes( $custom_attribute_slugs, $existing_slugs ) );
+			}
 		}
 
 		return $attributes;
@@ -102,7 +124,7 @@ class ShipmentItem implements SyncableReferenceItem {
 			'quantity'     => $this->get_quantity(),
 			'reference_id' => $this->get_id(),
 			'name'         => $this->get_name(),
-			'attributes'   => $this->get_attributes(),
+			'attributes'   => $this->get_attributes( $object ),
 			'sku'          => $this->get_sku(),
 			'price'        => $this->get_price(),
 			'total'        => $this->get_total(),

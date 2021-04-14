@@ -283,12 +283,25 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 
 			do_action( "{$this->get_hook_prefix()}before_sync_invoice", $this );
 
+			$billing_address = array_merge( $this->get_order()->get_address( 'billing' ), array( 'email' => $this->get_order()->get_billing_email(), 'phone' => $this->get_order()->get_billing_phone() ) );
+
+			// Do only replace vat id in case the vat id does not yet exist or is empty
+			if ( ! array_key_exists( 'vat_id', $billing_address ) || empty( $billing_address['vat_id'] ) ) {
+				$billing_address['vat_id'] = $this->get_vat_id( 'billing' );
+			}
+
+			$shipping_address = $this->get_order()->get_address( 'shipping' );
+
+			if ( ! array_key_exists( 'vat_id', $shipping_address ) || empty( $shipping_address['vat_id'] ) ) {
+				$shipping_address['vat_id'] = $this->get_vat_id( 'shipping' );
+			}
+
 			$invoice_args = wp_parse_args( $args, array(
 				'reference_id'           => $this->get_id(),
 				'reference_number'       => $this->get_formatted_number(),
 				'country'                => $this->get_order()->get_billing_country(),
-				'address'                => array_merge( $this->get_order()->get_address( 'billing' ), array( 'email' => $this->get_order()->get_billing_email(), 'phone' => $this->get_order()->get_billing_phone(), 'vat_id' => $this->get_vat_id( 'billing' ) ) ),
-				'shipping_address'       => array_merge( $this->get_order()->get_address( 'shipping' ), array( 'vat_id' => $this->get_vat_id( 'shipping' ) ) ),
+				'address'                => apply_filters( "{$this->get_hook_prefix()}billing_address", $billing_address, $this ),
+				'shipping_address'       => apply_filters( "{$this->get_hook_prefix()}shipping_address", $shipping_address, $this ),
 				'prices_include_tax'     => $this->get_order()->get_prices_include_tax(),
 				'round_tax_at_subtotal'  => $this->round_tax_at_subtotal(),
 				'customer_id'            => $this->get_order()->get_customer_id(),
@@ -542,9 +555,11 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 						}
 
 						$total_fee_tax = 0;
+						$round_taxes   = apply_filters( 'storeabill_round_tax_at_subtotal_split_tax_calculation', $fee->round_tax_at_subtotal(), $fee );
 
 						foreach( $tax_rate_diffs as $merge_key => $tax_diff ) {
 							$item = new TaxItem();
+							$item->set_round_tax_at_subtotal( $round_taxes );
 							$item->set_tax_rate( $invoice_taxes[ $merge_key ]->get_tax_rate() );
 							$item->set_total_tax( $tax_diff );
 							$item->set_subtotal_tax( $tax_diff );
@@ -1691,7 +1706,7 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 						$tax_to_cancel        = $available_tax_to_cancel;
 
 						Package::extended_log( 'Order has been cancelled or has a full refund' );
-					} elseif ( ! array_key_exists( $order_item_id, $order_items_left ) ) {
+					} elseif ( ! empty( $order_item_id ) && ! array_key_exists( $order_item_id, $order_items_left ) ) {
 						/**
 						 * Seems like the order item does not exist any longer.
 						 */
@@ -1715,7 +1730,7 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 						$tax_to_cancel        = $available_tax_to_cancel;
 
 						Package::extended_log( sprintf( 'Order item %s price has changed from %s to %s', $order_item_id, $price, $order_item_price ) );
-					} elseif( $order_items_left[ $order_item_id ]['line_total'] < $line_total_available_to_cancel ) {
+					} elseif( ! empty( $order_item_id ) && $order_items_left[ $order_item_id ]['line_total'] < $line_total_available_to_cancel ) {
 						/**
 						 * Order item has changed in total, e.g. refunded.
 						 */

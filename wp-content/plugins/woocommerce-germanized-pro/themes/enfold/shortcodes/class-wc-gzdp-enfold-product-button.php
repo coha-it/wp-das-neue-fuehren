@@ -67,10 +67,13 @@ class WC_GZDP_Enfold_Product_Button extends aviaShortcodeTemplate {
         if( ! is_object( $woocommerce ) || ! is_object( $woocommerce->query ) || empty( $product ) )
             return;
 
-        if ( get_option( 'woocommerce_gzd_display_product_detail_delivery_time_info' ) == 'yes' )
-            add_action( 'woocommerce_gzdp_enfold_shortcode_product_add_to_cart_after_price', 'woocommerce_gzd_template_single_delivery_time_info', 10 );
-        if ( get_option( 'woocommerce_gzd_display_product_detail_product_units' ) == 'yes' )
-            add_action( 'woocommerce_gzdp_enfold_shortcode_product_add_to_cart_after_price', 'woocommerce_gzd_template_single_product_units', 15 );
+        foreach( wc_gzd_get_single_product_shopmarks() as $shopmark ) {
+            if ( ! $shopmark->is_enabled() ) {
+                continue;
+            }
+
+	        add_action( 'woocommerce_gzdp_enfold_shortcode_product_add_to_cart_after_price', $shopmark->get_callback(), $shopmark->get_priority(), $shopmark->get_number_of_params() );
+        }
 
         ob_start();
 

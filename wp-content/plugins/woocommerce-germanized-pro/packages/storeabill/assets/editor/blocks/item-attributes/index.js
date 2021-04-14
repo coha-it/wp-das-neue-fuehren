@@ -29,6 +29,9 @@ const settings = {
         "customFontSize": {
             "type": "number"
         },
+        "customAttributes": {
+            "type": "array"
+        },
     },
     styles: [
         {

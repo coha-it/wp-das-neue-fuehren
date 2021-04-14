@@ -206,6 +206,61 @@ abstract class Template extends Data {
 		return has_block( $block_name, $this->get_content() );
 	}
 
+	public function get_additional_attribute_slugs() {
+		$item_attributes        = $this->get_block_attributes( 'storeabill/item-attributes' );
+		$custom_attribute_slugs = array();
+
+		if ( isset( $item_attributes['customAttributes'] ) ) {
+			$custom_attribute_slugs = $item_attributes['customAttributes'];
+		}
+
+		return $custom_attribute_slugs;
+	}
+
+	public function get_block_attributes( $block_name ) {
+		$dynamic_block_names   = array( $block_name );
+		$block_attributes      = array();
+		$dynamic_block_pattern = (
+			'/<!--\s+wp:(' .
+			str_replace( '/', '\/',                 // Escape namespace, not handled by preg_quote.
+				str_replace( 'core/', '(?:core/)?', // Allow implicit core namespace, but don't capture.
+					implode( '|',                   // Join block names into capture group alternation.
+						array_map( 'preg_quote',    // Escape block name for regular expression.
+							$dynamic_block_names
+						)
+					)
+				)
+			) .
+			')(\s+(\{.*?\}))?\s+(\/)?-->/'
+		);
+
+		preg_match( $dynamic_block_pattern, $this->get_content(), $block_match, PREG_OFFSET_CAPTURE );
+
+		if ( ! empty( $block_match ) ) {
+			// Reset attributes JSON to prevent scope bleed from last iteration.
+			$block_attributes_json = null;
+
+			if ( isset( $block_match[3] ) ) {
+				$block_attributes_json = $block_match[3][0];
+			}
+
+			// Attempt to parse attributes JSON, if available.
+			$attributes = array();
+
+			if ( ! empty( $block_attributes_json ) ) {
+				$decoded_attributes = json_decode( $block_attributes_json, true );
+
+				if ( ! is_null( $decoded_attributes ) ) {
+					$attributes = $decoded_attributes;
+				}
+			}
+
+			$block_attributes = $attributes;
+		}
+
+		return $block_attributes;
+	}
+
 	public function get_block( $block_name ) {
 		foreach( $this->get_blocks() as $block ) {
 			if ( $block['blockName'] === $block_name ) {

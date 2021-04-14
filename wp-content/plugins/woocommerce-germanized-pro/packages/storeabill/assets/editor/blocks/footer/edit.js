@@ -6,6 +6,7 @@ import {
 	InnerBlocks,
 	__experimentalBlock as Block,
 } from '@wordpress/block-editor';
+import {getAllowedBlockTypes} from "@storeabill/settings";
 
 function FooterEdit( { attributes, className, clientId } ) {
 	const hasInnerBlocks = useSelect(
@@ -17,10 +18,13 @@ function FooterEdit( { attributes, className, clientId } ) {
 		[ clientId ]
 	);
 
+	const ALLOWED_BLOCKS = getAllowedBlockTypes().filter( blockName => blockName !== 'storeabill/header' );
+
 	return (
 		<div className={ className }>
 			<div className="wp-block-group__inner-container sab-footer-container">
 				<InnerBlocks
+					allowedBlocks={ ALLOWED_BLOCKS }
 					renderAppender={
 						hasInnerBlocks
 							? undefined

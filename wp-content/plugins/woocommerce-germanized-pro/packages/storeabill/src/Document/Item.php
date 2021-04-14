@@ -562,6 +562,16 @@ abstract class Item extends Data {
 		}
 	}
 
+	public function get_image_url( $size = '', $placeholder = false ) {
+		$image_url = '';
+
+		if ( $placeholder ) {
+			$image_url = sab_placeholder_img( $size );
+		}
+
+		return $image_url;
+	}
+
 	/*
 	|--------------------------------------------------------------------------
 	| Other Methods

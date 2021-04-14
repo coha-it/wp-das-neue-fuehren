@@ -37,13 +37,6 @@ class Styles extends \WP_Styles {
 	public function _css_href( $src, $ver, $handle ) {
 		$src = parent::_css_href( $src, $ver, $handle );
 
-		$output_type = isset( $_GET['output_type'] ) ? sab_clean( $_GET['output_type'] ) : 'pdf';
-		$path        = sab_get_asset_path_by_url( $src );
-
-		if ( 'pdf' === $output_type && @file_exists( $path ) ) {
-			$src = $path;
-		}
-
-		return $src;
+		return sab_get_asset_path_by_url( $src );
  	}
 }
