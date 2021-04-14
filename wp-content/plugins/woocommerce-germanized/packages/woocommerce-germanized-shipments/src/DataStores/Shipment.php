@@ -1,6 +1,7 @@
 <?php
 
 namespace Vendidero\Germanized\Shipments\DataStores;
+use Vendidero\Germanized\Shipments\Package;
 use WC_Data_Store_WP;
 use WC_Object_Data_Store_Interface;
 use Exception;
@@ -35,6 +36,7 @@ class Shipment extends WC_Data_Store_WP implements WC_Object_Data_Store_Interfac
         '_length',
         '_height',
         '_weight',
+        '_packaging_weight',
         '_address',
         '_total',
 	    '_subtotal',
@@ -60,7 +62,8 @@ class Shipment extends WC_Data_Store_WP implements WC_Object_Data_Store_Interfac
         'status',
 	    'shipping_provider',
 	    'shipping_method',
-	    'packaging_id'
+	    'packaging_id',
+	    'version'
     );
 
     /*
@@ -94,6 +97,7 @@ class Shipment extends WC_Data_Store_WP implements WC_Object_Data_Store_Interfac
             'shipment_shipping_method'   => $shipment->get_shipping_method(),
             'shipment_date_created'      => gmdate( 'Y-m-d H:i:s', $shipment->get_date_created( 'edit' )->getOffsetTimestamp() ),
             'shipment_date_created_gmt'  => gmdate( 'Y-m-d H:i:s', $shipment->get_date_created( 'edit' )->getTimestamp() ),
+	        'shipment_version'           => Package::get_version()
         );
 
         if ( $shipment->get_date_sent() ) {
@@ -329,6 +333,7 @@ class Shipment extends WC_Data_Store_WP implements WC_Object_Data_Store_Interfac
                     'date_sent'         => 0 < $data->shipment_date_sent_gmt ? wc_string_to_timestamp( $data->shipment_date_sent_gmt ) : null,
                     'est_delivery_date' => 0 < $data->shipment_est_delivery_date_gmt ? wc_string_to_timestamp( $data->shipment_est_delivery_date_gmt ) : null,
                     'status'            => $data->shipment_status,
+	                'version'           => $data->shipment_version,
                 )
             );
 
@@ -365,6 +370,7 @@ class Shipment extends WC_Data_Store_WP implements WC_Object_Data_Store_Interfac
     protected function clear_caches( &$shipment ) {
         wp_cache_delete( 'shipment-items-' . $shipment->get_id(), 'shipments' );
         wp_cache_delete( $shipment->get_id(), $this->meta_type . '_meta' );
+	    wp_cache_delete( 'available-packaging-' . $shipment->get_id(), 'shipments' );
     }
 
     /*

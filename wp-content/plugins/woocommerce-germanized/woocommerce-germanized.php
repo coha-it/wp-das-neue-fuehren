@@ -3,13 +3,13 @@
  * Plugin Name: Germanized for WooCommerce
  * Plugin URI: https://www.vendidero.de/woocommerce-germanized
  * Description: Germanized for WooCommerce extends WooCommerce to become a legally compliant store in the german market.
- * Version: 3.3.7
+ * Version: 3.4.2
  * Author: vendidero
  * Author URI: https://vendidero.de
  * Requires at least: 4.9
  * Tested up to: 5.7
  * WC requires at least: 3.9
- * WC tested up to: 5.1
+ * WC tested up to: 5.2
  *
  * Text Domain: woocommerce-germanized
  * Domain Path: /i18n/languages/
@@ -69,7 +69,7 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '3.3.7';
+		public $version = '3.4.2';
 
 		/**
 		 * @var WooCommerce_Germanized $instance of the plugin
@@ -328,13 +328,7 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 		 * @param $note_id
 		 */
 		public function on_update_admin_note( $note_id ) {
-			if ( class_exists( '\Automattic\WooCommerce\Admin\Notes\Note' ) ) {
-				$note = new \Automattic\WooCommerce\Admin\Notes\Note( $note_id );
-			} else {
-				$note = new \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note( $note_id );
-			}
-
-			if ( $note ) {
+			if ( $note = WC_GZD_Admin_Notices::instance()->get_woo_note( $note_id ) ) {
 				if ( strpos( $note->get_name(), 'wc-gzd-admin-' ) !== false ) {
 					$note_name = str_replace( 'wc-gzd-admin-', '', $note->get_name() );
 					$note_name = str_replace( '-notice', '', $note_name );
@@ -509,6 +503,8 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 				}
 			}
 
+			// Encryption helper
+			include_once WC_GERMANIZED_ABSPATH . 'includes/class-wc-gzd-secret-box-helper.php';
 			// Post types
 			include_once WC_GERMANIZED_ABSPATH . 'includes/class-wc-gzd-post-types.php';
 			// Gateway manipulation
@@ -599,7 +595,9 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 					'klarna-checkout-for-woocommerce'             => 'WC_GZD_Compatibility_Klarna_Checkout_For_WooCommerce',
 					'flexible-checkout-fields'                    => 'WC_GZD_Compatibility_Flexible_Checkout_Fields',
 					'woocommerce-all-products-for-subscriptions'  => 'WC_GZD_Compatibility_WooCommerce_All_Products_For_Subscriptions',
-					'b2b-market'                                  => 'WC_GZD_Compatibility_B2B_Market'
+					'b2b-market'                                  => 'WC_GZD_Compatibility_B2B_Market',
+					'paypal-express-checkout'                     => 'WC_GZD_Compatibility_PayPal_Express_Checkout',
+					'woocommerce-memberships'                     => 'WC_GZD_Compatibility_WooCommerce_Memberships'
 				)
 			);
 
@@ -987,10 +985,15 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 				$this->localized_scripts[] = 'wc-gzd-checkout';
 				$html_id                   = 'legal';
 				$hide_input                = false;
+				$has_privacy_checkbox      = false;
 
 				if ( $checkbox = wc_gzd_get_legal_checkbox( 'terms' ) ) {
 					$html_id    = $checkbox->get_html_id();
 					$hide_input = $checkbox->hide_input();
+				}
+
+				if ( $checkbox = wc_gzd_get_legal_checkbox( 'privacy' ) ) {
+				    $has_privacy_checkbox = in_array( 'checkout', $checkbox->get_locations() );
 				}
 
 				/**
@@ -1002,9 +1005,10 @@ if ( ! class_exists( 'WooCommerce_Germanized' ) ) :
 				 *
 				 */
 				wp_localize_script( 'wc-gzd-checkout', 'wc_gzd_checkout_params', apply_filters( 'wc_gzd_checkout_params', array(
-					'adjust_heading'  => true,
-					'checkbox_id'     => $html_id,
-					'checkbox_hidden' => $hide_input,
+					'adjust_heading'       => true,
+					'checkbox_id'          => $html_id,
+					'checkbox_hidden'      => $hide_input,
+                    'has_privacy_checkbox' => $has_privacy_checkbox,
 				) ) );
 			}
 

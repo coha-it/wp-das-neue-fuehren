@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '2489ad310a54e34336fc1f0b2e35ba66616cbe69',
+    'reference' => 'acd17643c58e0968904d4459f45c4838e93b0312',
     'name' => 'vendidero/woocommerce-germanized',
   ),
   'versions' => 
@@ -51,6 +51,15 @@ private static $installed = array (
       ),
       'reference' => '1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d',
     ),
+    'dvdoug/boxpacker' => 
+    array (
+      'pretty_version' => '3.9.0',
+      'version' => '3.9.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '0cdb4c023044ea4dc681b42c211a90e2e455d199',
+    ),
     'myclabs/deep-copy' => 
     array (
       'pretty_version' => '1.10.2',
@@ -63,6 +72,15 @@ private static $installed = array (
       array (
         0 => '1.10.2',
       ),
+    ),
+    'psr/log' => 
+    array (
+      'pretty_version' => '1.1.3',
+      'version' => '1.1.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '0f73288fd15629204f9d42b7055f72dacbe811fc',
     ),
     'roundcube/plugin-installer' => 
     array (
@@ -103,25 +121,25 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '2489ad310a54e34336fc1f0b2e35ba66616cbe69',
+      'reference' => 'acd17643c58e0968904d4459f45c4838e93b0312',
     ),
     'vendidero/woocommerce-germanized-dhl' => 
     array (
-      'pretty_version' => 'v1.4.6',
-      'version' => '1.4.6.0',
+      'pretty_version' => 'v1.5.1',
+      'version' => '1.5.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b515b7c6f0187a11a3c0d70dd49de2fb1698ae41',
+      'reference' => '8fc0543078cc37a1bdd3de775f05e0cb70815fe2',
     ),
     'vendidero/woocommerce-germanized-shipments' => 
     array (
-      'pretty_version' => 'v1.4.6',
-      'version' => '1.4.6.0',
+      'pretty_version' => 'v1.5.1',
+      'version' => '1.5.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '7362c6809d7de937e444b3dc7928a97d516191d7',
+      'reference' => 'cb18324e1d4ae251968a3f8ed9888040aa1c8bb5',
     ),
     'vendidero/woocommerce-trusted-shops' => 
     array (

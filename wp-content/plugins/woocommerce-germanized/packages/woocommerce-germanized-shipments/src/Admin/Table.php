@@ -68,7 +68,8 @@ class Table extends WP_List_Table {
     protected function get_default_hidden_columns() {
     	return array(
 			'weight',
-			'dimensions'
+			'dimensions',
+            'packaging'
 		);
 	}
 
@@ -254,7 +255,7 @@ class Table extends WP_List_Table {
     public function prepare_items() {
         global $per_page;
 
-        $per_page        = $this->get_items_per_page( $this->get_page_option(), 10 );
+        $per_page = $this->get_items_per_page( $this->get_page_option(), 10 );
 
 	    /**
 	     * Filter to adjust Shipment's table items per page.
@@ -688,6 +689,7 @@ class Table extends WP_List_Table {
 	    $columns['status']     = _x( 'Status', 'shipments', 'woocommerce-germanized' );
 	    $columns['items']      = _x( 'Items', 'shipments', 'woocommerce-germanized' );
 	    $columns['address']    = _x( 'Address', 'shipments', 'woocommerce-germanized' );
+	    $columns['packaging']  = _x( 'Packaging', 'shipments', 'woocommerce-germanized' );
 	    $columns['weight']     = _x( 'Weight', 'shipments', 'woocommerce-germanized' );
 	    $columns['dimensions'] = _x( 'Dimensions', 'shipments', 'woocommerce-germanized' );
 	    $columns['order']      = _x( 'Order', 'shipments', 'woocommerce-germanized' );
@@ -782,7 +784,7 @@ class Table extends WP_List_Table {
      */
     public function column_title( $shipment ) {
 
-        $title = sprintf( _x( '%s #%s', 'shipment title', 'woocommerce-germanized' ), wc_gzd_get_shipment_label( $shipment->get_type() ), $shipment->get_id() );
+        $title = sprintf( _x( '%s #%s', 'shipment title', 'woocommerce-germanized' ), wc_gzd_get_shipment_label_title( $shipment->get_type() ), $shipment->get_id() );
 
         if ( $order = $shipment->get_order() ) {
             echo '<a href="' . $shipment->get_edit_shipment_url() . '">' . $title . '</a> ';
@@ -792,7 +794,11 @@ class Table extends WP_List_Table {
 
         echo '<p class="shipment-title-meta">';
 
-        $provider = $shipment->get_shipping_provider();
+	    if ( $packaging = $shipment->get_packaging() ) {
+		    echo '<span class="shipment-packaging">' . sprintf( _x( '%s', 'shipments', 'woocommerce-germanized' ), $packaging->get_description() ) . '</span> ';
+	    }
+
+        $provider  = $shipment->get_shipping_provider();
 
         if ( ! empty( $provider ) ) {
 	        echo '<span class="shipment-shipping-provider">' . sprintf( _x( 'via %s', 'shipments', 'woocommerce-germanized' ), wc_gzd_get_shipping_provider_title( $provider ) ) . '</span> ';
@@ -858,10 +864,10 @@ class Table extends WP_List_Table {
 
 		if ( $shipment->supports_label() ) {
 
-		    if ( $shipment->has_label() ) {
+		    if ( $label = $shipment->get_label() ) {
 
 			    $actions['download_label'] = array(
-				    'url'    => $shipment->get_label_download_url(),
+				    'url'    => $label->get_download_url(),
 				    'name'   => _x( 'Download label', 'shipments', 'woocommerce-germanized' ),
 				    'action' => 'download-label download',
 				    'target' => '_blank'
@@ -1011,6 +1017,21 @@ class Table extends WP_List_Table {
     public function column_weight( $shipment ) {
         echo wc_gzd_format_shipment_weight( $shipment->get_weight(), $shipment->get_weight_unit() );
     }
+
+	/**
+	 * Handles the post author column output.
+	 *
+	 * @since 4.3.0
+	 *
+	 * @param Shipment $shipment The current shipment object.
+	 */
+	public function column_packaging( $shipment ) {
+		if ( $packaging = $shipment->get_packaging() ) {
+		    echo $packaging->get_description();
+		} else {
+			echo '&ndash;';
+		}
+	}
 
     /**
      * Handles the post author column output.

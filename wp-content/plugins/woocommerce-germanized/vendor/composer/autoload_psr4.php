@@ -13,7 +13,10 @@ return array(
     'Vendidero\\Germanized\\Shipments\\' => array($baseDir . '/packages/woocommerce-germanized-shipments/src'),
     'Vendidero\\Germanized\\DHL\\' => array($baseDir . '/packages/woocommerce-germanized-dhl/src'),
     'Vendidero\\Germanized\\' => array($baseDir . '/src'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
+    'DVDoug\\BoxPacker\\Test\\' => array($vendorDir . '/dvdoug/boxpacker/tests/Test'),
+    'DVDoug\\BoxPacker\\' => array($vendorDir . '/dvdoug/boxpacker/src'),
     'Composer\\Installers\\' => array($vendorDir . '/composer/installers/src/Composer/Installers'),
     'Automattic\\Jetpack\\Autoloader\\' => array($vendorDir . '/automattic/jetpack-autoloader/src'),
 );

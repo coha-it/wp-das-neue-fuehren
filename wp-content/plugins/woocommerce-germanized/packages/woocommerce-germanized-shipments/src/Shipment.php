@@ -8,6 +8,7 @@
 namespace Vendidero\Germanized\Shipments;
 use Vendidero\Germanized\Shipments\Interfaces\ShipmentLabel;
 use Vendidero\Germanized\Shipments\Interfaces\ShipmentReturnLabel;
+use Vendidero\Germanized\Shipments\ShippingProvider\Method;
 use WC_Data;
 use WC_Data_Store;
 use Exception;
@@ -69,6 +70,8 @@ abstract class Shipment extends WC_Data {
 	 */
 	protected $items_to_delete = array();
 
+	protected $items_to_pack = null;
+
 	/**
 	 * Item weights.
 	 *
@@ -104,6 +107,11 @@ abstract class Shipment extends WC_Data {
 	 */
 	protected $packaging = null;
 
+	/**
+	 * @var Method
+	 */
+	protected $shipping_method_instance = null;
+
     /**
      * Stores shipment data.
      *
@@ -117,6 +125,7 @@ abstract class Shipment extends WC_Data {
         'width'                 => '',
         'height'                => '',
         'length'                => '',
+        'packaging_weight'      => '',
         'weight_unit'           => '',
         'dimension_unit'        => '',
         'country'               => '',
@@ -129,6 +138,7 @@ abstract class Shipment extends WC_Data {
 	    'additional_total'      => 0,
         'est_delivery_date'     => null,
 	    'packaging_id'          => 0,
+	    'version'               => ''
     );
 
 	/**
@@ -307,6 +317,16 @@ abstract class Shipment extends WC_Data {
 		return $this->get_prop( 'shipping_method', $context );
 	}
 
+	public function get_shipping_method_instance() {
+		$method_id = $this->get_shipping_method();
+
+		if ( is_null( $this->shipping_method_instance ) && ! empty( $method_id ) ) {
+			$this->shipping_method_instance = wc_gzd_get_shipping_provider_method( $this->get_shipping_method() );
+		}
+
+		return is_null( $this->shipping_method_instance ) ? false : $this->shipping_method_instance;
+	}
+
 	/**
 	 * Returns the shipment weight. In case view context was chosen and weight is not yet set, returns the content weight.
 	 *
@@ -326,7 +346,36 @@ abstract class Shipment extends WC_Data {
     public function get_total_weight() {
     	$weight = $this->get_weight() + $this->get_packaging_weight();
 
-    	return apply_filters( "{$this->get_hook_prefix()}total_weight", $weight, $this );
+	    return $weight;
+    }
+
+	public function get_packaging_weight( $context = 'view' ) {
+		$weight = $this->get_prop( 'packaging_weight', $context );
+
+		if ( 'view' === $context && '' === $weight ) {
+			if ( $packaging = $this->get_packaging() ) {
+				if ( ! empty( $packaging->get_weight() ) ) {
+					$weight = wc_get_weight( $packaging->get_weight(), $this->get_weight_unit(), wc_gzd_get_packaging_weight_unit() );
+				}
+			}
+		}
+
+		return $weight;
+	}
+
+    public function get_items_to_pack() {
+    	if ( is_null( $this->items_to_pack ) ) {
+		    $this->items_to_pack = array();
+
+		    foreach( $this->get_items() as $item ) {
+			    for ( $i = 0; $i < $item->get_quantity(); $i++ ) {
+				    $box_item = new Packing\ShipmentItem( $item );
+				    $this->items_to_pack[] = $box_item;
+			    }
+		    }
+	    }
+
+    	return apply_filters( "{$this->get_hook_prefix()}items_to_pack", $this->items_to_pack, $this );
     }
 
 	/**
@@ -377,26 +426,21 @@ abstract class Shipment extends WC_Data {
         return $length;
     }
 
-    public function get_packaging_weight() {
-    	$packaging_weight = 0;
+    public function get_package_length() {
+	    $length = $this->get_length();
 
-	    if ( $packaging = $this->get_packaging() ) {
-	    	if ( ! empty( $packaging->get_weight() ) ) {
-			    $packaging_weight = wc_get_weight( $packaging->get_weight(), $this->get_weight_unit(), wc_gzd_get_packaging_weight_unit() );
+    	// Older versions did not sync dimensions with packaging dimensions
+    	if ( '' === $this->get_version() ) {
+		    if ( $packaging = $this->get_packaging() ) {
+			    $length = wc_get_dimension( $packaging->get_length(), $this->get_dimension_unit(), wc_gzd_get_packaging_dimension_unit() );
 		    }
 	    }
 
-	    return $packaging_weight;
+    	return $length;
     }
 
-    public function get_package_length() {
-    	if ( $packaging = $this->get_packaging() ) {
-    		$length = wc_get_dimension( $packaging->get_length(), $this->get_dimension_unit(), wc_gzd_get_packaging_dimension_unit() );
-	    } else {
-		    $length = $this->get_length();
-	    }
-
-    	return $length;
+    public function has_packaging() {
+    	return ( $this->get_packaging_id() > 0 && $this->get_packaging() ) ? true : false;
     }
 
 	/**
@@ -416,10 +460,12 @@ abstract class Shipment extends WC_Data {
     }
 
 	public function get_package_width() {
-		if ( $packaging = $this->get_packaging() ) {
-			$width = wc_get_dimension( $packaging->get_width(), $this->get_dimension_unit(), wc_gzd_get_packaging_dimension_unit() );
-		} else {
-			$width = $this->get_width();
+		$width = $this->get_width();
+
+		if ( '' === $this->get_version() ) {
+			if ( $packaging = $this->get_packaging() ) {
+				$width = wc_get_dimension( $packaging->get_width(), $this->get_dimension_unit(), wc_gzd_get_packaging_dimension_unit() );
+			}
 		}
 
 		return $width;
@@ -442,11 +488,13 @@ abstract class Shipment extends WC_Data {
     }
 
 	public function get_package_height() {
-		if ( $packaging = $this->get_packaging() ) {
-			$height = wc_get_dimension( $packaging->get_height(), $this->get_dimension_unit(), wc_gzd_get_packaging_dimension_unit() );
-		} else {
-			$height = $this->get_height();
-		}
+		$height = $this->get_height();
+
+    	if ( '' === $this->get_version() ) {
+    		if ( $packaging = $this->get_packaging() ) {
+			    $height = wc_get_dimension( $packaging->get_height(), $this->get_dimension_unit(), wc_gzd_get_packaging_dimension_unit() );
+		    }
+	    }
 
 		return $height;
 	}
@@ -558,7 +606,9 @@ abstract class Shipment extends WC_Data {
 	 * @return float
 	 */
     public function get_content_length() {
-        return wc_format_decimal( max( $this->get_item_lengths() ) );
+	    $default = max( $this->get_item_lengths() );
+
+	    return wc_format_decimal( $default, false, true );
     }
 
 	/**
@@ -567,7 +617,9 @@ abstract class Shipment extends WC_Data {
 	 * @return float
 	 */
     public function get_content_width() {
-        return wc_format_decimal( max( $this->get_item_widths() ) );
+	    $default = max( $this->get_item_widths() );
+
+	    return wc_format_decimal( $default, false, true );
     }
 
 	/**
@@ -576,7 +628,9 @@ abstract class Shipment extends WC_Data {
 	 * @return float
 	 */
     public function get_content_height() {
-        return wc_format_decimal( array_sum( $this->get_item_heights() ) );
+    	$default_height = array_sum( $this->get_item_heights() );
+
+        return wc_format_decimal( $default_height, false, true );
     }
 
 	/**
@@ -1261,6 +1315,19 @@ abstract class Shipment extends WC_Data {
         $this->set_prop( 'weight', '' === $weight ? '' : wc_format_decimal( $weight ) );
     }
 
+	public function set_packaging_weight( $weight ) {
+		$this->set_prop( 'packaging_weight', '' === $weight ? '' : wc_format_decimal( $weight ) );
+	}
+
+	/**
+	 * Set shipment total weight.
+	 *
+	 * @param string $weight The weight.
+	 */
+	public function set_total_weight( $weight ) {
+		$this->set_prop( 'total_weight', '' === $weight ? '' : wc_format_decimal( $weight ) );
+	}
+
 	/**
 	 * Set shipment width.
 	 *
@@ -1311,7 +1378,18 @@ abstract class Shipment extends WC_Data {
 	 * @param string $method The shipping method.
 	 */
 	public function set_shipping_method( $method ) {
+		$this->shipping_method_instance = null;
+
 		$this->set_prop( 'shipping_method', $method );
+	}
+
+	/**
+	 * Set shipment version.
+	 *
+	 * @param string $version The version.
+	 */
+	public function set_version( $version ) {
+		$this->set_prop( 'version', $version );
 	}
 
 	/**
@@ -1419,6 +1497,54 @@ abstract class Shipment extends WC_Data {
 		$this->packaging = null;
 	}
 
+	public function sync_packaging() {
+		$available_packaging = $this->get_available_packaging();
+		$default_packaging   = $this->get_default_packaging();
+		$packaging_id        = $this->get_packaging_id( 'edit' );
+
+		if ( ! empty( $packaging_id ) ) {
+			$exists = false;
+
+			foreach( $available_packaging as $packaging ) {
+				if ( $packaging_id == $packaging->get_id() ) {
+					$exists = true;
+					break;
+				}
+			}
+
+			if ( ! $exists ) {
+				$this->set_packaging_id( $default_packaging->get_id() );
+			}
+		} elseif ( empty( $packaging_id ) && $default_packaging ) {
+			$this->set_packaging_id( $default_packaging->get_id() );
+		}
+	}
+
+	public function update_packaging() {
+		if ( $packaging = $this->get_packaging() ) {
+			$packaging_dimension = wc_gzd_get_packaging_dimension_unit();
+
+			$props = array(
+				'width'            => wc_get_dimension( $packaging->get_width( 'edit' ), $this->get_dimension_unit(), $packaging_dimension ),
+				'length'           => wc_get_dimension( $packaging->get_length( 'edit' ), $this->get_dimension_unit(), $packaging_dimension ),
+				'height'           => wc_get_dimension( $packaging->get_height( 'edit' ), $this->get_dimension_unit(), $packaging_dimension ),
+				'packaging_weight' => wc_get_weight( $packaging->get_weight( 'edit' ), $this->get_weight_unit(), wc_gzd_get_packaging_weight_unit() )
+			);
+
+			$this->set_props( $props );
+		} else {
+			// Reset
+			$this->set_props( array(
+				'width'            => '',
+				'length'           => '',
+				'height'           => '',
+				'packaging_weight' => ''
+			) );
+		}
+
+		return true;
+	}
+
     /**
      * Return an array of items within this shipment.
      *
@@ -1511,6 +1637,21 @@ abstract class Shipment extends WC_Data {
 
         $this->reset_content_data();
         $this->calculate_totals();
+        $this->sync_packaging();
+    }
+
+    public function update_item_quantity( $item_id, $quantity = 1 ) {
+	    if ( $item = $this->get_item( $item_id ) ) {
+	        $item->set_quantity( $quantity );
+
+	        if ( array_key_exists( 'quantity', $item->get_changes() ) ) {
+	        	$this->sync_packaging();
+	        }
+
+	        return true;
+	    }
+
+	    return false;
     }
 
     /**
@@ -1537,8 +1678,11 @@ abstract class Shipment extends WC_Data {
             $this->items[ 'new:' . count( $this->items ) ] = $item;
         }
 
+        $this->items_to_pack = null;
+
         $this->reset_content_data();
         $this->calculate_totals();
+	    $this->sync_packaging();
     }
 
 	/**
@@ -1651,8 +1795,11 @@ abstract class Shipment extends WC_Data {
         $this->data_store->delete_items( $this );
         $this->items = array();
 
+	    $this->items_to_pack = null;
+
         $this->reset_content_data();
         $this->calculate_totals();
+	    $this->sync_packaging();
     }
 
     /**
@@ -1701,6 +1848,16 @@ abstract class Shipment extends WC_Data {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns version.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return integer
+	 */
+	public function get_version( $context = 'view' ) {
+		return $this->get_prop( 'version', $context );
 	}
 
 	/**
@@ -1847,11 +2004,12 @@ abstract class Shipment extends WC_Data {
 	 * @return boolean|ShipmentLabel|ShipmentReturnLabel
 	 */
 	public function get_label() {
+		$label  = false;
+		$prefix = '';
 
-		$provider = $this->get_shipping_provider();
-
-		if ( ! empty( $provider ) ) {
-			$provider = $provider . '_';
+		if ( $provider = $this->get_shipping_provider_instance() ) {
+			$prefix = $provider->get_name() . '_';
+			$label  = $provider->get_label( $this );
 		}
 
 		/**
@@ -1869,20 +2027,19 @@ abstract class Shipment extends WC_Data {
 		 * @since 3.0.6
 		 * @package Vendidero/Germanized/Shipments
 		 */
-		return apply_filters( "{$this->get_hook_prefix()}{$provider}label", false, $this );
+		return apply_filters( "{$this->get_hook_prefix()}{$prefix}label", $label, $this );
 	}
 
 	/**
 	 * Output label admin fields.
 	 */
-	public function print_label_admin_fields() {
+	public function get_label_settings_html() {
+		$hook_prefix = $this->get_general_hook_prefix();
+		$html        = '';
 
-		$provider    = $this->get_shipping_provider();
-		// Cut away _get from prefix
-		$hook_prefix = substr( $this->get_hook_prefix(), 0, -4 );
-
-		if ( ! empty( $provider ) ) {
-			$provider = $provider . '_';
+		if ( $provider = $this->get_shipping_provider_instance() ) {
+			$hook_prefix = $hook_prefix . '_' . $provider->get_name();
+			$html        = $provider->get_label_fields_html( $this );
 		}
 
 		/**
@@ -1899,77 +2056,87 @@ abstract class Shipment extends WC_Data {
 		 * @since 3.0.6
 		 * @package Vendidero/Germanized/Shipments
 		 */
-		do_action( "{$hook_prefix}print_{$provider}label_admin_fields", $this );
+		return apply_filters( "{$hook_prefix}label_settings_html", $html, $this );
 	}
 
-	public function create_label( $props = array(), $raw_data = array() ) {
-		$provider    = $this->get_shipping_provider();
-		// Cut away _get from prefix
-		$hook_prefix = substr( $this->get_hook_prefix(), 0, -4 );
-
-		if ( ! empty( $provider ) ) {
-			$provider = $provider . '_';
-		}
-
-		$error = new WP_Error();
+	public function create_label( $props = false ) {
+		$hook_prefix   = $this->get_general_hook_prefix();
+		$provider_name = '';
+		$error         = new WP_Error();
 
 		/**
-		 * Action for shipping providers to create the `ShipmentLabel` corresponding to a certain shipment.
-		 *
-		 * The dynamic portion of this hook, `$hook_prefix` is used to construct a
-		 * unique hook for a shipment type. `$provider` is related to the current shipping provider
-		 * for the shipment (slug).
-		 *
-		 * Example hook name: `woocommerce_gzd_return_shipment_create_dhl_label`
-		 *
-		 * @param array     $props Array containing props extracted from post data (if created manually) and sanitized via `wc_clean`.
-		 * @param WP_Error  $error An WP_Error instance useful for returning errors while creating the label.
-		 * @param Shipment  $shipment The current shipment instance.
-		 * @param array     $raw_data Raw post data unsanitized.
-		 *
-		 * @since 3.0.6
-		 * @package Vendidero/Germanized/Shipments
+		 * Sanitize props
 		 */
-		 do_action( "{$hook_prefix}create_{$provider}label", $props, $error, $this, $raw_data );
+		if ( is_array( $props ) ) {
+			foreach( $props as $key => $value ) {
+				$props[ $key ] = wc_clean( wp_unslash( $value ) );
+			}
+		}
 
-		 if ( wc_gzd_shipment_wp_error_has_errors( $error ) ) {
-		 	return $error;
-		 } else {
+		if ( $provider = $this->get_shipping_provider_instance() ) {
+			$provider_name = $provider->get_name();
+			$result        = $provider->create_label( $this, $props );
 
-		 	if ( $label = $this->get_label() ) {
-		 		$this->set_tracking_id( $label->get_number() );
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			}
+		} else {
+			/**
+			 * Action for shipping providers to create the `ShipmentLabel` corresponding to a certain shipment.
+			 *
+			 * The dynamic portion of this hook, `$hook_prefix` is used to construct a
+			 * unique hook for a shipment type. `$provider` is related to the current shipping provider
+			 * for the shipment (slug).
+			 *
+			 * Example hook name: `woocommerce_gzd_return_shipment_create_dhl_label`
+			 *
+			 * @param array|false $props Array containing props extracted from post data (if created manually).
+			 * @param WP_Error    $error An WP_Error instance useful for returning errors while creating the label.
+			 * @param Shipment    $shipment The current shipment instance.
+			 *
+			 * @since 3.0.6
+			 * @package Vendidero/Germanized/Shipments
+			 */
+			do_action( "{$hook_prefix}create_{$provider_name}label", $props, $error, $this );
 
-			    /**
-				 * Action for shipping providers to adjust the shipment before updating it after a label has
-			     * been successfully generated.
-				 *
-				 * The dynamic portion of this hook, `$hook_prefix` is used to construct a
-				 * unique hook for a shipment type. `$provider` is related to the current shipping provider
-				 * for the shipment (slug).
-				 *
-				 * Example hook name: `woocommerce_gzd_return_shipment_created_dhl_label`
-				 *
-			     * @param Shipment  $shipment The current shipment instance.
-			     * @param array     $props Array containing props extracted from post data (if created manually) and sanitized via `wc_clean`.
-				 * @param array     $raw_data Raw post data unsanitized.
-				 *
-				 * @since 3.1.2
-				 * @package Vendidero/Germanized/Shipments
-				 */
-		 		do_action( "{$hook_prefix}created_{$provider}label", $this, $props, $raw_data );
+			if ( wc_gzd_shipment_wp_error_has_errors( $error ) ) {
+				return $error;
+			}
+		}
 
-		 		$this->save();
-		    }
+	    if ( $label = $this->get_label() ) {
+	        $this->set_tracking_id( $label->get_number() );
 
-		 	return true;
-		 }
+		    /**
+			 * Action for shipping providers to adjust the shipment before updating it after a label has
+		     * been successfully generated.
+			 *
+			 * The dynamic portion of this hook, `$hook_prefix` is used to construct a
+			 * unique hook for a shipment type. `$provider` is related to the current shipping provider
+			 * for the shipment (slug).
+			 *
+			 * Example hook name: `woocommerce_gzd_return_shipment_created_dhl_label`
+			 *
+		     * @param Shipment  $shipment The current shipment instance.
+		     * @param array     $props Array containing props extracted from post data (if created manually) and sanitized via `wc_clean`.
+			 * @param array     $raw_data Raw post data unsanitized.
+			 *
+			 * @since 3.1.2
+			 * @package Vendidero/Germanized/Shipments
+			 */
+	        do_action( "{$hook_prefix}created_{$provider_name}label", $this, $props );
+
+		    do_action( "{$hook_prefix}created_label", $this, $props );
+
+	        $this->save();
+	    }
+
+	    return true;
 	}
 
 	public function delete_label( $force = false ) {
-		if ( $this->supports_label() && $this->has_label() ) {
-			$label = $this->get_label();
+		if ( $this->supports_label() && ( $label = $this->get_label() ) ) {
 			$label->delete( $force );
-
 			$this->set_tracking_id( '' );
 			$this->save();
 
@@ -1986,8 +2153,7 @@ abstract class Shipment extends WC_Data {
 	 */
 	public function supports_label() {
 		if ( $provider = $this->get_shipping_provider_instance() ) {
-
-			if ( $provider->supports_labels( $this->get_type() ) ) {
+			if ( $provider->supports_labels( $this->get_type(), $this ) ) {
 				return true;
 			}
 		}
@@ -2003,8 +2169,7 @@ abstract class Shipment extends WC_Data {
 	public function needs_label( $check_status = true ) {
 		$needs_label = true;
 		$provider    = $this->get_shipping_provider();
-		// Cut away _get from prefix
-		$hook_prefix = substr( $this->get_hook_prefix(), 0, -4 );
+		$hook_prefix = $this->get_general_hook_prefix();
 
 		if ( ! empty( $provider ) ) {
 			$provider = $provider . '_';
@@ -2016,6 +2181,12 @@ abstract class Shipment extends WC_Data {
 
 		if ( ! $this->supports_label() ) {
 			$needs_label = false;
+		}
+
+		if ( $shipping_provider = $this->get_shipping_provider_instance() ) {
+			if ( ! $shipping_provider->is_activated() ) {
+				$needs_label = false;
+			}
 		}
 
 		// If shipment is already delivered
@@ -2051,7 +2222,6 @@ abstract class Shipment extends WC_Data {
 		$label = $this->get_label();
 
 		if ( $label && is_a( $label, '\Vendidero\Germanized\Shipments\Interfaces\ShipmentLabel' ) ) {
-
 			if ( 'return' === $label->get_type() ) {
 				if ( ! is_a( $label, '\Vendidero\Germanized\Shipments\Interfaces\ShipmentReturnLabel' ) ) {
 					return false;
@@ -2065,22 +2235,12 @@ abstract class Shipment extends WC_Data {
 	}
 
 	public function get_label_download_url( $args = array() ) {
-		$provider = $this->get_shipping_provider();
+		$download_url = '';
+		$provider     = $this->get_shipping_provider();
 
-		if ( ! empty( $provider ) ) {
-			$provider = $provider . '_';
+		if ( $label = $this->get_label() ) {
+			$download_url = $label->get_download_url( $args );
 		}
-
-		$base_url     = is_admin() ? admin_url() : trailingslashit( home_url() );
-		$download_url = add_query_arg( array( 'action' => 'wc-gzd-download-shipment-label', 'shipment_id' => $this->get_id() ), wp_nonce_url( $base_url, 'download-shipment-label' ) );
-
-		foreach( $args as $arg => $val ) {
-			if ( is_bool( $val ) ) {
-				$args[ $arg ] = wc_bool_to_string( $val );
-			}
-		}
-
-		$download_url = add_query_arg( $args, $download_url );
 
 		/**
 		 * Filter for shipping providers to adjust the label download URL.
@@ -2144,6 +2304,10 @@ abstract class Shipment extends WC_Data {
         try {
             $this->calculate_totals();
             $is_new = false;
+
+	        if ( array_key_exists( 'packaging_id', $this->get_changes() ) || $this->is_editable() ) {
+		        $this->update_packaging();
+	        }
 
             if ( $this->data_store ) {
                 // Trigger action before saving to the DB. Allows you to adjust object props before save.

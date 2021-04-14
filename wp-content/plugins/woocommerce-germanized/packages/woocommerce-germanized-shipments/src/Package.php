@@ -3,6 +3,7 @@
 namespace Vendidero\Germanized\Shipments;
 
 use Exception;
+use Vendidero\Germanized\Shipments\ShippingProvider\Method;
 use WC_Shipping;
 use WC_Shipping_Method;
 
@@ -17,7 +18,7 @@ class Package {
      *
      * @var string
      */
-    const VERSION = '1.4.6';
+    const VERSION = '1.5.1';
 
     public static $upload_dir_suffix = '';
 
@@ -35,6 +36,8 @@ class Package {
 	    self::maybe_set_upload_dir();
 	    self::init_hooks();
         self::includes();
+
+        do_action( 'woocommerce_gzd_shipments_init' );
     }
 
     protected static function init_hooks() {
@@ -60,25 +63,6 @@ class Package {
 	    add_action( 'init', array( __CLASS__, 'register_shortcodes' ) );
 
 	    add_action( 'woocommerce_gzd_wpml_compatibility_loaded', array( __CLASS__, 'load_wpml_compatibility' ), 10 );
-
-	    /**
-	     * Sync packaging after items have been synced to make sure
-	     * content weights are available while choosing the matching packaging.
-	     */
-	    add_action( 'woocommerce_gzd_return_shipment_items_synced', array( __CLASS__, 'sync_packaging' ), 10 );
-	    add_action( 'woocommerce_gzd_shipment_items_synced', array( __CLASS__, 'sync_packaging' ), 10 );
-    }
-
-	/**
-	 * @param Shipment $shipment
-	 */
-    public static function sync_packaging( $shipment ) {
-	    $default_packaging = $shipment->get_default_packaging();
-	    $packaging_id      = $shipment->get_packaging_id( 'edit' );
-
-	    if ( empty( $packaging_id ) && $default_packaging ) {
-	    	$shipment->set_packaging_id( $default_packaging->get_id() );
-	    }
     }
 
     public static function add_return_shipment_guest_endpoints( $template, $template_name ) {
@@ -157,10 +141,18 @@ class Package {
 		return $methods;
 	}
 
-	protected static function get_method_settings() {
+	/**
+	 * Indicates whether the BoxPack library for improved packing calculation is supported
+	 *
+	 * @return bool
+	 */
+	public static function is_packing_supported() {
+    	return version_compare( phpversion(), '7.1', '>=' );
+	}
 
+	public static function get_method_settings() {
 		if ( is_null( self::$method_settings ) ) {
-			self::$method_settings = ShippingProviderMethod::get_admin_settings();
+			self::$method_settings = Method::get_admin_settings();
 		}
 
 		return self::$method_settings;
@@ -168,11 +160,22 @@ class Package {
 
 	public static function filter_method_settings( $p_settings, $method ) {
 		$shipping_provider_settings = self::get_method_settings();
+		$shipping_provider          = isset( $p_settings['shipping_provider'] ) ? $p_settings['shipping_provider'] : '';
+		$shipping_method            = wc_gzd_get_shipping_provider_method( $method );
+
+		/**
+		 * Make sure the (maybe) new selected provider is used on updating the settings.
+		 */
+		$shipping_method->set_provider( $shipping_provider );
 
 		foreach( $p_settings as $setting => $value ) {
-
 			if ( array_key_exists( $setting, $shipping_provider_settings ) ) {
-				if ( self::get_setting( $setting ) === $value ) {
+				// Check if setting does neither belong to global setting nor shipping provider prefix
+				if ( 'shipping_provider' !== $setting && ! $shipping_method->setting_belongs_to_provider( $setting ) ) {
+					unset( $p_settings[ $setting ] );
+				} elseif ( $shipping_method->get_fallback_setting_value( $setting ) === $value ) {
+					unset( $p_settings[ $setting ] );
+				} elseif( '' === $value ) {
 					unset( $p_settings[ $setting ] );
 				}
 			}
@@ -213,7 +216,7 @@ class Package {
 		$shipping = WC_Shipping::instance();
 
 		foreach( $shipping->shipping_methods as $key => $method ) {
-			$shipping_provider_method = new ShippingProviderMethod( $method );
+			$shipping_provider_method = new Method( $method );
 		}
 	}
 
@@ -248,7 +251,7 @@ class Package {
     }
 
 	public static function install() {
-    	self::includes();
+		self::init();
 		Install::install();
 	}
 
@@ -285,6 +288,34 @@ class Package {
 		shuffle( $key );
 
 		return md5( serialize( $key ) );
+	}
+
+	public static function log( $message, $type = 'info' ) {
+		$enable_logging = defined( 'WP_DEBUG' ) && WP_DEBUG ? true : false;
+
+		/**
+		 * Filter that allows adjusting whether to enable or disable
+		 * logging for the shipments package
+		 *
+		 * @param boolean $enable_logging True if logging should be enabled. False otherwise.
+		 *
+		 * @package Vendidero/Germanized/Shipments
+		 */
+		if ( ! apply_filters( 'woocommerce_gzd_shipments_enable_logging', $enable_logging ) ) {
+			return false;
+		}
+
+		$logger = wc_get_logger();
+
+		if ( ! $logger ) {
+			return false;
+		}
+
+		if ( ! is_callable( array( $logger, $type ) ) ) {
+			$type = 'info';
+		}
+
+		$logger->{$type}( $message, array( 'source' => 'wc-gzd-shipments' ) );
 	}
 
 	public static function get_upload_dir_suffix() {
@@ -334,6 +365,17 @@ class Package {
 		remove_filter( 'upload_dir', array( __CLASS__, "filter_upload_dir" ), 150 );
 	}
 
+	public static function get_file_by_path( $file ) {
+		// If the file is relative, prepend upload dir.
+		if ( $file && 0 !== strpos( $file, '/' ) && ( ( $uploads = self::get_upload_dir() ) && false === $uploads['error'] ) ) {
+			$file = $uploads['basedir'] . "/$file";
+
+			return $file;
+		} else {
+			return $file;
+		}
+	}
+
 	public static function filter_upload_dir( $args ) {
 		$upload_base = trailingslashit( $args['basedir'] );
 		$upload_url  = trailingslashit( $args['baseurl'] );
@@ -377,6 +419,8 @@ class Package {
 
         Ajax::init();
         Automation::init();
+        Labels\Automation::init();
+        Labels\DownloadHandler::init();
         Emails::init();
         Validation::init();
         Api::init();
@@ -387,6 +431,7 @@ class Package {
         }
 
         include_once self::get_path() . '/includes/wc-gzd-shipment-functions.php';
+	    include_once self::get_path() . '/includes/wc-gzd-label-functions.php';
 	    include_once self::get_path() . '/includes/wc-gzd-packaging-functions.php';
     }
 
@@ -421,6 +466,8 @@ class Package {
             'gzd_shipment_itemmeta'     => 'woocommerce_gzd_shipment_itemmeta',
             'gzd_shipmentmeta'          => 'woocommerce_gzd_shipmentmeta',
             'gzd_shipments'             => 'woocommerce_gzd_shipments',
+            'gzd_shipment_labelmeta'    => 'woocommerce_gzd_shipment_labelmeta',
+            'gzd_shipment_labels'       => 'woocommerce_gzd_shipment_labels',
             'gzd_shipment_items'        => 'woocommerce_gzd_shipment_items',
             'gzd_shipping_provider'     => 'woocommerce_gzd_shipping_provider',
             'gzd_shipping_providermeta' => 'woocommerce_gzd_shipping_providermeta',
@@ -436,6 +483,7 @@ class Package {
 
     public static function register_data_stores( $stores ) {
         $stores['shipment']          = 'Vendidero\Germanized\Shipments\DataStores\Shipment';
+	    $stores['shipment-label']    = 'Vendidero\Germanized\Shipments\DataStores\Label';
 	    $stores['packaging']         = 'Vendidero\Germanized\Shipments\DataStores\Packaging';
         $stores['shipment-item']     = 'Vendidero\Germanized\Shipments\DataStores\ShipmentItem';
 	    $stores['shipping-provider'] = 'Vendidero\Germanized\Shipments\DataStores\ShippingProvider';
@@ -474,9 +522,27 @@ class Package {
         return self::get_url() . '/assets';
     }
 
-	public static function get_setting( $name ) {
+	public static function get_setting( $name, $default = false ) {
 		$option_name = "woocommerce_gzd_shipments_{$name}";
 
-		return get_option( $option_name );
+		return get_option( $option_name, $default );
+	}
+
+	public static function get_store_address_country() {
+		$default = get_option( 'woocommerce_store_country' );
+
+		return $default;
+	}
+
+	public static function get_store_address_street() {
+		$store_address = wc_gzd_split_shipment_street( get_option( 'woocommerce_store_address' ) );
+
+		return $store_address['street'];
+	}
+
+	public static function get_store_address_street_number() {
+		$store_address = wc_gzd_split_shipment_street( get_option( 'woocommerce_store_address' ) );
+
+		return $store_address['number'];
 	}
 }
