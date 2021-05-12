@@ -51,7 +51,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Typo_Configs' ) ) {
 					'font_type' => 'ast-font-family',
 					'title'     => __( 'Family', 'astra-addon' ),
 					'connect'   => ASTRA_THEME_SETTINGS . '[font-weight-edd-archive-product-title]',
-					'priority'  => 5,
+					'priority'  => 3,
 					'context'   => array(
 						astra_addon_builder_helper()->design_tab_config,
 						array(
@@ -84,7 +84,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Typo_Configs' ) ) {
 					),
 					'title'             => __( 'Weight', 'astra-addon' ),
 					'connect'           => 'font-family-edd-archive-product-title',
-					'priority'          => 5,
+					'priority'          => 4,
 				),
 
 				/**
@@ -98,7 +98,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Typo_Configs' ) ) {
 					'type'        => 'sub-control',
 					'transport'   => 'postMessage',
 					'control'     => 'ast-responsive',
-					'priority'    => 5,
+					'priority'    => 3,
 					'context'     => array(
 						astra_addon_builder_helper()->design_tab_config,
 						array(
@@ -166,7 +166,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Typo_Configs' ) ) {
 					),
 					'title'     => __( 'Text Transform', 'astra-addon' ),
 					'control'   => 'ast-select',
-					'priority'  => 5,
+					'priority'  => 4,
 					'choices'   => array(
 						''           => __( 'Inherit', 'astra-addon' ),
 						'none'       => __( 'None', 'astra-addon' ),
@@ -197,7 +197,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Typo_Configs' ) ) {
 					),
 					'title'     => __( 'Family', 'astra-addon' ),
 					'connect'   => ASTRA_THEME_SETTINGS . '[font-weight-edd-archive-product-price]',
-					'priority'  => 10,
+					'priority'  => 9,
 				),
 
 				/**
@@ -236,7 +236,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Typo_Configs' ) ) {
 					'type'        => 'sub-control',
 					'transport'   => 'postMessage',
 					'control'     => 'ast-responsive',
-					'priority'    => 10,
+					'priority'    => 9,
 					'context'     => array(
 						astra_addon_builder_helper()->design_tab_config,
 						array(
@@ -297,7 +297,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Typo_Configs' ) ) {
 					'font_type' => 'ast-font-family',
 					'title'     => __( 'Family', 'astra-addon' ),
 					'connect'   => ASTRA_THEME_SETTINGS . '[font-weight-edd-archive-product-content]',
-					'priority'  => 15,
+					'priority'  => 13,
 				),
 
 				/**
@@ -314,7 +314,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Typo_Configs' ) ) {
 					'font_type'         => 'ast-font-weight',
 					'title'             => __( 'Weight', 'astra-addon' ),
 					'connect'           => 'font-family-edd-archive-product-content',
-					'priority'          => 15,
+					'priority'          => 14,
 				),
 
 				/**
@@ -328,7 +328,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Typo_Configs' ) ) {
 					'type'        => 'sub-control',
 					'transport'   => 'postMessage',
 					'control'     => 'ast-responsive',
-					'priority'    => 15,
+					'priority'    => 13,
 					'title'       => __( 'Size', 'astra-addon' ),
 					'input_attrs' => array(
 						'min' => 0,
@@ -372,7 +372,7 @@ if ( ! class_exists( 'Astra_Edd_Shop_Typo_Configs' ) ) {
 					'transport' => 'postMessage',
 					'title'     => __( 'Text Transform', 'astra-addon' ),
 					'control'   => 'ast-select',
-					'priority'  => 15,
+					'priority'  => 14,
 					'choices'   => array(
 						''           => __( 'Inherit', 'astra-addon' ),
 						'none'       => __( 'None', 'astra-addon' ),

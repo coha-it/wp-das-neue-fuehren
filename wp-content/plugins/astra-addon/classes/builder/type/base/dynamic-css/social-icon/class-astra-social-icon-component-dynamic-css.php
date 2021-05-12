@@ -53,6 +53,8 @@ class Astra_Social_Icon_Component_Dynamic_CSS {
 			 * Social Icon CSS.
 			 */
 			$css_output_desktop = array();
+			$css_output_tablet  = array();
+			$css_output_mobile  = array();
 
 			if ( 'desktop' === $social_stack_on ) {
 
@@ -67,12 +69,20 @@ class Astra_Social_Icon_Component_Dynamic_CSS {
 						'margin-bottom' => astra_get_css_value( $icon_spacing_desktop, 'px' ),
 					),
 				);
+
+				$css_output_tablet[ $selector . ' .ast-social-stack-desktop .ast-builder-social-element' ] = array(
+					'margin-top'    => astra_get_css_value( $icon_spacing_tablet, 'px' ),
+					'margin-bottom' => astra_get_css_value( $icon_spacing_tablet, 'px' ),
+				);
+
+				$css_output_mobile[ $selector . ' .ast-social-stack-desktop .ast-builder-social-element' ] = array(
+					'margin-top'    => astra_get_css_value( $icon_spacing_mobile, 'px' ),
+					'margin-bottom' => astra_get_css_value( $icon_spacing_mobile, 'px' ),
+				);
 			}
 			/**
-			 * Social_icons CSS.
+			 * Social_icons tablet CSS.
 			 */
-			$css_output_tablet = array();
-
 			if ( 'tablet' === $social_stack_on ) {
 
 				$css_output_tablet = array(
@@ -86,13 +96,16 @@ class Astra_Social_Icon_Component_Dynamic_CSS {
 						'margin-bottom' => astra_get_css_value( $icon_spacing_tablet, 'px' ),
 					),
 				);
+
+				$css_output_mobile[ $selector . ' .ast-social-stack-tablet .ast-builder-social-element' ] = array(
+					'margin-top'    => astra_get_css_value( $icon_spacing_mobile, 'px' ),
+					'margin-bottom' => astra_get_css_value( $icon_spacing_mobile, 'px' ),
+				);
 			}
 
 			/**
-			 * Social_icons CSS.
+			 * Social_icons mobile CSS.
 			 */
-			$css_output_mobile = array();
-
 			if ( 'mobile' === $social_stack_on ) {
 
 				$css_output_mobile = array(

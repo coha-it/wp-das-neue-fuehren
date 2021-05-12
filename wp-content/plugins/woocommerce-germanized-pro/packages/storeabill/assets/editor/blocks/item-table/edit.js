@@ -9,7 +9,7 @@ import { dropRight, get, map, times, includes, cloneDeep } from 'lodash';
  */
 import { __, _x } from '@wordpress/i18n';
 import { PanelBody, RangeControl, TextControl, ToggleControl, Toolbar } from '@wordpress/components';
-import { useRef, createContext } from '@wordpress/element';
+import { useRef, createContext, useEffect } from '@wordpress/element';
 import { compose } from "@wordpress/compose";
 import {
 	InspectorControls,
@@ -20,7 +20,9 @@ import {
 	withColors,
 	getColorClassName,
 	ContrastChecker,
-	__experimentalPanelColorGradientSettings as PanelColorGradientSettings, withFontSizes, FontSizePicker,
+	__experimentalPanelColorGradientSettings as PanelColorGradientSettings,
+	withFontSizes,
+	FontSizePicker
 } from '@wordpress/block-editor';
 import { withDispatch, useDispatch, useSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
@@ -320,7 +322,7 @@ const createBlocksFromDefault = ( innerBlocksTemplate ) => {
 	);
 };
 
-const ColumnsEdit = ( props ) => {
+function ColumnsEdit( props ) {
 	const { clientId, name, setAttributes, headingBackgroundColor, headingTextColor, setHeadingBackgroundColor, setHeadingTextColor, headingFontSize, setHeadingFontSize } = props;
 
 	const defaultBlocks = getDefaultInnerBlocks( name );
@@ -357,26 +359,26 @@ const ColumnsEdit = ( props ) => {
 
 	const { replaceInnerBlocks } = useDispatch( 'core/block-editor' );
 
-	if ( ! hasInnerBlocks ) {
-		replaceInnerBlocks(
-			props.clientId,
-			createBlocksFromDefault(
-				defaultBlocks
-			)
-		);
+	useEffect( () => {
+		if ( ! hasInnerBlocks ) {
+			replaceInnerBlocks(
+				props.clientId,
+				createBlocksFromDefault(
+					defaultBlocks
+				)
+			);
 
-		setAttributes( {
-			borders: [ 'horizontal' ],
-			borderColor: 'black',
-			headingBackgroundColor: 'black',
-			headingTextColor: 'white'
-		} );
-	}
+			setAttributes( {
+				borders: [ 'horizontal' ],
+				borderColor: 'black',
+				headingBackgroundColor: 'black',
+				headingTextColor: 'white'
+			} );
+		}
+	}, [ hasInnerBlocks, replaceInnerBlocks ]);
 
-	if ( hasInnerBlocks ) {
-		return <ColumnsEditContainerWrapper { ...props } />;
-	}
-};
+	return <ColumnsEditContainerWrapper { ...props } />;
+}
 
 export default compose( [
 	withColors( 'borderColor', { headingTextColor: 'color' }, { headingBackgroundColor: 'backgroundColor' } ),

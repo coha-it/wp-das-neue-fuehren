@@ -82,7 +82,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'title'             => __( 'Line Height', 'astra-addon' ),
 					'transport'         => 'postMessage',
 					'control'           => 'ast-slider',
-					'priority'          => 16,
+					'priority'          => 17,
 					'suffix'            => 'em',
 					'input_attrs'       => array(
 						'min'  => 1,
@@ -103,7 +103,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'transport' => 'postMessage',
 					'default'   => astra_get_option( 'text-transform-' . $_section ),
 					'control'   => 'ast-select',
-					'priority'  => 17,
+					'priority'  => 16,
 					'choices'   => array(
 						''           => __( 'Inherit', 'astra-addon' ),
 						'none'       => __( 'None', 'astra-addon' ),
@@ -112,9 +112,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 						'lowercase'  => __( 'Lowercase', 'astra-addon' ),
 					),
 				),
-
 			);
-
 		}
 
 
@@ -159,7 +157,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'title'             => __( 'Weight', 'astra-addon' ),
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_font_weight' ),
 					'connect'           => $_prefix . '-font-family',
-					'priority'          => 2,
+					'priority'          => 3,
 					'context'           => astra_addon_builder_helper()->general_tab,
 				),
 
@@ -277,7 +275,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'title'             => __( 'Weight', 'astra-addon' ),
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_font_weight' ),
 					'connect'           => $_prefix . '-font-family',
-					'priority'          => 2,
+					'priority'          => 3,
 					'context'           => astra_addon_builder_helper()->general_tab,
 				),
 
@@ -381,7 +379,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'title'             => __( 'Weight', 'astra-addon' ),
 					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_font_weight' ),
 					'connect'           => $_prefix . '-content-font-family',
-					'priority'          => 2,
+					'priority'          => 3,
 					'context'           => astra_addon_builder_helper()->general_tab,
 				),
 
@@ -626,7 +624,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'title'             => __( 'Line Height', 'astra-addon' ),
 					'transport'         => 'postMessage',
 					'control'           => 'ast-slider',
-					'priority'          => 16,
+					'priority'          => 17,
 					'suffix'            => 'em',
 					'input_attrs'       => array(
 						'min'  => 1,
@@ -647,7 +645,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'transport' => 'postMessage',
 					'default'   => astra_get_option( 'text-transform-' . $_section ),
 					'control'   => 'ast-select',
-					'priority'  => 17,
+					'priority'  => 16,
 					'choices'   => array(
 						''           => __( 'Inherit', 'astra-addon' ),
 						'none'       => __( 'None', 'astra-addon' ),
@@ -657,16 +655,6 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					),
 				),
 			);
-
-			/**
-			 * Footer - Copyright - Typography
-			 */
-			$_section = 'section-header-account';
-			$parent   = ASTRA_THEME_SETTINGS . '[' . $_section . '-typography]';
-
-			$html_config[] = $this->get_typo_configs( $_section, $parent );
-
-			$html_config[] = array();
 
 			/**
 			 * Header - Account - Typography
@@ -915,7 +903,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'type'      => 'sub-control',
 					'default'   => astra_get_option( 'font-weight-' . $hb_lswitcher_section ),
 					'title'     => __( 'Weight', 'astra-addon' ),
-					'priority'  => 14,
+					'priority'  => 15,
 					'connect'   => 'font-family-' . $hb_lswitcher_section,
 				),
 
@@ -954,7 +942,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'title'             => __( 'Line Height', 'astra-addon' ),
 					'transport'         => 'postMessage',
 					'control'           => 'ast-slider',
-					'priority'          => 16,
+					'priority'          => 17,
 					'suffix'            => 'em',
 					'input_attrs'       => array(
 						'min'  => 1,
@@ -975,7 +963,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'transport' => 'postMessage',
 					'default'   => astra_get_option( 'text-transform-' . $hb_lswitcher_section ),
 					'control'   => 'ast-select',
-					'priority'  => 17,
+					'priority'  => 16,
 					'choices'   => array(
 						''           => __( 'Inherit', 'astra-addon' ),
 						'none'       => __( 'None', 'astra-addon' ),
@@ -1044,7 +1032,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'type'      => 'sub-control',
 					'default'   => astra_get_option( 'font-weight-' . $fb_lswitcher_section ),
 					'title'     => __( 'Weight', 'astra-addon' ),
-					'priority'  => 14,
+					'priority'  => 15,
 					'connect'   => 'font-family-' . $fb_lswitcher_section,
 				),
 
@@ -1083,7 +1071,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'title'             => __( 'Line Height', 'astra-addon' ),
 					'transport'         => 'postMessage',
 					'control'           => 'ast-slider',
-					'priority'          => 16,
+					'priority'          => 17,
 					'suffix'            => 'em',
 					'input_attrs'       => array(
 						'min'  => 1,
@@ -1104,7 +1092,7 @@ if ( ! class_exists( 'Astra_Header_Builder_Typo_Configs' ) ) {
 					'transport' => 'postMessage',
 					'default'   => astra_get_option( 'text-transform-' . $fb_lswitcher_section ),
 					'control'   => 'ast-select',
-					'priority'  => 17,
+					'priority'  => 16,
 					'choices'   => array(
 						''           => __( 'Inherit', 'astra-addon' ),
 						'none'       => __( 'None', 'astra-addon' ),

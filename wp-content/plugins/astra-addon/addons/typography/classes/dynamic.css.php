@@ -321,7 +321,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 		/**
 		 * Entry Title
 		 */
-		'.blog .entry-title, .blog .entry-title a, .archive .entry-title, .archive .entry-title a, .search .entry-title, .search .entry-title a ' => array(
+		'.blog .entry-title, .blog .entry-title a, .archive .entry-title, .archive .entry-title a, .search .entry-title, .search .entry-title a' => array(
 			'font-family'    => astra_get_css_value( $archive_page_title_font_family, 'font', $body_font_family ),
 			'font-weight'    => astra_get_css_value( $archive_page_title_font_weight, 'font' ),
 			'line-height'    => esc_attr( $archive_page_title_line_height ),
@@ -528,6 +528,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 		'.ast-small-footer'                         => array(
 			'font-size' => astra_responsive_font( $footer_content_font_size, 'tablet' ),
 		),
+
 		'button, .ast-button, input#submit, input[type="button"], input[type="submit"], input[type="reset"]' => array(
 			'font-size' => astra_get_font_css_value( $button_font_size['tablet'], $button_font_size['tablet-unit'] ),
 		),
@@ -576,6 +577,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 		'.ast-small-footer'                         => array(
 			'font-size' => astra_responsive_font( $footer_content_font_size, 'mobile' ),
 		),
+
 		'button, .ast-button, input#submit, input[type="button"], input[type="submit"], input[type="reset"]' => array(
 			'font-size' => astra_get_font_css_value( $button_font_size['mobile'], $button_font_size['mobile-unit'] ),
 		),

@@ -16,8 +16,8 @@ defined( 'ABSPATH' ) || exit;
 abstract class Auto extends Simple implements ShippingProviderAuto {
 
 	protected $extra_data = array(
-		'label_default_shipment_weight'      => 2,
-		'label_minimum_shipment_weight'      => 0.5,
+		'label_default_shipment_weight'      => '',
+		'label_minimum_shipment_weight'      => '',
 		'label_auto_enable'                  => false,
 		'label_auto_shipment_status'         => 'gzd-processing',
 		'label_return_auto_enable'           => false,
@@ -25,12 +25,36 @@ abstract class Auto extends Simple implements ShippingProviderAuto {
 		'label_auto_shipment_status_shipped' => false,
 	);
 
+	public function __construct( $data = 0 ) {
+		parent::__construct( $data );
+	}
+
 	public function get_label_default_shipment_weight( $context = 'view' ) {
-		return $this->get_prop( 'label_default_shipment_weight', $context );
+		$weight = $this->get_prop( 'label_default_shipment_weight', $context );
+
+		if ( 'view' === $context && '' === $weight ) {
+			$weight = $this->get_default_label_default_shipment_weight();
+		}
+
+		return $weight;
+	}
+
+	protected function get_default_label_default_shipment_weight() {
+		return 0;
 	}
 
 	public function get_label_minimum_shipment_weight( $context = 'view' ) {
-		return $this->get_prop( 'label_minimum_shipment_weight', $context );
+		$weight = $this->get_prop( 'label_minimum_shipment_weight', $context );
+
+		if ( 'view' === $context && '' === $weight ) {
+			$weight = $this->get_default_label_minimum_shipment_weight();
+		}
+
+		return $weight;
+	}
+
+	protected function get_default_label_minimum_shipment_weight() {
+		return 0.5;
 	}
 
 	/**
@@ -110,11 +134,11 @@ abstract class Auto extends Simple implements ShippingProviderAuto {
 	}
 
 	public function set_label_default_shipment_weight( $weight ) {
-		$this->set_prop( 'label_default_shipment_weight', ( '' === $weight ? 0 : wc_format_decimal( $weight ) ) );
+		$this->set_prop( 'label_default_shipment_weight', ( '' === $weight ? '' : wc_format_decimal( $weight ) ) );
 	}
 
 	public function set_label_minimum_shipment_weight( $weight ) {
-		$this->set_prop( 'label_minimum_shipment_weight', ( '' === $weight ? 0 : wc_format_decimal( $weight ) ) );
+		$this->set_prop( 'label_minimum_shipment_weight', ( '' === $weight ? '' : wc_format_decimal( $weight ) ) );
 	}
 
 	public function set_label_auto_enable( $enable ) {
@@ -200,7 +224,7 @@ abstract class Auto extends Simple implements ShippingProviderAuto {
 		return apply_filters( "{$this->get_hook_prefix()}label_fields_html", $html, $shipment, $this );
 	}
 
-	protected function get_automation_settings() {
+	protected function get_automation_settings( $for_shipping_method = false ) {
 		$settings = array(
 			array( 'title' => _x( 'Automation', 'shipments', 'woocommerce-germanized' ), 'allow_override' => true, 'type' => 'title', 'id' => 'shipping_provider_label_auto_options' ),
 		);
@@ -271,7 +295,7 @@ abstract class Auto extends Simple implements ShippingProviderAuto {
 		return array();
 	}
 
-	protected function get_label_settings() {
+	protected function get_label_settings( $for_shipping_method = false ) {
 		$settings = array(
 			array( 'title' => '', 'type' => 'title', 'id' => 'shipping_provider_label_options' ),
 
@@ -283,6 +307,7 @@ abstract class Auto extends Simple implements ShippingProviderAuto {
 				'id' 		        => 'label_default_shipment_weight',
 				'css'               => 'max-width: 60px;',
 				'class'             => 'wc_input_decimal',
+				'default'           => $this->get_default_label_default_shipment_weight(),
 				'value'             => $this->get_setting( 'label_default_shipment_weight' )
 			),
 
@@ -294,6 +319,7 @@ abstract class Auto extends Simple implements ShippingProviderAuto {
 				'id' 		        => 'label_minimum_shipment_weight',
 				'css'               => 'max-width: 60px;',
 				'class'             => 'wc_input_decimal',
+				'default'           => $this->get_default_label_minimum_shipment_weight(),
 				'value'             => $this->get_setting( 'label_minimum_shipment_weight' )
 			),
 
@@ -418,6 +444,11 @@ abstract class Auto extends Simple implements ShippingProviderAuto {
 				}
 
 				if ( 'checkbox' === $field['type'] && ! isset( $props[ $field['id'] ] ) ) {
+					// Exclude array fields from default checkbox handling
+					if ( isset( $field['name'] ) && strstr( $field['name'], '[]' ) ) {
+						continue;
+					}
+
 					$props[ $field['id'] ] = 'no';
 				}
 			}

@@ -400,7 +400,7 @@ class UpdraftPlus_Backblaze_CurlClient {
 				break;
 			}
 
-			$nextFileName = $response['nextFileName'];
+			$json['startFileName'] = $response['nextFileName'];
 		}
 
 		return $files;
@@ -573,11 +573,13 @@ class UpdraftPlus_Backblaze_CurlClient {
 	/**
 	 * Delete multiple files
 	 *
-	 * @param Array $files_to_delete - array of possible files to delete; sub-keys are FileName, FileId, BucketName
+	 * @param Array  $files_to_delete - array of possible files to delete; sub-keys are FileName, FileId, BucketName
+	 * @param String $bucket_name	  - the bucket that files are being deleted from
+	 * @param String|Null			  - path prefix (to prevent unnecessary scanning of other paths)
 	 *
 	 * @return Array|Boolean
 	 */
-	public function deleteMultipleFiles($files_to_delete, $bucket_name) {
+	public function deleteMultipleFiles($files_to_delete, $bucket_name, $path_prefix = null) {
 		if (count($files_to_delete) == 0) {
 			return false;
 		}
@@ -587,9 +589,13 @@ class UpdraftPlus_Backblaze_CurlClient {
 		$result       = [];
 		$bulk_session = curl_multi_init();
 
-		$files = $this->listFiles(array(
+		$list_options = array(
 			'BucketName' => $bucket_name
-		));
+		);
+		
+		if (is_string($path_prefix) && '' !== $path_prefix) $list_options['Prefix'] = $path_prefix;
+		
+		$files = $this->listFiles($list_options);
 
 		$files_lookup = array();
 

@@ -436,6 +436,9 @@ class PackingSlips {
 			'default_status'            => 'closed',
 			'available_line_item_types' => array( 'product' ),
 			'supports'                  => array( 'items' ),
+			'barcode_code_types'        => array(
+				'document?data=order_number' => __( 'Order number', 'woocommerce-germanized-pro' ),
+			),
 			'shortcodes'                => array(
 				'document' => array(
 					array(

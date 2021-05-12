@@ -195,23 +195,23 @@ return array(
 		'path'    => $vendorDir . '/setasign/fpdi/src/FpdfTpl.php'
 	),
 	'Vendidero\\StoreaBill\\sevDesk\\Package' => array(
-		'version' => '1.0.8.0',
+		'version' => '1.0.9.0',
 		'path'    => $baseDir . '/packages/storeabill-sevdesk/src/Package.php'
 	),
 	'Vendidero\\StoreaBill\\sevDesk\\Contact' => array(
-		'version' => '1.0.8.0',
+		'version' => '1.0.9.0',
 		'path'    => $baseDir . '/packages/storeabill-sevdesk/src/Contact.php'
 	),
 	'Vendidero\\StoreaBill\\sevDesk\\API\\Models' => array(
-		'version' => '1.0.8.0',
+		'version' => '1.0.9.0',
 		'path'    => $baseDir . '/packages/storeabill-sevdesk/src/API/Models.php'
 	),
 	'Vendidero\\StoreaBill\\sevDesk\\API\\Auth' => array(
-		'version' => '1.0.8.0',
+		'version' => '1.0.9.0',
 		'path'    => $baseDir . '/packages/storeabill-sevdesk/src/API/Auth.php'
 	),
 	'Vendidero\\StoreaBill\\sevDesk\\Sync' => array(
-		'version' => '1.0.8.0',
+		'version' => '1.0.9.0',
 		'path'    => $baseDir . '/packages/storeabill-sevdesk/src/Sync.php'
 	),
 	'Vendidero\\StoreaBill\\Lexoffice\\Package' => array(
@@ -235,787 +235,787 @@ return array(
 		'path'    => $baseDir . '/packages/storeabill-lexoffice/src/Sync.php'
 	),
 	'Vendidero\\StoreaBill\\Compatibility\\Subscriptions' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Compatibility/Subscriptions.php'
 	),
 	'Vendidero\\StoreaBill\\Compatibility\\WPML' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Compatibility/WPML.php'
 	),
 	'Vendidero\\StoreaBill\\Compatibility\\Bundles' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Compatibility/Bundles.php'
 	),
 	'Vendidero\\StoreaBill\\Compatibility\\Bookings' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Compatibility/Bookings.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\OrderItemShipping' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/OrderItemShipping.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\RefundOrder' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/RefundOrder.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\Product' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/Product.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\Order' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/Order.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\BulkDownload' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/BulkDownload.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\OrderItemFee' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/OrderItemFee.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\OrderItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/OrderItem.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\Admin\\Fields' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/Admin/Fields.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\Admin\\Settings' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/Admin/Settings.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\Admin\\Ajax' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/Admin/Ajax.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\Admin\\InvoiceMetaBox' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/Admin/InvoiceMetaBox.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\Admin\\Admin' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/Admin/Admin.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\SettingsHandler' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/SettingsHandler.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\OrderItemTaxable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/OrderItemTaxable.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\Customer' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/Customer.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\Helper' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/Helper.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\Automation' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/Automation.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\OrderItemProduct' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/OrderItemProduct.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\BulkSync' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/BulkSync.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\REST\\Server' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/REST/Server.php'
 	),
 	'Vendidero\\StoreaBill\\WooCommerce\\REST\\Orders' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/WooCommerce/REST/Orders.php'
 	),
 	'Vendidero\\StoreaBill\\Install' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Install.php'
 	),
 	'Vendidero\\StoreaBill\\Settings' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Settings.php'
 	),
 	'Vendidero\\StoreaBill\\Package' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Package.php'
 	),
 	'Vendidero\\StoreaBill\\DownloadManager' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DownloadManager.php'
 	),
 	'Vendidero\\StoreaBill\\DataStores\\DocumentItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DataStores/DocumentItem.php'
 	),
 	'Vendidero\\StoreaBill\\DataStores\\Document' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DataStores/Document.php'
 	),
 	'Vendidero\\StoreaBill\\DataStores\\DocumentNotice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DataStores/DocumentNotice.php'
 	),
 	'Vendidero\\StoreaBill\\DataStores\\FeeItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DataStores/FeeItem.php'
 	),
 	'Vendidero\\StoreaBill\\DataStores\\Journal' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DataStores/Journal.php'
 	),
 	'Vendidero\\StoreaBill\\DataStores\\Invoice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DataStores/Invoice.php'
 	),
 	'Vendidero\\StoreaBill\\DataStores\\TaxItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DataStores/TaxItem.php'
 	),
 	'Vendidero\\StoreaBill\\DataStores\\ShippingItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DataStores/ShippingItem.php'
 	),
 	'Vendidero\\StoreaBill\\DataStores\\ProductItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DataStores/ProductItem.php'
 	),
 	'Vendidero\\StoreaBill\\DataStores\\DocumentTemplate' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/DataStores/DocumentTemplate.php'
 	),
 	'Vendidero\\StoreaBill\\References\\RefundOrder' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/References/RefundOrder.php'
 	),
 	'Vendidero\\StoreaBill\\References\\Product' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/References/Product.php'
 	),
 	'Vendidero\\StoreaBill\\References\\Order' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/References/Order.php'
 	),
 	'Vendidero\\StoreaBill\\References\\Customer' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/References/Customer.php'
 	),
 	'Vendidero\\StoreaBill\\UploadManager' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/UploadManager.php'
 	),
 	'Vendidero\\StoreaBill\\Emails\\Email' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Emails/Email.php'
 	),
 	'Vendidero\\StoreaBill\\Emails\\Document' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Emails/Document.php'
 	),
 	'Vendidero\\StoreaBill\\Emails\\Mailer' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Emails/Mailer.php'
 	),
 	'Vendidero\\StoreaBill\\Emails\\DocumentAdmin' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Emails/DocumentAdmin.php'
 	),
 	'Vendidero\\StoreaBill\\Emails\\SimpleInvoice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Emails/SimpleInvoice.php'
 	),
 	'Vendidero\\StoreaBill\\Emails\\CancellationInvoice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Emails/CancellationInvoice.php'
 	),
 	'Vendidero\\StoreaBill\\Admin\\Exporters' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Admin/Exporters.php'
 	),
 	'Vendidero\\StoreaBill\\Admin\\Fields' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Admin/Fields.php'
 	),
 	'Vendidero\\StoreaBill\\Admin\\Settings' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Admin/Settings.php'
 	),
 	'Vendidero\\StoreaBill\\Admin\\Ajax' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Admin/Ajax.php'
 	),
 	'Vendidero\\StoreaBill\\Admin\\Notices' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Admin/Notices.php'
 	),
 	'Vendidero\\StoreaBill\\Admin\\Users' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Admin/Users.php'
 	),
 	'Vendidero\\StoreaBill\\Admin\\Admin' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Admin/Admin.php'
 	),
 	'Vendidero\\StoreaBill\\PDF\\MpdfMerger' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/PDF/MpdfMerger.php'
 	),
 	'Vendidero\\StoreaBill\\PDF\\MpdfRenderer' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/PDF/MpdfRenderer.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Shortcodes' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Shortcodes.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Factory' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Factory.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Document' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Document.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\TaxTotal' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/TaxTotal.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\CsvExporter' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/CsvExporter.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\FileExporter' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/FileExporter.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Attribute' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Attribute.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Styles' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Styles.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Journal' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Journal.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Exporter' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Exporter.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Total' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Total.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\FirstPageTemplate' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/FirstPageTemplate.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Item' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Item.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Query' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Query.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\BulkActionHandler' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/BulkActionHandler.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Template' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Template.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\BulkMerge' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/BulkMerge.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Notice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Notice.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\DefaultTemplate' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/DefaultTemplate.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\ShortcodeManager' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/ShortcodeManager.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\Table' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/Table.php'
 	),
 	'Vendidero\\StoreaBill\\Document\\ExporterTrait' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Document/ExporterTrait.php'
 	),
 	'Vendidero\\StoreaBill\\Exceptions\\DocumentRenderException' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Exceptions/DocumentRenderException.php'
 	),
 	'Vendidero\\StoreaBill\\ExternalSync\\SyncData' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/ExternalSync/SyncData.php'
 	),
 	'Vendidero\\StoreaBill\\ExternalSync\\ExternalSyncable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/ExternalSync/ExternalSyncable.php'
 	),
 	'Vendidero\\StoreaBill\\ExternalSync\\SyncHandler' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/ExternalSync/SyncHandler.php'
 	),
 	'Vendidero\\StoreaBill\\ExternalSync\\Helper' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/ExternalSync/Helper.php'
 	),
 	'Vendidero\\StoreaBill\\ExternalSync\\BulkSync' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/ExternalSync/BulkSync.php'
 	),
 	'Vendidero\\StoreaBill\\ExternalSync\\SyncException' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/ExternalSync/SyncException.php'
 	),
 	'Vendidero\\StoreaBill\\Utilities\\Singleton' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Utilities/Singleton.php'
 	),
 	'Vendidero\\StoreaBill\\Utilities\\CacheHelper' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Utilities/CacheHelper.php'
 	),
 	'Vendidero\\StoreaBill\\Tax' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Tax.php'
 	),
 	'Vendidero\\StoreaBill\\Data' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Data.php'
 	),
 	'Vendidero\\StoreaBill\\API\\RESTResponse' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/API/RESTResponse.php'
 	),
 	'Vendidero\\StoreaBill\\API\\REST' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/API/REST.php'
 	),
 	'Vendidero\\StoreaBill\\Updater' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Updater.php'
 	),
 	'Vendidero\\StoreaBill\\PostTypes' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/PostTypes.php'
 	),
 	'Vendidero\\StoreaBill\\TaxRate' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/TaxRate.php'
 	),
 	'Vendidero\\StoreaBill\\Fonts\\Font' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Fonts/Font.php'
 	),
 	'Vendidero\\StoreaBill\\Fonts\\Embed' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Fonts/Embed.php'
 	),
 	'Vendidero\\StoreaBill\\Fonts\\Fonts' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Fonts/Fonts.php'
 	),
 	'Vendidero\\StoreaBill\\Fonts\\Helper' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Fonts/Helper.php'
 	),
 	'Vendidero\\StoreaBill\\Fonts\\GoogleFonts' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Fonts/GoogleFonts.php'
 	),
 	'Vendidero\\StoreaBill\\REST\\Controller' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/REST/Controller.php'
 	),
 	'Vendidero\\StoreaBill\\REST\\Server' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/REST/Server.php'
 	),
 	'Vendidero\\StoreaBill\\REST\\PreviewShortcodesController' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/REST/PreviewShortcodesController.php'
 	),
 	'Vendidero\\StoreaBill\\REST\\PreviewFontsController' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/REST/PreviewFontsController.php'
 	),
 	'Vendidero\\StoreaBill\\REST\\CancellationController' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/REST/CancellationController.php'
 	),
 	'Vendidero\\StoreaBill\\REST\\InvoiceController' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/REST/InvoiceController.php'
 	),
 	'Vendidero\\StoreaBill\\REST\\DocumentController' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/REST/DocumentController.php'
 	),
 	'Vendidero\\StoreaBill\\Countries' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Countries.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ShippingAddress' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ShippingAddress.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemTable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemTable.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemTotals' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemTotals.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemImage' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemImage.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\DynamicContent' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/DynamicContent.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemSku' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemSku.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\DocumentDate' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/DocumentDate.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemDifferentialTaxationNotice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemDifferentialTaxationNotice.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ThirdCountryNotice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ThirdCountryNotice.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemName' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemName.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemTableColumn' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemTableColumn.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\Address' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/Address.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemTableColumnBlock' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemTableColumnBlock.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemQuantity' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemQuantity.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemTotalRow' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemTotalRow.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemPosition' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemPosition.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemPrice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemPrice.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemLineTotal' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemLineTotal.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemDiscount' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemDiscount.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\DynamicBlock' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/DynamicBlock.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemMeta' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemMeta.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\Block' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/Block.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\PlaceholderBlock' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/PlaceholderBlock.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\Header' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/Header.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemTaxRate' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemTaxRate.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\Logo' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/Logo.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ReverseChargeNotice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ReverseChargeNotice.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\Footer' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/Footer.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemAttributes' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/ItemAttributes.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\DocumentTitle' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/DocumentTitle.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\PageNumber' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/PageNumber.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\Barcode' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/Barcode.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Blocks\\DocumentStyles' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Blocks/DocumentStyles.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Templates\\DefaultInvoice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Templates/DefaultInvoice.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Templates\\DefaultInvoiceCancellation' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Templates/DefaultInvoiceCancellation.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Templates\\Block' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Templates/Block.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Templates\\Template' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Templates/Template.php'
 	),
 	'Vendidero\\StoreaBill\\Editor\\Helper' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Editor/Helper.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Numberable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Numberable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Previewable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Previewable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\TokenAuth' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/TokenAuth.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Auth' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Auth.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\RefundOrder' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/RefundOrder.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Product' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Product.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Order' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Order.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\OAuth' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/OAuth.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\SyncableReference' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/SyncableReference.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\PDFMerge' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/PDFMerge.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Discountable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Discountable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Reference' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Reference.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Taxable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Taxable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\ShortcodeHandleable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/ShortcodeHandleable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\SplitTaxable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/SplitTaxable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Customer' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Customer.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Summable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Summable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Exporter' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Exporter.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Invoice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Invoice.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\ExternalSyncable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/ExternalSyncable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\ExternalSync' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/ExternalSync.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\PDF' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/PDF.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Priceable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Priceable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\TotalsContainable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/TotalsContainable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\TaxContainable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/TaxContainable.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\SyncableReferenceItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/SyncableReferenceItem.php'
 	),
 	'Vendidero\\StoreaBill\\Interfaces\\Compatibility' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Interfaces/Compatibility.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\Shortcodes' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/Shortcodes.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\BulkCancel' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/BulkCancel.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\CancellationPreview' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/CancellationPreview.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\Discounts' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/Discounts.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\SimpleTable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/SimpleTable.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\BulkFinalize' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/BulkFinalize.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\CsvExporter' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/CsvExporter.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\FeeItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/FeeItem.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\CancellationTable' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/CancellationTable.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\Simple' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/Simple.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\Invoice' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/Invoice.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\Cancellation' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/Cancellation.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\SimpleCsvExporter' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/SimpleCsvExporter.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\TaxableItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/TaxableItem.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\CancellationCsvExporter' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/CancellationCsvExporter.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\Item' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/Item.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\TaxItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/TaxItem.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\Query' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/Query.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\ShippingItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/ShippingItem.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\ProductItem' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/ProductItem.php'
 	),
 	'Vendidero\\StoreaBill\\Invoice\\SimplePreview' => array(
-		'version' => '1.5.0.0',
+		'version' => '1.5.1.0',
 		'path'    => $baseDir . '/packages/storeabill/src/Invoice/SimplePreview.php'
 	),
 	'Vendidero\\Germanized\\Pro\\StoreaBill\\LegalPages' => array(

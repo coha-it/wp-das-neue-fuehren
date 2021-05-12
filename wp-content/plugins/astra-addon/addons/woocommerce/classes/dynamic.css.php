@@ -269,8 +269,31 @@ function astra_woocommerce_dynamic_css( $dynamic_css, $dynamic_css_filtered = ''
 				'-moz-osx-font-smoothing' => 'grayscale',
 				'line-height'             => 'normal',
 			),
+			'#ast-quick-view-close:before'              => array(
+				'content'         => '"\e5cd"',
+				'font-family'     => "'Astra'",
+				'text-decoration' => 'inherit',
+			),
+			'.ast-icon-previous:before, .ast-icon-next:before' => array(
+				'content'                 => '"\e900"',
+				'font-family'             => "'Astra'",
+				'display'                 => 'inline-block',
+				'font-size'               => '.8rem',
+				'font-weight'             => '700',
+				'text-rendering'          => 'auto',
+				'-webkit-font-smoothing'  => 'antialiased',
+				'-moz-osx-font-smoothing' => 'grayscale',
+				'vertical-align'          => 'middle',
+				'line-height'             => 'normal',
+				'font-style'              => 'normal',
+			),
+			'.ast-icon-previous:before'                 => array(
+				'transform' => 'rotate(90deg)',
+			),
+			'.ast-icon-next:before'                     => array(
+				'transform' => 'rotate(-90deg)',
+			),
 		);
-
 	} else {
 		$woo_shopping_cart = array(
 			'.ast-addon-cart-wrap .ast-icon' => array(
@@ -286,6 +309,20 @@ function astra_woocommerce_dynamic_css( $dynamic_css, $dynamic_css_filtered = ''
 			'.ast-icon-shopping-basket svg'  => array(
 				'height' => '1.15em',
 				'width'  => '1.2em',
+			),
+			'#ast-quick-view-close svg'      => array(
+				'height' => '12px',
+				'width'  => '12px',
+			),
+			'.ast-product-icon-previous svg' => array(
+				'transform' => 'rotate(90deg)',
+			),
+			'.ast-product-icon-next svg'     => array(
+				'transform' => 'rotate(-90deg)',
+			),
+			'.ast-product-icon-previous .ast-icon.icon-arrow svg, .ast-product-icon-next .ast-icon.icon-arrow svg' => array(
+				'margin-left' => '0',
+				'width'       => '0.8em',
 			),
 		);
 	}

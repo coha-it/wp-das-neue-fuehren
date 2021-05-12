@@ -353,6 +353,8 @@ abstract class Shipment extends WC_Data {
 		$weight = $this->get_prop( 'packaging_weight', $context );
 
 		if ( 'view' === $context && '' === $weight ) {
+			$weight = wc_format_decimal( 0 );
+
 			if ( $packaging = $this->get_packaging() ) {
 				if ( ! empty( $packaging->get_weight() ) ) {
 					$weight = wc_get_weight( $packaging->get_weight(), $this->get_weight_unit(), wc_gzd_get_packaging_weight_unit() );
@@ -364,18 +366,22 @@ abstract class Shipment extends WC_Data {
 	}
 
     public function get_items_to_pack() {
-    	if ( is_null( $this->items_to_pack ) ) {
-		    $this->items_to_pack = array();
+	    if ( ! Package::is_packing_supported() ) {
+			return $this->get_items();
+	    } else {
+		    if ( is_null( $this->items_to_pack ) ) {
+			    $this->items_to_pack = array();
 
-		    foreach( $this->get_items() as $item ) {
-			    for ( $i = 0; $i < $item->get_quantity(); $i++ ) {
-				    $box_item = new Packing\ShipmentItem( $item );
-				    $this->items_to_pack[] = $box_item;
+			    foreach( $this->get_items() as $item ) {
+				    for ( $i = 0; $i < $item->get_quantity(); $i++ ) {
+					    $box_item = new Packing\ShipmentItem( $item );
+					    $this->items_to_pack[] = $box_item;
+				    }
 			    }
 		    }
-	    }
 
-    	return apply_filters( "{$this->get_hook_prefix()}items_to_pack", $this->items_to_pack, $this );
+		    return apply_filters( "{$this->get_hook_prefix()}items_to_pack", $this->items_to_pack, $this );
+	    }
     }
 
 	/**
@@ -961,6 +967,21 @@ abstract class Shipment extends WC_Data {
 		return apply_filters( 'woocommerce_gzd_get_shipment_address_street_addition', $split['addition'], $this );
 	}
 
+	public function get_address_street_addition_2( $type = 'address_1' ) {
+		$split = wc_gzd_split_shipment_street( $this->{"get_$type"}() );
+
+		/**
+		 * Filter to adjust the shipment address street addition.
+		 *
+		 * @param string   $addition The shipment address street addition e.g. EG14.
+		 * @param Shipment $shipment The shipment object.
+		 *
+		 * @since 3.0.6
+		 * @package Vendidero/Germanized/Shipments
+		 */
+		return apply_filters( 'woocommerce_gzd_get_shipment_address_street_addition_2', $split['addition_2'], $this );
+	}
+
 	/**
 	 * Returns the shipment address company.
 	 *
@@ -1239,6 +1260,12 @@ abstract class Shipment extends WC_Data {
         return $result;
     }
 
+    public function is_shipped() {
+    	$is_shipped = $this->has_status( wc_gzd_get_shipment_sent_statuses() );
+
+    	return apply_filters( $this->get_hook_prefix() . "is_shipped", $is_shipped, $this );
+    }
+
     /**
      * Maybe set date sent.
      *
@@ -1248,10 +1275,7 @@ abstract class Shipment extends WC_Data {
     public function maybe_set_date_sent() {
         // This logic only runs if the date_sent prop has not been set yet.
         if ( ! $this->get_date_sent( 'edit' ) ) {
-            $sent_stati = wc_gzd_get_shipment_sent_statuses();
-
-            if ( $this->has_status( $sent_stati ) ) {
-
+            if ( $this->is_shipped() ) {
                 // If payment complete status is reached, set paid now.
                 $this->set_date_sent( current_time( 'timestamp', true ) );
             }
@@ -1512,7 +1536,7 @@ abstract class Shipment extends WC_Data {
 				}
 			}
 
-			if ( ! $exists ) {
+			if ( ! $exists && $default_packaging ) {
 				$this->set_packaging_id( $default_packaging->get_id() );
 			}
 		} elseif ( empty( $packaging_id ) && $default_packaging ) {
@@ -1533,13 +1557,14 @@ abstract class Shipment extends WC_Data {
 
 			$this->set_props( $props );
 		} else {
+			$props = array( 'packaging_weight' => '' );
+
+			if ( array_key_exists( 'packaging_id', $this->get_changes() ) ) {
+				$props = array_merge( $props, array( 'length' => '', 'width' => '', 'height' => '' ) );
+			}
+
 			// Reset
-			$this->set_props( array(
-				'width'            => '',
-				'length'           => '',
-				'height'           => '',
-				'packaging_weight' => ''
-			) );
+			$this->set_props( $props );
 		}
 
 		return true;
@@ -2190,7 +2215,7 @@ abstract class Shipment extends WC_Data {
 		}
 
 		// If shipment is already delivered
-		if ( $check_status && $this->has_status( array( 'delivered', 'shipped' ) ) ) {
+		if ( $check_status && $this->is_shipped() ) {
 			$needs_label = false;
 		}
 

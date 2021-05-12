@@ -103,13 +103,13 @@
 	 * Content background color
 	 */
 	if( jQuery( 'body' ).hasClass( 'ast-separate-container' ) && jQuery( 'body' ).hasClass( 'ast-two-container' )){
-		var dynamicSelector   = '.ast-separate-container .ast-article-single, .ast-separate-container .comment-respond,.ast-separate-container .ast-comment-list li, .ast-separate-container .ast-woocommerce-container, .ast-separate-container .error-404, .ast-separate-container .no-results, .single.ast-separate-container .ast-author-meta, .ast-separate-container .related-posts, .ast-separate-container .comments-area, .ast-separate-container .comments-count-wrapper, .ast-separate-container.ast-two-container #secondary .widget';
+		var dynamicSelector   = '.ast-separate-container .ast-article-single:not(.ast-related-post), .ast-separate-container .comment-respond,.ast-separate-container .ast-comment-list li, .ast-separate-container .ast-woocommerce-container, .ast-separate-container .error-404, .ast-separate-container .no-results, .single.ast-separate-container .ast-author-meta, .ast-separate-container .related-posts, .ast-separate-container .comments-area, .ast-separate-container .comments-count-wrapper, .ast-separate-container.ast-two-container #secondary .widget';
 		astra_apply_responsive_background_css( 'astra-settings[content-bg-obj-responsive]', dynamicSelector, 'desktop' );
 		astra_apply_responsive_background_css( 'astra-settings[content-bg-obj-responsive]', dynamicSelector, 'tablet' );
 		astra_apply_responsive_background_css( 'astra-settings[content-bg-obj-responsive]', dynamicSelector, 'mobile' );
 	}
 	else if ( jQuery( 'body' ).hasClass( 'ast-separate-container' ) ) {
-		var dynamicSelector   = '.ast-separate-container .ast-article-single, .ast-separate-container .comment-respond,.ast-separate-container .ast-comment-list li, .ast-separate-container .ast-woocommerce-container, .ast-separate-container .error-404, .ast-separate-container .no-results, .single.ast-separate-container .ast-author-meta, .ast-separate-container .related-posts, .ast-separate-container .comments-area, .ast-separate-container .comments-count-wrapper';
+		var dynamicSelector   = '.ast-separate-container .ast-article-single:not(.ast-related-post), .ast-separate-container .comment-respond,.ast-separate-container .ast-comment-list li, .ast-separate-container .ast-woocommerce-container, .ast-separate-container .error-404, .ast-separate-container .no-results, .single.ast-separate-container .ast-author-meta, .ast-separate-container .related-posts, .ast-separate-container .comments-area, .ast-separate-container .comments-count-wrapper';
 		astra_apply_responsive_background_css( 'astra-settings[content-bg-obj-responsive]', dynamicSelector, 'desktop' );
 		astra_apply_responsive_background_css( 'astra-settings[content-bg-obj-responsive]', dynamicSelector, 'tablet' );
 		astra_apply_responsive_background_css( 'astra-settings[content-bg-obj-responsive]', dynamicSelector, 'mobile' );
@@ -440,7 +440,7 @@
 	/**
 	 * Mobile menu CSS
 	 */
-	
+
 	var selector = '.ast-hfb-header .ast-builder-menu-mobile .main-header-menu';
 
 	if ( astColors.astra_not_updated ) {

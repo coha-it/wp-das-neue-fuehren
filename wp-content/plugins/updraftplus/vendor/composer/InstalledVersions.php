@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '8d386c025b5058bf8c9619a06df079d7c0794aec',
+    'reference' => 'b01739bc1b02b2cf04e6ef5ad7c053b91eb363de',
     'name' => 'updraftplus/updraftplus',
   ),
   'versions' => 
@@ -285,12 +285,12 @@ private static $installed = array (
     ),
     'psr/log' => 
     array (
-      'pretty_version' => '1.1.3',
-      'version' => '1.1.3.0',
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0f73288fd15629204f9d42b7055f72dacbe811fc',
+      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
     ),
     'rackspace/php-opencloud' => 
     array (
@@ -344,7 +344,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '8d386c025b5058bf8c9619a06df079d7c0794aec',
+      'reference' => 'b01739bc1b02b2cf04e6ef5ad7c053b91eb363de',
     ),
     'vakata/jstree' => 
     array (

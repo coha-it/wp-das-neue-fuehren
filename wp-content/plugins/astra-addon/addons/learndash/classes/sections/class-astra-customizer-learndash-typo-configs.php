@@ -143,7 +143,7 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_Typo_Configs' ) ) {
 						'px' => 'px',
 						'em' => 'em',
 					),
-					'priority'    => 30,
+					'priority'    => 16,
 				),
 
 				/**
@@ -216,7 +216,7 @@ if ( ! class_exists( 'Astra_Customizer_Learndash_Typo_Configs' ) ) {
 						'px' => 'px',
 						'em' => 'em',
 					),
-					'priority'    => 55,
+					'priority'    => 41,
 				),
 			);
 

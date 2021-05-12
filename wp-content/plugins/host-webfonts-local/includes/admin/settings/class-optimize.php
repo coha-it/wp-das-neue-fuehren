@@ -18,6 +18,8 @@ defined('ABSPATH') || exit;
 
 class OMGF_Admin_Settings_Optimize extends OMGF_Admin_Settings_Builder
 {
+	const FFW_PRESS_OMGF_AF_URL = 'https://ffw.press/wordpress/omgf-additional-fonts/';
+
 	/** @var array $optimized_fonts */
 	private $optimized_fonts;
 
@@ -58,6 +60,9 @@ class OMGF_Admin_Settings_Optimize extends OMGF_Admin_Settings_Builder
 ?>
 		<p>
 			<?= __('These settings affect the fonts OMGF downloads and the stylesheet it generates. If you\'re simply looking to replace your Google Fonts for locally hosted copies, the default settings should suffice.', $this->plugin_text_domain); ?>
+		</p>
+		<p>
+			<?= sprintf(__('To install additional Google Fonts, a (free) add-on is required, which can be downloaded <a href="%s" target="blank">here</a>.', $this->plugin_text_domain), self::FFW_PRESS_OMGF_AF_URL); ?>
 		</p>
 	<?php
 	}
@@ -178,7 +183,7 @@ class OMGF_Admin_Settings_Optimize extends OMGF_Admin_Settings_Builder
 							<td>&nbsp;</td>
 							<th><?= __('Style', $this->plugin_text_domain); ?></th>
 							<th><?= __('Weight', $this->plugin_text_domain); ?></th>
-							<th><?= __('Preload', $this->plugin_text_domain); ?></th>
+							<th><?= __('Preload', $this->plugin_text_domain); ?><span class="dashicons dashicons-info tooltip"><span class="tooltip-text"><span class="inline-text"><?= __('Preload font files (before everything else) so they will be available as soon as they are required for the rendering of the page. Only use preload for font files that are used above the fold.', $this->plugin_text_domain); ?></span><img width="230" class="illustration" src="<?= plugin_dir_url(OMGF_PLUGIN_FILE) . 'assets/images/above-the-fold.png'; ?>" /></span></span></th>
 							<th><?= __('Do not load', $this->plugin_text_domain); ?></th>
 						</tr>
 					</thead>

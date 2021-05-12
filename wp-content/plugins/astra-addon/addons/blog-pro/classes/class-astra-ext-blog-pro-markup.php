@@ -45,6 +45,7 @@ if ( ! class_exists( 'Astra_Ext_Blog_Pro_Markup' ) ) {
 			add_action( 'wp_head', array( $this, 'blog_customization' ) );
 			add_action( 'astra_pagination_infinite', array( $this, 'blog_customization' ) );
 			add_filter( 'astra_blog_post_featured_image_after', array( $this, 'date_box' ), 10, 1 );
+			add_filter( 'astra_related_post_featured_image_after', array( $this, 'date_box' ), 10, 1 );
 			add_action( 'astra_entry_after', array( $this, 'author_info_markup' ) );
 			add_action( 'astra_entry_after', array( $this, 'single_post_navigation_markup' ), 9 );
 
@@ -216,10 +217,14 @@ if ( ! class_exists( 'Astra_Ext_Blog_Pro_Markup' ) ) {
 		public function date_box( $output ) {
 
 			$enable_date_box = astra_get_option( 'blog-date-box' );
+			$date_box_style  = astra_get_option( 'blog-date-box-style' );
+
+			if ( 'astra_related_post_featured_image_after' === current_filter() ) {
+				$enable_date_box = apply_filters( 'astra_related_post_enable_date_box', $enable_date_box );
+				$date_box_style  = apply_filters( 'astra_related_post_date_box_style', $date_box_style );
+			}
 
 			if ( $enable_date_box ) :
-
-				$date_box_style = astra_get_option( 'blog-date-box-style' );
 
 				$time_string = '<time class="entry-date published updated" datetime="%1$s"><span class="date-month">%2$s</span> <span class="date-day">%3$s</span> <span class="date-year">%4$s</span></time>';
 				if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
@@ -422,10 +427,9 @@ if ( ! class_exists( 'Astra_Ext_Blog_Pro_Markup' ) ) {
 		 */
 		public function astra_ext_blog_pro_body_classes( $classes ) {
 
-			global $wp_query;
-
 			if ( is_archive() || is_home() || is_search() ) {
 
+				global $wp_query;
 				$blog_layout      = astra_get_option( 'blog-layout' );
 				$blog_masonry     = astra_get_option( 'blog-masonry' );
 				$blog_grid        = astra_get_option( 'blog-grid' );
@@ -467,7 +471,9 @@ if ( ! class_exists( 'Astra_Ext_Blog_Pro_Markup' ) ) {
 		 */
 		public function add_styles() {
 
-			$author_info = astra_get_option( 'ast-author-info' );
+			$author_info          = astra_get_option( 'ast-author-info' );
+			$enable_related_posts = astra_get_option( 'enable-related-posts' );
+
 			/*** Start Path Logic */
 
 			/* Define Variables */
@@ -504,6 +510,10 @@ if ( ! class_exists( 'Astra_Ext_Blog_Pro_Markup' ) ) {
 
 			if ( $author_info ) {
 				Astra_Minify::add_css( $gen_path . 'post-author' . $file_prefix . '.css' );
+			}
+
+			if ( $enable_related_posts ) {
+				Astra_Minify::add_css( $gen_path . 'related-posts' . $file_prefix . '.css' );
 			}
 
 			/* Blog Layouts */

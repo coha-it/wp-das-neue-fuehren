@@ -4,8 +4,8 @@ Tags: woocommerce, woocommerce german, woocommerce DE, woocommerce germany, wooc
 Requires at least: 5.4
 Tested up to: 5.7
 WC requires at least: 3.9
-WC tested up to: 5.2
-Stable tag: 3.4.2
+WC tested up to: 5.3
+Stable tag: 3.4.7
 Requires PHP: 5.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -15,10 +15,10 @@ Germanized extends WooCommerce to become a legally compliant shop in the german 
 == Description ==
 
 Germanized extends WooCommerce to technically match specific german legal conditions. The objective of this plugin is to adapt WooCommerce to the special requirements of german market.
-Users of [Germanized for WooCommerce Pro](https://vendidero.de/woocommerce-germanized "WooCommerce optimized for German Market") benefit from additional features such as PDF invoices, model text generators for terms and revocation pages, premium support and more!
+Users of [Germanized for WooCommerce Pro](https://vendidero.de/woocommerce-germanized "WooCommerce optimized for German Market") benefit from additional features, specifically designed for Germany, such as PDF invoices, model text generators for terms and revocation pages, premium support and more!
 
 = Legal certainty for WooCommerce =
-Germanized extends WooCommerce with typical german shop functionality: Delivery times, base prices, shipping costs and tax notices, option to attach legally relevant pages (e.g. terms, revocation page, privacy policy etc.) - even in emails, small business regulation notices and many more.
+Germanized extends WooCommerce with typical german shop functionality: Delivery times, base prices, shipping costs and tax notices, options to attach legally relevant pages (e.g. terms, revocation page, privacy policy etc.) - even in emails, small business regulation notices and many more.
 Furthermore we customized the WooCommerce checkout to make your store meet the button solution. See a list of our features for further details:
 
 * *Delivery Times* - Add and edit delivery times for WooCommerce products. Optionally set a default delivery time as fallback. Disable delivery times for certain product types.
@@ -53,10 +53,6 @@ Furthermore we customized the WooCommerce checkout to make your store meet the b
 Germanized has been approved by Trusted Shops and therefor offers best technical conditions to operate a legally binding WooCommerce Shop in Germany.
 Trusted Shops certifies Shops after selected and weighted criteria and has carefully examined our WooCommerce Plugin.
 Of course Trusted Shops customers may embed their quality seals or further Trusted Shops Products as genuine Seller and Product Reviews by adapting just a few options within Germanized for WooCommerce.
-
-= Code quality =
-While developing Germanized we have specifically considered clean integration within WooCommerce and WordPress by adapting core functionality.
-Most of the changes are made by using Hooks & Filters so that our plugin is compatible to almost every Theme.
 
 = Pro: WooCommerce PDF invoices & packing slips =
 As a Pro User of Germanized you may automatically or manually create PDF Invoices and Packing Slips for your orders. Adjust your document layout by using the built-in visual document editor.
@@ -157,15 +153,22 @@ You may of course Update Germanized for WooCommerce automatically through the Wo
 
 == Frequently Asked Questions ==
 
-= Where do I receive support for Germanized? =
+= Where can I find the documentation? =
+[Germanized Documentation](https://vendidero.de/dokumentation/woocommerce-germanized)
+
+= Need help? =
 
 You may ask your questions regarding Germanized for WooCommerce within our free [WordPress Support Forum](https://wordpress.org/support/plugin/woocommerce-germanized).
-Professional ticket-support is being offered to [Professional Users](https://vendidero.de/woocommerce-germanized "Support for WooCommerce Germanized") only.
+Professional help desk support is being offered to [Professional Users](https://vendidero.de/woocommerce-germanized "Support for WooCommerce Germanized") only.
 
 = Not every option fits my WooCommerce Theme =
 
 Unfortunately not every Theme does implement WooCommerce in the way it's meant to be or differs from the original structure which leads to layout and/or compatibility
 issues. For testing purposes, please activate a default WordPress Theme (such as TwentyX) and see whether the issues persist.
+
+= Using a Pagebuilder? =
+
+In case you are using a Pagebuilder (e.g. Elementor, Divi-Builder) you might want to replace the default [shopmarks](https://vendidero.de/dokument/preisauszeichnungen-anpassen) placed by Germanized with our custom [shortcodes](https://vendidero.de/dokument/preisauszeichnungen-anpassen#pagebuilder).
 
 = Email attachments not showing in WooCommerce order confirmation email =
 
@@ -186,6 +189,42 @@ Bug reports may be filed via our [GitHub repository](https://github.com/vendider
 6. Edit pdf documents (Pro)
 
 == Changelog ==
+= 3.4.7 =
+* Improvement: WooCommerce 5.3 compatibility
+* Improvement: Support new price range format (5.3) for sale labels
+* Improvement: DHL differentiate between EU and international products
+* Improvement: Always add variable shopmark data to improve pagebuilder support
+* Improvement: DOI allow resending activation email for non-logged in customers (session)
+* Fix: DHL adjust custom weights in case item total weight is greater than label weight
+* Fix: DHL added endorsement for international shipment
+* Fix: Additional legacy label fixes
+
+= 3.4.6 =
+* Improvement: Do only validate checkboxes in case they are rendered (added hidden input field)
+* Improvement: Allow choosing non-address-printable formats for DP via filter
+* Improvement: DHL incomplete shipper address notice
+* Improvement: Default label weights per shipping provider
+* Improvement: Shipment position number (e.g. 1 of 2) placeholders for email notifications
+* Improvement: Add list of shipped shipments to order completed mail notification
+* Improvement: Timestamp DB handling
+* Fix: Force filename filter removal
+* Fix: TS review export CSV new format
+
+= 3.4.5 =
+* Fix: DHL checkout services
+* Fix: Internetmarke library timezone side effect
+* Fix: PHP < 7.4 packing exclude
+
+= 3.4.4 =
+* Fix: DHL/DP customs data
+
+= 3.4.3 =
+* Improvement: Added option to auto-insert new encryption key to wp-config.php
+* Fix: Secret Box Helper sodium_compat exception
+* Fix: By default hide empty wc-gzd-additional-info tags
+* Fix: Manually adjusting shipment dimensions without packaging
+* Fix: Prevent calling payment_gateways() from shipping method settings to prevent loops
+
 = 3.4.2 =
 * Secret box helper error improvements
 

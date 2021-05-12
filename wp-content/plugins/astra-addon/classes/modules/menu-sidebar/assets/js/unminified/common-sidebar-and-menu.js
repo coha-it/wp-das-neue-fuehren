@@ -131,6 +131,11 @@
 			$('html').css( 'margin-right', hiddenInnerWidth - innerWidth );
 
 			$('html').addClass( e.data.class );
+
+			// Added for accessibility issue.
+			setTimeout(function(){
+				$('#cart-accessibility').focus()
+			}, 100);
 		},
 
 		_enable_primary_menu_overlay: function(e) {

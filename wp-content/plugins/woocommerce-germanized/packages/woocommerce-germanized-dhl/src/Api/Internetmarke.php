@@ -6,7 +6,6 @@ use baltpeter\Internetmarke\Address;
 use baltpeter\Internetmarke\CompanyName;
 use baltpeter\Internetmarke\Name;
 use baltpeter\Internetmarke\PageFormat;
-use baltpeter\Internetmarke\PartnerInformation;
 use baltpeter\Internetmarke\PersonName;
 use baltpeter\Internetmarke\Service;
 use baltpeter\Internetmarke\User;
@@ -21,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
 class Internetmarke {
 
 	/**
-	 * @var PartnerInformation|null
+	 * @var ImPartnerInformation|null
 	 */
 	protected $partner = null;
 
@@ -58,7 +57,7 @@ class Internetmarke {
 	protected $page_formats = null;
 
 	public function __construct() {
-		$this->partner = new PartnerInformation( Package::get_internetmarke_partner_id(), Package::get_internetmarke_key_phase(), Package::get_internetmarke_token() );
+		$this->partner = new ImPartnerInformation( Package::get_internetmarke_partner_id(), Package::get_internetmarke_key_phase(), Package::get_internetmarke_token() );
 		$this->errors  = new \WP_Error();
 
 		try {
@@ -413,7 +412,7 @@ class Internetmarke {
 		$options = array();
 
 		foreach( $formats as $format ) {
-			if ( ! $format->isIsAddressPossible() ) {
+			if ( apply_filters( 'woocommerce_gzd_deutsche_post_exclude_page_format', ! $format->isIsAddressPossible(), $format ) ) {
 				continue;
 			}
 
@@ -667,7 +666,7 @@ class Internetmarke {
 		$person_name = new PersonName( '', '', $this->get_shipment_address_prop( $shipment, 'first_name', $address_type ), $this->get_shipment_address_prop( $shipment, 'last_name', $address_type ) );
 
 		if ( $this->get_shipment_address_prop( $shipment, 'company', $address_type ) ) {
-			$name = new Name( null, new CompanyName( $this->get_shipment_address_prop( $shipment, 'company', $address_type ), $receiver_person_name ) );
+			$name = new Name( null, new CompanyName( $this->get_shipment_address_prop( $shipment, 'company', $address_type ), $person_name ) );
 		} else {
 			$name = new Name( $person_name, null );
 		}

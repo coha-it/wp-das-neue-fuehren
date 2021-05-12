@@ -550,7 +550,7 @@ function astra_ext_below_header_sections_dynamic_css( $dynamic_css, $dynamic_css
 				'color' => esc_attr( $sticky_below_header_menu_color_responsive['desktop'] ),
 			),
 
-			'.ast-below-sticky-header-active .ast-below-header-menu .menu-item:hover > .menu-link, .ast-below-sticky-header-active .ast-below-header-menu .menu-item:focus > .menu-link, .ast-below-sticky-header-active .ast-below-header-menu .menu-item.focus > .menu-link' => array(
+			'.ast-below-sticky-header-active .ast-below-header-menu .menu-item:hover > .menu-link, .ast-below-sticky-header-active .ast-below-header-menu .menu-item:focus > .menu-link, .ast-below-sticky-header-active .ast-below-header-menu .menu-item.focus > .menu-link, .ast-desktop .ast-mega-menu-enabled.ast-below-header-menu .menu-item .menu-link:hover' => array(
 				'color'            => esc_attr( $sticky_below_header_menu_h_color_responsive['desktop'] ),
 				'background-color' => esc_attr( $sticky_below_header_menu_h_a_bg_color_responsive['desktop'] ),
 			),

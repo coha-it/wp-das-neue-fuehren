@@ -544,7 +544,7 @@ class Sync extends SyncHandler {
 			$account_id     = $this->get_account_id( $invoice->get_payment_method_name() );
 			$purpose        = $invoice->get_order_number();
 			$transaction_id = '';
-			$is_offline     = $this->is_offline_account( $account_id );
+			$is_manual      = $this->is_manual_account( $account_id );
 			$accounts       = $this->get_accounts();
 
             /**
@@ -584,7 +584,7 @@ class Sync extends SyncHandler {
 			 * Online accounts to not allow booking vouchers without a matching transaction.
              * Use default account as fallback.
 			 */
-			if ( ( ! $is_offline && empty( $transaction_id ) ) || ! array_key_exists( $account_id, $accounts ) ) {
+			if ( ( ! $is_manual && empty( $transaction_id ) ) || ! array_key_exists( $account_id, $accounts ) ) {
 				$account_id = $this->get_default_sevdesk_account();
 			}
 
@@ -613,8 +613,8 @@ class Sync extends SyncHandler {
 	    return $this->get_setting( 'vouchers_book_default_account' );
     }
 
-    protected function is_offline_account( $account_id ) {
- 	    $accounts = $this->get_accounts( 'offline' );
+    protected function is_manual_account( $account_id ) {
+ 	    $accounts = $this->get_accounts( 'manual' );
 
  	    return array_key_exists( $account_id, $accounts ) ? true : false;
     }
@@ -728,8 +728,8 @@ class Sync extends SyncHandler {
 	protected function get_accounts( $type = '' ) {
 		if ( is_null( $this->accounts ) ) {
 			$this->accounts = array(
-                'offline' => array(),
-                'online'  => array()
+                'manual' => array(),
+                'auto'   => array()
             );
 
 			foreach( $this->api->get_accounts() as $account ) {
@@ -743,15 +743,15 @@ class Sync extends SyncHandler {
 			        $this->default_account = $account['id'];
                 }
 
-                if ( 'offline' === $account['type'] ) {
-                    $this->accounts['offline'][ $account['id'] ] = $title;
+                if ( in_array( $account['type'], array( 'offline', 'register' ) ) ) {
+                    $this->accounts['manual'][ $account['id'] ] = $title;
                 } else {
-	                $this->accounts['online'][ $account['id'] ] = $title;
+	                $this->accounts['auto'][ $account['id'] ] = $title;
                 }
 			}
 		}
 
-		$accounts = empty( $type ) ? array_merge( $this->accounts['offline'], $this->accounts['online'] ) : $this->accounts[ $type ];
+		$accounts = empty( $type ) ? ( $this->accounts['manual'] + $this->accounts['auto'] ) : $this->accounts[ $type ];
 
 		return $accounts;
 	}
@@ -832,17 +832,17 @@ class Sync extends SyncHandler {
 	}
 
 	public function get_settings( $context = 'view' ) {
-		$settings                = parent::get_settings( $context );
-		$account_options         = array();
-		$offline_account_options = array();
-		$category_options        = array();
+		$settings               = parent::get_settings( $context );
+		$account_options        = array();
+		$manual_account_options = array();
+		$category_options       = array();
 
 		/**
 		 * Prevent loops
 		 */
 		if ( 'edit' === $context && ! empty( $this->settings ) && $this->is_enabled() ) {
 		    $account_options         = $this->get_account_options();
-			$offline_account_options = $this->get_account_options( 'offline' );
+			$manual_account_options  = $this->get_account_options( 'manual' );
 		    $category_options        = $this->get_category_options();
 		}
 
@@ -909,7 +909,7 @@ class Sync extends SyncHandler {
 			'class'       => 'sab-enhanced-select',
 			'desc_tip'    => _x( 'Link voucher to a specific transaction if possible.', 'sevdesk', 'woocommerce-germanized-pro' ),
 			'default'     => '',
-			'options'     => $offline_account_options,
+			'options'     => $manual_account_options,
 			'custom_attributes'  => array(
 				'data-allow-clear' => true,
                 'data-placeholder' => _x( 'None', 'sevdesk accounts', 'woocommerce-germanized-pro' ),

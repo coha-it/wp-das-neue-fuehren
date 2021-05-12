@@ -15,6 +15,10 @@ defined( 'ABSPATH' ) || exit;
 
 class DHL extends Auto {
 
+	protected function get_default_label_default_shipment_weight() {
+		return 2;
+	}
+
 	public function get_title( $context = 'view' ) {
 		return _x( 'DHL', 'dhl', 'woocommerce-germanized' );
 	}
@@ -745,8 +749,22 @@ class DHL extends Auto {
 		if ( 'simple' === $shipment->get_type() ) {
 			if ( Package::is_shipping_domestic( $shipment->get_country() ) ) {
 				return $this->get_shipment_setting( $shipment, 'label_default_product_dom' );
+			} elseif ( Package::is_eu_shipment( $shipment->get_country() ) ) {
+				$product = $this->get_shipment_setting( $shipment, 'label_default_product_eu' );
+
+				if ( ! empty( $product ) && ! in_array( $product, array_keys( wc_gzd_dhl_get_products_eu() ) ) ) {
+					$product = 'V55PAK';
+				}
+
+				return $product;
 			} else {
-				return $this->get_shipment_setting( $shipment, 'label_default_product_int' );
+				$product = $this->get_shipment_setting( $shipment, 'label_default_product_int' );
+
+				if ( ! empty( $product ) && ! in_array( $product, array_keys( wc_gzd_dhl_get_products_international() ) ) ) {
+					$product = 'V53WPAK';
+				}
+
+				return $product;
 			}
 		}
 
@@ -782,11 +800,12 @@ class DHL extends Auto {
 			$needs_additional_total = true;
 
 			foreach( $shipments as $shipment ) {
-				if ( $existing_label = wc_gzd_dhl_get_shipment_label( $shipment, 'simple' ) ) {
-
-					if ( $existing_label->cod_includes_additional_total() ) {
-						$needs_additional_total = false;
-						break;
+				if ( $existing_label = $shipment->get_label() ) {
+					if ( is_a( $existing_label, '\Vendidero\Germanized\DHL\Label\DHL' ) ) {
+						if ( $existing_label->cod_includes_additional_total() ) {
+							$needs_additional_total = false;
+							break;
+						}
 					}
 				}
 			}
@@ -926,7 +945,7 @@ class DHL extends Auto {
 		return Package::get_available_countries();
 	}
 
-	protected function get_general_settings() {
+	protected function get_general_settings( $for_shipping_method = false ) {
 		$settings = array(
 			array( 'title' => '', 'type' => 'title', 'id' => 'dhl_general_options' ),
 
@@ -996,7 +1015,7 @@ class DHL extends Auto {
 
 		$dhl_products = array();
 
-		foreach( ( wc_gzd_dhl_get_products_domestic() + wc_gzd_dhl_get_products_international() ) as $product => $title ) {
+		foreach( ( wc_gzd_dhl_get_products_domestic() + wc_gzd_dhl_get_products_eu() + wc_gzd_dhl_get_products_international() ) as $product => $title ) {
 			$dhl_products[] = array(
 				'title'             => $title,
 				'type'              => 'text',
@@ -1011,6 +1030,7 @@ class DHL extends Auto {
 			'title'             => _x( 'Inlay Returns', 'dhl', 'woocommerce-germanized' ),
 			'type'              => 'text',
 			'default'           => '',
+			'id'                => 'participation_return',
 			'value'             => $this->get_setting( 'participation_return', '' ),
 			'custom_attributes'	=> array( 'maxlength' => '2' ),
 		);
@@ -1022,12 +1042,12 @@ class DHL extends Auto {
 			array( 'title' => _x( 'Tracking', 'dhl', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'tracking_options' ),
 		) );
 
-		$general_settings = parent::get_general_settings();
+		$general_settings = parent::get_general_settings( $for_shipping_method );
 
 		return array_merge( $settings, $general_settings );
 	}
 
-	protected function get_pickup_settings() {
+	protected function get_pickup_settings( $for_shipping_method = false ) {
 		$settings = array(
 			array( 'title' => '', 'type' => 'title', 'id' => 'dhl_pickup_options', 'allow_override' => true ),
 
@@ -1100,10 +1120,14 @@ class DHL extends Auto {
 		return $settings;
 	}
 
-	protected function get_preferred_settings() {
+	protected function get_preferred_settings( $for_shipping_method = false ) {
 		$wc_gateway_titles = array();
 
-		if ( function_exists( 'WC' ) && WC()->payment_gateways() ) {
+		/**
+		 * Calling  WC()->payment_gateways()->payment_gateways() could potentially lead to problems
+		 * in case the shipping methods are being loaded from within a gateway constructor (e.g. WC Cash on Pickup)
+		 */
+		if ( ! $for_shipping_method && function_exists( 'WC' ) && WC()->payment_gateways() ) {
 			$wc_payment_gateways = WC()->payment_gateways()->payment_gateways();
 			$wc_gateway_titles   = wp_list_pluck( $wc_payment_gateways, 'method_title', 'id' );
 		}
@@ -1260,9 +1284,10 @@ class DHL extends Auto {
 		return $settings;
 	}
 
-	protected function get_label_settings() {
+	protected function get_label_settings( $for_shipping_method = false ) {
 		$select_dhl_product_dom = wc_gzd_dhl_get_products_domestic();
 		$select_dhl_product_int = wc_gzd_dhl_get_products_international();
+		$select_dhl_product_eu  = wc_gzd_dhl_get_products_eu();
 		$duties                 = wc_gzd_dhl_get_duties();
 		$ref_placeholders       = wc_gzd_dhl_get_label_payment_ref_placeholder();
 		$ref_placeholders_str   = implode( ', ', array_keys( $ref_placeholders ) );
@@ -1282,9 +1307,20 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Int. Default Service', 'dhl', 'woocommerce-germanized' ),
+				'title'             => _x( 'EU Default Service', 'dhl', 'woocommerce-germanized' ),
 				'type'              => 'select',
 				'default'           => 'V55PAK',
+				'value'             => $this->get_setting( 'label_default_product_eu', 'V55PAK' ),
+				'id'                => 'label_default_product_eu',
+				'desc'              => '<div class="wc-gzd-additional-desc">' . _x( 'Please select your default DHL shipping service for EU shipments that you want to offer to your customers (you can always change this within each individual shipment afterwards).', 'dhl', 'woocommerce-germanized' ) . '</div>',
+				'options'           => $select_dhl_product_eu,
+				'class'             => 'wc-enhanced-select',
+			),
+
+			array(
+				'title'             => _x( 'Int. Default Service', 'dhl', 'woocommerce-germanized' ),
+				'type'              => 'select',
+				'default'           => 'V53WPAK',
 				'value'             => $this->get_setting( 'label_default_product_int', 'V55PAK' ),
 				'id'                => 'label_default_product_int',
 				'desc'              => '<div class="wc-gzd-additional-desc">' . _x( 'Please select your default DHL shipping service for cross-border shipments that you want to offer to your customers (you can always change this within each individual shipment afterwards).', 'dhl', 'woocommerce-germanized' ) . '</div>',
@@ -1336,7 +1372,7 @@ class DHL extends Auto {
 			array( 'type' => 'sectionend', 'id' => 'shipping_provider_dhl_label_options' ),
 		);
 
-		$settings = array_merge( $settings, parent::get_label_settings() );
+		$settings = array_merge( $settings, parent::get_label_settings( $for_shipping_method ) );
 
 		$settings = array_merge( $settings, array(
 			array( 'title' => _x( 'Retoure', 'dhl', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'dhl_retoure_options', 'desc' => sprintf( _x( 'Adjust handling of return shipments through the DHL Retoure API. Make sure that your %s contains DHL Retoure Online.', 'dhl', 'woocommerce-germanized' ), '<a href="' . Package::get_geschaeftskunden_portal_url() . '">' . _x(  'contract', 'dhl', 'woocommerce-germanized' ) . '</a>' ) ),
@@ -1513,7 +1549,7 @@ class DHL extends Auto {
 	}
 
 	public function get_help_link() {
-		return 'https://vendidero.de/dokumentation/woocommerce-germanized/post-dhl';
+		return 'https://vendidero.de/dokumentation/woocommerce-germanized/versanddienstleister';
 	}
 
 	public function get_signup_link() {

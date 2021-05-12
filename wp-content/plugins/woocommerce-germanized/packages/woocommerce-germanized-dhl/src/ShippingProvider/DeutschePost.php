@@ -14,12 +14,20 @@ defined( 'ABSPATH' ) || exit;
 
 class DeutschePost extends Auto {
 
+	protected function get_default_label_minimum_shipment_weight() {
+		return 0.01;
+	}
+
+	protected function get_default_label_default_shipment_weight() {
+		return 0.5;
+	}
+
 	public function supports_customer_return_requests() {
 		return true;
 	}
 
 	public function get_help_link() {
-		return 'https://vendidero.de/dokumentation/woocommerce-germanized/post-dhl';
+		return 'https://vendidero.de/dokumentation/woocommerce-germanized/versanddienstleister';
 	}
 
 	public function get_signup_link() {
@@ -98,7 +106,7 @@ class DeutschePost extends Auto {
 		return Package::get_available_countries();
 	}
 
-	protected function get_general_settings() {
+	protected function get_general_settings( $for_shipping_method = false ) {
 		$settings = array(
 			array( 'title' => '', 'type' => 'title', 'id' => 'deutsche_post_general_options' ),
 
@@ -130,14 +138,14 @@ class DeutschePost extends Auto {
 			array( 'title' => _x( 'Tracking', 'dhl', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'tracking_options' ),
 		) );
 
-		$general_settings = parent::get_general_settings();
+		$general_settings = parent::get_general_settings( $for_shipping_method );
 
 		return array_merge( $settings, $general_settings );
 	}
 
-	protected function get_label_settings() {
+	protected function get_label_settings( $for_shipping_method = false ) {
 		$api      = Package::get_internetmarke_api();
-		$settings = parent::get_label_settings();
+		$settings = parent::get_label_settings( $for_shipping_method );
 
 		if ( $api && $api->is_configured() && $api->auth() && $api->is_available() ) {
 			$api->reload_products();
@@ -261,7 +269,7 @@ class DeutschePost extends Auto {
 			) );
 		}
 
-		return $settings;   
+		return $settings;
 	}
 
 	protected function get_product_select_options() {
@@ -452,6 +460,19 @@ class DeutschePost extends Auto {
 		} else {
 			return $this->get_shipment_setting( $shipment, 'label_default_product_int' );
 		}
+	}
+
+	/**
+	 * @param \Vendidero\Germanized\Shipments\Shipment $shipment
+	 */
+	public function get_available_label_services( $shipment ) {
+		$services = array();
+
+		if ( $api = Package::get_internetmarke_api()->get_product_list() ) {
+			$services = array_keys( $api->get_additional_services() );
+		}
+
+		return $services;
 	}
 
 	protected function get_default_label_props( $shipment ) {

@@ -675,29 +675,6 @@
   color: #ffffff;
 }
 
-.ast-icon-previous:before,
-.ast-icon-next:before {
-  content: "\e900";
-  display: inline-block;
-  font-family: Astra;
-  font-size: .8rem;
-  font-weight: 700;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  vertical-align: middle;
-  line-height: normal;
-  font-style: normal;
-}
-
-.ast-icon-previous:before {
-  transform: rotate(90deg);
-}
-
-.ast-icon-next:before {
-  transform: rotate(-90deg);
-}
-
 .ast-site-header-cart .cart-container {
   transition: all 0.2s linear;
 }

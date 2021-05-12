@@ -104,6 +104,8 @@ if ( ! class_exists( 'Astra_Ext_Advanced_Hooks_Loader' ) ) {
 		 */
 		public function column_content( $column, $post_id ) {
 
+			$icon_style = 'font-size:17px;';
+
 			if ( 'advanced_hook_action' == $column ) {
 				$layout = get_post_meta( $post_id, 'ast-advanced-hook-layout', true );
 
@@ -118,16 +120,16 @@ if ( ! class_exists( 'Astra_Ext_Advanced_Hooks_Loader' ) ) {
 
 				$locations = get_post_meta( $post_id, 'ast-advanced-hook-location', true );
 				if ( ! empty( $locations ) ) {
-					echo '<div class="ast-advanced-hook-location-wrap" style="margin-bottom: 5px;">';
-					echo '<strong>Display: </strong>';
+					echo '<div class="ast-advanced-hook-location-wrap ast-advanced-hook-wrap">';
+					echo '<strong>' . esc_attr( __( 'Display', 'astra-addon' ) ) . ': </strong>';
 					$this->column_display_location_rules( $locations );
 					echo '</div>';
 				}
 
 				$locations = get_post_meta( $post_id, 'ast-advanced-hook-exclusion', true );
 				if ( ! empty( $locations ) ) {
-					echo '<div class="ast-advanced-hook-exclusion-wrap" style="margin-bottom: 5px;">';
-					echo '<strong>Exclusion: </strong>';
+					echo '<div class="ast-advanced-hook-exclusion-wrap ast-advanced-hook-wrap">';
+					echo '<strong>' . esc_attr( __( 'Exclusion', 'astra-addon' ) ) . ': </strong>';
 					$this->column_display_location_rules( $locations );
 					echo '</div>';
 				}
@@ -138,9 +140,43 @@ if ( ! class_exists( 'Astra_Ext_Advanced_Hooks_Loader' ) ) {
 					foreach ( $users as $user ) {
 						$user_label[] = Astra_Target_Rules_Fields::get_user_by_key( $user );
 					}
-					echo '<div class="ast-advanced-hook-users-wrap">';
-					echo '<strong>Users: </strong>';
+					echo '<div class="ast-advanced-hook-users-wrap ast-advanced-hook-wrap">';
+					echo '<strong>' . esc_attr( __( 'Users', 'astra-addon' ) ) . ': </strong>';
 					echo esc_html( join( ', ', $user_label ) );
+					echo '</div>';
+				}
+
+				$display_devices = get_post_meta( $post_id, 'ast-advanced-display-device', true );
+				if ( is_array( $display_devices ) ) {
+					echo '<div class="ast-advanced-hook-display-devices-wrap ast-advanced-hook-wrap">';
+					echo '<strong>' . esc_attr( __( 'Devices', 'astra-addon' ) ) . ': </strong>';
+					foreach ( $display_devices as $display_device ) {
+						switch ( $display_device ) {
+							case 'desktop':
+								echo '<span style=' . esc_attr( $icon_style ) . ' class="dashicons dashicons-desktop"></span>';
+								break;
+							case 'tablet':
+								echo '<span style=' . esc_attr( $icon_style ) . ' class="dashicons dashicons-tablet"></span>';
+								break;
+							case 'mobile':
+								echo '<span style=' . esc_attr( $icon_style ) . ' class="dashicons dashicons-smartphone"></span>';
+								break;
+						}
+					}
+					echo '</div>';
+				}
+
+				$time_duration = get_post_meta( $post_id, 'ast-advanced-time-duration', true );
+				if ( isset( $time_duration ) && is_array( $time_duration ) && isset( $time_duration['enabled'] ) ) {
+					echo '<div class="ast-advanced-hook-time-duration-wrap ast-advanced-hook-wrap">';
+					echo '<strong>' . esc_attr( __( 'Time Duration Eligible', 'astra-addon' ) ) . ': </strong>';
+
+					if ( ! Astra_Ext_Advanced_Hooks_Markup::get_time_duration_eligibility( $post_id ) ) {
+						echo '<span style=' . esc_attr( $icon_style ) . ' class="dashicons dashicons-no"></span>';
+					} else {
+						echo '<span style=' . esc_attr( $icon_style ) . ' class="dashicons dashicons-yes-alt"></span>';
+					}
+
 					echo '</div>';
 				}
 			}
@@ -283,6 +319,20 @@ if ( ! class_exists( 'Astra_Ext_Advanced_Hooks_Loader' ) ) {
 			if ( ( 'post-new.php' == $pagenow || 'post.php' == $pagenow ) && ASTRA_ADVANCED_HOOKS_POST_TYPE == $screen->post_type ) {
 				// Styles.
 				wp_enqueue_media();
+
+				wp_enqueue_script(
+					'advanced-hook-datetimepicker-script',
+					ASTRA_EXT_ADVANCED_HOOKS_URL . 'assets/js/minified/jquery-ui-timepicker-addon.min.js',
+					array( 'jquery-ui-datepicker', 'jquery-ui-slider' ),
+					ASTRA_EXT_VER,
+					true
+				);
+				wp_enqueue_style(
+					'advanced-hook-datetimepicker-style',
+					ASTRA_EXT_ADVANCED_HOOKS_URL . 'assets/css/minified/jquery-ui-timepicker-addon.min.css',
+					null,
+					ASTRA_EXT_VER
+				);
 
 				// Scripts.
 				if ( SCRIPT_DEBUG ) {

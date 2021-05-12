@@ -73,7 +73,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'font_type' => 'ast-font-family',
 					'title'     => __( 'Family', 'astra-addon' ),
 					'connect'   => ASTRA_THEME_SETTINGS . '[font-weight-shop-product-title]',
-					'priority'  => 5,
+					'priority'  => 4,
 				),
 
 				/**
@@ -126,7 +126,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'section'     => 'woocommerce_product_catalog',
 					'transport'   => 'postMessage',
 					'control'     => 'ast-responsive',
-					'priority'    => 5,
+					'priority'    => 4,
 					'title'       => __( 'Size', 'astra-addon' ),
 					'input_attrs' => array(
 						'min' => 0,
@@ -193,7 +193,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'font_type' => 'ast-font-family',
 					'title'     => __( 'Family', 'astra-addon' ),
 					'connect'   => ASTRA_THEME_SETTINGS . '[font-weight-shop-product-price]',
-					'priority'  => 10,
+					'priority'  => 9,
 				),
 
 				/**
@@ -224,7 +224,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'section'     => 'woocommerce_product_catalog',
 					'transport'   => 'postMessage',
 					'control'     => 'ast-responsive',
-					'priority'    => 10,
+					'priority'    => 9,
 					'title'       => __( 'Size', 'astra-addon' ),
 					'input_attrs' => array(
 						'min' => 0,
@@ -302,7 +302,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'font_type' => 'ast-font-family',
 					'title'     => __( 'Family', 'astra-addon' ),
 					'connect'   => ASTRA_THEME_SETTINGS . '[font-weight-shop-product-content]',
-					'priority'  => 15,
+					'priority'  => 14,
 				),
 
 				/**
@@ -355,7 +355,7 @@ if ( ! class_exists( 'Astra_Woocommerce_Shop_Typo_Configs' ) ) {
 					'section'     => 'woocommerce_product_catalog',
 					'transport'   => 'postMessage',
 					'control'     => 'ast-responsive',
-					'priority'    => 15,
+					'priority'    => 14,
 					'title'       => __( 'Size', 'astra-addon' ),
 					'input_attrs' => array(
 						'min' => 0,

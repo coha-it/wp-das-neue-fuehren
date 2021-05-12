@@ -573,17 +573,17 @@
         },
         {
             "name": "vendidero/storeabill",
-            "version": "v1.5.0",
-            "version_normalized": "1.5.0.0",
+            "version": "v1.5.1",
+            "version_normalized": "1.5.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:vendidero/storeabill.git",
-                "reference": "7d5f15abc6da03f2c1bdd407f73748e6ed949f27"
+                "reference": "0146513f27846304f04a4a41992cfe2d88591780"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vendidero/storeabill/zipball/7d5f15abc6da03f2c1bdd407f73748e6ed949f27",
-                "reference": "7d5f15abc6da03f2c1bdd407f73748e6ed949f27",
+                "url": "https://api.github.com/repos/vendidero/storeabill/zipball/0146513f27846304f04a4a41992cfe2d88591780",
+                "reference": "0146513f27846304f04a4a41992cfe2d88591780",
                 "shasum": ""
             },
             "require": {
@@ -594,7 +594,7 @@
             "require-dev": {
                 "phpunit/phpunit": "7.5.14"
             },
-            "time": "2021-04-13T13:18:02+00:00",
+            "time": "2021-04-16T15:36:40+00:00",
             "type": "wordpress-plugin",
             "installation-source": "dist",
             "autoload": {
@@ -666,17 +666,17 @@
         },
         {
             "name": "vendidero/storeabill-sevdesk",
-            "version": "v1.0.8",
-            "version_normalized": "1.0.8.0",
+            "version": "v1.0.9",
+            "version_normalized": "1.0.9.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:vendidero/storeabill-sevdesk.git",
-                "reference": "865cb24a56e39207a560f286b971d6eb1316dd9c"
+                "reference": "c3a2bf41cd8dc2d1bfbb3cce1893e1acd351b6f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vendidero/storeabill-sevdesk/zipball/865cb24a56e39207a560f286b971d6eb1316dd9c",
-                "reference": "865cb24a56e39207a560f286b971d6eb1316dd9c",
+                "url": "https://api.github.com/repos/vendidero/storeabill-sevdesk/zipball/c3a2bf41cd8dc2d1bfbb3cce1893e1acd351b6f8",
+                "reference": "c3a2bf41cd8dc2d1bfbb3cce1893e1acd351b6f8",
                 "shasum": ""
             },
             "require": {
@@ -685,7 +685,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^6.5.14"
             },
-            "time": "2021-04-13T12:28:01+00:00",
+            "time": "2021-04-16T15:37:27+00:00",
             "type": "wordpress-plugin",
             "installation-source": "dist",
             "autoload": {

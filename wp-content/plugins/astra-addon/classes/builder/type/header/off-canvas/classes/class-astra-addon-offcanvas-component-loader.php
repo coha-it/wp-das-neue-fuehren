@@ -291,7 +291,7 @@ class Astra_Addon_Offcanvas_Component_Loader {
 		.ast-desktop-popup-content .ast-builder-layout-element:not(.ast-builder-menu):not(.ast-header-divider-element),
 		.ast-mobile-header-content .ast-builder-layout-element:not(.ast-builder-menu):not(.ast-header-divider-element),
 		.ast-desktop-header-content .ast-builder-layout-element:not(.ast-builder-menu):not(.ast-header-divider-element) {
-		margin: 15px 20px;
+		padding: 15px 20px;
 		}
 
 		.ast-header-break-point .main-navigation .menu-link {

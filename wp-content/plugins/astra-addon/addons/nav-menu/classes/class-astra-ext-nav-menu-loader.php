@@ -227,7 +227,6 @@ if ( ! class_exists( 'Astra_Ext_Nav_Menu_Loader' ) ) {
 			if ( 'primary' == $args['theme_location'] || 'secondary_menu' == $args['theme_location'] || 'above_header_menu' == $args['theme_location'] || 'below_header_menu' == $args['theme_location'] || 'mobile_menu' == $args['theme_location'] ) {
 				$args['walker'] = new Astra_Custom_Nav_Walker();
 			}
-
 			return $args;
 		}
 

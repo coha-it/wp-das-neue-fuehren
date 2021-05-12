@@ -33,8 +33,6 @@ function ColumnEdit( {
 		[`is-horizontally-aligned-${ align }`]: align,
 	} );
 
-	const ref = useRef();
-
 	return (
 		<div className={ classes }>
 			<BlockControls>

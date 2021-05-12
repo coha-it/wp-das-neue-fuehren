@@ -954,7 +954,17 @@ class UpdraftPlus_Addons_MoreFiles {
 								}
 							});
 						}
-					}
+					},
+					'plugins' : ['sort','types'],
+					'sort' : function(a, b) {
+						a1 = this.get_node(a);
+						b1 = this.get_node(b);
+						if (a1.icon == b1.icon){
+							return (a1.text > b1.text) ? 1 : -1;
+						} else {
+							return (a1.icon < b1.icon) ? 1 : -1;
+						}
+					},
 				});
 
 				// Detect change on the tree and update the input that has been marked as editing

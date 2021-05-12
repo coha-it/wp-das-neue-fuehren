@@ -169,7 +169,7 @@ if ( ! class_exists( 'ASTRA_Ext_WooCommerce_Markup' ) ) {
 		 */
 		public function get_off_canvas_sidebar() {
 			if ( 'disable' != astra_get_option( 'shop-off-canvas-trigger-type' ) && ( is_shop() || is_product_taxonomy() ) ) {
-				echo '<div class="astra-off-canvas-sidebar-wrapper from-left"><div class="astra-off-canvas-sidebar"><span class="ast-shop-filter-close close">' . Astra_Icons::get_icons( 'close' ) . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo '<div class="astra-off-canvas-sidebar-wrapper from-left"><div class="astra-off-canvas-sidebar"><a href="javascript:void(0)" id="cart-accessibility" class="ast-shop-filter-close close">' . Astra_Icons::get_icons( 'close' ) . '</a>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				astra_get_footer_widget( 'astra-woo-product-off-canvas-sidebar' );
 				echo '</div></div>';
 			}
@@ -457,11 +457,17 @@ if ( ! class_exists( 'ASTRA_Ext_WooCommerce_Markup' ) ) {
 			if ( ! is_product() ) {
 				return;
 			}
+			$previous_icon = '<i class="ast-icon-previous"></i>';
+			$next_icon     = '<i class="ast-icon-next"></i>';
+			if ( true === Astra_Icons::is_svg_icons() ) {
+				$previous_icon = '<i class="ast-product-icon-previous">' . Astra_Icons::get_icons( 'arrow' ) . '</i>';
+				$next_icon     = '<i class="ast-product-icon-next">' . Astra_Icons::get_icons( 'arrow' ) . '</i>';
+			}
 			?>
 			<div class="product-links">
 				<?php
-				previous_post_link( '%link', '<i class="ast-icon-previous"></i>' );
-				next_post_link( '%link', '<i class="ast-icon-next"></i>' );
+				previous_post_link( '%link', $previous_icon );
+				next_post_link( '%link', $next_icon );
 				?>
 			</div>
 			<?php
@@ -1381,6 +1387,11 @@ if ( ! class_exists( 'ASTRA_Ext_WooCommerce_Markup' ) ) {
 				$localize_vars['header_above_stick_meta'] = get_post_meta( $shop_page_id, 'header-above-stick-meta', true );
 				$localize_vars['header_below_stick_meta'] = get_post_meta( $shop_page_id, 'header-below-stick-meta', true );
 			}
+			// Accessibility Text.
+			$localize_vars['product_plus_minus_text'] = array(
+				'plus_qty'  => __( 'Plus Quantity', 'astra-addon' ),
+				'minus_qty' => __( 'Minus Quantity', 'astra-addon' ),
+			);
 			return $localize_vars;
 		}
 

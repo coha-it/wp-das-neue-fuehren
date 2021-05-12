@@ -643,8 +643,8 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 
 		if ( $date_completed = $this->get_order()->get_date_completed() ) {
 			$date_of_service = $date_completed;
-		} elseif( $date_sent = $this->get_order()->get_date_paid() ) {
-			$date_of_service = $date_sent;
+		} elseif( $date_paid = $this->get_order()->get_date_paid() ) {
+			$date_of_service = $date_paid;
 		}
 
 		return apply_filters( $this->get_hook_prefix() . 'date_of_service', $date_of_service, $this, $this->get_order() );

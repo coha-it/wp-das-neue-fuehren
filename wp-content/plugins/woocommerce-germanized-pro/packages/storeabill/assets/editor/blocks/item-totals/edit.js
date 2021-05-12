@@ -9,7 +9,7 @@ import { dropRight, get, map, times } from 'lodash';
  */
 import {__, _x} from '@wordpress/i18n';
 import {PanelBody, RangeControl, ToggleControl} from '@wordpress/components';
-import { useRef } from '@wordpress/element';
+import { useRef, useEffect } from '@wordpress/element';
 import {
     InspectorControls,
     InnerBlocks,
@@ -89,7 +89,7 @@ const createBlocksFromDefault = ( innerBlocksTemplate ) => {
     );
 };
 
-const ItemTotalsEdit = ( props ) => {
+function ItemTotalsEdit( props ) {
     const { clientId, name } = props;
 
     const {
@@ -113,18 +113,20 @@ const ItemTotalsEdit = ( props ) => {
 
     const { replaceInnerBlocks } = useDispatch( 'core/block-editor' );
 
-    const defaultBlocks = getDefaultInnerBlocks( name );
+    useEffect( () => {
+        if ( ! hasInnerBlocks ) {
+            const defaultBlocks = getDefaultInnerBlocks( name );
 
-    if ( ! hasInnerBlocks ) {
-        replaceInnerBlocks(
-            props.clientId,
-            createBlocksFromDefault(
-                defaultBlocks
-            )
-        );
-    }
+            replaceInnerBlocks(
+                props.clientId,
+                createBlocksFromDefault(
+                    defaultBlocks
+                )
+            );
+        }
+    }, [ hasInnerBlocks, replaceInnerBlocks ]);
 
     return <ItemTotalsEditContainer { ...props } />;
-};
+}
 
 export default ItemTotalsEdit;

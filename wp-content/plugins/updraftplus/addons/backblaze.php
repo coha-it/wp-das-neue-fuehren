@@ -419,7 +419,7 @@ class UpdraftPlus_Addons_RemoteStorage_backblaze extends UpdraftPlus_RemoteStora
 						'BucketName' => $opts['bucket_name']
 					);
 				}
-				$result = $storage->deleteMultipleFiles($multipleFiles, $opts['bucket_name']);
+				$result = $storage->deleteMultipleFiles($multipleFiles, $opts['bucket_name'], $backup_path);
 			} else {
 				$fileName = $files[0];
 				$result = $storage->deleteFile(array(

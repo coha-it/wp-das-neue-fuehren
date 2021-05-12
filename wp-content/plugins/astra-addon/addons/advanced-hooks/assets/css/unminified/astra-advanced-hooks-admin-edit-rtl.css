@@ -325,3 +325,24 @@
 .ast-inside-content-number-field{
 	width: 60px;
 }
+
+.ast-advanced-hook-wrap {
+	margin-bottom: 5px;
+}
+
+input.readonly, input[readonly], .ast-advanced-date-time-input {
+	width: 190px;
+	background: white;
+}
+
+.ast-advanced-time-duration-wrap {
+	display: grid;
+	grid-template-columns: 10em 25em 25em 10em;
+	height: 50px;
+	align-items: center;
+}
+
+.ast-advanced-device-display-wrap {
+	display: grid;
+	grid-template-columns: 7em 7em 7em;
+}

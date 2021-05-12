@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'acd17643c58e0968904d4459f45c4838e93b0312',
+    'reference' => 'f6df7d574c2492b13e5d411dd91805cd33705de7',
     'name' => 'vendidero/woocommerce-germanized',
   ),
   'versions' => 
@@ -44,21 +44,21 @@ private static $installed = array (
     ),
     'composer/installers' => 
     array (
-      'pretty_version' => 'v1.10.0',
-      'version' => '1.10.0.0',
+      'pretty_version' => 'v1.11.0',
+      'version' => '1.11.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d',
+      'reference' => 'ae03311f45dfe194412081526be2e003960df74b',
     ),
     'dvdoug/boxpacker' => 
     array (
-      'pretty_version' => '3.9.0',
-      'version' => '3.9.0.0',
+      'pretty_version' => '3.9.1',
+      'version' => '3.9.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0cdb4c023044ea4dc681b42c211a90e2e455d199',
+      'reference' => '539084bd7b55056fa8b8b789e8ad5d3ebf5e5c3e',
     ),
     'myclabs/deep-copy' => 
     array (
@@ -75,12 +75,12 @@ private static $installed = array (
     ),
     'psr/log' => 
     array (
-      'pretty_version' => '1.1.3',
-      'version' => '1.1.3.0',
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0f73288fd15629204f9d42b7055f72dacbe811fc',
+      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
     ),
     'roundcube/plugin-installer' => 
     array (
@@ -91,12 +91,12 @@ private static $installed = array (
     ),
     'setasign/fpdf' => 
     array (
-      'pretty_version' => '1.8.2',
-      'version' => '1.8.2.0',
+      'pretty_version' => '1.8.3',
+      'version' => '1.8.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd77904018090c17dc9f3ab6e944679a7a47e710a',
+      'reference' => '6a83253ece0df1c5b6c05fe7a900c660ae38afc3',
     ),
     'setasign/fpdi' => 
     array (
@@ -121,34 +121,34 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'acd17643c58e0968904d4459f45c4838e93b0312',
+      'reference' => 'f6df7d574c2492b13e5d411dd91805cd33705de7',
     ),
     'vendidero/woocommerce-germanized-dhl' => 
     array (
-      'pretty_version' => 'v1.5.1',
-      'version' => '1.5.1.0',
+      'pretty_version' => 'v1.5.6',
+      'version' => '1.5.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8fc0543078cc37a1bdd3de775f05e0cb70815fe2',
+      'reference' => '25e35587c9ef73a2215f15208f568b26083940fc',
     ),
     'vendidero/woocommerce-germanized-shipments' => 
     array (
-      'pretty_version' => 'v1.5.1',
-      'version' => '1.5.1.0',
+      'pretty_version' => 'v1.5.5',
+      'version' => '1.5.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'cb18324e1d4ae251968a3f8ed9888040aa1c8bb5',
+      'reference' => '7d79aa67c692a2d34c23ff56d508b9ca5cd8fd09',
     ),
     'vendidero/woocommerce-trusted-shops' => 
     array (
-      'pretty_version' => 'v4.0.9',
-      'version' => '4.0.9.0',
+      'pretty_version' => 'v4.0.10',
+      'version' => '4.0.10.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd5dcf1487799eec37a827ffb75af76b0171bda2c',
+      'reference' => 'adbf9c35120a52bb8fd5119834f79f4cc50696fd',
     ),
     'wsdltophp/wssecurity' => 
     array (

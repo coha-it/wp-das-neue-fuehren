@@ -44,6 +44,7 @@ if ( ! class_exists( 'Astra_Ext_Advanced_Hooks' ) ) {
 			require_once ASTRA_EXT_ADVANCED_HOOKS_DIR . 'classes/class-astra-ext-advanced-hooks-loader.php';
 			require_once ASTRA_EXT_ADVANCED_HOOKS_DIR . 'classes/class-astra-ext-advanced-hooks-markup.php';
 			require_once ASTRA_EXT_ADVANCED_HOOKS_DIR . 'classes/class-astra-ext-advanced-hooks-meta.php';
+			require_once ASTRA_EXT_ADVANCED_HOOKS_DIR . 'classes/ext-advanced-hooks-dynamic.css.php';
 		}
 	}
 

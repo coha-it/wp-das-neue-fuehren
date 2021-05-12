@@ -13,7 +13,7 @@ if ( ! defined( 'ASTRA_SITES_NAME' ) ) {
 }
 
 if ( ! defined( 'ASTRA_SITES_VER' ) ) {
-	define( 'ASTRA_SITES_VER', '2.6.1' );
+	define( 'ASTRA_SITES_VER', '2.6.4' );
 }
 
 if ( ! defined( 'ASTRA_SITES_FILE' ) ) {
@@ -33,6 +33,11 @@ if ( ! defined( 'ASTRA_SITES_URI' ) ) {
 }
 
 require_once ASTRA_SITES_DIR . 'inc/classes/class-astra-sites.php';
+
+// BSF_Quick_Links.
+if ( ! class_exists( 'BSF_Quick_Links' ) ) {
+	require_once ASTRA_SITES_DIR . 'inc/lib/bsf-quick-links/class-bsf-quick-links.php';
+}
 
 // Astra Notices.
 require_once ASTRA_SITES_DIR . 'admin/astra-notices/class-astra-notices.php';

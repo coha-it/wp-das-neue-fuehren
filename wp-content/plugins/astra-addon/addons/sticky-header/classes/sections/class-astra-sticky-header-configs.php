@@ -554,7 +554,6 @@ if ( ! class_exists( 'Astra_Sticky_Header_Configs' ) ) {
 								'context'    => astra_addon_builder_helper()->design_tab,
 								'responsive' => true,
 								'divider'    => array(
-									'ast_class' => 'ast-top-divider',
 									'ast_title' => __( 'Menu Color', 'astra-addon' ),
 								),
 							),

@@ -317,8 +317,7 @@ if ( ! class_exists( 'Astra_Custom_Nav_Walker' ) ) {
 			 * @param stdClass $args  An object of wp_nav_menu() arguments.
 			 * @param int      $depth Depth of menu item. Used for padding.
 			 */
-			$atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args, $depth );
-
+			$atts       = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args, $depth );
 			$attributes = '';
 			foreach ( $atts as $attr => $value ) {
 				if ( ! empty( $value ) ) {
@@ -327,8 +326,9 @@ if ( ! class_exists( 'Astra_Custom_Nav_Walker' ) ) {
 					if ( 'href' === $attr && 'disable-link' === $item->megamenu_disable_link ) {
 						$value = 'javascript:void(0)';
 					}
-
-					$attributes .= ' ' . $attr . '="' . $value . '"';
+					if ( 'class' !== $attr ) {
+						$attributes .= ' ' . $attr . '="' . $value . '"';
+					}
 				}
 			}
 
@@ -350,7 +350,7 @@ if ( ! class_exists( 'Astra_Custom_Nav_Walker' ) ) {
 			// Wrap menu text in a span tag.
 			$title = '<span class="menu-text">' . $title . '</span>';
 
-			$item_output .= '<a' . $attributes . ' class="menu-link ' . implode( ' ', $link_classes ) . '">';
+			$item_output .= '<a' . $attributes . ' class="' . $atts['class'] . '">';
 
 			if ( isset( $item->megamenu_highlight_label ) && '' != $item->megamenu_highlight_label ) {
 

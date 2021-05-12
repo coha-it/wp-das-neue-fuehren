@@ -10,6 +10,7 @@ use Vendidero\Germanized\DHL\ShippingProvider\DeutschePost;
 use Vendidero\Germanized\DHL\ShippingProvider\DHL;
 use Vendidero\Germanized\DHL\ShippingProvider\ShippingMethod;
 use Vendidero\Germanized\DHL\Api\Internetmarke;
+use Vendidero\Germanized\Shipments\Interfaces\ShippingProvider;
 use Vendidero\Germanized\Shipments\ShipmentItem;
 
 defined( 'ABSPATH' ) || exit;
@@ -24,7 +25,7 @@ class Package {
      *
      * @var string
      */
-    const VERSION = '1.5.1';
+    const VERSION = '1.5.6';
 
     public static $upload_dir_suffix = '';
 
@@ -65,6 +66,9 @@ class Package {
 	    // Legacy data store
 	    add_filter( 'woocommerce_data_stores', array( __CLASS__, 'register_data_stores' ), 10, 1 );
 
+	    // Watch provider activation and mark DHL as default provider in case applicable
+	    add_action( 'woocommerce_gzd_shipping_provider_activated', array( __CLASS__, 'maybe_set_default_provider' ), 10 );
+
 	    self::includes();
 	    self::define_tables();
 	    self::maybe_set_upload_dir();
@@ -76,6 +80,19 @@ class Package {
 			    add_action( 'admin_notices', array( __CLASS__, 'load_dependencies_notice' ) );
 		    }
 	    }
+    }
+
+	/**
+	 * @param ShippingProvider $provider
+	 */
+    public static function maybe_set_default_provider( $provider ) {
+        if ( 'dhl' === $provider->get_name() ) {
+	        $default_provider = wc_gzd_get_default_shipping_provider();
+
+	        if ( empty( $default_provider ) ) {
+		        update_option( 'woocommerce_gzd_shipments_default_shipping_provider', 'dhl' );
+	        }
+        }
     }
 
     public static function load_dependencies_notice() {
@@ -165,6 +182,19 @@ class Package {
             $wpdb->$name    = $wpdb->prefix . $table;
             $wpdb->tables[] = $table;
         }
+    }
+
+    public static function legacy_label_table_exists() {
+	    global $wpdb;
+
+	    $table_name = $wpdb->prefix . 'woocommerce_gzd_dhl_labels';
+	    $query      = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
+
+	    if ( ! $wpdb->get_var( $query ) == $table_name ) {
+		    return false;
+	    }
+
+	    return true;
     }
 
     public static function maybe_set_upload_dir() {

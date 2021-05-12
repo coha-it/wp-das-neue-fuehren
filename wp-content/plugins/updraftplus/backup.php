@@ -1986,7 +1986,7 @@ class UpdraftPlus_Backup {
 
 		$microtime = microtime(true);
 
-		global $updraftplus;
+		global $updraftplus, $wpdb;
 
 		// Deal with Windows/old MySQL setups with erroneous table prefixes differing in case
 		// Can't get binary mysqldump to make this transformation
@@ -2020,7 +2020,18 @@ class UpdraftPlus_Backup {
 		// Allow --max_allowed_packet to be configured via constant. Experience has shown some customers with complex CMS or pagebuilder setups can have extrememly large postmeta entries.
 		$msqld_max_allowed_packet = (defined('UPDRAFTPLUS_MYSQLDUMP_MAX_ALLOWED_PACKET') && (is_int(UPDRAFTPLUS_MYSQLDUMP_MAX_ALLOWED_PACKET) || is_string(UPDRAFTPLUS_MYSQLDUMP_MAX_ALLOWED_PACKET))) ? UPDRAFTPLUS_MYSQLDUMP_MAX_ALLOWED_PACKET : '1M';
 
-		$exec .= "$potsql --defaults-file=$pfile $where --max_allowed_packet=$msqld_max_allowed_packet --quote-names --add-drop-table --skip-comments --skip-set-charset --allow-keywords --dump-date --extended-insert --user=".escapeshellarg($this->dbinfo['user'])." --host=".escapeshellarg($this->dbinfo['host'])." ".$this->dbinfo['name']." ".escapeshellarg($table_name);
+		$exec .= "$potsql --defaults-file=$pfile $where --max_allowed_packet=$msqld_max_allowed_packet --quote-names --add-drop-table";
+		
+		static $mysql_version = null;
+		if (null === $mysql_version) {
+			$mysql_version = $wpdb->get_var('SELECT VERSION()');
+			if ('' == $mysql_version) $mysql_version = $wpdb->db_version();
+		}
+		if ($mysql_version && version_compare($mysql_version, '5.1', '>=')) {
+			$exec .= " --no-tablespaces";
+		}
+		
+		$exec .= " --skip-comments --skip-set-charset --allow-keywords --dump-date --extended-insert --user=".escapeshellarg($this->dbinfo['user'])." --host=".escapeshellarg($this->dbinfo['host'])." ".$this->dbinfo['name']." ".escapeshellarg($table_name);
 		
 		$ret = false;
 		$any_output = false;

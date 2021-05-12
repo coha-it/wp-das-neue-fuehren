@@ -142,7 +142,7 @@ if ( ! class_exists( 'Astra_Site_Header_Typo_Configs' ) ) {
 					'type'      => 'sub-control',
 					'default'   => astra_get_option( 'font-weight-site-tagline' ),
 					'title'     => __( 'Weight', 'astra-addon' ),
-					'priority'  => 14,
+					'priority'  => 15,
 					'connect'   => 'font-family-site-tagline',
 				),
 
@@ -158,7 +158,7 @@ if ( ! class_exists( 'Astra_Site_Header_Typo_Configs' ) ) {
 					'transport' => 'postMessage',
 					'default'   => astra_get_option( 'text-transform-site-tagline' ),
 					'control'   => 'ast-select',
-					'priority'  => 17,
+					'priority'  => 16,
 					'choices'   => array(
 						''           => __( 'Inherit', 'astra-addon' ),
 						'none'       => __( 'None', 'astra-addon' ),
@@ -182,7 +182,7 @@ if ( ! class_exists( 'Astra_Site_Header_Typo_Configs' ) ) {
 					'title'             => __( 'Line Height', 'astra-addon' ),
 					'transport'         => 'postMessage',
 					'control'           => 'ast-slider',
-					'priority'          => 16,
+					'priority'          => 17,
 					'suffix'            => 'em',
 					'input_attrs'       => array(
 						'min'  => 1,

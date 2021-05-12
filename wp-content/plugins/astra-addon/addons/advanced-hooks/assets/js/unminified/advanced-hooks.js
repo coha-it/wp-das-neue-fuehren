@@ -22,17 +22,76 @@
 			AstraAdvancedHooks.action_description();
 			AstraAdvancedHooks.bind_tooltip();
 			AstraAdvancedHooks.initLayoutSettings();
+			AstraAdvancedHooks.timeDurationEnabled();
 
-			setTimeout( function () {
-				AstraAdvancedHooks.code_editor_switcher();
-			}, 1 );
+			wp.data.subscribe(function () {
+				setTimeout( function () {
+					AstraAdvancedHooks.code_editor_switcher();
+				}, 1 );
+			});
+		},
+
+		timeDurationEnabled: function () {
+
+			var startDateTime = $('#ast-advanced-time-duration-start-dt');
+			var endDateTime = $('#ast-advanced-time-duration-end-dt');
+
+			var timeDurationEnabledElement = $('#ast-advanced-time-duration-enabled');
+			$('.ast-advanced-time-duration-enabled').toggle(timeDurationEnabledElement.is(':checked'));
+			timeDurationEnabledElement.change(function () {
+				$('.ast-advanced-time-duration-enabled').toggle(this.checked);
+				if( ! this.checked ) {
+					startDateTime.val('');
+					endDateTime.val('');
+				}
+			});
+
+			startDateTime.datetimepicker({
+				timeFormat: 'HH:mm:ss',
+				onClose: function(dateText, inst) {
+					if (endDateTime.val() !== '') {
+						var testStartDate = startDateTime.datetimepicker('getDate');
+						var testEndDate = endDateTime.datetimepicker('getDate');
+						if (testStartDate > testEndDate)
+							endDateTime.datetimepicker('setDate', testStartDate);
+					}
+					else {
+						endDateTime.val(dateText);
+					}
+				},
+				onSelect: function (selectedDateTime){
+					endDateTime.datetimepicker('option', 'minDate', startDateTime.datetimepicker('getDate') );
+				}
+			});
+			endDateTime.datetimepicker({
+				timeFormat: 'HH:mm:ss',
+				onClose: function(dateText, inst) {
+					if (startDateTime.val() !== '') {
+						var testStartDate = startDateTime.datetimepicker('getDate');
+						var testEndDate = endDateTime.datetimepicker('getDate');
+						if (testStartDate > testEndDate)
+							startDateTime.datetimepicker('setDate', testEndDate);
+					}
+					else {
+						startDateTime.val(dateText);
+					}
+				},
+				onSelect: function (selectedDateTime){
+					startDateTime.datetimepicker('option', 'maxDate', endDateTime.datetimepicker('getDate') );
+				}
+			});
+
 		},
 
 		code_editor_switcher: function()
 		{
+			if( $('.edit-post-header-toolbar .ast-advanced-hook-enable-php-wrapper').length ) {
+				return;
+			}
+
 			var editor = $('#editor'),
 				switchMode = $($('#astra-editor-button-switch-mode').html());
-			editor.find('.edit-post-header-toolbar').after( switchMode );
+			editor.find('.edit-post-header-toolbar').append( switchMode );
 		},
 
 		bind: function()

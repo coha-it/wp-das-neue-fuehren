@@ -104,7 +104,6 @@ if ( ! class_exists( 'Astra_Ext_Blog_Pro_Loader' ) ) {
 			 */
 			require_once ASTRA_EXT_BLOG_PRO_DIR . 'classes/sections/class-astra-customizer-blog-pro-configs.php';
 			require_once ASTRA_EXT_BLOG_PRO_DIR . 'classes/sections/class-astra-customizer-blog-pro-single-configs.php';
-
 		}
 		/**
 		 * Customizer Preview

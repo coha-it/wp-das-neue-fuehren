@@ -1,3 +1,22 @@
+v3.4.1
+- Fix: Fatal error `Uncaught Error: Class 'Astra_Builder_Helper'` not found when footer build with custom layout.
+
+v3.4.0
+- New: 'Start Time' and 'End Time' rules for Custom Layouts. (https://wpastra.com/docs/custom-layouts-pro/)
+- New: 'Responsive Visibility' rules for Custom Layouts. (https://wpastra.com/docs/custom-layouts-pro/)
+- Fix: Remove unnecessary gap between the Mobile Header & Dropdown.
+- Fix: Search element margin not working.
+- Fix: Breadcrumb in the page headers show warnings on structure testing tool.
+- Fix: Gutenberg Editor - Unable to edit content in editor when background styles applied to Content and Site Layout is Max-Width.
+- Fix: Builder - Menu – After partial refresh megamenu's width & left position removes in customizer.
+- Fix: Enable Code Editor button misaligned in Gutenberg editor when Starter Templates plugin is active.
+- Fix: Sticky Header - Below header menu hover color issue when the mega menu is enabled.
+- Fix: Search Box Styling not working.
+
+v3.3.2
+- Fix: Previous & Next navigation icons not appearing on WooCommerce single product page.
+- Fix: Close icon not appearing for WooCommerce Quick View on Shop Page.
+
 v3.3.1
 - Fix: Builder - Illegal offset warning for footer divider with invalid vertical size.
 - Fix: Icons not appearing for WooCommerce Off-Canvas filter on Shop Page.
