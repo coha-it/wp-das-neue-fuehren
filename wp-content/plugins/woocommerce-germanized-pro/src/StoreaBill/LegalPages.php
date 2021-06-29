@@ -51,6 +51,58 @@ class LegalPages {
 		 * Make sure to allow shortcodes like [gzd_complaints] and others within PDF legal pages.
 		 */
 		add_action( 'storeabill_before_render_document', array( __CLASS__, 'force_allow_shortcodes' ), 0, 2 );
+
+		add_action( 'init', array( __CLASS__, 'maybe_register_visitor_download' ), 30 );
+	}
+
+	public static function maybe_register_visitor_download() {
+		if ( apply_filters( 'woocommerce_gzdp_allow_visitor_legal_page_download', false ) ) {
+			add_shortcode( "gzdp_download_legal_page", array( __CLASS__, 'download_shortcode' ) );
+			add_filter( 'user_has_cap', array( __CLASS__, 'visitor_has_capability' ), 10, 3 );
+		}
+	}
+
+	public static function download_shortcode( $atts = array(), $content = '' ) {
+		$atts = wp_parse_args( $atts, array(
+			'force'   => 'no',
+			'type'    => 'terms',
+			'classes' => 'link',
+			'target'  => '_blank'
+		) );
+
+		$id = self::get_legal_page_id_by_type( $atts['type'] );
+
+		if ( $id && ( $legal_page = self::get_legal_page( $id ) ) ) {
+			$content       = empty( $content ) ? sprintf( _x( "Download %s", 'legal-page', 'woocommerce-germanized-pro' ), $legal_page->get_title( false ) ) : $content;
+			$download_link = $legal_page->get_download_url( wc_string_to_bool( $atts['force'] ) );
+
+			return '<a target="' . esc_attr( $atts['target'] ) . '" class="' . esc_attr( $atts['classes'] ) . '" href="' . esc_url( $download_link ) . '">' . $content . '</a>';
+		}
+
+		return '';
+	}
+
+	/**
+	 * Checks if a user has a certain capability.
+	 *
+	 * @param array $allcaps All capabilities.
+	 * @param array $caps    Capabilities.
+	 * @param array $args    Arguments.
+	 *
+	 * @return array The filtered array of all capabilities.
+	 */
+	public static function visitor_has_capability( $allcaps, $caps, $args ) {
+		if ( isset( $caps[0] ) ) {
+			if ( 'view_post_document' === $caps[0] ) {
+				$document = sab_get_document( $args[2], 'post_document' );
+
+				if ( $document && ! $document->is_editable() ) {
+					$allcaps["view_post_document"] = true;
+				}
+			}
+		}
+
+		return $allcaps;
 	}
 
 	/**

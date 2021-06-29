@@ -3,12 +3,12 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 function seopress_license_menu() {
-	$seopress_license_help_tab = add_submenu_page('seopress-option', __('License','wp-seopress'), __('License','wp-seopress'), 'manage_options', 'seopress-license', 'seopress_pro_license_page');
+	$seopress_license_help_tab = add_submenu_page('seopress-option', __('License','wp-seopress-pro'), __('License','wp-seopress-pro'), 'manage_options', 'seopress-license', 'seopress_pro_license_page');
 
 	function seopress_license_help_tab() {
 		$screen = get_current_screen();
 
-		$seopress_license_help_tab_content = wp_oembed_get('https://youtu.be/cUqUQAp49ks', array('width'=>530)).'<br>';
+		$seopress_license_help_tab_content = '<br>'.wp_oembed_get('https://www.youtube.com/watch?v=0OAq8HcFxPg', array('width'=>530)).'<br>';
 		$seopress_license_help_tab_content .= __('<strong>Steps to follow to activate your license:</strong> <ul><li>1/ Paste your license key</li> <li>2/ Save changes</li> <li>3/ Activate License.</li> <li>That\'s it! Do NOT save changes after that!</li></ul>','wp-seopress-pro');
 
 		$screen->add_help_tab( array(
@@ -20,17 +20,17 @@ function seopress_license_menu() {
 		if (function_exists('seopress_get_locale') && seopress_get_locale() =='fr') {
 			$screen->set_help_sidebar(
 				'<ul>
-					<li><a href="https://www.seopress.org/fr/support/guides/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Browse our guides","wp-seopress").'</a></li>
-					<li><a href="https://www.seopress.org/fr/support/faq/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Read our FAQ","wp-seopress").'</a></li>
-					<li><a href="https://www.seopress.org/fr/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Check our website","wp-seopress").'</a></li>
+					<li><a href="https://www.seopress.org/fr/support/guides/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Browse our guides","wp-seopress-pro").'</a></li>
+					<li><a href="https://www.seopress.org/fr/support/faq/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Read our FAQ","wp-seopress-pro").'</a></li>
+					<li><a href="https://www.seopress.org/fr/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Check our website","wp-seopress-pro").'</a></li>
 				</ul>'
 			);
 		} else {
 			$screen->set_help_sidebar(
 				'<ul>
-					<li><a href="https://www.seopress.org/support/guides/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Browse our guides","wp-seopress").'</a></li>
-					<li><a href="https://www.seopress.org/support/faq/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Read our FAQ","wp-seopress").'</a></li>
-					<li><a href="https://www.seopress.org/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Check our website","wp-seopress").'</a></li>
+					<li><a href="https://www.seopress.org/support/guides/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Browse our guides","wp-seopress-pro").'</a></li>
+					<li><a href="https://www.seopress.org/support/faq/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Read our FAQ","wp-seopress-pro").'</a></li>
+					<li><a href="https://www.seopress.org/?utm_source=plugin&utm_medium=wp-admin-help-tab&utm_campaign=seopress" target="_blank">'.__("Check our website","wp-seopress-pro").'</a></li>
 				</ul>'
 			);
 		}
@@ -44,7 +44,7 @@ function seopress_pro_license_page() {
 	$selected 	= $license ? '********************************' : '';
 	$status 	= get_option( 'seopress_pro_license_status' );
 	$seopress_docs_link = array();
-	
+
 		if (is_plugin_active('wp-seopress/seopress.php')) {
 			if (function_exists('seopress_admin_header')) {
 				echo seopress_admin_header();
@@ -55,8 +55,8 @@ function seopress_pro_license_page() {
 		<form class="seopress-option" method="post" action="<?php echo admin_url('options.php'); ?>">
 
 			<h1><span class="dashicons dashicons-admin-network"></span><?php _e('Plugin License Options', 'wp-seopress-pro'); ?></h1>
-			
-			<?php 
+
+			<?php
 				if (function_exists('seopress_get_locale') && seopress_get_locale() =='fr') {
 					$seopress_docs_link['support']['license'] = 'https://www.seopress.org/fr/compte/?utm_source=plugin&utm_medium=wp-admin&utm_campaign=seopress';
 					$seopress_docs_link['support']['license_errors'] = 'https://www.seopress.org/fr/support/guides/activer-licence-seopress-pro/?utm_source=plugin&utm_medium=wp-admin&utm_campaign=seopress';
@@ -67,6 +67,22 @@ function seopress_pro_license_page() {
 			?>
 
 			<?php settings_fields('seopress_license'); ?>
+			<?php if(isset($_GET["seopress_support"]) && $_GET["seopress_support"] === "1"): ?>
+				<a href="<?php
+					echo wp_nonce_url(
+						add_query_arg(
+						[
+							'action' => 'seopress_relaunch_upgrader',
+						],
+						admin_url('admin-post.php')
+					),
+						'seopress_relaunch_upgrader'
+					)
+
+				?>" class="btn btn-primary">
+					Reload upgrader schema
+				</a>
+			<?php endif; ?>
 			<p><?php _e('The license key is used to access automatic updates and support.','wp-seopress-pro'); ?></p>
 			<p>
 				<a href="<?php echo $seopress_docs_link['support']['license']; ?>" class="button" target="_blank"><span class="dashicons dashicons-external"></span><?php _e('View my account','wp-seopress-pro'); ?></a>
@@ -121,6 +137,7 @@ function seopress_pro_license_page() {
 											$message = htmlspecialchars(urldecode( $_GET['message'] ));
 											?>
 											<p><?php echo $message; ?></p>
+                                            <p><?php _e('Make sure to have the latest version of <strong>CURL</strong> and <strong>OpenSSL</strong> too.','wp-seopress-pro'); ?></p>
 											<?php
 											break;
 										case 'true':
@@ -212,12 +229,13 @@ function seopress_activate_license() {
 
 					case 'expired' :
 
+						/* translators: %s: localized expiration date */
 						$message = sprintf(
 							__( 'Your license key expired on %s.', 'wp-seopress-pro' ),
 							date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
 						);
 						break;
-					
+
 					case 'disabled' :
 					case 'revoked' :
 
@@ -236,7 +254,7 @@ function seopress_activate_license() {
 						break;
 
 					case 'item_name_mismatch' :
-
+						/* translators: %s: SEOPress PRO */
 						$message = sprintf( __( 'This appears to be an invalid license key for %s.', 'wp-seopress-pro' ), ITEM_NAME_SEOPRESS );
 						break;
 
@@ -257,7 +275,7 @@ function seopress_activate_license() {
 		if ( ! empty( $message ) ) {
 			$base_url = admin_url( 'admin.php?page=' . SEOPRESS_LICENSE_PAGE );
 			$redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
-			
+
 			wp_redirect( $redirect );
 			exit();
 		}
@@ -323,7 +341,7 @@ function seopress_deactivate_license() {
 		if( $license_data->license == 'deactivated' ) {
 			delete_option( 'seopress_pro_license_status' );
 		}
-		
+
 		wp_redirect( admin_url( 'admin.php?page=' . SEOPRESS_LICENSE_PAGE ) );
 		exit();
 	}

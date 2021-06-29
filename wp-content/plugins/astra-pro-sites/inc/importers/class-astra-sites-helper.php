@@ -288,6 +288,83 @@ if ( ! class_exists( 'Astra_Sites_Helper' ) ) :
 			return $data;
 		}
 
+		/**
+		 * Extract image URLs and other URLs from a given HTML content.
+		 *
+		 * @since 2.6.10
+		 *
+		 * @param string $content HTML content string.
+		 * @return array Array of URLS.
+		 */
+		public static function extract_segregated_urls( $content ) {
+			// Extract all links.
+			preg_match_all( '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $content, $match );
+
+			$extracts = array(
+				'image' => array(),
+				'other' => array(),
+			);
+
+			$all_links = array_unique( $match[0] );
+
+			// Not have any link.
+			if ( empty( $all_links ) ) {
+				return array();
+			}
+
+			$image_links = array();
+			$other_links = array();
+
+			// Extract normal and image links.
+			foreach ( $all_links as $key => $link ) {
+				if ( preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|jpeg)\/?$/i', $link ) ) {
+
+					// Get all image links.
+					// Avoid *-150x, *-300x and *-1024x images.
+					if (
+						false === strpos( $link, '-150x' ) &&
+						false === strpos( $link, '-300x' ) &&
+						false === strpos( $link, '-1024x' )
+					) {
+						$image_links[] = $link;
+					}
+				} else {
+
+					// Collect other links.
+					$other_links[] = $link;
+				}
+			}
+
+			$extracts['image'] = $image_links;
+			$extracts['other'] = $other_links;
+
+			return $extracts;
+		}
+
+		/**
+		 * Get the client IP address.
+		 *
+		 * @since 2.6.4
+		 */
+		public static function get_client_ip() {
+			$ipaddress = '';
+			if ( getenv( 'HTTP_CLIENT_IP' ) ) {
+				$ipaddress = getenv( 'HTTP_CLIENT_IP' );
+			} elseif ( getenv( 'HTTP_X_FORWARDED_FOR' ) ) {
+				$ipaddress = getenv( 'HTTP_X_FORWARDED_FOR' );
+			} elseif ( getenv( 'HTTP_X_FORWARDED' ) ) {
+				$ipaddress = getenv( 'HTTP_X_FORWARDED' );
+			} elseif ( getenv( 'HTTP_FORWARDED_FOR' ) ) {
+				$ipaddress = getenv( 'HTTP_FORWARDED_FOR' );
+			} elseif ( getenv( 'HTTP_FORWARDED' ) ) {
+				$ipaddress = getenv( 'HTTP_FORWARDED' );
+			} elseif ( getenv( 'REMOTE_ADDR' ) ) {
+				$ipaddress = getenv( 'REMOTE_ADDR' );
+			} else {
+				$ipaddress = 'UNKNOWN';
+			}
+			return $ipaddress;
+		}
 
 	}
 

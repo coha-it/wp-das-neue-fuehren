@@ -33,6 +33,8 @@ interface Order extends SyncableReference {
 
 	public function get_taxable_country();
 
+	public function get_taxable_postcode();
+
 	public function get_order_item( $item_id );
 
 	public function get_documents( $type = '' );
@@ -61,7 +63,7 @@ interface Order extends SyncableReference {
 
 	public function validate();
 
-	public function cancel();
+	public function cancel( $reason = '' );
 
 	public function get_invoice_total_unpaid();
 

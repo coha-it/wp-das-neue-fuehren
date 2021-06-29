@@ -24,6 +24,7 @@ class AccountingHelper {
 			add_action( "storeabill_{$document_type}_default_template_after_company_address_header", array( __CLASS__, 'add_vat_id' ), 10 );
 			add_action( "storeabill_{$document_type}_default_template_after_company_contact_header", array( __CLASS__, 'add_phone' ), 10 );
 			add_action( "storeabill_{$document_type}_default_template_after_company_contact_footer", array( __CLASS__, 'add_phone' ), 10 );
+			add_action( "storeabill_{$document_type}_default_template_after_totals", array( __CLASS__, 'add_small_business' ), 10 );
 
 			// On adding new templates show prices incl or excl tax based on Woo settings
 			add_filter( "storeabill_{$document_type}_default_template_prices_include_tax", array( __CLASS__, 'show_incl_tax' ), 5 );
@@ -60,9 +61,9 @@ class AccountingHelper {
 		add_filter( 'storeabill_woo_order_voucher_tax', array( __CLASS__, 'order_voucher_tax' ), 10, 2 );
 
 		/**
-		 * MOSS Check
+		 * OSS Check
 		 */
-		add_filter( 'storeabill_woo_order_tax_is_moss', array( __CLASS__, 'order_tax_is_moss' ), 10, 3 );
+		add_filter( 'storeabill_woo_order_tax_is_oss', array( __CLASS__, 'order_tax_is_moss' ), 10, 3 );
 
 		/**
 		 * WC_GZD_Emails template name compatibility
@@ -102,6 +103,15 @@ class AccountingHelper {
 
 		add_filter( 'storeabill_maybe_encrypt_sensitive_data', array( __CLASS__, 'maybe_encrypt' ), 10 );
 		add_filter( 'storeabill_maybe_decrypt_sensitive_data', array( __CLASS__, 'maybe_decrypt' ), 10 );
+
+		// Whitelist shipment emails
+		add_filter( 'storeabill_woo_order_transactional_email_ids_whitelist', array( __CLASS__, 'register_additional_emails' ), 10 );
+	}
+
+	public static function register_additional_emails( $emails ) {
+		$emails[] = 'customer_shipment';
+
+		return $emails;
 	}
 
 	public static function maybe_encrypt( $value ) {
@@ -321,25 +331,26 @@ class AccountingHelper {
 	 * Decide (based on tax class and order data) whether this tax item
 	 * is a MOSS tax item or not.
 	 *
-	 * @param boolean $is_moss
+	 * @param boolean $is_oss
 	 * @param \WC_Order_Item_Tax $tax
 	 * @param Order $order
 	 */
-	public static function order_tax_is_moss( $is_moss, $tax, $order ) {
-		if ( $tax_rate_id = $tax->get_rate_id() ) {
+	public static function order_tax_is_moss( $is_oss, $tax, $order ) {
+		if ( ! $is_oss && ( $tax_rate_id = $tax->get_rate_id() ) ) {
 			$tax_rate             = \WC_Tax::_get_tax_rate( $tax_rate_id );
 			$virtual_rate_classes = array( 'virtual-rate', 'virtual-reduced-rate' );
 
 			if ( $tax_rate && in_array( $tax_rate['tax_rate_class'], $virtual_rate_classes ) ) {
-				$country = $order->get_taxable_country();
+				$country  = $order->get_taxable_country();
+				$postcode = $order->get_taxable_postcode();
 
-				if ( ! $order->is_reverse_charge() && ( $country !== Countries::get_base_country() && Countries::is_eu_vat_country( $country ) ) ) {
-					$is_moss = true;
+				if ( ! $order->is_reverse_charge() && ( $country !== Countries::get_base_country() && Countries::is_eu_vat_country( $country, $postcode ) ) ) {
+					$is_oss = true;
 				}
 			}
 		}
 
-		return $is_moss;
+		return $is_oss;
 	}
 
 	public static function reset_current_email_instance() {
@@ -591,6 +602,16 @@ class AccountingHelper {
 			if ( is_a( $woo_order_item, 'WC_Order_Item_Product' ) && ( $product = wc_gzd_get_product( $item->get_order_item()->get_product() ) ) ) {
 				$document_item->set_has_differential_taxation( $product->is_differential_taxed() ? true : false );
 			}
+		}
+	}
+
+	public static function add_small_business() {
+		if ( wc_gzd_is_small_business() ) {
+			?>
+			<!-- wp:paragraph -->
+			<p class="has-text-align-left">[small_business_info]</p>
+			<!-- /wp:paragraph -->
+			<?php
 		}
 	}
 

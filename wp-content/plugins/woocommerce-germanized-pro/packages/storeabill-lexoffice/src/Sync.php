@@ -167,10 +167,21 @@ class Sync extends SyncHandler {
 	 * Whether to use a collective contact instead of individually
 	 * creating and/or updating contacts while creating/updating vouchers
 	 *
+	 * @param bool|Invoice $invoice
+	 *
 	 * @return bool
 	 */
-	protected function use_collective_customer() {
-		return 'yes' === $this->get_setting( 'voucher_link_contacts' ) ? false : true;
+	protected function use_collective_customer( $invoice = false ) {
+		$use_collective_customer = 'yes' === $this->get_setting( 'voucher_link_contacts' ) ? false : true;
+
+		/**
+		 * Maybe force individual customers for some invoices
+		 */
+		if ( $invoice && ( $this->invoice_supports_eu_taxation( $invoice ) ||  $this->is_reverse_charge( $invoice ) || $this->is_third_country( $invoice ) ) ) {
+			$use_collective_customer = false;
+		}
+
+		return $use_collective_customer;
 	}
 
 	/**
@@ -178,6 +189,12 @@ class Sync extends SyncHandler {
 	 */
 	protected function force_creating_customers() {
 		return 'yes' === $this->get_setting( 'voucher_force_link_contacts' ) ? true : false;
+	}
+
+	protected function is_northern_ireland( $country, $postcode ) {
+		$postcode = strtoupper( $postcode );
+
+		return 'GB' === $country && substr( $postcode, 0, 2 ) === 'BT';
 	}
 
 	/**
@@ -195,7 +212,7 @@ class Sync extends SyncHandler {
 						'street'      => $customer->get_billing_address(),
 						'zip'         => $customer->get_billing_postcode(),
 						'city'        => $customer->get_billing_city(),
-						'countryCode' => $customer->get_billing_country()
+						'countryCode' => $this->is_northern_ireland( $customer->get_billing_country(), $customer->get_billing_postcode() ) ? 'IX' : $customer->get_billing_country()
 					)
 				),
 				'shipping' => array(
@@ -204,7 +221,7 @@ class Sync extends SyncHandler {
 						'street'      => $customer->get_shipping_address(),
 						'zip'         => $customer->get_shipping_postcode(),
 						'city'        => $customer->get_shipping_city(),
-						'countryCode' => $customer->get_shipping_country()
+						'countryCode' => $this->is_northern_ireland( $customer->get_shipping_country(), $customer->get_shipping_postcode() ) ? 'IX' : $customer->get_shipping_country()
 					)
 				),
 			),
@@ -312,7 +329,7 @@ class Sync extends SyncHandler {
 	 * @param Invoice $invoice
 	 */
 	protected function is_third_country( $invoice ) {
-		return Countries::is_third_country( $invoice->get_country() );
+		return Countries::is_third_country( $invoice->get_country(), $invoice->get_postcode() );
 	}
 
 	/**
@@ -346,15 +363,16 @@ class Sync extends SyncHandler {
 			'totalGrossAmount'     => sab_format_decimal( $invoice->get_total(), 2 ),
 			'totalTaxAmount'       => $total_tax,
 			'taxType'              => $invoice->prices_include_tax() ? 'gross' : 'net',
-			'useCollectiveContact' => $this->use_collective_customer(),
+			'useCollectiveContact' => $this->use_collective_customer( $invoice ),
 			'voucherItems'         => array(),
 			'remark'               => '',
 		);
 
 		$remark_data = $this->get_invoice_remark_data( $invoice );
 
-		if ( ! $this->use_collective_customer() ) {
+		if ( ! $this->use_collective_customer( $invoice ) ) {
 			$request['contactId'] = '';
+			$force_valid_customer = $this->invoice_supports_eu_taxation( $invoice ) || $this->is_reverse_charge( $invoice ) || $this->is_third_country( $invoice );
 
 			/**
 			 * (Re)sync the customer
@@ -365,8 +383,12 @@ class Sync extends SyncHandler {
 				if ( ! is_wp_error( $customer_result ) && ( $customer_sync_data = $customer->get_external_sync_handler_data( self::get_name() ) ) ) {
 					$request['contactId'] = $customer_sync_data->get_id();
 				} elseif ( is_wp_error( $customer_result ) ) {
-					foreach( $customer_result->get_error_messages() as $message ) {
-						Package::log( sprintf( 'The following error occurred while syncing customer data for %s - need to use collective customer instead: %s', $invoice->get_title(), $message ), 'error' );
+					if ( $force_valid_customer ) {
+						return $customer_result;
+					} else {
+						foreach( $customer_result->get_error_messages() as $message ) {
+							Package::log( sprintf( 'The following error occurred while syncing customer data for %s - need to use collective customer instead: %s', $invoice->get_title(), $message ), 'error' );
+						}
 					}
 				}
 			} elseif( $this->force_company_contact_existence( $invoice ) ) {
@@ -379,19 +401,27 @@ class Sync extends SyncHandler {
 				if ( ! is_wp_error( $customer_result ) && ( $customer_sync_data = $invoice_customer->get_external_sync_handler_data( self::get_name() ) ) ) {
 					$request['contactId'] = $customer_sync_data->get( 'customer_id' );
 				} elseif ( is_wp_error( $customer_result ) ) {
-					foreach( $customer_result->get_error_messages() as $message ) {
-						Package::log( sprintf( 'The following error occurred while syncing customer data for %s - need to use collective customer instead: %s', $invoice->get_title(), $message ), 'error' );
+					if ( $force_valid_customer ) {
+						return $customer_result;
+					} else {
+						foreach( $customer_result->get_error_messages() as $message ) {
+							Package::log( sprintf( 'The following error occurred while syncing customer data for %s - need to use collective customer instead: %s', $invoice->get_title(), $message ), 'error' );
+						}
 					}
 				}
-			} elseif( $this->force_creating_customers() ) {
+			} elseif( $this->force_creating_customers() || $force_valid_customer ) {
 				$invoice_customer = new \Vendidero\StoreaBill\Lexoffice\Customer( $invoice );
 				$customer_result  = $this->sync_customer( $invoice_customer );
 
 				if ( ! is_wp_error( $customer_result ) && ( $customer_sync_data = $invoice_customer->get_external_sync_handler_data( self::get_name() ) ) ) {
 					$request['contactId'] = $customer_sync_data->get( 'customer_id' );
 				} elseif ( is_wp_error( $customer_result ) ) {
-					foreach( $customer_result->get_error_messages() as $message ) {
-						Package::log( sprintf( 'The following error occurred while syncing customer data for %s - need to use collective customer instead: %s', $invoice->get_title(), $message ), 'error' );
+					if ( $force_valid_customer ) {
+						return $customer_result;
+					} else {
+						foreach( $customer_result->get_error_messages() as $message ) {
+							Package::log( sprintf( 'The following error occurred while syncing customer data for %s - need to use collective customer instead: %s', $invoice->get_title(), $message ), 'error' );
+						}
 					}
 				}
 			}
@@ -401,7 +431,6 @@ class Sync extends SyncHandler {
 			 */
 			if ( empty( $request['contactId'] ) ) {
 				$request['useCollectiveContact'] = true;
-
 				unset( $request['contactId'] );
 			}
 		}
@@ -529,7 +558,7 @@ class Sync extends SyncHandler {
 		/**
 		 * Format remark
 		 */
-		$request['remark'] = $this->get_invoice_remark( $remark_data );
+		$request['remark'] = apply_filters( "{$this->get_hook_prefix()}voucher_remark", $this->get_invoice_remark( $remark_data ), $invoice );
 
 		if ( $this->has_synced( $invoice ) ) {
 			$data        = $invoice->get_external_sync_handler_data( static::get_name() );
@@ -594,6 +623,21 @@ class Sync extends SyncHandler {
 	}
 
 	/**
+	 * @param Invoice $invoice
+	 *
+	 * @return bool
+	 */
+	protected function invoice_supports_eu_taxation( $invoice ) {
+		$invoice_date = $invoice->get_date_of_service_end() ? $invoice->get_date_of_service_end()->date_i18n( 'Y-m-d' ) : $invoice->get_date_of_service()->date_i18n( 'Y-m-d' );
+
+		if ( $invoice->is_eu_cross_border_taxable() && $invoice_date > new \WC_DateTime( '@' . strtotime( '2021-07-01 00:00:00' ) ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * @see https://developers.lexoffice.io/partner/docs/#vouchers-endpoint-list-of-categoryids
 	 *
 	 * @param $item
@@ -609,6 +653,10 @@ class Sync extends SyncHandler {
 			'third_party'             => '93d24c20-ea84-424e-a731-5e1b78d1e6a9',
 			'third_party_services'    => 'ef5b1a6e-f690-4004-9a19-91276348894f',
 			'small_business'          => '7a1efa0e-6283-4cbf-9583-8e88d3ba5960',
+			'eu_revenues'             => '7c112b66-0565-479c-bc18-5845e080880a',
+			'eu_digital'              => 'd73b880f-c24a-41ea-a862-18d90e1c3d82',
+			'eu_revenues_oss'         => '4ebd965a-7126-416c-9d8c-a5c9366ee473',
+			'eu_digital_oss'          => 'efa82f40-fd85-11e1-a21f-0800200c9a66',
 		);
 
 		$default_category_name = 'revenues';
@@ -618,11 +666,32 @@ class Sync extends SyncHandler {
 			$category_name = 'small_business';
 		} else {
 			$is_service = false;
+			$is_digital = false;
 
 			if ( is_a( $item, '\Vendidero\StoreaBill\Invoice\ProductItem' ) ) {
 				if ( $item->is_service() ) {
 					$category_name = 'services';
 					$is_service    = true;
+				}
+
+				if ( $item->is_virtual() ) {
+					$is_digital = true;
+				}
+			}
+
+			if ( $this->invoice_supports_eu_taxation( $invoice ) ) {
+				if ( $invoice->is_oss() ) {
+					$category_name = 'eu_revenues_oss';
+
+					if ( $is_digital ) {
+						$category_name = 'eu_digital_oss';
+					}
+				} else {
+					$category_name = 'eu_revenues';
+
+					if ( $is_digital ) {
+						$category_name = 'eu_digital';
+					}
 				}
 			}
 
@@ -632,17 +701,15 @@ class Sync extends SyncHandler {
 			 *
 			 * @see https://developers.lexoffice.io/partner/cookbooks/bookkeeping/#kategorien-haufige-sonderfalle
 			 */
-			if ( ! $this->use_collective_customer() ) {
-				if ( $this->is_reverse_charge( $invoice ) ) {
-					$category_name = 'reverse_charge';
-				}
+			if ( $this->is_reverse_charge( $invoice ) ) {
+				$category_name = 'reverse_charge';
+			}
 
-				if ( $this->is_third_country( $invoice ) ) {
-					$category_name = 'third_party';
+			if ( $this->is_third_country( $invoice ) ) {
+				$category_name = 'third_party';
 
-					if ( $is_service ) {
-						$category_name = 'third_party_service';
-					}
+				if ( $is_service ) {
+					$category_name = 'third_party_service';
 				}
 			}
 		}

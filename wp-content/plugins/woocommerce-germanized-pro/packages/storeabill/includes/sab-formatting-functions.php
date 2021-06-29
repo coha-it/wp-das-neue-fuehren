@@ -198,6 +198,17 @@ function sab_generate_block_styles( $attributes, $attribute_mappings = array(), 
 		if ( array_key_exists( $attribute, $style_mappings ) ) {
 			$mapping = $style_mappings[ $attribute ];
 
+			/**
+			 * Prefer non-custom attributes over custom attributes
+			 */
+			if ( strstr( $attribute, 'custom' ) ) {
+				$non_custom_key = lcfirst( substr( $attribute, 6 ) );
+
+				if ( isset( $attributes[ $non_custom_key ] ) && ! empty( $attributes[ $non_custom_key ] ) ) {
+					continue;
+				}
+			}
+
 			if ( is_array( $mapping ) ) {
 				$mapping = wp_parse_args( $mapping, array(
 					'attribute'   => '',

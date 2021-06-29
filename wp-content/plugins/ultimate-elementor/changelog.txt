@@ -1,3 +1,42 @@
+Version 1.32.1 - Tuesday, 15th June 2021
+- Improvement: Display Conditions - Changed Post/Page selection control with custom query control to reduce the load time.
+- Fix: Navigation Menu - In Custom menu type sub-menu item getting added as a parent menu item due to tag conflict.
+
+Version 1.32.0 - Monday, 14th June 2021
+- New: Introduced Display Conditions feature for widgets, sections, and columns.
+- Improvement: Gravity Form Styler - Added support to the section field.
+- Improvement: Navigation Menu - Close expandable/flyout menu on click of a 'Navigation' menu item for same page 'anchor' links.
+- Improvement: Woo - Checkout - Added AJAX support to the order review subtotal.
+- Improvement: Woo - Checkout - Added AJAX support to the order total when coupon code is applied.
+- Improvement: Countdown Timer - Added position option for countdown labels.
+- Fix: Mini Cart - W3C error regarding no space between attributes.
+- Fix: Navigation Menu - W3C error regarding no space between attributes.
+- Fix: Particle Backgrounds - Fixed PHP notice due to conflict with other plugins.
+- Fix: Particle Backgrounds - PHP error due to is_built_with_elementor function.
+- Fix: Social Share - Print button displaying a blank page.
+- Fix: Woo Checkout - Fixed widget icon color issue with Elementor's dark 'mode'.
+- Deprecated - Caldera Forms Styler - Revoked support for new users. This will continue working for old users.
+
+Version 1.31.0 - Monday, 17th May 2021
+- New: Introduced WooCommerce Checkout Form widget.
+- Improvement: Navigation Menu - Added an option to hide + & - sign added by Twenty Twenty-One Theme.
+- Improvement: Posts - Added autoplay speed option for carousel layout.
+- Improvement: Table - Added WPML support to repeater fields with wpml-config.xml file for WPML 4.4+ versions.
+- Improvement: Video - Added 1:1 and 21:9 aspect ratio.
+- Improvement: Video Gallery - Added option to display the video caption below the video.
+- Fix: Before After Slider - Fixed slider issue in RTL view.
+- Fix: Countdown Timer - Separator not hiding when specific display conditions are on/off.
+- Fix: Marketing Button - Flare animation not visible at the corner of the button if border-radius set as 0.
+- Fix: Mini Cart - Additional bottom line in the product list on non WooCommerce pages.
+- Fix: Modal Popup - Elements below the popup were not working on iPhone devices.
+- Fix: FAQ Schema - Active colors not applied except the first item.
+- Fix: FAQ Schema - Error in structured data if assigned dynamic field is empty.
+- Fix: FAQ Schema - Repetitive Schema added to Elementor's single post template.
+- Fix: Particle Backgrounds - Not working for columns after Elementor DOM optimization.
+- Fix: User Registration Form - Register user functionality not working on Multisite.
+- Fix: Woo Products - Bottom box shadow not displayed on products in a carousel layout.
+- Fix: Install Elementor notice displays on the update installation page.
+
 Version 1.30.2 - Friday, 23rd April 2021
 - Fix: Woo - Products - Undefined Global Typography class error with Modern skin.
 

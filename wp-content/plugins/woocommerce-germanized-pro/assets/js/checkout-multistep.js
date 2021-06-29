@@ -22,7 +22,12 @@ window.germanized = window.germanized || {};
                 $( '#order_payment_heading' ).insertBefore( '#payment' );
             }
 
-            $( '#order_review > #order-payment ~ *' ).wrapAll( '<div id="order-verify"></div>' );
+            if (  $( '#order_review > #order-payment ~ *' ).length === 0 ) {
+                $( '#order-payment ~ *' ).wrapAll( '<div id="order-verify"></div>' );
+            } else {
+                $( '#order_review > #order-payment ~ *' ).wrapAll( '<div id="order-verify"></div>' );
+            }
+
             $( '#order_review_heading' ).prependTo( '#order-verify' );
 
             $.each( self.params.steps, function( index, elem ) {

@@ -24,7 +24,8 @@
         border-color: inherit;
 
         &.item-total-row-heading {
-          min-width: 130px;
+          min-width: 12%;
+          max-width: 40% !important;
         }
 
         &.item-total-row-data {

@@ -740,6 +740,13 @@ class WC_GZD_Checkout {
 	public function adjust_shipping_taxes( $rates, $package ) {
 
 		if ( ! wc_gzd_enable_additional_costs_split_tax_calculation() ) {
+			foreach( $rates as $key => $rate ) {
+				/**
+				 * Reset split tax data
+				 */
+				$rates[ $key ]->add_meta_data( '_split_taxes', array() );
+			}
+
 			return $rates;
 		}
 
@@ -747,6 +754,11 @@ class WC_GZD_Checkout {
 			$original_taxes = $rate->get_taxes();
 			$original_cost  = $rate->get_cost();
 			$tax_shares     = wc_gzd_get_cart_tax_share( 'shipping' );
+
+			/**
+			 * Reset split tax data
+			 */
+			$rates[ $key ]->add_meta_data( '_split_taxes', array() );
 
 			/**
 			 * Prevent bugs in plugins like Woo Subscriptions which
@@ -767,15 +779,28 @@ class WC_GZD_Checkout {
 			if ( apply_filters( 'woocommerce_gzd_force_additional_costs_taxation', true ) ) {
 				if ( $rate->get_shipping_tax() > 0 ) {
 					if ( ! empty( $tax_shares ) ) {
-						$taxes = array();
+						$taxes           = array();
+						$taxable_amounts = array();
 
-						foreach ( $tax_shares as $tax_rate => $class ) {
-							$tax_rates  = WC_Tax::get_rates( $tax_rate );
-							$cost_share = $original_cost * $class['share'];
-							$taxes      = $taxes + WC_Tax::calc_tax( $cost_share, $tax_rates, wc_gzd_additional_costs_include_tax() );
+						foreach ( $tax_shares as $tax_class => $class ) {
+							$tax_rates       = WC_Tax::get_rates( $tax_class );
+							$taxable_amount  = $original_cost * $class['share'];
+							$tax_class_taxes = WC_Tax::calc_tax( $taxable_amount, $tax_rates, wc_gzd_additional_costs_include_tax() );
+							$net_base        = wc_gzd_additional_costs_include_tax() ? ( $taxable_amount - array_sum( $tax_class_taxes ) ) : $taxable_amount;
+
+							$taxable_amounts[ $tax_class ] = array(
+								'taxable_amount' => $taxable_amount,
+								'tax_share'      => $class['share'],
+								'tax_rates'      => array_keys( $tax_rates ),
+								'net_amount'     => $net_base,
+								'includes_tax'   => wc_gzd_additional_costs_include_tax()
+							);
+
+							$taxes = $taxes + $tax_class_taxes;
 						}
 
 						$rates[ $key ]->set_taxes( $taxes );
+						$rates[ $key ]->add_meta_data( '_split_taxes', $taxable_amounts );
 					} else {
 						$original_tax_rates = array_keys( $original_taxes );
 
@@ -784,7 +809,6 @@ class WC_GZD_Checkout {
 
 							if ( ! empty( $tax_rates ) ) {
 								$taxes = WC_Tax::calc_tax( $original_cost, $tax_rates, wc_gzd_additional_costs_include_tax() );
-
 								$rates[ $key ]->set_taxes( $taxes );
 							}
 						}
@@ -837,6 +861,9 @@ class WC_GZD_Checkout {
 
 		$tax_shares = wc_gzd_get_cart_tax_share( 'fee' );
 
+		// Reset
+		$fee->split_tax = array();
+
 		/**
 		 * Do not calculate fee taxes if tax shares are empty (e.g. zero-taxes only).
 		 * In this case, remove fee taxes altogether.
@@ -853,6 +880,7 @@ class WC_GZD_Checkout {
 				if ( WC()->customer->is_vat_exempt() ) {
 					$fee_rates  = WC_Tax::get_rates( '' );
 					$fee_taxes  = WC_Tax::calc_inclusive_tax( $fee->total, $fee_rates );
+
 					$fee->total = $fee->total - array_sum( $fee_taxes );
 				}
 			}
@@ -862,11 +890,24 @@ class WC_GZD_Checkout {
 
 		// Calculate tax class share
 		if ( ! empty( $tax_shares ) ) {
-			$fee_taxes = array();
+			$fee_taxes       = array();
+			$taxable_amounts = array();
 
-			foreach ( $tax_shares as $rate => $class ) {
-				$tax_rates = WC_Tax::get_rates( $rate );
-				$fee_taxes = $fee_taxes + WC_Tax::calc_tax( ( $fee->total * $class['share'] ), $tax_rates, wc_gzd_additional_costs_include_tax() );
+			foreach ( $tax_shares as $tax_class => $class ) {
+				$tax_rates      = WC_Tax::get_rates( $tax_class );
+				$taxable_amount = $fee->total * $class['share'];
+				$tax_class_taxes = WC_Tax::calc_tax( $taxable_amount, $tax_rates, wc_gzd_additional_costs_include_tax() );
+				$net_base        = wc_gzd_additional_costs_include_tax() ? ( $taxable_amount - array_sum( $tax_class_taxes ) ) : $taxable_amount;
+
+				$taxable_amounts[ $tax_class ] = array(
+					'taxable_amount' => $taxable_amount,
+					'tax_share'      => $class['share'],
+					'tax_rates'      => array_keys( $tax_rates ),
+					'net_amount'     => $net_base,
+					'includes_tax'   => wc_gzd_additional_costs_include_tax()
+				);
+
+				$fee_taxes = $fee_taxes + $tax_class_taxes;
 			}
 
 			$total_tax = array_sum( array_map( array( $this, 'round_line_tax_in_cents' ), $fee_taxes ) );
@@ -874,6 +915,8 @@ class WC_GZD_Checkout {
 			if ( wc_gzd_additional_costs_include_tax() ) {
 				$fee->total = $fee->total - $total_tax;
 			}
+
+			$fee->split_taxes = $taxable_amounts;
 		}
 
 		return $fee_taxes;

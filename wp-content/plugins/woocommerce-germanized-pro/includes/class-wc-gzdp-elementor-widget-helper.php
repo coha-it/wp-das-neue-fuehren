@@ -6,8 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
-use Elementor\Scheme_Color;
-use Elementor\Scheme_Typography;
 
 class WC_GZDP_Elementor_Widget_Helper {
 
@@ -43,8 +41,8 @@ class WC_GZDP_Elementor_Widget_Helper {
                 'label' => __( 'Color', 'woocommerce-germanized-pro' ),
                 'type' => Controls_Manager::COLOR,
                 'scheme' => [
-                    'type' => Scheme_Color::get_type(),
-                    'value' => Scheme_Color::COLOR_1,
+                    'type' => class_exists( '\Elementor\Core\Schemes\Color' ) ? \Elementor\Core\Schemes\Color::get_type() : \Elementor\Scheme_Color::get_type(),
+                    'value' => class_exists( '\Elementor\Core\Schemes\Color' ) ? \Elementor\Core\Schemes\Color::COLOR_1 : \Elementor\Scheme_Color::COLOR_1,
                 ],
                 'selectors' => [
                     '{{WRAPPER}}' => 'color: {{VALUE}}',
@@ -56,7 +54,7 @@ class WC_GZDP_Elementor_Widget_Helper {
             Group_Control_Typography::get_type(),
             [
                 'name'     => 'typography',
-                'scheme'   => Scheme_Typography::TYPOGRAPHY_1,
+                'scheme'   => class_exists( '\Elementor\Core\Schemes\Typography' ) ? \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1 : \Elementor\Scheme_Typography::TYPOGRAPHY_1,
                 'selector' => '{{WRAPPER}}',
             ]
         );

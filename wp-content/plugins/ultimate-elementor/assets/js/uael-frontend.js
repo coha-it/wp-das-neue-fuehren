@@ -593,6 +593,11 @@
 		var viewport_position	= 90;
 		var selector = $( '.elementor-element-' + node_id );
 
+		var current_device = elementorFrontend.getCurrentDeviceMode();
+		if( 'mobile' === current_device ) {
+			viewport_position	= 100;
+		}
+
 		if( typeof elementorFrontend.waypoint !== 'undefined' ) {
 			elementorFrontend.waypoint(
 				selector,
@@ -2005,8 +2010,10 @@
 						    });
 
 						    $this.addClass('uael-title-active');
-						    $this.attr('aria-expanded', 'true');
-						    $this.next('.uael-accordion-content').slideDown('normal','swing');
+						    $this.next('.uael-accordion-content').slideDown('normal','swing', function(){
+								$(this).prev().addClass('uael-title-active');
+								$this.attr('aria-expanded', 'true');
+							});
 						}
 				    return false;
 					}
@@ -2033,6 +2040,10 @@
 		if ( elementorFrontend.isEditMode() ) {
 			isElEditMode = true;
 		}
+
+		var GetLocalTimeZone = new Date().toString().match(/([A-Z]+[\+-][0-9]+.*)/)[1];
+		var uael_secure = ( document.location.protocol === 'https:' ) ? 'secure' : '';
+		document.cookie = "GetLocalTimeZone=" + GetLocalTimeZone + ";SameSite=Strict;" + uael_secure;
 
 		elementorFrontend.hooks.addAction( 'frontend/element_ready/uael-fancy-heading.default', WidgetUAELFancyTextHandler );
 

@@ -361,11 +361,11 @@ abstract class Document extends WC_Data_Store_WP implements WC_Object_Data_Store
 					'formatted_number'  => $data->document_formatted_number,
 					'journal_type'      => $data->document_journal_type,
 					'relative_path'     => $data->document_relative_path,
-					'date_created'      => 0 < $data->document_date_created_gmt ? wc_string_to_timestamp( $data->document_date_created_gmt ) : null,
-					'date_modified'     => 0 < $data->document_date_modified_gmt ? wc_string_to_timestamp( $data->document_date_modified_gmt ) : null,
-					'date_sent'         => 0 < $data->document_date_sent_gmt ? wc_string_to_timestamp( $data->document_date_sent_gmt ) : null,
-					'date_custom'       => 0 < $data->document_date_custom_gmt ? wc_string_to_timestamp( $data->document_date_custom_gmt ) : null,
-					'date_custom_extra' => 0 < $data->document_date_custom_extra_gmt ? wc_string_to_timestamp( $data->document_date_custom_extra_gmt ) : null,
+					'date_created'      => '0000-00-00 00:00:00' !== $data->document_date_created_gmt ? wc_string_to_timestamp( $data->document_date_created_gmt ) : null,
+					'date_modified'     => '0000-00-00 00:00:00' !== $data->document_date_modified_gmt ? wc_string_to_timestamp( $data->document_date_modified_gmt ) : null,
+					'date_sent'         => '0000-00-00 00:00:00' !== $data->document_date_sent_gmt ? wc_string_to_timestamp( $data->document_date_sent_gmt ) : null,
+					'date_custom'       => '0000-00-00 00:00:00' !== $data->document_date_custom_gmt ? wc_string_to_timestamp( $data->document_date_custom_gmt ) : null,
+					'date_custom_extra' => '0000-00-00 00:00:00' !== $data->document_date_custom_extra_gmt ? wc_string_to_timestamp( $data->document_date_custom_extra_gmt ) : null,
 					'status'            => $data->document_status,
 				)
 			);

@@ -74,6 +74,8 @@ abstract class ItemTableColumnBlock extends DynamicBlock {
 			$render_class .= ' item-data-last';
 		}
 
+		$render_class .= ' ' . esc_attr( 'sab-item-data-' . $this->block_name );
+
 		return '<table class="item-data ' . $render_class . '"><tr><td>' . $output . '</td></tr></table>';
 	}
 }

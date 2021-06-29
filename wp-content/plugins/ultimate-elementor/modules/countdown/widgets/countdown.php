@@ -650,6 +650,36 @@ class Countdown extends Common_Widget {
 		);
 
 		$this->add_control(
+			'countdown_label_pos',
+			array(
+				'label'        => __( 'Label Position', 'uael' ),
+				'type'         => Controls_Manager::SELECT,
+				'default'      => 'block',
+				'options'      => array(
+					'block'  => __( 'Block', 'uael' ),
+					'inline' => __( 'Inline', 'uael' ),
+				),
+				'prefix_class' => 'uael-countdown-label-',
+				'condition'    => array(
+					'countdown_style!' => 'circle',
+				),
+			)
+		);
+
+		$this->add_control(
+			'inline_label_note',
+			array(
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => __( 'Note: Adjust Container Width to display inline layout properly.', 'uael' ),
+				'content_classes' => 'elementor-panel-alert elementor-panel-alert-warning',
+				'condition'       => array(
+					'countdown_label_pos' => 'inline',
+					'countdown_style!'    => 'circle',
+				),
+			)
+		);
+
+		$this->add_control(
 			'countdown_separator',
 			array(
 				'label'        => __( 'Separator', 'uael' ),
@@ -842,6 +872,8 @@ class Countdown extends Common_Widget {
 				),
 				'selectors'  => array(
 					'{{WRAPPER}} .uael-countdown-wrapper .uael-countdown-item' => 'margin-bottom:{{SIZE}}{{UNIT}};',
+					'{{WRAPPER}}.uael-countdown-label-block .uael-countdown-wrapper .uael-countdown-item' => 'margin-bottom:{{SIZE}}{{UNIT}}; margin-right:0px;',
+					'{{WRAPPER}}.uael-countdown-label-inline .uael-countdown-wrapper .uael-countdown-item' => 'margin-right:{{SIZE}}{{UNIT}}; margin-bottom:0px;',
 				),
 				'condition'  => array(
 					'display_timer_labels' => array( 'default', 'custom' ),

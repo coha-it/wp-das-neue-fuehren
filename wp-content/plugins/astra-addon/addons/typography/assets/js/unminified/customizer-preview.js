@@ -79,6 +79,13 @@
 			astra_css('astra-settings[line-height-h6]', 'line-height', 'h6, .entry-content h6');
 		}
 	}
+	// Add widget title support to font-weight preview CSS.
+	var h4_widget_title, h5_widget_title, h6_widget_title = '';
+	if (true == astraCustomizer.font_weight_support_widget_title) {
+		h4_widget_title = 'h4.widget-title';
+		h5_widget_title = 'h5.widget-title';
+		h6_widget_title = 'h6.widget-title';
+	}
 	// Check if anchors should be loaded in the CSS for headings.
 	if (true == astraCustomizer.includeAnchorsInHeadindsCss) {
 		astra_generate_outside_font_family_css( 'astra-settings[font-family-h1]', 'h1, .entry-content h1, .entry-content h1 a' );
@@ -97,15 +104,15 @@
 		astra_css('astra-settings[text-transform-h3]', 'text-transform', 'h3, .entry-content h3, .entry-content h3 a');
 
 		astra_generate_outside_font_family_css( 'astra-settings[font-family-h4]', 'h4, .entry-content h4, .entry-content h4 a' );
-		astra_generate_font_weight_css( 'astra-settings[font-family-h4]', 'astra-settings[font-weight-h4]', 'font-weight', 'h4, .entry-content h4, .entry-content h4 a' );
+		astra_generate_font_weight_css( 'astra-settings[font-family-h4]', 'astra-settings[font-weight-h4]', 'font-weight', 'h4, .entry-content h4, .entry-content h4 a, ' + h4_widget_title );
 		astra_css('astra-settings[text-transform-h4]', 'text-transform', 'h4, .entry-content h4, .entry-content h4 a');
 
 		astra_generate_outside_font_family_css( 'astra-settings[font-family-h5]', 'h5, .entry-content h5, .entry-content h5 a' );
-		astra_generate_font_weight_css( 'astra-settings[font-family-h5]', 'astra-settings[font-weight-h5]', 'font-weight', 'h5, .entry-content h5, .entry-content h5 a' );
+		astra_generate_font_weight_css( 'astra-settings[font-family-h5]', 'astra-settings[font-weight-h5]', 'font-weight', 'h5, .entry-content h5, .entry-content h5 a, ' + h5_widget_title );
 		astra_css('astra-settings[text-transform-h5]', 'text-transform', 'h5, .entry-content h5, .entry-content h5 a');
 
 		astra_generate_outside_font_family_css( 'astra-settings[font-family-h6]', 'h6, .entry-content h6, .entry-content h6 a' );
-		astra_generate_font_weight_css( 'astra-settings[font-family-h6]', 'astra-settings[font-weight-h6]', 'font-weight', 'h6, .entry-content h6, .entry-content h6 a' );
+		astra_generate_font_weight_css( 'astra-settings[font-family-h6]', 'astra-settings[font-weight-h6]', 'font-weight', 'h6, .entry-content h6, .entry-content h6 a, ' + h6_widget_title );
 		astra_css('astra-settings[text-transform-h6]', 'text-transform', 'h6, .entry-content h6, .entry-content h6 a');
 	} else {
 		astra_generate_outside_font_family_css( 'astra-settings[font-family-h1]', 'h1, .entry-content h1' );
@@ -124,15 +131,15 @@
 		astra_css('astra-settings[text-transform-h3]', 'text-transform', 'h3, .entry-content h3');
 
 		astra_generate_outside_font_family_css( 'astra-settings[font-family-h4]', 'h4, .entry-content h4' );
-		astra_generate_font_weight_css( 'astra-settings[font-family-h4]', 'astra-settings[font-weight-h4]', 'font-weight', 'h4, .entry-content h4' );
+		astra_generate_font_weight_css( 'astra-settings[font-family-h4]', 'astra-settings[font-weight-h4]', 'font-weight', 'h4, .entry-content h4, ' + h4_widget_title );
 		astra_css('astra-settings[text-transform-h4]', 'text-transform', 'h4, .entry-content h4');
 
 		astra_generate_outside_font_family_css( 'astra-settings[font-family-h5]', 'h5, .entry-content h5' );
-		astra_generate_font_weight_css( 'astra-settings[font-family-h5]', 'astra-settings[font-weight-h5]', 'font-weight', 'h5, .entry-content h5' );
+		astra_generate_font_weight_css( 'astra-settings[font-family-h5]', 'astra-settings[font-weight-h5]', 'font-weight', 'h5, .entry-content h5, ' + h5_widget_title );
 		astra_css('astra-settings[text-transform-h5]', 'text-transform', 'h5, .entry-content h5');
 
 		astra_generate_outside_font_family_css( 'astra-settings[font-family-h6]', 'h6, .entry-content h6' );
-		astra_generate_font_weight_css( 'astra-settings[font-family-h6]', 'astra-settings[font-weight-h6]', 'font-weight', 'h6, .entry-content h6' );
+		astra_generate_font_weight_css( 'astra-settings[font-family-h6]', 'astra-settings[font-weight-h6]', 'font-weight', 'h6, .entry-content h6, ' + h6_widget_title );
 		astra_css('astra-settings[text-transform-h6]', 'text-transform', 'h6, .entry-content h6');
 	}
 

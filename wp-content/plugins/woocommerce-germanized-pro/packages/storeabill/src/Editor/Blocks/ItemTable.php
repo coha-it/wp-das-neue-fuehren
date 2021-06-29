@@ -20,14 +20,15 @@ class ItemTable extends DynamicBlock {
 
 	public function get_attributes() {
 		return array(
-			'borderColor'            => $this->get_schema_string(),
-			'className'              => $this->get_schema_string(),
-			'customBorderColor'      => $this->get_schema_string(),
-			'showPricesIncludingTax' => $this->get_schema_boolean( true ),
-			'hasDenseLayout'         => $this->get_schema_boolean( false ),
-			'borders'                => array(
+			'borderColor'                  => $this->get_schema_string(),
+			'className'                    => $this->get_schema_string(),
+			'customBorderColor'            => $this->get_schema_string(),
+			'customHeadingBackgroundColor' => $this->get_schema_string(),
+			'showPricesIncludingTax'       => $this->get_schema_boolean( true ),
+			'hasDenseLayout'               => $this->get_schema_boolean( false ),
+			'borders'                      => array(
 				'type'    => 'array',
-				'default' => ['outer', 'horizontal'],
+				'default' => ['horizontal'],
 				'items'   => array(
 					'type' => 'string'
 				),

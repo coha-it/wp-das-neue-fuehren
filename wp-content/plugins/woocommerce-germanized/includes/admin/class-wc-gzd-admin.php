@@ -87,14 +87,20 @@ class WC_GZD_Admin {
 		), 10, 2 );
 
 		add_action( 'woocommerce_admin_field_gzd_toggle', array( $this, 'toggle_input_field' ), 10 );
-		add_action( 'woocommerce_admin_field_image', array( $this, 'image_field' ), 0, 1 );
-		add_action( 'woocommerce_admin_field_html', array( $this, 'html_field' ), 0, 1 );
-		add_action( 'woocommerce_admin_field_hidden', array( $this, 'hidden_field' ), 0, 1 );
+		add_action( 'woocommerce_admin_field_image', array( $this, 'image_field' ), 10, 1 );
+		add_action( 'woocommerce_admin_field_html', array( $this, 'html_field' ), 10, 1 );
+		add_action( 'woocommerce_admin_field_hidden', array( $this, 'hidden_field' ), 10, 1 );
 
 		add_filter( 'woocommerce_admin_settings_sanitize_option', array( $this, 'save_toggle_input_field' ), 0, 3 );
 
+		add_action( 'woocommerce_oss_enabled_oss_procedure', array( $this, 'oss_enable_hide_tax_percentage' ), 10 );
+
 		$this->wizward = require 'class-wc-gzd-admin-setup-wizard.php';
 	}
+
+	public function oss_enable_hide_tax_percentage() {
+	    update_option( 'woocommerce_gzd_hide_tax_rate_shop', 'yes' );
+    }
 
 	public function hide_metaboxes() {
 		remove_meta_box( 'tagsdiv-product_unit', 'product', 'side' );
@@ -820,7 +826,6 @@ class WC_GZD_Admin {
 		if ( current_user_can( 'manage_woocommerce' ) && isset( $_GET['insert-vat-rates'] ) && isset( $_GET['_wpnonce'] ) && check_admin_referer( 'wc-gzd-insert-vat-rates' ) ) {
 
 			WC_GZD_Install::create_tax_rates();
-			WC_GZD_Install::create_virtual_tax_rates();
 
 			// Redirect to check for updates
 			wp_safe_redirect( admin_url( 'admin.php?page=wc-settings&tab=tax&section=standard' ) );

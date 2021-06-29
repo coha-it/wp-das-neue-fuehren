@@ -530,9 +530,14 @@ function gtm4wp_get_the_gtm_tag() {
 			$_gtm_env = '';
 		}
 
+		$_gtm_domain_name = 'www.googletagmanager.com';
+		if ( $gtm4wp_options[ GTM4WP_OPTION_GTMDOMAIN ] != '' ) {
+			$_gtm_domain_name = $gtm4wp_options[ GTM4WP_OPTION_GTMDOMAIN ];
+		}
+
 		foreach ( $_gtm_codes as $one_gtm_code ) {
 			$_gtm_tag .= '
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' . $one_gtm_code . $_gtm_env . '"
+<noscript><iframe src="https://' . $_gtm_domain_name . '/ns.html?id=' . $one_gtm_code . $_gtm_env . '"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>';
 		}
 
@@ -719,7 +724,7 @@ function gtm4wp_wp_header_begin( $echo = true ) {
 				gtm4wp_orderid_tracked = gtm4wp_cookie_parts.pop().split(";").shift();
 			}
 		} else {
-			window.localStorage.getItem( "gtm4wp_orderid_tracked" );
+			gtm4wp_orderid_tracked = window.localStorage.getItem( "gtm4wp_orderid_tracked" );
 		}
 
 		// check enhanced ecommerce
@@ -792,6 +797,7 @@ function gtm4wp_wp_header_begin( $echo = true ) {
 
 	if ( ( $gtm4wp_options[ GTM4WP_OPTION_GTM_CODE ] != '' ) && ( GTM4WP_PLACEMENT_OFF != $gtm4wp_options[ GTM4WP_OPTION_GTM_PLACEMENT ] ) ) {
 		$_gtm_codes = explode( ',', str_replace( array( ';', ' ' ), array( ',', '' ), $gtm4wp_options[ GTM4WP_OPTION_GTM_CODE ] ) );
+		$add_cookiebot_ignore = $gtm4wp_options[ GTM4WP_OPTION_INTEGRATE_COOKIEBOT ];
 
 		$_gtm_tag = '';
 		foreach ( $_gtm_codes as $one_gtm_code ) {
@@ -801,12 +807,17 @@ function gtm4wp_wp_header_begin( $echo = true ) {
 				$_gtm_env = '';
 			}
 
+			$_gtm_domain_name = 'www.googletagmanager.com';
+			if ( $gtm4wp_options[ GTM4WP_OPTION_GTMDOMAIN ] != '' ) {
+				$_gtm_domain_name = $gtm4wp_options[ GTM4WP_OPTION_GTMDOMAIN ];
+			}
+
 			$_gtm_tag .= '
-<script data-cfasync="false">//<![CDATA[
+<script data-cfasync="false"' . ( $add_cookiebot_ignore ? ' data-cookieconsent="ignore"' : '' ) . '>//<![CDATA[
 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({\'gtm.start\':
 new Date().getTime(),event:\'gtm.js\'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!=\'dataLayer\'?\'&l=\'+l:\'\';j.async=true;j.src=
-\'//www.googletagmanager.com/gtm.\'' . '+\'js?id=\'+i+dl' . $_gtm_env . ';f.parentNode.insertBefore(j,f);
+\'//' . $_gtm_domain_name . '/gtm.\'' . '+\'js?id=\'+i+dl' . $_gtm_env . ';f.parentNode.insertBefore(j,f);
 })(window,document,\'script\',\'' . $gtm4wp_datalayer_name . '\',\'' . $one_gtm_code . '\');//]]>
 </script>';
 		}

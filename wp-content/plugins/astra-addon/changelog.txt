@@ -1,3 +1,38 @@
+v3.5.2
+- Security Fix: Sanitized AJAX query_vars for Infinite Scroll actions.
+
+v3.5.1
+- Improvement: Added headings font-weight support to widget-title headings. (https://wpastra.com/docs/font-weight-for-widget-titles/)
+- Improvement: Removed jQuery dependency in Scroll To Top addon.
+- Improvement: Custom Layout - Added close button for multiselect selected items for Display On field.
+- Fix: Builder - Account Element - Sticky Icon Color creates color patch on sticky header active.
+- Fix: Builder - WooCommerce cart - 0 Border width count removes default cart icon's border.
+- Fix: WooCommerce cart - Color option not working in old header layout.
+- Fix: Megamenu - Clicking on any item causes a short gray blink on the items in other columns.
+- Fix: Customizer's font & color settings not reflecting in Gutenberg editor. (https://wpastra.com/astra-3-6/)
+- Fix: 'Page Header: Center Aligned' layout not working for new users.
+- Fix: Core Web Vitals - WooCommerce add to cart plus/minus buttons increasing CLS score.
+- Fix: Sticky Header - Transition effect of headers when Shrink Effect is enabled.
+
+v3.5.0
+- Improvement: Frontend optimization by reducing static CSS and loading it conditionally. (https://wpastra.com/astra-3-5/)
+- Fix: Version compare updated to v3.5.0 to support Site Title & Tagline pro color controls dependency.
+
+v3.5.0-beta.1
+- Improvement: Added compatibility for upcoming 'Ultimate addons for Gutenberg' plugin version 1.23.0 and above.
+- Improvement: Separate out options for outside item color controls in sticky header.
+- Improvement: Separate out options for outside item color controls in sticky header.
+- Fix: Builder - WooCommerce cart - Empty icons visible along with SVG icons in builder cart element.
+- Fix: Spacing options visible in Single Post customizer section even though Spacing addon is disabled.
+- Fix: Removed unwanted dividers from customizer setting sections.
+- Fix: Builder - Menu - Arrow icon visible aside to Mega Menu Highlight text.
+- Fix: JS console error on click of WooCommerce Off-Canvas close icon.
+
+v3.4.2
+- New: Builder - WooCommerce & EDD Cart - Border width option for cart outline style. (https://wpastra.com/docs/remove-border-around-cart/)
+- Fix: WooCommerce - Grid column layout not working for upsell products.
+- Fix: Builder - WooCommerce & EDD cart - double icon appearing when icon selected from Addon.
+
 v3.4.1
 - Fix: Fatal error `Uncaught Error: Class 'Astra_Builder_Helper'` not found when footer build with custom layout.
 

@@ -220,6 +220,11 @@
   position: fixed;
 }
 
+/* Added transition to smoothen shrink effect */
+.site-primary-header-wrap, .site-above-header-wrap, .site-below-header-wrap {
+  transition: all 0.2s linear;
+}
+
 .ast-header-stick-slide-active .ast-flyout-menu-enable.ast-header-break-point #masthead > .main-header-bar-navigation {
   display: none !important;
 }

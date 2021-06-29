@@ -104,9 +104,15 @@ class Tax {
 		$args = wp_parse_args( $args, array(
 			'is_compound' => false,
 			'is_moss'     => false,
+			'is_oss'      => false,
 			'percent'     => 0,
 		) );
 
-		return $args['percent'] . "_compound_" . wc_bool_to_string( $args['is_compound'] ) . "_moss_" . wc_bool_to_string( $args['is_moss'] );
+		/**
+		 * MOSS turned into OSS
+		 */
+		$is_oss = $args['is_moss'] || $args['is_oss'];
+
+		return $args['percent'] . "_compound_" . wc_bool_to_string( $args['is_compound'] ) . "_oss_" . wc_bool_to_string( $is_oss );
 	}
 }

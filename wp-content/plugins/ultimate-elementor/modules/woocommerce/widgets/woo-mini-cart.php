@@ -2688,7 +2688,7 @@ class Woo_Mini_Cart extends Common_Widget {
 						<?php
 						if ( 'yes' === $settings['show_badge'] ) {
 							?>
-							<div class="uael-mc__btn-badge uael-badge-<?php echo esc_attr( $settings['badge_placement'] ); ?>" data-counter="<?php echo esc_attr( $cart_count ); ?>"">
+							<div class="uael-mc__btn-badge uael-badge-<?php echo esc_attr( $settings['badge_placement'] ); ?>" data-counter="<?php echo esc_attr( $cart_count ); ?>">
 								<?php echo esc_html( $cart_count ); ?>
 							</div>
 							<?php

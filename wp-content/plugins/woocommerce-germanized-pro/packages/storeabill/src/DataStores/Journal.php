@@ -223,7 +223,7 @@ class Journal extends WC_Data_Store_WP implements WC_Object_Data_Store_Interface
 					'number_format'   => $data->journal_number_format,
 					'number_min_size' => $data->journal_number_min_size,
 					'type'            => $data->journal_type,
-					'date_last_reset' => 0 < $data->journal_date_last_reset_gmt ? wc_string_to_timestamp( $data->journal_date_last_reset_gmt ) : null,
+					'date_last_reset' => '0000-00-00 00:00:00' !== $data->journal_date_last_reset_gmt ? wc_string_to_timestamp( $data->journal_date_last_reset_gmt ) : null,
 					'reset_interval'  => $data->journal_reset_interval
 				)
 			);

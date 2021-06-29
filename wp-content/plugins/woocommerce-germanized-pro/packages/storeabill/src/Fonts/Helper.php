@@ -62,7 +62,6 @@ final class Helper {
 	}
 
 	public static function download_font_file( $url, $type = 'woff' ) {
-
 		$saved_fonts = get_option( 'storeabill_font_local_filenames', array() );
 
 		if ( isset( $saved_fonts[ $url ] ) && file_exists( $saved_fonts[ $url ]['file'] ) ) {

@@ -7,11 +7,20 @@ defined( 'ABSPATH' ) or die( 'Please don&rsquo;t call the plugin directly. Thank
 
 //Local Business
 if (seopress_get_toggle_option('local-business') =='1') {
+	require_once ( dirname( __FILE__ ) . '/options-local-business.php'); //Local Business (required for Page Builders)
+
 	add_action('wp_head', 'seopress_pro_local_business', 0);
 	function seopress_pro_local_business() {
 		if (!is_admin()){
-			require_once ( dirname( __FILE__ ) . '/options-local-business.php'); //Local Business
+			require_once ( dirname( __FILE__ ) . '/options-local-business-render.php'); //Local Business
 		}
+	}
+
+	//Register Local Business widget
+	add_action( 'widgets_init', 'seopress_pro_lb_register_widget' );
+	function seopress_pro_lb_register_widget() {
+		require_once ( dirname( __FILE__ ) . '/options-local-business-widget.php'); //Local Business
+		register_widget( 'Local_Business_Widget' );
 	}
 }
 
@@ -23,13 +32,13 @@ if (seopress_get_toggle_option('woocommerce') =='1') {
 			require_once ( dirname( __FILE__ ) . '/options-woocommerce-sitemap.php'); //WooCommerce sitemap
 		} else {
 			require_once ( dirname( __FILE__ ) . '/options-woocommerce-admin.php'); //WooCommerce in admin
-		}	
+		}
 	}
 	add_action('get_header', 'seopress_pro_woocommerce', 0);
 	function seopress_pro_woocommerce() {
 		if (!is_admin()){
 			require_once ( dirname( __FILE__ ) . '/options-woocommerce.php'); //WooCommerce
-		}	
+		}
 	}
 }
 
@@ -39,7 +48,7 @@ if (seopress_get_toggle_option('edd') =='1') {
 	function seopress_pro_edd() {
 		if (!is_admin()){
 			require_once ( dirname( __FILE__ ) . '/options-edd.php'); //EDD
-		}	
+		}
 	}
 }
 
@@ -73,7 +82,7 @@ if (seopress_get_toggle_option('rich-snippets') =='1') {
 	function seopress_pro_schemas_notice() {
 		global $typenow;
 		if ( current_user_can( seopress_capability( 'manage_options', 'notice' ) ) && (isset($typenow) && $typenow === 'seopress_schemas' ) ) {
-			
+
 			if(function_exists('seopress_rich_snippets_enable_option') && seopress_rich_snippets_enable_option() !="1") {
 			?>
 				<div class="error notice">
@@ -97,7 +106,7 @@ if (seopress_get_toggle_option('breadcrumbs') =='1') {
 		if ( ! empty ( $seopress_breadcrumbs_enable_option ) ) {
 			foreach ($seopress_breadcrumbs_enable_option as $key => $seopress_breadcrumbs_enable_value)
 				$options[$key] = $seopress_breadcrumbs_enable_value;
-			 if (isset($seopress_breadcrumbs_enable_option['seopress_breadcrumbs_enable'])) { 
+			 if (isset($seopress_breadcrumbs_enable_option['seopress_breadcrumbs_enable'])) {
 			 	return $seopress_breadcrumbs_enable_option['seopress_breadcrumbs_enable'];
 			 }
 		}
@@ -109,7 +118,7 @@ if (seopress_get_toggle_option('breadcrumbs') =='1') {
 		if ( ! empty ( $seopress_breadcrumbs_json_enable_option ) ) {
 			foreach ($seopress_breadcrumbs_json_enable_option as $key => $seopress_breadcrumbs_json_enable_value)
 				$options[$key] = $seopress_breadcrumbs_json_enable_value;
-			 if (isset($seopress_breadcrumbs_json_enable_option['seopress_breadcrumbs_json_enable'])) { 
+			 if (isset($seopress_breadcrumbs_json_enable_option['seopress_breadcrumbs_json_enable'])) {
 			 	return $seopress_breadcrumbs_json_enable_option['seopress_breadcrumbs_json_enable'];
 			 }
 		}

@@ -158,6 +158,11 @@ final class Embed {
 			$ext                    = pathinfo( $url, PATHINFO_EXTENSION );
 			$rules_arr['local_url'] = Helper::download_font_file( $url, $ext );
 
+			// Could not download font
+			if ( ! $rules_arr['local_url'] ) {
+				continue;
+			}
+
 			if ( $variant ) {
 				$rules_arr['variant'] = $variant;
 			}
@@ -221,6 +226,34 @@ final class Embed {
 				set_transient( $transient_id, $result, DAY_IN_SECONDS );
 			} else {
 				$result = array();
+			}
+		} else {
+			$updated = false;
+
+			foreach( $result as $key => $font ) {
+				$font = wp_parse_args( $font, array(
+					'local_url' => '',
+					'url'       => '',
+				) );
+
+				$local_path = self::get_font_path( $font );
+
+				if ( empty( $font['local_url'] ) || ! @file_exists( $local_path ) ) {
+					$ext                         = pathinfo( $font['url'], PATHINFO_EXTENSION );
+					$result[ $key ]['local_url'] = Helper::download_font_file( $font['url'], $ext );
+
+					// Could not download font
+					if ( ! $result[ $key ]['local_url'] ) {
+						unset( $result[ $key ] );
+					} else {
+						$updated = true;
+					}
+				}
+			}
+
+			if ( $updated ) {
+				// Set the transient for a day.
+				set_transient( $transient_id, $result, DAY_IN_SECONDS );
 			}
 		}
 

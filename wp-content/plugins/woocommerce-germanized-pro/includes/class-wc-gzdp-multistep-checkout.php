@@ -65,7 +65,7 @@ class WC_GZDP_Multistep_Checkout {
 		add_action( 'wp_head', array( $this, 'refresh_step_numbers' ), 1 );
 
 		add_action( 'woocommerce_before_checkout_form', array( $this, 'print_steps' ), 0, 1 );
-		add_action( 'woocommerce_checkout_process', array( $this, 'check_step_submit' ), 0 );
+		add_action( 'woocommerce_checkout_process', array( $this, 'check_step_submit' ), 25 );
 		
 		add_filter( 'woocommerce_update_order_review_fragments', array( $this, 'refresh_order_fragments' ), 1 );
 		
@@ -152,97 +152,139 @@ class WC_GZDP_Multistep_Checkout {
 	}
 
 	public function set_styles( $assets ) {
-
-		if ( ! is_checkout() )
+		if ( ! is_checkout() ) {
 			return;
+		}
 
-		wp_register_style( 'wc-gzdp-checkout', WC_germanized_pro()->plugin_url() . '/assets/css/checkout-multistep' . $assets->suffix . '.css', array(), WC_GERMANIZED_PRO_VERSION );
+		$suffix = $assets->suffix;
+
+		if ( 'navigation' !== $this->get_layout_style() ) {
+			$suffix = '-' . sanitize_key( $this->get_layout_style() ) . $suffix;
+		}
+
+		wp_register_style( 'wc-gzdp-checkout', WC_germanized_pro()->plugin_url() . '/assets/css/checkout-multistep' . $suffix . '.css', array(), WC_GERMANIZED_PRO_VERSION );
 		wp_enqueue_style( 'wc-gzdp-checkout' );
 
 		wp_add_inline_style( 'wc-gzdp-checkout', $this->get_custom_css() );
 	}
 
+	protected function get_layout_style() {
+		return get_option( 'woocommerce_gzdp_checkout_layout_style', 'plain' );
+	}
+
 	public function get_custom_css() {
+		$layout_style = $this->get_layout_style();
 
-		$colors = apply_filters( 'woocommerce_gzdp_checkout_step_colors', array(
+		if ( 'navigation' === $layout_style ) {
+			$colors = apply_filters( 'woocommerce_gzdp_checkout_step_colors', array(
+				'bg'				=> get_option( 'woocommerce_gzdp_checkout_bg', '#f9f9f9' ),
+				'border'			=> get_option( 'woocommerce_gzdp_checkout_border_color', '#d4d4d4' ),
+				'color'				=> get_option( 'woocommerce_gzdp_checkout_font_color', '#468847' ),
+				'active_bg' 		=> get_option( 'woocommerce_gzdp_checkout_active_bg', '#d9edf7' ),
+				'active_color' 		=> get_option( 'woocommerce_gzdp_checkout_active_font_color', '#3a87ad' ),
+				'disabled_bg'		=> get_option( 'woocommerce_gzdp_checkout_disabled_bg', '#ededed' ),
+				'disabled_color'	=> get_option( 'woocommerce_gzdp_checkout_disabled_font_color', '#999999' ),
+			) );
+
+			$css = '
+
+			.woocommerce-multistep-checkout ul.nav-wizard {
+			    background-color: ' . $colors[ 'bg' ] . ';
+			    border-color: ' . $colors[ 'border' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard:before {
+			    border-top-color: ' . $colors[ 'border' ] . ';
+			    border-bottom-color: ' . $colors[ 'border' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard:after {
+			    border-top-color: ' . $colors[ 'border' ] . ';
+			    border-bottom-color: ' . $colors[ 'border' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard li a {
+			    color: ' . $colors[ 'color' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard li:before {
+			    border-left-color: ' . $colors[ 'border' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard li:after {
+			    border-left-color: ' . $colors[ 'bg' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard li.active {
+			    color: ' . $colors[ 'active_color' ] . ';
+			    background: ' . $colors[ 'active_bg' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard li.active:after {
+			    border-left-color: ' . $colors[ 'active_bg' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard li.active a,
+			.woocommerce-multistep-checkout ul.nav-wizard li.active a:active,
+			.woocommerce-multistep-checkout ul.nav-wizard li.active a:visited,
+			.woocommerce-multistep-checkout ul.nav-wizard li.active a:focus {
+			    color: ' . $colors[ 'active_color' ] . ';
+			    background: ' . $colors[ 'active_bg' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard .active ~ li {
+			    color: ' . $colors[ 'disabled_color' ] . ';
+			    background: ' . $colors[ 'disabled_bg' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard .active ~ li:after {
+			    border-left-color: ' . $colors[ 'disabled_bg' ] . ';
+			}
+	
+			.woocommerce-multistep-checkout ul.nav-wizard .active ~ li a,
+			.woocommerce-multistep-checkout ul.nav-wizard .active ~ li a:active,
+			.woocommerce-multistep-checkout ul.nav-wizard .active ~ li a:visited,
+			.woocommerce-multistep-checkout ul.nav-wizard .active ~ li a:focus {
+			    color: ' . $colors[ 'disabled_color' ] . ';
+			    background: ' . $colors[ 'disabled_bg' ] . ';
+			}
+			';
+		} elseif ( 'plain' === $layout_style ) {
+			$colors = apply_filters( 'woocommerce_gzdp_checkout_step_colors', array(
+				'primary'   => get_option( 'woocommerce_gzdp_checkout_plain_primary_color', '#3a87ad' ),
+				'secondary' => get_option( 'woocommerce_gzdp_checkout_plain_secondary_color', '#d4d4d4' ),
+			) );
+
+			$css = '
+			.woocommerce-multistep-checkout ul.nav-wizard li a, .woocommerce-multistep-checkout ul.nav-wizard li.active ~ li a {
+			    color: ' . $colors['primary'] . ';
+			}
+			.woocommerce-multistep-checkout ul.nav-wizard li.active a {
+			    color: ' . $colors['primary'] . ';
+			}
+			.woocommerce-multistep-checkout ul.nav-wizard li:not(:first-child)::before, .woocommerce-multistep-checkout ul.nav-wizard li a::before {
+			    background: ' . $colors['primary'] . ';
+			}
 			
-			'bg'				=> get_option( 'woocommerce_gzdp_checkout_bg', '#f9f9f9' ),
-			'border'			=> get_option( 'woocommerce_gzdp_checkout_border_color', '#d4d4d4' ),
-			'color'				=> get_option( 'woocommerce_gzdp_checkout_font_color', '#468847' ),
-			'active_bg' 		=> get_option( 'woocommerce_gzdp_checkout_active_bg', '#d9edf7' ),
-			'active_color' 		=> get_option( 'woocommerce_gzdp_checkout_active_font_color', '#3a87ad' ),
-			'disabled_bg'		=> get_option( 'woocommerce_gzdp_checkout_disabled_bg', '#ededed' ),
-			'disabled_color'	=> get_option( 'woocommerce_gzdp_checkout_disabled_font_color', '#999999' ),
-
-		) );
-
-		$css = '
-
-		.woocommerce-multistep-checkout ul.nav-wizard {
-		    background-color: ' . $colors[ 'bg' ] . ';
-		    border-color: ' . $colors[ 'border' ] . ';
+			.woocommerce-multistep-checkout ul.nav-wizard li.active a::before {
+			    border-color: ' . $colors['primary'] . ';
+			}
+			
+			.woocommerce-multistep-checkout ul.nav-wizard li.active ~ li::before {
+			    background: ' . $colors['secondary'] . ';
+			}
+			
+			.woocommerce-multistep-checkout ul.nav-wizard li.active ~ li a {
+			    color: ' . $colors['secondary'] . ';
+			}
+			
+			.woocommerce-multistep-checkout ul.nav-wizard li.active ~ li a::before {
+			    background: ' . $colors['secondary'] . ';
+			}
+			';
 		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard:before {
-		    border-top-color: ' . $colors[ 'border' ] . ';
-		    border-bottom-color: ' . $colors[ 'border' ] . ';
-		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard:after {
-		    border-top-color: ' . $colors[ 'border' ] . ';
-		    border-bottom-color: ' . $colors[ 'border' ] . ';
-		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard li a {
-		    color: ' . $colors[ 'color' ] . ';
-		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard li:before {
-		    border-left-color: ' . $colors[ 'border' ] . ';
-		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard li:after {
-		    border-left-color: ' . $colors[ 'bg' ] . ';
-		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard li.active {
-		    color: ' . $colors[ 'active_color' ] . ';
-		    background: ' . $colors[ 'active_bg' ] . ';
-		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard li.active:after {
-		    border-left-color: ' . $colors[ 'active_bg' ] . ';
-		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard li.active a,
-		.woocommerce-multistep-checkout ul.nav-wizard li.active a:active,
-		.woocommerce-multistep-checkout ul.nav-wizard li.active a:visited,
-		.woocommerce-multistep-checkout ul.nav-wizard li.active a:focus {
-		    color: ' . $colors[ 'active_color' ] . ';
-		    background: ' . $colors[ 'active_bg' ] . ';
-		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard .active ~ li {
-		    color: ' . $colors[ 'disabled_color' ] . ';
-		    background: ' . $colors[ 'disabled_bg' ] . ';
-		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard .active ~ li:after {
-		    border-left-color: ' . $colors[ 'disabled_bg' ] . ';
-		}
-
-		.woocommerce-multistep-checkout ul.nav-wizard .active ~ li a,
-		.woocommerce-multistep-checkout ul.nav-wizard .active ~ li a:active,
-		.woocommerce-multistep-checkout ul.nav-wizard .active ~ li a:visited,
-		.woocommerce-multistep-checkout ul.nav-wizard .active ~ li a:focus {
-		    color: ' . $colors[ 'disabled_color' ] . ';
-		    background: ' . $colors[ 'disabled_bg' ] . ';
-		}
-
-		';
 		
-		return apply_filters( 'woocommerce_gzdp_checkout_custom_css', $css ); 
-
+		return apply_filters( 'woocommerce_gzdp_checkout_custom_css', $css, $layout_style );
 	}
 
 	public function set_scripts( $assets ) {
@@ -264,7 +306,6 @@ class WC_GZDP_Multistep_Checkout {
 		wp_enqueue_script( 'wc-gzdp-checkout-multistep' );
 
 		$needs_compatibility = array(
-            'wirecard-woocommerce-extension/woocommerce-wirecard-payment-gateway.php',
             'payone-woocommerce-3/payone-woocommerce-3.php',
 			'mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php',
 			'woo-stripe-payment/stripe-payments.php',
@@ -282,6 +323,17 @@ class WC_GZDP_Multistep_Checkout {
 
 		if ( apply_filters( 'woocommerce_gzdp_multistep_checkout_enable_payment_compatibility_mode', $enable_payment_compatibility_script ) ) {
 			wp_register_script( 'wc-gzdp-checkout-multistep-payment-compatibility', WC_germanized_pro()->plugin_url() . '/assets/js/checkout-multistep-payment-compatibility' . $assets->suffix . '.js', array( 'wc-gzdp-checkout-multistep' ), WC_GERMANIZED_PRO_VERSION, true );
+
+			wp_localize_script( 'wc-gzdp-checkout-multistep-payment-compatibility', 'wc_gzdp_multistep_checkout_payment_compatibility_params', array(
+				'gateways' => apply_filters( 'woocommerce_gzdp_multistep_checkout_payment_compatibility_gateways', array(
+					'mollie_wc_gateway_creditcard',
+					'payone',
+					'stripe_cc',
+					'stripe'
+				) ),
+				'force_enable' => has_filter( 'woocommerce_gzdp_multistep_checkout_enable_payment_compatibility_mode' ) ? true : false
+			) );
+
 			wp_enqueue_script( 'wc-gzdp-checkout-multistep-payment-compatibility' );
 		}
 
@@ -542,6 +594,13 @@ class WC_GZDP_Multistep_Checkout {
 		return $sections;
 	}
 
+	protected function get_layout_style_options() {
+		return array(
+			'plain'      => _x( 'Plain', 'multistep', 'woocommerce-germanized-pro' ),
+			'navigation' => _x( 'Navigation', 'multistep', 'woocommerce-germanized-pro' ),
+		);
+	}
+
 	public function get_settings() {
 		
 		$settings = array(
@@ -554,6 +613,16 @@ class WC_GZDP_Multistep_Checkout {
 				'id' 		=> 'woocommerce_gzdp_checkout_enable',
 				'type' 		=> 'gzd_toggle',
 				'default'	=> 'no',
+			),
+
+			array(
+				'title' 	=> _x( 'Style', 'multistep', 'woocommerce-germanized-pro' ),
+				'desc' 		=> _x( 'Choose a layout style.', 'multistep', 'woocommerce-germanized-pro' ),
+				'desc_tip'	=> true,
+				'id' 		=> 'woocommerce_gzdp_checkout_layout_style',
+				'type' 		=> 'select',
+				'options'   => $this->get_layout_style_options(),
+				'default'	=> 'plain',
 			),
 
 			array(
@@ -653,6 +722,9 @@ class WC_GZDP_Multistep_Checkout {
 				'id' 		=> 'woocommerce_gzdp_checkout_bg',
 				'type' 		=> 'color',
 				'default'	=> '#f9f9f9',
+				'custom_attributes' => array(
+					'data-show_if_woocommerce_gzdp_checkout_layout_style' => 'navigation',
+				),
 			),
 
 			array(
@@ -662,6 +734,9 @@ class WC_GZDP_Multistep_Checkout {
 				'id' 		=> 'woocommerce_gzdp_checkout_border_color',
 				'type' 		=> 'color',
 				'default'	=> '#d4d4d4',
+				'custom_attributes' => array(
+					'data-show_if_woocommerce_gzdp_checkout_layout_style' => 'navigation',
+				),
 			),
 
 			array(
@@ -671,6 +746,9 @@ class WC_GZDP_Multistep_Checkout {
 				'id' 		=> 'woocommerce_gzdp_checkout_font_color',
 				'type' 		=> 'color',
 				'default'	=> '#468847',
+				'custom_attributes' => array(
+					'data-show_if_woocommerce_gzdp_checkout_layout_style' => 'navigation',
+				),
 			),
 
 			array(
@@ -680,6 +758,9 @@ class WC_GZDP_Multistep_Checkout {
 				'id' 		=> 'woocommerce_gzdp_checkout_active_bg',
 				'type' 		=> 'color',
 				'default'	=> '#d9edf7',
+				'custom_attributes' => array(
+					'data-show_if_woocommerce_gzdp_checkout_layout_style' => 'navigation',
+				),
 			),
 
 			array(
@@ -689,6 +770,9 @@ class WC_GZDP_Multistep_Checkout {
 				'id' 		=> 'woocommerce_gzdp_checkout_active_font_color',
 				'type' 		=> 'color',
 				'default'	=> '#3a87ad',
+				'custom_attributes' => array(
+					'data-show_if_woocommerce_gzdp_checkout_layout_style' => 'navigation',
+				),
 			),
 
 			array(
@@ -698,6 +782,9 @@ class WC_GZDP_Multistep_Checkout {
 				'id' 		=> 'woocommerce_gzdp_checkout_disabled_bg',
 				'type' 		=> 'color',
 				'default'	=> '#ededed',
+				'custom_attributes' => array(
+					'data-show_if_woocommerce_gzdp_checkout_layout_style' => 'navigation',
+				),
 			),
 
 			array(
@@ -707,6 +794,33 @@ class WC_GZDP_Multistep_Checkout {
 				'id' 		=> 'woocommerce_gzdp_checkout_disabled_font_color',
 				'type' 		=> 'color',
 				'default'	=> '#999999',
+				'custom_attributes' => array(
+					'data-show_if_woocommerce_gzdp_checkout_layout_style' => 'navigation',
+				),
+			),
+
+			array(
+				'title' 	=> _x( 'Primary color', 'multistep', 'woocommerce-germanized-pro' ),
+				'desc' 		=> _x( 'Choose a primary color.', 'multistep', 'woocommerce-germanized-pro' ),
+				'desc_tip'	=> true,
+				'id' 		=> 'woocommerce_gzdp_checkout_plain_primary_color',
+				'type' 		=> 'color',
+				'default'	=> '#3a87ad',
+				'custom_attributes' => array(
+					'data-show_if_woocommerce_gzdp_checkout_layout_style' => 'plain',
+				),
+			),
+
+			array(
+				'title' 	=> _x( 'Secondary color', 'multistep', 'woocommerce-germanized-pro' ),
+				'desc' 		=> _x( 'Choose a secondary color.', 'multistep', 'woocommerce-germanized-pro' ),
+				'desc_tip'	=> true,
+				'id' 		=> 'woocommerce_gzdp_checkout_plain_secondary_color',
+				'type' 		=> 'color',
+				'default'	=> '#d4d4d4',
+				'custom_attributes' => array(
+					'data-show_if_woocommerce_gzdp_checkout_layout_style' => 'plain',
+				),
 			),
 
 			array( 'type' => 'sectionend', 'id' => 'checkout_color_options' ),

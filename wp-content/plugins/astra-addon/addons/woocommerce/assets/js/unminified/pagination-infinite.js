@@ -38,9 +38,9 @@
 							count++;
 						}
 					});
-				
+
 					break;
-				
+
 				case 'scroll':
 					$('.ast-shop-load-more').hide();
 
@@ -63,7 +63,7 @@
 							}
 						});
 					}
-					
+
 					break;
 			}
 		}
@@ -82,7 +82,6 @@
 				action : 'astra_shop_pagination_infinite',
 				page_no	: pageNumber,
 				nonce: shop_infinite_nonce,
-				query_vars: astra.query_vars,
 				astra_infinite: 'astra_pagination_ajax',
 			}
 
@@ -119,7 +118,7 @@
 
 				//	Add grid classes
 				var msg = astra.shop_no_more_post_message || '';
-				
+
 				//	Show no more post message
 				if( count > total ) {
 					$('.ast-shop-pagination-infinite').html( '<span class="ast-shop-load-more no-more active" style="display: inline-block;">' + msg + "</span>" );

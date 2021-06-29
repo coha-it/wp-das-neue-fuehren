@@ -16,7 +16,7 @@ class TaxRate {
 		'country'       => '',
 		'priority'      => 0,
 		'is_compound'   => false,
-		'is_moss'       => false,
+		'is_oss'        => false,
 		'label'         => '',
 		'reference_id'  => 0,
 		'reference_ids' => array(),
@@ -125,16 +125,33 @@ class TaxRate {
 		$this->data['is_compound'] = wc_string_to_bool( $compound );
 	}
 
+	/**
+	 * For legacy purposes: MOSS now turns into OSS
+	 *
+	 * @return bool
+	 */
 	public function get_is_moss() {
-		return $this->data['is_moss'];
+		return $this->get_is_oss();
+	}
+
+	public function get_is_oss() {
+		return $this->data['is_oss'];
 	}
 
 	public function is_moss() {
-		return true === $this->data['is_moss'];
+		return true === $this->get_is_moss();
+	}
+
+	public function is_oss() {
+		return true === $this->get_is_oss();
 	}
 
 	public function set_is_moss( $is_moss ) {
-		$this->data['is_moss'] = wc_string_to_bool( $is_moss );
+		$this->set_is_oss( $is_moss );
+	}
+
+	public function set_is_oss( $is_oss ) {
+		$this->data['is_oss'] = wc_string_to_bool( $is_oss );
 	}
 
 	public function get_priority() {
@@ -158,7 +175,7 @@ class TaxRate {
 		return Tax::get_tax_rate_merge_key( array(
 			'percent'     => $this->get_percent(),
 			'is_compound' => $this->get_is_compound(),
-			'is_moss'     => $this->get_is_moss(),
+			'is_oss'      => $this->get_is_oss(),
 		) );
 	}
 

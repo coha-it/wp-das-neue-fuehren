@@ -25,6 +25,9 @@ class OMGF_Optimize
     private $settings_page = '';
 
     /** @var string */
+    private $settings_tab = '';
+
+    /** @var string */
     private $settings_updated = '';
 
     /**
@@ -33,6 +36,7 @@ class OMGF_Optimize
     public function __construct()
     {
         $this->settings_page    = $_GET['page'] ?? '';
+        $this->settings_tab     = $_GET['tab'] ?? OMGF_Admin_Settings::OMGF_SETTINGS_FIELD_OPTIMIZE;
         $this->settings_updated = $_GET['settings-updated'] ?? '';
 
         $this->init();
@@ -45,10 +49,15 @@ class OMGF_Optimize
      */
     private function init()
     {
-        if (
-            OMGF_Admin_Settings::OMGF_ADMIN_PAGE != $this->settings_page
-            || !$this->settings_updated
-        ) {
+        if (OMGF_Admin_Settings::OMGF_ADMIN_PAGE != $this->settings_page) {
+            return;
+        }
+
+        if (OMGF_Admin_Settings::OMGF_SETTINGS_FIELD_OPTIMIZE != $this->settings_tab) {
+            return;
+        }
+
+        if (!$this->settings_updated) {
             return;
         }
 
@@ -61,6 +70,22 @@ class OMGF_Optimize
         if ('auto' == OMGF_OPTIMIZATION_MODE) {
             $this->run_auto();
         }
+    }
+
+    /**
+     * If this site is non-SSL it makes no sense to verify its SSL certificates.
+     *
+     * Settings sslverify to false will set CURLOPT_SSL_VERIFYPEER and CURLOPT_SSL_VERIFYHOST
+     * to 0 further down the road.
+     *
+     * @param mixed $url
+     * @return bool
+     */
+    public function verify_ssl($args)
+    {
+        $args['sslverify'] = strpos(home_url(), 'https:') !== false;
+
+        return $args;
     }
 
     /**
@@ -168,22 +193,6 @@ class OMGF_Optimize
                 'timeout' => 30
             ]
         );
-    }
-
-    /**
-     * If this site is non-SSL it makes no sense to verify its SSL certificates.
-     *
-     * Settings sslverify to false will set CURLOPT_SSL_VERIFYPEER and CURLOPT_SSL_VERIFYHOST
-     * to 0 further down the road.
-     *
-     * @param mixed $url
-     * @return bool
-     */
-    public function verify_ssl($args)
-    {
-        $args['sslverify'] = strpos(home_url(), 'https:') !== false;
-
-        return $args;
     }
 
     /**

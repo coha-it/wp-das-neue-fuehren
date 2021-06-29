@@ -386,9 +386,10 @@ class Admin {
 
 		if ( $document->has_file() ) {
 			$actions['send'] = array(
-				'url'    => wp_nonce_url( admin_url( 'admin-ajax.php?action=storeabill_admin_send_document&document_id=' . $document->get_id() ), 'sab-send-document' ),
-				'name'   => $document->get_date_sent() ? sprintf( _x( 'Last sent on %s', 'storeabill-core', 'woocommerce-germanized-pro' ), $document->get_date_sent()->date_i18n( sab_date_format() ) ) : _x( 'Send to customer', 'storeabill-core', 'woocommerce-germanized-pro' ),
-				'action' => 'send'
+				'url'     => wp_nonce_url( admin_url( 'admin-ajax.php?action=storeabill_admin_send_document&document_id=' . $document->get_id() ), 'sab-send-document' ),
+				'name'    => $document->get_date_sent() ? sprintf( _x( 'Last sent on %s', 'storeabill-core', 'woocommerce-germanized-pro' ), $document->get_date_sent()->date_i18n( sab_date_format() ) ) : _x( 'Send to customer', 'storeabill-core', 'woocommerce-germanized-pro' ),
+				'action'  => 'send',
+                'classes' => $document->get_date_sent() ? 'inactive' : '',
 			);
 		}
 

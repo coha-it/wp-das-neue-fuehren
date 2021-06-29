@@ -135,7 +135,7 @@ class SEOPRESS_CSV_Setup_Wizard_Controller {
 		$this->step            = isset( $_REQUEST['step'] ) ? sanitize_key( $_REQUEST['step'] ) : current( array_keys( $this->steps ) );
 		$this->file            = isset( $_REQUEST['file'] ) ? seopress_clean( wp_unslash( $_REQUEST['file'] ) ) : '';
 		$this->delimiter       = ! empty( $_REQUEST['delimiter'] ) ? seopress_clean( wp_unslash( $_REQUEST['delimiter'] ) ) : ';';
-		
+
 		// Import mappings for CSV data.
 		include_once dirname( __FILE__ ) . '/mapping.php';
 	}
@@ -179,7 +179,6 @@ class SEOPRESS_CSV_Setup_Wizard_Controller {
 	 * Output header view.
 	 */
 	protected function output_header() {
-		set_current_screen();
 		echo '<div class="seopress-option">
 				<h1><span class="dashicons dashicons-admin-settings"></span>'.__("Import metadata from a CSV file","wp-seopress-pro").'</h1>';
 	}
@@ -296,9 +295,9 @@ class SEOPRESS_CSV_Setup_Wizard_Controller {
 		?>
 		<form method="post" enctype="multipart/form-data">
 			<p>
-				<?php esc_html_e( 'This tool allows you to import SEO metadata to your site from a CSV file (separator: ";" ).', 'wp-seopress-pro' ); ?><br>
-				<?php esc_html_e( 'Existing posts that match by ID will be updated.', 'wp-seopress-pro' ); ?><br>
-				<?php esc_html_e( 'Posts, pages or custom post types that do not exist will be skipped.', 'wp-seopress-pro' ); ?>
+				<?php _e( 'This tool allows you to import SEO metadata to your site from a CSV file <strong>(separator: ";" )</strong>.', 'wp-seopress-pro' ); ?><br>
+				<?php esc_html_e( 'Existing posts / terms that match by ID will be updated.', 'wp-seopress-pro' ); ?><br>
+				<?php esc_html_e( 'Posts, pages, custom post types or term taxonomies that do not exist will be skipped.', 'wp-seopress-pro' ); ?>
 			</p>
 
 			<div class="postbox section-tool seopress-wizard-services">
@@ -452,7 +451,7 @@ class SEOPRESS_CSV_Setup_Wizard_Controller {
 		}?>
 		<h1><?php esc_html_e( 'Map CSV fields to post metas', 'wp-seopress-pro' ); ?></h1>
 		<form method="post" action="<?php echo esc_url( $this->get_next_step_link() ); ?>">
-			<p><?php esc_html_e( 'Select fields from your CSV file to map against posts fields, or to ignore during import.', 'wp-seopress-pro' ); ?></p>
+			<p><?php esc_html_e( 'Select fields from your CSV file to map against posts / terms fields, or to ignore during import.', 'wp-seopress-pro' ); ?></p>
 
 			<section class="seopress-importer-mapping-table-wrapper">
 				<table class="widefat seopress-importer-mapping-table">
@@ -652,6 +651,7 @@ class SEOPRESS_CSV_Setup_Wizard_Controller {
 			<div class="seopress-actions">
 				<p>
 					<a class="button button-primary" href="<?php echo esc_url( admin_url( 'edit.php' ) ); ?>"><?php esc_html_e( 'View posts', 'wp-seopress-pro' ); ?></a>
+					<a class="button button-secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=seopress_csv_importer&step=upload' ) ); ?>"><?php esc_html_e( 'Make another import', 'wp-seopress-pro' ); ?></a>
 				</p>
 			</div>
 		</div>
@@ -702,6 +702,10 @@ class SEOPRESS_CSV_Setup_Wizard_Controller {
 					__( 'noarchive', 'wp-seopress-pro' )			=> 'noarchive',
 					__( 'nosnippet', 'wp-seopress-pro' )			=> 'nosnippet',
 					__( 'Canonical URL', 'wp-seopress-pro' )		=> 'canonical_url',
+					__( 'Primary category', 'wp-seopress-pro' )		=> 'primary_cat',
+					__( 'Active redirect', 'wp-seopress-pro' )		=> 'redirect_active',
+					__( 'Redirection type', 'wp-seopress-pro' )		=> 'redirect_type',
+					__( 'URL redirect', 'wp-seopress-pro' )			=> 'redirect_url',
 					__( 'Target Keyword', 'wp-seopress-pro' )		=> 'target_kw',
 				),
 				$raw_headers
@@ -747,6 +751,10 @@ class SEOPRESS_CSV_Setup_Wizard_Controller {
 			'noarchive'          	=> __( 'noarchive? (yes)', 'wp-seopress-pro' ),
 			'nosnippet'          	=> __( 'nosnippet? (yes)', 'wp-seopress-pro' ),
 			'canonical_url'         => __( 'Canonical URL', 'wp-seopress-pro' ),
+			'primary_cat'           => __( 'Primary category', 'wp-seopress-pro' ),
+			'redirect_active'       => __( 'Active redirect', 'wp-seopress-pro' ),
+			'redirect_type'         => __( 'Redirection type', 'wp-seopress-pro' ),
+			'redirect_url'          => __( 'URL redirect', 'wp-seopress-pro' ),
 			'target_kw'         	=> __( 'Target Keyword', 'wp-seopress-pro' )
 		);
 

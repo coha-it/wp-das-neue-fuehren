@@ -34,11 +34,11 @@ abstract class TaxableItem extends Item implements Taxable, Summable, Priceable 
 	}
 
 	public function get_total( $context = 'view' ) {
-		return ( $this->prices_include_tax() ? $this->get_line_total() : sab_format_decimal( $this->get_line_total( $context ) + $this->get_total_tax( $context ) ) );
+		return ( $this->prices_include_tax() ? $this->get_line_total() : sab_format_decimal( (float) $this->get_line_total( $context ) + (float) $this->get_total_tax( $context ) ) );
 	}
 
 	public function get_subtotal( $context = 'view' ) {
-		return ( $this->prices_include_tax() ? $this->get_line_subtotal() : sab_format_decimal( $this->get_line_subtotal( $context ) + $this->get_subtotal_tax( $context ) ) );
+		return ( $this->prices_include_tax() ? $this->get_line_subtotal() : sab_format_decimal( (float) $this->get_line_subtotal( $context ) + (float) $this->get_subtotal_tax( $context ) ) );
 	}
 
 	/**

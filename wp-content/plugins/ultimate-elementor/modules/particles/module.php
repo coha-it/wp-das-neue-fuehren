@@ -121,7 +121,17 @@ class Module extends Module_Base {
 	 */
 	public function enqueue_scripts() {
 
-		if ( ( true === \Elementor\Plugin::$instance->frontend->has_elementor_in_page() ) || ( false !== get_the_ID() && true === \Elementor\Plugin::$instance->documents->get( get_the_ID() )->is_built_with_elementor() ) || ( function_exists( 'elementor_location_exits' ) && ( elementor_location_exits( 'archive', true ) || elementor_location_exits( 'single', true ) ) ) ) {
+		$is_elementor = false;
+
+		if ( false !== get_the_ID() ) {
+			$ele_document = \Elementor\Plugin::$instance->documents->get( get_the_ID() );
+
+			if ( ! is_bool( $ele_document ) ) {
+				$is_elementor = $ele_document->is_built_with_elementor();
+			}
+		}
+
+		if ( ( true === \Elementor\Plugin::$instance->frontend->has_elementor_in_page() ) || ( true === $is_elementor ) || ( function_exists( 'elementor_location_exits' ) && ( elementor_location_exits( 'archive', true ) || elementor_location_exits( 'single', true ) ) ) ) {
 					wp_add_inline_script(
 						'elementor-frontend',
 						'window.scope_array = [];
@@ -235,7 +245,7 @@ class Module extends Module_Base {
 			);
 
 			$element->add_control(
-				'help_doc_particles_1',
+				'uae_particles_help_doc_1',
 				array(
 					'type'            => Controls_Manager::RAW_HTML,
 					/* translators: %s admin link */
@@ -249,7 +259,7 @@ class Module extends Module_Base {
 			);
 
 			$element->add_control(
-				'help_doc_particles_2',
+				'uae_particles_help_doc_2',
 				array(
 					'type'            => Controls_Manager::RAW_HTML,
 					/* translators: %s admin link */
@@ -264,7 +274,7 @@ class Module extends Module_Base {
 
 			if ( UAEL_Helper::is_internal_links() ) {
 				$element->add_control(
-					'help_doc_particles_5',
+					'uae_particles_help_doc_5',
 					array(
 						'type'            => Controls_Manager::RAW_HTML,
 						/* translators: %s admin link */
@@ -445,7 +455,7 @@ class Module extends Module_Base {
 			);
 
 			$element->add_control(
-				'help_doc_interactive',
+				'uae_particles_hover_effect_help_doc',
 				array(
 					'type'            => Controls_Manager::RAW_HTML,
 					/* translators: %s admin link */
@@ -462,7 +472,7 @@ class Module extends Module_Base {
 
 			if ( UAEL_Helper::is_internal_links() ) {
 				$element->add_control(
-					'help_doc_interactive_not_working',
+					'uae_particles_hover_effect_help_doc_not_working',
 					array(
 						'type'            => Controls_Manager::RAW_HTML,
 						/* translators: %s admin link */

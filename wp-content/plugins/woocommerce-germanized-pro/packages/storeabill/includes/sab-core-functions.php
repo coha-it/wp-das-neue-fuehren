@@ -553,7 +553,10 @@ function sab_get_asset_path_by_url( $src ) {
 	}
 
 	// Remove site url from src - allow sub directories
-	$path                = str_replace( untrailingslashit( site_url() ), '', $src );
+	$has_ssl             = strstr( $src, 'https://' ) ? true : false;
+	$site_url            = untrailingslashit( site_url() );
+	$site_url            = $has_ssl ? str_replace( 'http://', 'https://', $site_url ) : str_replace( 'https://', 'http://', $site_url );
+	$path                = str_replace( $site_url, '', $src );
 	$wp_content_basename = basename( WP_CONTENT_DIR );
 	$pdf_supports_path   = true;
 	$mpdf_version         = \Vendidero\StoreaBill\PDF\MpdfRenderer::get_version();
@@ -1012,4 +1015,14 @@ function sab_get_barcode_types() {
 		'C128A' => _x( 'Code 128', 'storeabill-barcode-type', 'woocommerce-germanized-pro' ),
 		'QR'    => _x( 'QR Code', 'storeabill-barcode-type', 'woocommerce-germanized-pro' )
 	) );
+}
+
+function sab_get_base_bank_account_data( $field = '' ) {
+	$data = \Vendidero\StoreaBill\Countries::get_base_bank_account_data();
+
+	if ( empty( $field ) ) {
+		return $data;
+	} else {
+		return array_key_exists( $field, $data ) ? $data[ $field ] : '';
+	}
 }

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3fdd932878717e0eefbc990ed56acb74
+class ComposerStaticInit6788353277f7f02e5382abf35bbcc23d
 {
     public static $files = array (
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
@@ -26,6 +26,7 @@ class ComposerStaticInit3fdd932878717e0eefbc990ed56acb74
         'V' => 
         array (
             'Vendidero\\TrustedShops\\' => 23,
+            'Vendidero\\OneStopShop\\' => 22,
             'Vendidero\\Germanized\\Shipments\\' => 31,
             'Vendidero\\Germanized\\DHL\\' => 25,
             'Vendidero\\Germanized\\' => 21,
@@ -66,6 +67,10 @@ class ComposerStaticInit3fdd932878717e0eefbc990ed56acb74
         'Vendidero\\TrustedShops\\' => 
         array (
             0 => __DIR__ . '/../..' . '/packages/woocommerce-trusted-shops/src',
+        ),
+        'Vendidero\\OneStopShop\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src',
         ),
         'Vendidero\\Germanized\\Shipments\\' => 
         array (
@@ -378,6 +383,20 @@ class ComposerStaticInit3fdd932878717e0eefbc990ed56acb74
         'Vendidero\\Germanized\\Shipments\\WPMLHelper' => __DIR__ . '/../..' . '/packages/woocommerce-germanized-shipments/src/WPMLHelper.php',
         'Vendidero\\Germanized\\Shopmark' => __DIR__ . '/../..' . '/src/Shopmark.php',
         'Vendidero\\Germanized\\Shopmarks' => __DIR__ . '/../..' . '/src/Shopmarks.php',
+        'Vendidero\\OneStopShop\\Admin' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/Admin.php',
+        'Vendidero\\OneStopShop\\AdminNote' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/AdminNote.php',
+        'Vendidero\\OneStopShop\\AsyncReportGenerator' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/AsyncReportGenerator.php',
+        'Vendidero\\OneStopShop\\CSVExporter' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/CSVExporter.php',
+        'Vendidero\\OneStopShop\\DeliveryThresholdEmailNotification' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/DeliveryThresholdEmailNotification.php',
+        'Vendidero\\OneStopShop\\DeliveryThresholdWarning' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/DeliveryThresholdWarning.php',
+        'Vendidero\\OneStopShop\\Install' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/Install.php',
+        'Vendidero\\OneStopShop\\Package' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/Package.php',
+        'Vendidero\\OneStopShop\\Queue' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/Queue.php',
+        'Vendidero\\OneStopShop\\Report' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/Report.php',
+        'Vendidero\\OneStopShop\\ReportTable' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/ReportTable.php',
+        'Vendidero\\OneStopShop\\Settings' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/Settings.php',
+        'Vendidero\\OneStopShop\\SettingsPage' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/SettingsPage.php',
+        'Vendidero\\OneStopShop\\Tax' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/Tax.php',
         'Vendidero\\TrustedShops\\Package' => __DIR__ . '/../..' . '/packages/woocommerce-trusted-shops/src/Package.php',
         'WsdlToPhp\\WsSecurity\\Created' => __DIR__ . '/..' . '/wsdltophp/wssecurity/src/Created.php',
         'WsdlToPhp\\WsSecurity\\Element' => __DIR__ . '/..' . '/wsdltophp/wssecurity/src/Element.php',
@@ -462,9 +481,9 @@ class ComposerStaticInit3fdd932878717e0eefbc990ed56acb74
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3fdd932878717e0eefbc990ed56acb74::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3fdd932878717e0eefbc990ed56acb74::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit3fdd932878717e0eefbc990ed56acb74::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6788353277f7f02e5382abf35bbcc23d::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6788353277f7f02e5382abf35bbcc23d::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit6788353277f7f02e5382abf35bbcc23d::$classMap;
 
         }, null, ClassLoader::class);
     }

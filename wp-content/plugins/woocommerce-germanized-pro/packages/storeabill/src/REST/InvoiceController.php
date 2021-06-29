@@ -1527,8 +1527,8 @@ class InvoiceController extends DocumentController {
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
-			'is_moss'     => array(
-				'description' => _x( 'Is MOSS tax?', 'storeabill-core', 'woocommerce-germanized-pro' ),
+			'is_oss'     => array(
+				'description' => _x( 'Is OSS tax?', 'storeabill-core', 'woocommerce-germanized-pro' ),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
@@ -1660,8 +1660,8 @@ class InvoiceController extends DocumentController {
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 			),
-			'is_moss'     => array(
-				'description' => _x( 'Is MOSS?', 'storeabill-core', 'woocommerce-germanized-pro' ),
+			'is_oss'     => array(
+				'description' => _x( 'Is OSS?', 'storeabill-core', 'woocommerce-germanized-pro' ),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 			),

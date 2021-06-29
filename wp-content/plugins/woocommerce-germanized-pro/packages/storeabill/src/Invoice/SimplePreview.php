@@ -33,7 +33,7 @@ class SimplePreview extends Simple implements Previewable {
 		$this->set_formatted_number( $this->format_number( $this->get_number() ) );
 		$this->set_payment_method_name( 'sample' );
 		$this->set_payment_method_title( _x( 'Sample payment method', 'storeabill-core', 'woocommerce-germanized-pro' ) );
-		$this->set_discount_notice( _x( 'Coupon XYZ123', 'storeabill-core', 'woocommerce-germanized-pro' ) );
+		$this->set_discount_notice( _x( 'XYZ123', 'storeabill-core', 'woocommerce-germanized-pro' ) );
 
 		$this->set_address( array(
 			'first_name' => _x( 'John', 'storeabill-core', 'woocommerce-germanized-pro' ),

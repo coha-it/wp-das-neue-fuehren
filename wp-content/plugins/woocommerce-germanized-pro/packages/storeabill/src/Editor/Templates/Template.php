@@ -2,21 +2,35 @@
 
 namespace Vendidero\StoreaBill\Editor\Templates;
 
-use Vendidero\StoreaBill\Countries;use Vendidero\StoreaBill\Package;defined( 'ABSPATH' ) || exit;
+use Vendidero\StoreaBill\Countries;use Vendidero\StoreaBill\Package;
+
+defined( 'ABSPATH' ) || exit;
 
 abstract class Template {
 
-	abstract public static function get_template_data();
+	public static function get_template_data() {
+	    return array();
+    }
 
-	abstract public static function get_screenshot_url();
+	public static function get_screenshot_url() {
+	    return '';
+    }
 
-	abstract public static function get_tags();
+	public static function get_tags() {
+	    return array();
+    }
 
-	abstract public static function get_title();
+	public static function get_title() {
+	    return '';
+    }
 
-	abstract public static function get_document_type();
+	public static function get_document_type() {
+	    return 'invoice';
+    }
 
-	abstract public static function get_name();
+	public static function get_name() {
+	    return '';
+    }
 
 	/**
 	 * This method should return the HTML result produced by the current template.
@@ -25,7 +39,9 @@ abstract class Template {
 	 *
 	 * @return string
 	 */
-	abstract public static function get_html();
+	public static function get_html() {
+	    return '';
+    }
 
 	protected static function get_hook_prefix() {
 		return 'storeabill_' . static::get_document_type() . '_' . static::get_name() . '_template_';
@@ -129,9 +145,9 @@ abstract class Template {
 
 						<!-- wp:paragraph {"fontSize":"small","style":{"color":{"text":"<?php echo esc_attr( self::get_light_color() ); ?>"}}} -->
 						<p class="has-text-color has-small-font-size" style="color:<?php echo esc_attr( self::get_light_color() ); ?>">
-							<?php printf( esc_html_x( 'Holder: %s', 'storeabill-bank-account', 'woocommerce-germanized-pro' ), Countries::get_base_bank_account_data()['account_name'] ); ?><br>
-							<?php printf( esc_html_x( 'IBAN: %s', 'storeabill-bank-account', 'woocommerce-germanized-pro' ), Countries::get_base_bank_account_data()['iban'] ); ?><br>
-							<?php printf( esc_html_x( 'BIC: %s', 'storeabill-bank-account', 'woocommerce-germanized-pro' ), Countries::get_base_bank_account_data()['bic'] ); ?><br>
+							<?php printf( esc_html_x( 'Holder:', 'storeabill-bank-account', 'woocommerce-germanized-pro' ) ); ?> <span class="document-shortcode sab-tooltip" contenteditable="false" data-tooltip="<?php echo esc_attr_x( 'Bank account holder', 'storeabill-core', 'woocommerce-germanized-pro' ); ?>" data-shortcode="setting?data=bank_account_holder"><span class="editor-placeholder"></span><?php echo sab_get_base_bank_account_data( 'holder' ); ?></span><br>
+							<?php printf( esc_html_x( 'IBAN:', 'storeabill-bank-account', 'woocommerce-germanized-pro' ) ); ?> <span class="document-shortcode sab-tooltip" contenteditable="false" data-tooltip="<?php echo esc_attr_x( 'IBAN', 'storeabill-core', 'woocommerce-germanized-pro' ); ?>" data-shortcode="setting?data=bank_account_iban"><span class="editor-placeholder"></span><?php echo sab_get_base_bank_account_data( 'iban' ); ?></span><br>
+							<?php printf( esc_html_x( 'BIC:', 'storeabill-bank-account', 'woocommerce-germanized-pro' ) ); ?> <span class="document-shortcode sab-tooltip" contenteditable="false" data-tooltip="<?php echo esc_attr_x( 'BIC', 'storeabill-core', 'woocommerce-germanized-pro' ); ?>" data-shortcode="setting?data=bank_account_bic"><span class="editor-placeholder"></span><?php echo sab_get_base_bank_account_data( 'bic' ); ?></span><br>
 						</p>
 						<!-- /wp:paragraph -->
 					</div>

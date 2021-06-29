@@ -18,6 +18,7 @@ use Vendidero\StoreaBill\Interfaces\TotalsContainable;
 use Vendidero\StoreaBill\Document\TaxTotal;
 use Vendidero\StoreaBill\Package;
 use Vendidero\StoreaBill\Tax;
+use Vendidero\StoreaBill\Utilities\Numbers;
 use WC_Data_Exception;
 use WC_DateTime;
 use WP_Error;
@@ -271,6 +272,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		$data['subtotal_net'] = $this->get_subtotal_net();
 
 		$data['discount_percentage']             = $this->get_discount_percentage();
+		$data['formatted_discount_notice']       = $this->get_formatted_discount_notice();
 		$data['additional_costs_discount_total'] = $this->get_additional_costs_discount_total();
 		$data['additional_costs_discount_tax']   = $this->get_additional_costs_discount_tax();
 		$data['additional_costs_discount_net']   = $this->get_additional_costs_discount_net();
@@ -408,10 +410,6 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 				foreach ( $taxes as $tax_total ) {
 					$net_total_tax = $tax_total->get_total_net( false );
 
-					if ( $this->has_voucher() ) {
-						$net_total_tax += $this->get_voucher_total();
-					}
-
 					if ( $net_total_tax <= 0 ) {
 						$net_total_tax = 0;
 					}
@@ -434,10 +432,6 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 
 				foreach ( $taxes as $tax_total ) {
 					$net_inner_total = $tax_total->get_total_net();
-
-					if ( $this->has_voucher() ) {
-						$net_inner_total += $this->get_voucher_total();
-					}
 
 					/**
 					 * In case only one tax rate is included - use global net total to prevent rounding display issues
@@ -546,7 +540,8 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 				$placeholders = array();
 
 				if ( in_array( $total_type, array( 'discount', 'discount_net' ) ) ) {
-					$placeholders['{notice}'] = $this->get_discount_notice();
+					$placeholders['{notice}']        = $this->get_formatted_discount_notice();
+					$placeholders['{discount_type}'] = $this->get_discount_type_title();
 				}
 
 				if ( false !== $total ) {
@@ -641,6 +636,28 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		return $this->get_shipping_address_prop( 'vat_id', $context );
 	}
 
+	public function is_oss() {
+		if ( Countries::base_country_supports_oss_procedure() && $this->is_eu_cross_border_taxable() ) {
+			foreach( $this->get_tax_items() as $item ) {
+				if ( $item->get_tax_rate()->is_oss() ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public function is_eu_cross_border_taxable() {
+		$country = $this->get_taxable_country();
+
+		if ( ! $this->is_reverse_charge() && ( $country !== Countries::get_base_country() && Countries::is_eu_vat_country( $this->get_taxable_country(), $this->get_taxable_postcode() ) ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Returns total invoice amount.
 	 *
@@ -705,7 +722,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 			if ( is_callable( array( $item, $getter ) ) ) {
 				$item_total = sab_add_number_precision( $item->$getter(), false );
 
-				$subtotal += ( ! $this->round_tax_at_subtotal() ) ? round( $item_total ) : $item_total;
+				$subtotal += ( ! $this->round_tax_at_subtotal() ) ? Numbers::round( $item_total ) : $item_total;
 			}
 		}
 
@@ -969,6 +986,27 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		return $this->get_prop( 'discount_notice', $context );
 	}
 
+	public function get_formatted_discount_notice() {
+		$notice = trim( sprintf( $this->get_discount_notice() . ' (%s)', $this->get_discount_type_title() ) );
+
+		return apply_filters( "{$this->get_hook_prefix()}formatted_discount_notice", $notice, $this );
+	}
+
+	public function get_discount_type_title() {
+		$title = '';
+
+		if ( $this->has_discount() ) {
+			$types = sab_get_invoice_discount_types();
+			$title = $types['single_purpose'];
+
+			if ( $this->has_voucher() ) {
+				$title = $types['multi_purpose'];
+			}
+		}
+
+		return apply_filters( "{$this->get_hook_prefix()}discount_type_title", $title, $this );
+	}
+
 	public function has_discount() {
 		return $this->get_discount_total() > 0;
 	}
@@ -1128,8 +1166,32 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		return $value;
 	}
 
+	public function get_taxable_country() {
+		$country = $this->get_country();
+
+		if ( '' !== $this->get_shipping_country() ) {
+			$country = $this->get_shipping_country();
+		}
+
+		return apply_filters( "{$this->get_hook_prefix()}taxable_country", $country, $this );
+	}
+
+	public function get_taxable_postcode() {
+		$postcode = $this->get_postcode();
+
+		if ( '' !== $this->get_shipping_postcode() ) {
+			$postcode = $this->get_shipping_postcode();
+		}
+
+		return apply_filters( "{$this->get_hook_prefix()}taxable_postcode", $postcode, $this );
+	}
+
 	public function get_shipping_country( $context = 'view' ) {
 		return $this->get_shipping_address_prop( 'country', $context );
+	}
+
+	public function get_shipping_postcode( $context = 'view' ) {
+		return $this->get_shipping_address_prop( 'postcode', $context );
 	}
 
 	/**
@@ -1543,7 +1605,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 					$taxes = array_sum( Tax::calc_tax( $item_discount_amount, $item->get_tax_rates(), $this->get_prices_include_tax() ) );
 
 					if ( ! $this->round_tax_at_subtotal() ) {
-						$taxes = round( $taxes );
+						$taxes = Numbers::round( $taxes );
 					}
 
 					$discount_tax += $taxes;
@@ -1669,6 +1731,15 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	 */
 	public function set_shipping_country( $country ) {
 		$this->set_shipping_address_prop( 'country', substr( $country, 0, 2 ) );
+	}
+
+	/**
+	 * Set invoice shipping postcode.
+	 *
+	 * @param string $postcode The postcode.
+	 */
+	public function set_shipping_postcode( $postcode ) {
+		$this->set_shipping_address_prop( 'postcode', $postcode );
 	}
 
 	/**
@@ -2302,8 +2373,8 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 				$total    = sab_add_number_precision( $item->get_total(), false );
 				$subtotal = sab_add_number_precision( $item->get_subtotal(), false );
 
-				$totals[ $item->get_item_type() ]    += ( ! $this->round_tax_at_subtotal() ) ? round( $total ) : $total;
-				$subtotals[ $item->get_item_type() ] += ( ! $this->round_tax_at_subtotal() ) ? round( $subtotal ) : $subtotal;
+				$totals[ $item->get_item_type() ]    += ( ! $this->round_tax_at_subtotal() ) ? Numbers::round( $total ) : $total;
+				$subtotals[ $item->get_item_type() ] += ( ! $this->round_tax_at_subtotal() ) ? Numbers::round( $subtotal ) : $subtotal;
 			}
 
 			if ( is_a( $item, '\Vendidero\StoreaBill\Interfaces\TaxContainable' ) && array_key_exists( $item->get_tax_type(), $tax_totals ) ) {
@@ -2417,7 +2488,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 				$discount_item_total = $item->get_discount_total();
 				$discount_item_tax   = sab_add_number_precision( array_sum( Tax::calc_tax( $discount_item_total, $item->get_tax_rates(), false ) ), false );
 
-				$discount_item_taxes += ( $this->round_tax_at_subtotal() ? $discount_item_tax : round( $discount_item_tax ) );
+				$discount_item_taxes += ( $this->round_tax_at_subtotal() ? $discount_item_tax : Numbers::round( $discount_item_tax ) );
 			}
 
 			if ( $discount_item_taxes > 0 ) {
@@ -2661,8 +2732,8 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 			$total = max( $total - $this->get_voucher_tax(), 0 );
 		}
 
-		$this->set_total( round( $total, sab_get_price_decimals() ) );
-		$this->set_subtotal( round( $subtotal, sab_get_price_decimals() ) );
+		$this->set_total( Numbers::round( $total, sab_get_price_decimals() ) );
+		$this->set_subtotal( Numbers::round( $subtotal, sab_get_price_decimals() ) );
 
 		$this->update_total_paid();
 

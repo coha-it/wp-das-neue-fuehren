@@ -5,17 +5,56 @@ window.germanized = window.germanized || {};
     germanized.pro_checkout = {
 
         init: function() {
-
             $( document )
                 .on( 'change', '#billing_vat_id, #shipping_vat_id', this.onChangeVatID )
                 .on( 'change', '#billing_company, #shipping_company', this.onChangeCompany )
-                .on( 'change', '#ship-to-different-address-checkbox', this.onChangeShipToDifferentAddress );
+                .on( 'change', '#ship-to-different-address-checkbox', this.onChangeShipToDifferentAddress )
+                .on( 'change', '#billing_postcode, #shipping_postcode', this.onChangePostcode );
 
             $( document.body )
                 .on( 'updated_checkout', this.onUpdatedCheckout )
-                .on( 'checkout_error', this.onUpdatedCheckout );
+                .on( 'checkout_error', this.onUpdatedCheckout )
+                .on( 'country_to_state_changing', this.onCountryToStateChange );
 
             this.showOrHideVatIdField();
+        },
+
+        onCountryToStateChange: function() {
+            var self = germanized.pro_checkout;
+
+            self.onChangePostcode();
+        },
+
+        onChangePostcode: function() {
+            var thisform       = $( '.woocommerce-checkout' ),
+                $fields        = thisform.find( '#billing_vat_id, #shipping_vat_id' ),
+                $postcodefield = thisform.find( '#billing_postcode, #shipping_postcode' ),
+                $countryfield  = thisform.find( '#billing_country, #shipping_country' );
+
+            $countryfield.each( function( key, value ) {
+                var $field = thisform.find( value );
+
+                if ( $field.length > 0 && 'GB' === $field.val() ) {
+                    var fieldPrefix = 'billing';
+
+                    if ( $field.attr( 'id' ).includes( 'shipping' ) ) {
+                        fieldPrefix = 'shipping';
+                    }
+
+                    var $vatId    = thisform.find( '#' + fieldPrefix + '_vat_id' );
+                    var $postcode = thisform.find( '#' + fieldPrefix + '_postcode' );
+
+                    if ( $vatId.length > 0 && $postcode.length > 0 ) {
+                        var $parent = $vatId.closest( '.form-row' );
+
+                        if ( $postcode.val().includes( 'BT' ) ) {
+                            $parent.show();
+                        } else {
+                            $parent.hide();
+                        }
+                    }
+                }
+            });
         },
 
         onUpdatedCheckout: function( e, data ) {
@@ -64,7 +103,7 @@ window.germanized = window.germanized || {};
         },
 
         validateId: function( vatId ) {
-            return /^(ATU[0-9]{8}|BE[01][0-9]{9}|BG[0-9]{9,10}|HR[0-9]{11}|CY[A-Z0-9]{9}|CZ[0-9]{8,10}|DK[0-9]{8}|EE[0-9]{9}|FI[0-9]{8}|FR[0-9A-Z]{2}[0-9]{9}|DE[0-9]{9}|EL[0-9]{9}|HU[0-9]{8}|IE([0-9]{7}[A-Z]{1,2}|[0-9][A-Z][0-9]{5}[A-Z])|IT[0-9]{11}|LV[0-9]{11}|LT([0-9]{9}|[0-9]{12})|LU[0-9]{8}|MT[0-9]{8}|NL[0-9]{9}B[0-9]{2}|PL[0-9]{10}|PT[0-9]{9}|RO[0-9]{2,10}|SK[0-9]{10}|SI[0-9]{8}|ES[A-Z]([0-9]{8}|[0-9]{7}[A-Z])|SE[0-9]{12}|GB([0-9]{9}|[0-9]{12}|GD[0-4][0-9]{2}|HA[5-9][0-9]{2}))$/.test( vatId );
+            return /^(ATU[0-9]{8}|IX([0-9]{9}|[0-9]{12})|BE[01][0-9]{9}|BG[0-9]{9,10}|HR[0-9]{11}|CY[A-Z0-9]{9}|CZ[0-9]{8,10}|DK[0-9]{8}|EE[0-9]{9}|FI[0-9]{8}|FR[0-9A-Z]{2}[0-9]{9}|DE[0-9]{9}|EL[0-9]{9}|HU[0-9]{8}|IE([0-9]{7}[A-Z]{1,2}|[0-9][A-Z][0-9]{5}[A-Z])|IT[0-9]{11}|LV[0-9]{11}|LT([0-9]{9}|[0-9]{12})|LU[0-9]{8}|MT[0-9]{8}|NL[0-9]{9}B[0-9]{2}|PL[0-9]{10}|PT[0-9]{9}|RO[0-9]{2,10}|SK[0-9]{10}|SI[0-9]{8}|ES[A-Z]([0-9]{8}|[0-9]{7}[A-Z])|SE[0-9]{12}|GB([0-9]{9}|[0-9]{12}|GD[0-4][0-9]{2}|HA[5-9][0-9]{2}))$/.test( vatId );
         },
 
         onChangeVatID: function() {
@@ -116,7 +155,7 @@ window.germanized = window.germanized || {};
 
                 $( document.body ).trigger( 'country_to_state_changing', [ country, $wrapper ] );
             }
-        },
+        }
     };
 
     $( document ).ready( function() {

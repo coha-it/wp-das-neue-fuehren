@@ -256,7 +256,6 @@ class Contact {
 		$contact =  array(
 			'familyname'	 => $this->get_last_name(),
 			'surename'		 => $this->get_first_name(),
-			'customerNumber' => $this->get_formatted_number(),
 			'vatNumber'		 => $this->get_vat_id(),
 			'category'		 => array(
 				'id' 		 => 3,
@@ -270,7 +269,6 @@ class Contact {
 		if ( $this->has_company() ) {
 			$company = array(
 				'name'		     => $this->get_company(),
-				'customerNumber' => $this->get_formatted_company_number(),
 				'category'		 => array(
 					'id' 		 => 3,
 					'objectName' => 'Category'
@@ -280,6 +278,8 @@ class Contact {
 			);
 
 			if ( $this->is_new_company() ) {
+				$company['customerNumber'] = $this->get_formatted_company_number();
+
 				$result = $this->api->create_contact( $company );
 
 				if ( ! is_wp_error( $result ) ) {
@@ -300,6 +300,8 @@ class Contact {
 		}
 
 		if ( $this->is_new() ) {
+			$contact['customerNumber'] = $this->get_formatted_number();
+
 			$result = $this->api->create_contact( $contact );
 		} else {
 			$result = $this->api->update_contact( $this->get_id(), $contact );

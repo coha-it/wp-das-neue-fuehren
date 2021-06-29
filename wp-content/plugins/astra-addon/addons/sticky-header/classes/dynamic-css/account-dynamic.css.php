@@ -59,7 +59,7 @@ function astra_sticky_header_account_dynamic_css( $dynamic_css, $dynamic_css_fil
 	 */
 	$css_output_desktop = array(
 
-		$selector . ' .ast-header-account-type-icon .ahfb-svg-iconset svg path, ' . $selector . ' .ast-header-account-type-icon .ahfb-svg-iconset svg circle' => array(
+		$selector . ' .ast-header-account-type-icon .ahfb-svg-iconset svg path:not(.ast-hf-account-unfill), ' . $selector . ' .ast-header-account-type-icon .ahfb-svg-iconset svg circle' => array(
 			'fill' => esc_attr( astra_get_option( 'sticky-header-account-icon-color' ) ),
 		),
 		$selector . ' .menu-item:hover > .menu-link' => array(

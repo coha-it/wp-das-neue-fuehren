@@ -114,12 +114,15 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	$outside_menu_item_font   = astra_get_option( 'outside-menu-font-size' );
 	$outside_menu_line_height = astra_get_option( 'outside-menu-line-height' );
 
+	$is_widget_title_support_font_weight = support_addon_font_css_to_widget_and_in_editor();
+	$font_weight_prop                    = ( $is_widget_title_support_font_weight ) ? 'inherit' : 'normal';
+
 	// Fallback for Site Title - headings typography.
 	if ( 'inherit' == $site_title_font_family ) {
 		$site_title_font_family = $headings_font_family;
 	}
 
-	if ( 'normal' == $site_title_font_weight ) {
+	if ( $font_weight_prop === $site_title_font_weight ) {
 		$site_title_font_weight = $headings_font_weight;
 	}
 
@@ -127,7 +130,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	if ( 'inherit' == $single_entry_title_font_family ) {
 		$single_entry_title_font_family = $headings_font_family;
 	}
-	if ( 'normal' == $single_entry_title_font_weight ) {
+	if ( $font_weight_prop === $single_entry_title_font_weight ) {
 		$single_entry_title_font_weight = $headings_font_weight;
 	}
 
@@ -135,7 +138,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	if ( 'inherit' == $archive_summary_title_font_family ) {
 		$archive_summary_title_font_family = $headings_font_family;
 	}
-	if ( 'normal' == $archive_summary_title_font_weight ) {
+	if ( $font_weight_prop === $archive_summary_title_font_weight ) {
 		$archive_summary_title_font_weight = $headings_font_weight;
 	}
 
@@ -143,7 +146,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	if ( 'inherit' == $archive_page_title_font_family ) {
 		$archive_page_title_font_family = $headings_font_family;
 	}
-	if ( 'normal' == $archive_page_title_font_weight ) {
+	if ( $font_weight_prop === $archive_page_title_font_weight ) {
 		$archive_page_title_font_weight = $headings_font_weight;
 	}
 
@@ -151,7 +154,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	if ( 'inherit' == $widget_title_font_family ) {
 		$widget_title_font_family = $headings_font_family;
 	}
-	if ( 'normal' == $widget_title_font_weight ) {
+	if ( $font_weight_prop === $widget_title_font_weight ) {
 		$widget_title_font_weight = $headings_font_weight;
 	}
 
@@ -159,7 +162,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	if ( 'inherit' == $h1_font_family ) {
 		$h1_font_family = $headings_font_family;
 	}
-	if ( 'normal' == $h1_font_weight ) {
+	if ( $font_weight_prop === $h1_font_weight ) {
 		$h1_font_weight = $headings_font_weight;
 	}
 	if ( '' == $h1_text_transform ) {
@@ -170,7 +173,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	if ( 'inherit' == $h2_font_family ) {
 			$h2_font_family = $headings_font_family;
 	}
-	if ( 'normal' == $h2_font_weight ) {
+	if ( $font_weight_prop === $h2_font_weight ) {
 		$h2_font_weight = $headings_font_weight;
 	}
 	if ( '' == $h2_text_transform ) {
@@ -181,7 +184,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	if ( 'inherit' == $h3_font_family ) {
 			$h3_font_family = $headings_font_family;
 	}
-	if ( 'normal' == $h3_font_weight ) {
+	if ( $font_weight_prop === $h3_font_weight ) {
 		$h3_font_weight = $headings_font_weight;
 	}
 	if ( '' == $h3_text_transform ) {
@@ -192,7 +195,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	if ( 'inherit' == $h4_font_family ) {
 			$h4_font_family = $headings_font_family;
 	}
-	if ( 'normal' == $h4_font_weight ) {
+	if ( $font_weight_prop === $h4_font_weight ) {
 		$h4_font_weight = $headings_font_weight;
 	}
 	if ( '' == $h4_text_transform ) {
@@ -203,7 +206,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	if ( 'inherit' == $h5_font_family ) {
 			$h5_font_family = $headings_font_family;
 	}
-	if ( 'normal' == $h5_font_weight ) {
+	if ( $font_weight_prop === $h5_font_weight ) {
 		$h5_font_weight = $headings_font_weight;
 	}
 	if ( '' == $h5_text_transform ) {
@@ -214,7 +217,7 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 	if ( 'inherit' == $h6_font_family ) {
 			$h6_font_family = $headings_font_family;
 	}
-	if ( 'normal' == $h6_font_weight ) {
+	if ( $font_weight_prop === $h6_font_weight ) {
 		$h6_font_weight = $headings_font_weight;
 	}
 	if ( '' == $h6_text_transform ) {
@@ -423,6 +426,24 @@ function astra_typography_dynamic_css( $dynamic_css, $dynamic_css_filtered = '' 
 
 	/* Parse CSS from array() */
 	$css_output = astra_parse_css( $css_output );
+
+	/* Adding font-weight support to widget-titles. */
+	if ( $is_widget_title_support_font_weight ) {
+		$widget_title_font_weight_support = array(
+			'h4.widget-title' => array(
+				'font-weight' => esc_attr( $h4_font_weight ),
+			),
+			'h5.widget-title' => array(
+				'font-weight' => esc_attr( $h5_font_weight ),
+			),
+			'h6.widget-title' => array(
+				'font-weight' => esc_attr( $h6_font_weight ),
+			),
+		);
+
+		/* Parse CSS from array() -> All media CSS */
+		$css_output .= astra_parse_css( $widget_title_font_weight_support );
+	}
 
 	if ( false === astra_addon_builder_helper()->is_header_footer_builder_active ) {
 

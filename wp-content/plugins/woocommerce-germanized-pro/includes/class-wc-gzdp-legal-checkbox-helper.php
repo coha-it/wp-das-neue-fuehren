@@ -15,7 +15,7 @@ class WC_GZDP_Legal_Checkbox_Helper {
 	}
 
 	public function __construct() {
-		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'save_checkout_checkboxes' ), 10, 2 );
+	    add_action( 'woocommerce_checkout_create_order', array( $this, 'save_checkout_checkboxes' ), 10, 2 );
 		add_action( 'woocommerce_created_customer', array( $this, 'save_register_checkboxes' ), 10, 3 );
 		add_action( 'woocommerce_before_pay_action', array( $this, 'save_pay_for_order_checkboxes' ), 30, 1 );
 		add_action( 'wp_insert_comment', array( $this, 'save_reviews_checkboxes' ), 10, 1 );
@@ -112,7 +112,11 @@ class WC_GZDP_Legal_Checkbox_Helper {
 		<?php
 	}
 
-	public function save_checkout_checkboxes( $order_id, $posted ) {
+	/**
+	 * @param WC_Order $order
+	 * @param $posted
+	 */
+	public function save_checkout_checkboxes( $order, $posted ) {
 		$checkboxes = $this->get_checkboxes( 'checkout' );
 
 		foreach( $checkboxes as $checkbox ) {
@@ -124,7 +128,7 @@ class WC_GZDP_Legal_Checkbox_Helper {
 			    $checked = true;
 			}
 
-			update_post_meta( $order_id, "_checkbox_{$checkbox->get_id()}", $checked ? 'yes' : 'no' );
+			$order->update_meta_data(  "_checkbox_{$checkbox->get_id()}", $checked ? 'yes' : 'no' );
 
 			do_action( "woocommerce_gzdp_legal_checkbox_stored", $checkbox, $checked );
 		}

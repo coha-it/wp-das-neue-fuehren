@@ -31,7 +31,8 @@ class TaxItem extends Item implements TaxContainable {
 
 	public function get_data() {
 		$data            = parent::get_data();
-		$data['is_moss'] = $this->is_moss();
+		$data['is_oss']  = $this->is_oss();
+		$data['is_moss'] = $this->is_oss();
 
 		return $data;
 	}
@@ -65,12 +66,21 @@ class TaxItem extends Item implements TaxContainable {
 	}
 
 	/**
-	 * Whether this tax item contains MOSS tax or not.
+	 * For legacy purposes: MOSS turned into OSS.
 	 *
 	 * @return bool
 	 */
 	public function is_moss() {
-		return $this->get_tax_rate() ? $this->get_tax_rate()->is_moss() : false;
+		return $this->is_oss();
+	}
+
+	/**
+	 * Whether this tax item contains OSS tax or not.
+	 *
+	 * @return bool
+	 */
+	public function is_oss() {
+		return $this->get_tax_rate() ? $this->get_tax_rate()->is_oss() : false;
 	}
 
 	/**

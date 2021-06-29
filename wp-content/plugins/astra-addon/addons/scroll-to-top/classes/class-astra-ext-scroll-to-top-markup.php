@@ -130,7 +130,6 @@ if ( ! class_exists( 'Astra_Ext_Scroll_To_Top_Markup' ) ) {
 			}
 
 			/*** End Path Logic */
-			Astra_Minify::add_dependent_js( 'jquery' );
 			Astra_Minify::add_js( $gen_path . 'scroll-to-top' . $file_prefix . '.js' );
 		}
 	}

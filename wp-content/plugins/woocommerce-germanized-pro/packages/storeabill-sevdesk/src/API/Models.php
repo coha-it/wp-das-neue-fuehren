@@ -11,14 +11,20 @@ defined( 'ABSPATH' ) || exit;
 
 class Models extends REST {
 
+	/**
+	 * @var Sync
+	 */
 	protected $sync_helper = null;
 
 	protected $countries = array();
 
 	protected $country_code_to_id = array();
 
-	public function __construct( $helper ) {
+	protected $hook_prefix = '';
+
+	public function __construct( $helper, $hook_prefix = '' ) {
 		$this->sync_helper = $helper;
+		$this->hook_prefix = $hook_prefix;
 	}
 
 	/**
@@ -202,24 +208,40 @@ class Models extends REST {
 		return $this->get_sync_helper()->parse_response( $this->put( 'Voucher/' . $voucher_id . '/bookAmmount', $query_args ) );
 	}
 
-	public function search_transactions( $purpose, $args = array() ) {
+	public function search_transactions( $args = array() ) {
 		$args = wp_parse_args( $args, array(
 			'amount_from' => null,
 			'amount_to'   => null,
 			'is_booked'   => false,
 			'account'     => '',
-			'limit'       => 1,
-			'status'      => 100
+			'limit'       => 100,
+			'status'      => 100,
+			'start_date'  => '',
+			'end_date'    => '',
 		) );
 
 		$query_args = array(
-			'paymtPurpose' => $purpose,
 			'limit'        => $args['limit'],
-			'startAmount'  => $args['amount_from'],
 			'endAmount'    => $args['amount_to'],
+			'startAmount'  => $args['amount_from'],
 			'isBooked'     => $args['is_booked'] ? 'true' : 'false',
-			'status'       => $args['status']
+			'status'       => $args['status'],
+			'hideFees'     => 'true',
+			'orderBy'      => array(
+				array(
+					'field'       => 'entryDate',
+					'arrangement' => 'desc'
+				)
+			),
 		);
+
+		if ( ! empty( $args['start_date'] ) ) {
+			$query_args['startDate'] = $args['start_date'];
+		}
+
+		if ( ! empty( $args['end_date'] ) ) {
+			$query_args['endDate'] = $args['end_date'];
+		}
 
 		if ( ! empty( $args['account'] ) ) {
 			$query_args['checkAccount'] = array(
@@ -228,7 +250,7 @@ class Models extends REST {
 			);
  		}
 
-		$result = $this->get_sync_helper()->parse_response( $this->get( 'CheckAccountTransaction', $query_args ) );
+		$result = $this->get_sync_helper()->parse_response( $this->get( 'CheckAccountTransaction', apply_filters( "{$this->hook_prefix}search_transactions_query", $query_args, $this->sync_helper, $this ) ) );
 
 		if ( ! is_wp_error( $result ) ) {
 			return $result->get_body();

@@ -47,17 +47,17 @@
         },
         {
             "name": "composer/installers",
-            "version": "v1.10.0",
-            "version_normalized": "1.10.0.0",
+            "version": "v1.11.0",
+            "version_normalized": "1.11.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/installers.git",
-                "reference": "1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d"
+                "reference": "ae03311f45dfe194412081526be2e003960df74b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/installers/zipball/1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d",
-                "reference": "1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d",
+                "url": "https://api.github.com/repos/composer/installers/zipball/ae03311f45dfe194412081526be2e003960df74b",
+                "reference": "ae03311f45dfe194412081526be2e003960df74b",
                 "shasum": ""
             },
             "require": {
@@ -75,7 +75,7 @@
                 "symfony/phpunit-bridge": "^4.2 || ^5",
                 "symfony/process": "^2.3"
             },
-            "time": "2021-01-14T11:07:16+00:00",
+            "time": "2021-04-28T06:42:17+00:00",
             "type": "composer-plugin",
             "extra": {
                 "class": "Composer\\Installers\\Plugin",
@@ -153,6 +153,7 @@
                 "majima",
                 "mako",
                 "mediawiki",
+                "miaoxing",
                 "modulework",
                 "modx",
                 "moodle",
@@ -170,6 +171,7 @@
                 "sydes",
                 "sylius",
                 "symfony",
+                "tastyigniter",
                 "typo3",
                 "wordpress",
                 "yawik",
@@ -178,7 +180,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/installers/issues",
-                "source": "https://github.com/composer/installers/tree/v1.10.0"
+                "source": "https://github.com/composer/installers/tree/v1.11.0"
             },
             "funding": [
                 {
@@ -198,17 +200,17 @@
         },
         {
             "name": "mpdf/mpdf",
-            "version": "v8.0.10",
-            "version_normalized": "8.0.10.0",
+            "version": "v8.0.11",
+            "version_normalized": "8.0.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mpdf/mpdf.git",
-                "reference": "1333a962cd2f7ae1a127b7534b7734b58179186f"
+                "reference": "af17afbbfa0b6ce76defc8da5d02a73d54f94c64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/1333a962cd2f7ae1a127b7534b7734b58179186f",
-                "reference": "1333a962cd2f7ae1a127b7534b7734b58179186f",
+                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/af17afbbfa0b6ce76defc8da5d02a73d54f94c64",
+                "reference": "af17afbbfa0b6ce76defc8da5d02a73d54f94c64",
                 "shasum": ""
             },
             "require": {
@@ -232,7 +234,7 @@
                 "ext-xml": "Needed mainly for SVG manipulation",
                 "ext-zlib": "Needed for compression of embedded resources, such as fonts"
             },
-            "time": "2021-01-08T14:59:28+00:00",
+            "time": "2021-05-12T14:18:06+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -445,23 +447,23 @@
         },
         {
             "name": "psr/log",
-            "version": "1.1.3",
-            "version_normalized": "1.1.3.0",
+            "version": "1.1.4",
+            "version_normalized": "1.1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc"
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/0f73288fd15629204f9d42b7055f72dacbe811fc",
-                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2020-03-23T09:12:05+00:00",
+            "time": "2021-05-03T11:20:27+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -481,7 +483,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common interface for logging libraries",
@@ -492,7 +494,7 @@
                 "psr-3"
             ],
             "support": {
-                "source": "https://github.com/php-fig/log/tree/1.1.3"
+                "source": "https://github.com/php-fig/log/tree/1.1.4"
             },
             "install-path": "../psr/log"
         },
@@ -573,17 +575,17 @@
         },
         {
             "name": "vendidero/storeabill",
-            "version": "v1.5.1",
-            "version_normalized": "1.5.1.0",
+            "version": "v1.6.0",
+            "version_normalized": "1.6.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:vendidero/storeabill.git",
-                "reference": "0146513f27846304f04a4a41992cfe2d88591780"
+                "reference": "3bb30b5e9fb3bb44bbbdf7f4b23177e43bcc7922"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vendidero/storeabill/zipball/0146513f27846304f04a4a41992cfe2d88591780",
-                "reference": "0146513f27846304f04a4a41992cfe2d88591780",
+                "url": "https://api.github.com/repos/vendidero/storeabill/zipball/3bb30b5e9fb3bb44bbbdf7f4b23177e43bcc7922",
+                "reference": "3bb30b5e9fb3bb44bbbdf7f4b23177e43bcc7922",
                 "shasum": ""
             },
             "require": {
@@ -594,7 +596,7 @@
             "require-dev": {
                 "phpunit/phpunit": "7.5.14"
             },
-            "time": "2021-04-16T15:36:40+00:00",
+            "time": "2021-06-28T13:11:24+00:00",
             "type": "wordpress-plugin",
             "installation-source": "dist",
             "autoload": {
@@ -622,17 +624,17 @@
         },
         {
             "name": "vendidero/storeabill-lexoffice",
-            "version": "v1.0.11",
-            "version_normalized": "1.0.11.0",
+            "version": "v1.1.0",
+            "version_normalized": "1.1.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:vendidero/storeabill-lexoffice.git",
-                "reference": "2b000e6ced3de7df4012f57de79497457a904538"
+                "reference": "2eb215615e6ff220b49c2503eedd7dfce9fe041c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vendidero/storeabill-lexoffice/zipball/2b000e6ced3de7df4012f57de79497457a904538",
-                "reference": "2b000e6ced3de7df4012f57de79497457a904538",
+                "url": "https://api.github.com/repos/vendidero/storeabill-lexoffice/zipball/2eb215615e6ff220b49c2503eedd7dfce9fe041c",
+                "reference": "2eb215615e6ff220b49c2503eedd7dfce9fe041c",
                 "shasum": ""
             },
             "require": {
@@ -641,7 +643,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^6.5.14"
             },
-            "time": "2021-02-17T10:45:40+00:00",
+            "time": "2021-06-28T12:24:02+00:00",
             "type": "wordpress-plugin",
             "installation-source": "dist",
             "autoload": {
@@ -666,17 +668,17 @@
         },
         {
             "name": "vendidero/storeabill-sevdesk",
-            "version": "v1.0.9",
-            "version_normalized": "1.0.9.0",
+            "version": "v1.0.11",
+            "version_normalized": "1.0.11.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:vendidero/storeabill-sevdesk.git",
-                "reference": "c3a2bf41cd8dc2d1bfbb3cce1893e1acd351b6f8"
+                "reference": "0db86da85ae18aca3b0c36353d24efa30ef3ccea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vendidero/storeabill-sevdesk/zipball/c3a2bf41cd8dc2d1bfbb3cce1893e1acd351b6f8",
-                "reference": "c3a2bf41cd8dc2d1bfbb3cce1893e1acd351b6f8",
+                "url": "https://api.github.com/repos/vendidero/storeabill-sevdesk/zipball/0db86da85ae18aca3b0c36353d24efa30ef3ccea",
+                "reference": "0db86da85ae18aca3b0c36353d24efa30ef3ccea",
                 "shasum": ""
             },
             "require": {
@@ -685,7 +687,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^6.5.14"
             },
-            "time": "2021-04-16T15:37:27+00:00",
+            "time": "2021-06-28T12:25:53+00:00",
             "type": "wordpress-plugin",
             "installation-source": "dist",
             "autoload": {

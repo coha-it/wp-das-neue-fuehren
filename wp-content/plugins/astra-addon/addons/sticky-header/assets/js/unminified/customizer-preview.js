@@ -646,7 +646,7 @@
 			if( ! color ) {
 				color = 'inherit';
 			}
-			var dynamicStyle =  account_selector + ' .ast-header-account-type-icon .ahfb-svg-iconset svg path, ' + account_selector + ' .ast-header-account-type-icon .ahfb-svg-iconset svg circle {';
+			var dynamicStyle =  account_selector + ' .ast-header-account-type-icon .ahfb-svg-iconset svg path:not(.ast-hf-account-unfill), ' + account_selector + ' .ast-header-account-type-icon .ahfb-svg-iconset svg circle {';
 			dynamicStyle += 'fill: ' + color + ';';
 			dynamicStyle += '} ';
 			astra_add_dynamic_css( 'sticky-header-account-icon-color', dynamicStyle );

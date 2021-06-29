@@ -1,10 +1,42 @@
+v2.6.11 - 9-June-2021
+- Fix: Single pages not getting imported when no required plugin is associated to it.
+
+v2.6.10 - 3-June-2021
+- Improvement: Gutenberg Template library auto-syncs at regular intervals.
+- Improvement: Updated image download functionality.
+- Improvement: Added common functionality for extracting URLs from content.
+- Improvement: Added filter for debug logs generation.
+
+v2.6.9 - 24-May-2021
+- Fix: Starter Templates popup opens by default on every page load on Gutenberg pages.
+
+v2.6.8 - 22-May-2021
+- Fix: PHP Fatal error on 'Getting Started' page.
+
+v2.6.7 - 21-May-2021
+- Improvement: Added the dark and light mode support for the Elementor popup.
+- Improvement: Added retry import option for few cases.
+- Improvement: Improved error messages for AJAX requests.
+
+v2.6.6 - 19-May-2021
+- Improvement: Changed 'Agency' tag with 'Premium' for templates in library. [Screenshot](https://share.bsf.io/rRuGrRjq)
+- Improvement: All strings with Agency Bundle will now be Growth Bundle. [Screenshot](https://share.bsf.io/v1ubZkLv)
+- Improvement: All strings with Mini Agency Bundle will now be Essential Bundle.
+
+v2.6.5 - 18-May-2021
+- Fix: Avoided the HTML being printed in one of the error message screens.
+- Improvement: Improved error message when the requests fail to reach Starter Templates' servers.
+
+v2.6.4 - 18-May-2021
+- Improvement: Added better error messages to the failed import process.
+
 v2.6.3 - 11-May-2021
-Improvement: Added Quick links for a few important documents.
-Improvement: Added dynamic category support for the Gutenberg templates.
-Improvement: Removed color filter from Elementor block.
-Improvement: Change the Block Editor name with Gutenberg.
-Fix: Sync complete notice not closing on click.
-Fix: Elementor demo does not import if we try to import multiple times.
+- Improvement: Added Quick links for a few important documents.
+- Improvement: Added dynamic category support for the Gutenberg templates.
+- Improvement: Removed color filter from Elementor block.
+- Improvement: Change the Block Editor name with Gutenberg.
+- Fix: Sync complete notice not closing on click.
+- Fix: Elementor demo does not import if we try to import multiple times.
 
 v2.6.2 - 4-May-2021
 - Improvement: Advanced Options UI improvement.

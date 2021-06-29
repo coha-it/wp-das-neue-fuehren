@@ -36,4 +36,10 @@ interface Invoice extends Summable {
 	public function update_tax_totals();
 
 	public function get_formatted_price( $price, $type = '' );
+
+	public function is_paid();
+
+	public function is_oss();
+
+	public function is_eu_cross_border_taxable();
 }

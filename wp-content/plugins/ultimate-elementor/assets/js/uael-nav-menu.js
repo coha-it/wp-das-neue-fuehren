@@ -23,6 +23,9 @@
 
 		_toggleClick( id );
 
+		_handleSinglePageMenu( id, layout );
+
+
 		if( 'horizontal' !== layout ){
 
 			_eventClick( id );
@@ -365,17 +368,17 @@
 						}	
 		  			
 						$this.removeClass( 'sub-menu-active' );
-						$this.next().removeClass( 'sub-menu-open' );
-						$this.next().css( { 'visibility': 'hidden', 'opacity': '0', 'height': '0' } );
-						$this.next().css( { 'transition': 'none'} );										
+						$this.nextAll('.sub-menu').removeClass( 'sub-menu-open' );
+						$this.nextAll('.sub-menu').css( { 'visibility': 'hidden', 'opacity': '0', 'height': '0' } );
+						$this.nextAll('.sub-menu').css( { 'transition': 'none'} );
 			  		} else {
 
 			  			$this.find( 'a' ).attr( 'aria-expanded', 'false' );
 			  			
 			  			$this.removeClass( 'sub-menu-active' );
-						$this.next().removeClass( 'sub-menu-open' );
-						$this.next().css( { 'visibility': 'hidden', 'opacity': '0', 'height': '0' } );
-						$this.next().css( { 'transition': 'none'} );	
+						$this.nextAll('.sub-menu').removeClass( 'sub-menu-open' );
+						$this.nextAll('.sub-menu').css( { 'visibility': 'hidden', 'opacity': '0', 'height': '0' } );
+						$this.nextAll('.sub-menu').css( { 'transition': 'none'} );
 							  			  			
 						if ( 'horizontal' !== layout ){
 
@@ -434,9 +437,9 @@
 		  				}	
 		  					
 					$this.addClass( 'sub-menu-active' );
-					$this.next().addClass( 'sub-menu-open' );	
-					$this.next().css( { 'visibility': 'visible', 'opacity': '1', 'height': 'auto' } );
-					$this.next().css( { 'transition': '0.3s ease'} );								
+					$this.nextAll('.sub-menu').addClass( 'sub-menu-open' );
+					$this.nextAll('.sub-menu').css( { 'visibility': 'visible', 'opacity': '1', 'height': 'auto' } );
+					$this.nextAll('.sub-menu').css( { 'transition': '0.3s ease'} );
 				}
 			}
 
@@ -720,6 +723,45 @@
 				$( '.elementor-element-' + id + ' nav' ).addClass( 'menu-is-active' );
 			}				
 		} );
+	}
+
+	function _handleSinglePageMenu( id, layout ) {
+		$( '.elementor-element-' + id + ' ul.uael-nav-menu li a' ).on(
+			'click',
+			function () {
+				var $this = $( this );
+				var link  = $this.attr( 'href' );
+				if ( link.includes( '#' ) ) {
+					var index     = link.indexOf( '#' );
+					var linkValue = link.slice( index + 1 );
+				}
+				if ( 'expandible' == layout ) {
+					if (linkValue.length > 0) {
+						$( '.elementor-element-' + id + ' .uael-nav-menu__toggle' ).trigger( "click" );
+						if ($this.hasClass( 'uael-sub-menu-item' )) {
+							$( '.elementor-element-' + id + ' .uael-menu-toggle' ).trigger( "click" );
+						}
+					}
+				} else {
+					if ( window.matchMedia( '(max-width: 1024px)' ).matches && ( 'horizontal' == layout || 'vertical' == layout ) ) {
+						if (linkValue.length > 0) {
+							$( '.elementor-element-' + id + ' .uael-nav-menu__toggle' ).trigger( "click" );
+							if ($this.hasClass( 'uael-sub-menu-item' )) {
+								$( '.elementor-element-' + id + ' .uael-menu-toggle' ).trigger( "click" );
+							}
+						}
+					} else {
+						if (linkValue.length > 0) {
+							if ($this.hasClass( 'uael-sub-menu-item' )) {
+								_closeMenu( id );
+								$( '.elementor-element-' + id + ' .uael-menu-toggle' ).trigger( "click" );
+							}
+							_closeMenu( id );
+						}
+					}
+				}
+			}
+		);
 	}
 
 	$( document ).on( 'uael_nav_menu_init', function( e, id ){

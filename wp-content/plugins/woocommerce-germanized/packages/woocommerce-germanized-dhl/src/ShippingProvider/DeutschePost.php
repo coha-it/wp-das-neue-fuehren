@@ -48,6 +48,10 @@ class DeutschePost extends Auto {
 	 * @return bool
 	 */
 	public function supports_customer_returns( $order = false ) {
+		if ( is_numeric( $order ) ) {
+			$order = wc_get_order( $order );
+		}
+
 		/**
 		 * Return labels are only supported for DE
 		 */
@@ -150,8 +154,8 @@ class DeutschePost extends Auto {
 		if ( $api && $api->is_configured() && $api->auth() && $api->is_available() ) {
 			$api->reload_products();
 
-			$balance      = $api->get_balance( true );
-			$settings_url = $this->get_edit_link( 'label' );
+			$balance                    = $api->get_balance( true );
+			$settings_url               = $this->get_edit_link( 'label' );
 			$default_available_products = $api->get_default_available_products();
 
 			$settings = array_merge( $settings, array(
@@ -171,7 +175,7 @@ class DeutschePost extends Auto {
 
 				array( 'type' => 'sectionend', 'id' => 'deutsche_post_portokasse_options' ),
 
-				array( 'title' => _x( 'Products', 'dhl', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'deutsche_post_product_options' ),
+				array( 'title' => _x( 'Products', 'dhl', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'deutsche_post_product_options', 'allow_override' => true ),
 
 				array(
 					'title'    => _x( 'Available Products', 'dhl', 'woocommerce-germanized' ),
@@ -182,6 +186,7 @@ class DeutschePost extends Auto {
 					'value'    => $this->get_setting( 'available_products', $default_available_products ),
 					'options'  => $this->get_product_select_options(),
 					'default'  => $default_available_products,
+					'allow_override' => false
 				),
 			) );
 
@@ -549,7 +554,7 @@ class DeutschePost extends Auto {
 			}
 		}
 
-		$available_products = wc_gzd_dhl_get_deutsche_post_products( $shipment, false );
+		$available_products = wc_gzd_dhl_get_deutsche_post_products( $shipment, true );
 
 		/**
 		 * Force the product to check to parent id because some services might not be explicitly added as

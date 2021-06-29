@@ -165,6 +165,7 @@ if ( ! class_exists( 'Astra_Ext_Woocommerce_Loader' ) ) {
 			$defaults['woo-header-cart-icon']          = 'default';
 			$defaults['woo-header-cart-icon-style']    = 'none';
 			$defaults['woo-header-cart-icon-color']    = '';
+			$defaults['woo-header-cart-border-width']  = 2;
 			$defaults['woo-header-cart-icon-radius']   = 3;
 			$defaults['woo-header-cart-total-display'] = true;
 			$defaults['woo-header-cart-title-display'] = true;

@@ -110,6 +110,17 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 		return apply_filters( "{$this->get_hook_prefix()}taxable_country", $taxable_country, $this->get_order() );
 	}
 
+	public function get_taxable_postcode() {
+		$taxable_postcode  = $this->order->get_billing_postcode();
+		$shipping_postcode = $this->order->get_shipping_postcode();
+
+		if ( ! empty( $shipping_postcode ) && $shipping_postcode !== $taxable_postcode ) {
+			$taxable_postcode = $shipping_postcode;
+		}
+
+		return apply_filters( "{$this->get_hook_prefix()}taxable_postcode", $taxable_postcode, $this->get_order() );
+	}
+
 	public function get_vat_id( $type = '' ) {
 		$vat_id = $this->get_order()->get_meta( '_vat_id', true );
 
@@ -195,17 +206,26 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 		return apply_filters( "{$this->get_hook_prefix()}is_reverse_charge", $is_reverse_charge, $this->get_order() );
 	}
 
-	public function get_tax_rate_percent( $rate_id ) {
+	protected function get_tax_item_by_rate_id( $rate_id ) {
 		$taxes      = $this->order->get_taxes();
 		$percentage = null;
 
 		foreach( $taxes as $tax ) {
 			if ( $tax->get_rate_id() == $rate_id ) {
-				if ( is_callable( array( $tax, 'get_rate_percent' ) ) ) {
-					$percentage = $tax->get_rate_percent();
+				return $tax;
+			}
+		}
 
-					Package::extended_log( sprintf( 'Found specific tax percentage for rate %s within order data: %s', $rate_id, $percentage ) );
-				}
+		return false;
+	}
+
+	public function get_tax_rate_percent( $rate_id ) {
+		$percentage = null;
+
+		if ( $tax = $this->get_tax_item_by_rate_id( $rate_id ) ) {
+			if ( is_callable( array( $tax, 'get_rate_percent' ) ) ) {
+				$percentage = $tax->get_rate_percent();
+				Package::extended_log( sprintf( 'Found specific tax percentage for rate %s within order data: %s', $rate_id, $percentage ) );
 			}
 		}
 
@@ -227,14 +247,68 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 	}
 
 	/**
-	 * Decide whether a tax item is a MOSS tax item or not.
+	 * Decide whether a tax item is a OSS tax item or not.
 	 *
-	 * @param \WC_Order_Item_Tax $tax
+	 * @param \WC_Order_Item_Tax|integer $tax
 	 *
 	 * @return boolean
 	 */
-	public function tax_is_moss( $tax ) {
-		return apply_filters( $this->get_hook_prefix() . 'tax_is_moss', false, $tax, $this, $this->get_order() );
+	public function get_tax_country( $tax ) {
+		$country = Countries::get_base_country();
+
+		if ( is_numeric( $tax ) ) {
+			$tax = $this->get_tax_item_by_rate_id( $tax );
+		}
+
+		if ( is_a( $tax, 'WC_Order_Item_Tax' ) ) {
+			if ( ( $tax_rate_id = $tax->get_rate_id() ) && ( $tax_rate = \WC_Tax::_get_tax_rate( $tax_rate_id ) ) ) {
+				$country = $tax_rate['tax_rate_country'];
+			} else {
+				$code = explode( '-', $tax->get_rate_code() );
+
+				if ( ! empty( $code ) ) {
+					$country = strtoupper( $code[0] );
+				}
+			}
+		}
+
+		return apply_filters( $this->get_hook_prefix() . 'tax_rate_country', $country, $tax, $this, $this->get_order() );
+	}
+
+	/**
+	 * Decide whether a tax item is a OSS tax item or not.
+	 *
+	 * @param \WC_Order_Item_Tax|integer $tax
+	 *
+	 * @return boolean
+	 */
+	public function tax_is_oss( $tax ) {
+		$is_oss   = false;
+		$country  = $this->get_taxable_country();
+		$postcode = $this->get_taxable_postcode();
+
+		if ( is_numeric( $tax ) ) {
+			$tax = $this->get_tax_item_by_rate_id( $tax );
+		}
+
+		if ( ! is_a( $tax, 'WC_Order_Item_Tax' ) ) {
+			return false;
+		}
+
+		if ( Countries::base_country_supports_oss_procedure() ) {
+			/**
+			 * Do enable OSS for non-reverse-charge and inner EU (not base country)
+			 */
+			if ( ! $this->is_reverse_charge() && ( $country !== Countries::get_base_country() && Countries::is_eu_vat_country( $country, $postcode ) ) ) {
+				$country = $this->get_tax_country( $tax );
+
+				if ( ! empty( $country ) && $country !== Countries::get_base_country() ) {
+					$is_oss = true;
+				}
+			}
+		}
+
+		return apply_filters( $this->get_hook_prefix() . 'tax_is_oss', $is_oss, $tax, $this, $this->get_order() );
 	}
 
 	/**
@@ -332,14 +406,15 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 				$merge_key  = Tax::get_tax_rate_merge_key( array(
 					'percent'     => $percentage,
 					'is_compound' => $tax->is_compound(),
-					'is_moss'     => $this->tax_is_moss( $tax )
+					'is_oss'      => $this->tax_is_oss( $tax )
 				) );
 
 				if ( ! array_key_exists( $merge_key, $rates ) ) {
 					$tax_data = array(
 						'percent'       => $percentage,
 						'is_compound'   => $tax->is_compound(),
-						'is_moss'       => $this->tax_is_moss( $tax ),
+						'is_oss'        => $this->tax_is_oss( $tax ),
+						'country'       => $this->get_tax_country( $tax ),
 						'reference_ids' => array( $tax->get_rate_id() ),
 					);
 
@@ -534,6 +609,7 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 							$merge_key  = Tax::get_tax_rate_merge_key( array(
 								'percent'     => $percentage,
 								'is_compound' => $tax_total_obj->is_compound,
+								'is_oss'      => $this->tax_is_oss( $tax_total_obj->rate_id )
 							) );
 
 							$order_tax_rate_total = $tax_total_obj->amount - $this->get_order()->get_total_tax_refunded_by_rate_id( $tax_total_obj->rate_id ) - $this->get_total_tax_billed_by_reference_id( $tax_total_obj->rate_id, true );
@@ -654,7 +730,7 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 	 * This method cancels all cancelable invoices
 	 * and removes unfixed invoices.
 	 */
-	public function cancel() {
+	public function cancel( $reason = '' ) {
 		foreach( $this->get_invoices() as $invoice ) {
 			if ( ! $invoice->is_finalized() ) {
 				$this->delete_document( $invoice->get_id() );
@@ -663,6 +739,14 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 
 				if ( ! is_wp_error( $new_cancellation ) ) {
 					$this->add_document( $new_cancellation );
+
+					$note = sprintf( _x( 'Cancelled invoice %s.', 'storeabill-core', 'woocommerce-germanized-pro' ), $invoice->get_formatted_number() );
+
+					if ( ! empty( $reason ) ) {
+						$note = sprintf( _x( 'Cancelled invoice %1$s (%2$s).', 'storeabill-core', 'woocommerce-germanized-pro' ), $invoice->get_formatted_number(), $reason );
+					}
+
+					$this->get_order()->add_order_note( $note );
 				}
 			}
 		}
@@ -1686,6 +1770,8 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 					$order_item_price          = sab_format_decimal( $order_item_price, '' );
 					$order_item_price_subtotal = sab_format_decimal( $order_item_price_subtotal, '' );
 					$price_has_changed         = false;
+					$reason                    = '';
+					$reason_details            = '';
 
 					/**
 					 * Detect order item price changes (manual adjustments).
@@ -1704,6 +1790,7 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 						$line_total_to_cancel = $line_total_available_to_cancel;
 						$total_to_cancel      = $total_available_to_cancel;
 						$tax_to_cancel        = $available_tax_to_cancel;
+						$reason               = 'order_cancelled';
 
 						Package::extended_log( 'Order has been cancelled or has a full refund' );
 					} elseif ( ! empty( $order_item_id ) && ! array_key_exists( $order_item_id, $order_items_left ) ) {
@@ -1714,6 +1801,7 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 						$line_total_to_cancel = $line_total_available_to_cancel;
 						$total_to_cancel      = $total_available_to_cancel;
 						$tax_to_cancel        = $available_tax_to_cancel;
+						$reason               = 'order_item_removed';
 
 						Package::extended_log( sprintf( 'Order item %s doesnt seem to exist any longer', $order_item_id ) );
 					} elseif( $price_has_changed ) {
@@ -1728,6 +1816,8 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 						$line_total_to_cancel = $line_total_available_to_cancel;
 						$total_to_cancel      = $total_available_to_cancel;
 						$tax_to_cancel        = $available_tax_to_cancel;
+						$reason               = 'order_item_price_changed';
+						$reason_details       = sprintf( 'Price changed from %s to %s', $price, $order_item_price );
 
 						Package::extended_log( sprintf( 'Order item %s price has changed from %s to %s', $order_item_id, $price, $order_item_price ) );
 					} elseif( ! empty( $order_item_id ) && $order_items_left[ $order_item_id ]['line_total'] < $line_total_available_to_cancel ) {
@@ -1749,6 +1839,8 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 							$total_to_cancel      = $total_available_to_cancel;
 							$tax_to_cancel        = $available_tax_to_cancel;
 						}
+
+						$reason = 'order_item_changed';
 
 						Package::extended_log( sprintf( 'Order item %s seems to have changed (e.g. refunded). Cancel %s', $order_item_id, $total_to_cancel ) );
 					}
@@ -1772,6 +1864,9 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 							$order_items_to_cancel[ $order_item_id ]['total']      += $total_to_cancel;
 							$order_items_to_cancel[ $order_item_id ]['tax']        += $tax_to_cancel;
 						}
+
+						$order_items_to_cancel[ $order_item_id ]['reason']         = $reason;
+						$order_items_to_cancel[ $order_item_id ]['reason_details'] = $reason_details;
 					}
 
 					if ( array_key_exists( $order_item_id, $order_items_left ) ) {
@@ -1901,7 +1996,7 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 		if ( ! empty( $order_items_to_cancel ) && $this->round_tax_at_subtotal_has_changed() ) {
 			$has_cancelled = true;
 
-			$this->cancel();
+			$this->cancel( 'round_tax_setting_changed' );
 			Package::extended_log( 'Auto cancelling order #' . $this->get_id() . ' invoices due to change of Woo round_tax_at_subtotal setting.' );
 
 		} elseif ( ! empty( $order_items_to_cancel ) ) {
@@ -1940,10 +2035,13 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 							$item_price_to_cancel       = sab_format_decimal( ( $item_total_to_cancel / $item_quantity_to_cancel ), '' );
 
 							$items_to_cancel[ $item->get_id() ] = array(
-								'quantity'   => $item_quantity_to_cancel,
-								'total'      => $item_total_to_cancel,
-								'line_total' => $item_line_total_to_cancel,
-								'tax'        => $item_total_tax_to_cancel
+								'name'           => $item->get_name(),
+								'quantity'       => $item_quantity_to_cancel,
+								'total'          => $item_total_to_cancel,
+								'line_total'     => $item_line_total_to_cancel,
+								'tax'            => $item_total_tax_to_cancel,
+								'reason'         => $item_to_cancel['reason'],
+								'reason_details' => $item_to_cancel['reason_details'],
 							);
 
 							/**
@@ -1992,6 +2090,20 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 
 							$this->add_document( $cancellation );
 							Package::extended_log( 'Auto added new cancellation to order #' . $this->get_id() );
+
+							$item_notes = array();
+
+							foreach( $items_to_cancel as $item ) {
+								$reason = empty( $item['reason'] ) ? 'no_reason' : $item['reason'];
+
+								if ( ! empty( $item['reason_details'] ) ) {
+									$reason = $reason . ' (' . $item['reason_details'] . ')';
+								}
+
+								$item_notes[] = sprintf( _x( '%1$s x Item %2$s &rarr; %3$s (Total: %4$s, Line total: %5$s, Tax: %6$s)', 'storeabill-core', 'woocommerce-germanized-pro' ), $item['quantity'], $item['name'], $reason, $item['total'], $item['line_total'], $item['tax'] );
+							}
+
+							$this->get_order()->add_order_note( sprintf( _x( '(Partially) Cancelled invoice %1$s: %2$s', 'storeabill-core', 'woocommerce-germanized-pro' ), $invoice->get_formatted_number(), implode( ', ', $item_notes ) ) );
 						}
 					}
 				}
@@ -2004,7 +2116,7 @@ class Order implements \Vendidero\StoreaBill\Interfaces\Order {
 		if ( $total_billed > $order_total_after_refunds ) {
 			$has_cancelled = true;
 
-			$this->cancel();
+			$this->cancel( 'order_total_diff' );
 			Package::extended_log( 'Auto cancelling order #' . $this->get_id() . ' due to total diff (billed: ' . $total_billed . ', order total after refunds: ' . $order_total_after_refunds .')' );
 		}
 

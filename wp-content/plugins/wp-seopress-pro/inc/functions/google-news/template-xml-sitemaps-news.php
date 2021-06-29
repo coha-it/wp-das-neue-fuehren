@@ -18,8 +18,8 @@ add_filter( 'seopress_sitemaps_single_gnews_query', function( $args ) {
     global $sitepress, $sitepress_settings;
 
     $sitepress_settings['auto_adjust_ids'] = 0;
-    remove_filter( 'terms_clauses', array( $sitepress, 'terms_clauses' ) );
-    remove_filter( 'category_link', array( $sitepress, 'category_link_adjust_id' ), 1 );
+    remove_filter( 'terms_clauses', [ $sitepress, 'terms_clauses' ] );
+    remove_filter( 'category_link', [ $sitepress, 'category_link_adjust_id' ], 1 );
 
     return $args;
 });
@@ -48,7 +48,7 @@ function seopress_xml_sitemap_news() {
 	    }
 	}
 	if (seopress_xml_sitemap_news_cpt_option() !='') {
-		$seopress_xml_sitemap_news_cpt_array = array();
+		$seopress_xml_sitemap_news_cpt_array = [];
 	    foreach (seopress_xml_sitemap_news_cpt_option() as $cpt_key => $cpt_value) {
 	        foreach ($cpt_value as $_cpt_key => $_cpt_value) {
 	            if($_cpt_value =='1') {
@@ -62,7 +62,9 @@ function seopress_xml_sitemap_news() {
 	
 	if (function_exists('pll_home_url')) {
         $home_url = site_url().'/';
-    }
+	}
+	
+	$home_url = apply_filters( 'seopress_sitemaps_home_url', $home_url );
 
 	$seopress_sitemaps = '<?xml version="1.0" encoding="UTF-8"?>';
 	$seopress_sitemaps .='<?xml-stylesheet type="text/xsl" href="'.$home_url.'sitemaps_xsl.xsl"?>';
@@ -71,7 +73,35 @@ function seopress_xml_sitemap_news() {
 	$seopress_sitemaps .= $seopress_sitemaps_urlset;
 	$seopress_sitemaps .= "\n";
 
-				$args = array( 'exclude' => '', 'posts_per_page' => 1000, 'order'=> 'DESC', 'orderby' => 'date', 'post_type' => $seopress_xml_sitemap_news_cpt_array, 'post_status' => 'publish', 'meta_query' => array( array( 'key' => '_seopress_robots_index', 'value' => 'yes', 'compare' => 'NOT EXISTS' ) ), 'date_query' => array(array('after' => '2 days ago')), 'post__not_in' => get_option( 'sticky_posts' ), 'lang' => '', 'has_password' => false);
+				$args = [ 
+					'exclude' => '', 
+					'posts_per_page' => 1000, 
+					'order' => 'DESC', 
+					'orderby' => 'date', 
+					'post_type' => $seopress_xml_sitemap_news_cpt_array, 
+					'post_status' => 'publish', 
+					'meta_query' => [
+						'relation' => 'OR',
+						[
+							'key' => '_seopress_robots_index', 
+							'value' => '', 
+							'compare' => 'NOT EXISTS' 
+						],
+						[
+							'key' => '_seopress_robots_index', 
+							'value' => 'yes', 
+							'compare' => '!=' 
+						] 
+					],
+					'date_query' => [
+						[
+							'after' => '2 days ago'
+						]
+					], 
+					'post__not_in' => get_option( 'sticky_posts' ), 
+					'lang' => '', 
+					'has_password' => false
+				];
 				
 				$args = apply_filters('seopress_sitemaps_single_gnews_query', $args);
 
@@ -100,7 +130,7 @@ function seopress_xml_sitemap_news() {
 						}
 
 						// Extract image
-						$images_array = array();
+						$images_array = [];
 						if (seopress_xml_sitemap_img_enable_option() =='1') {
 							//noimageindex?
 							if (get_post_meta($post,'_seopress_robots_imageindex',true) !='yes') {
@@ -238,18 +268,18 @@ function seopress_xml_sitemap_news() {
                         $seopress_sitemap_url = '';
 
 						// array with all the information needed for a sitemap url
-                        $seopress_url = array(
+                        $seopress_url = [
                             'loc'     => htmlspecialchars(urldecode(get_permalink($post))),
                             'mod'     => $seopress_mod,
                             'images'  => $images_array,
-                            'news'    => array(
+                            'news'    => [
                                 'name'              => seopress_xml_sitemap_news_name_option(),
                                 'language'          => $lang,
                                 'publication_date'  => get_the_date('c', $post),
                                 'title'             => htmlspecialchars(urldecode(esc_attr(html_entity_decode(get_the_title($post))))),
 								'keywords'          => $seopress_keywords,
-                            )
-                        );
+							]
+						];
 
                         $seopress_sitemap_url .= '<url>';
                         $seopress_sitemap_url .= "\n";

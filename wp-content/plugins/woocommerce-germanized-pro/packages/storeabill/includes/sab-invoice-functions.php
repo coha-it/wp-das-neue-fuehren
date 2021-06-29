@@ -178,3 +178,10 @@ function sab_invoice_has_line_total_after_discounts( $invoice ) {
 
 	return false;
 }
+
+function sab_get_invoice_discount_types() {
+	return array(
+		'single_purpose' => _x( 'Single-purpose', 'storeabill-discount-type', 'woocommerce-germanized-pro' ),
+		'multi_purpose'  => _x( 'Multipurpose', 'storeabill-discount-type', 'woocommerce-germanized-pro' )
+	);
+}

@@ -2,7 +2,7 @@
 
 class WC_GZDP_VAT_Validation {
 	
-	private $api_url = "http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl";
+	private $api_url = "https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl";
 
 	private $client = null;
 
@@ -157,7 +157,16 @@ class WC_GZDP_VAT_Validation {
 	}
 
 	protected function clean( $str ) {
-		return trim( strtolower( str_replace( "-", " ", $str ) ) );
+		// Parse
+		$str = trim( strtolower( str_replace( "-", " ", $str ) ) );
+
+		// Remove punctuation
+		$str = preg_replace("/[[:punct:]]+/", "", $str );
+
+		// Maybe remove duplicate empty spaces
+		$str = preg_replace("/\s+/u", " ", $str );
+
+		return $str;
 	}
 
 	public function get_error_messages() {

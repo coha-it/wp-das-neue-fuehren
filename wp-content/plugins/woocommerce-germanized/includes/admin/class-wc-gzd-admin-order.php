@@ -76,12 +76,27 @@ class WC_GZD_Admin_Order {
 					}
 				}
 
-				foreach ( $tax_share as $rate => $class ) {
-					$tax_rates = WC_Tax::get_rates( $rate );
-					$taxes     = $taxes + WC_Tax::calc_tax( ( $item_total * $class['share'] ), $tax_rates, wc_gzd_additional_costs_include_tax() );
+				$taxable_amounts = array();
+
+				foreach ( $tax_share as $tax_class => $class ) {
+					$tax_rates       = WC_Tax::get_rates_from_location( $tax_class, $this->get_order_taxable_location( $order ) );
+					$taxable_amount  = $item_total * $class['share'];
+					$tax_class_taxes = WC_Tax::calc_tax( $taxable_amount, $tax_rates, wc_gzd_additional_costs_include_tax() );
+					$net_base        = wc_gzd_additional_costs_include_tax() ? ( $taxable_amount - array_sum( $tax_class_taxes ) ) : $taxable_amount;
+
+					$taxable_amounts[ $tax_class ] = array(
+						'taxable_amount' => $taxable_amount,
+						'tax_share'      => $class['share'],
+						'tax_rates'      => array_keys( $tax_rates ),
+						'net_amount'     => $net_base,
+						'includes_tax'   => wc_gzd_additional_costs_include_tax()
+					);
+
+					$taxes = $taxes + $tax_class_taxes;
 				}
 
 				$item->set_taxes( array( 'total' => $taxes ) );
+				$item->update_meta_data( '_split_taxes', $taxable_amounts );
 
 				// The new net total equals old gross total minus new tax totals
 				if ( wc_gzd_additional_costs_include_tax() ) {
@@ -90,12 +105,44 @@ class WC_GZD_Admin_Order {
 
 				$order->update_meta_data( '_has_split_tax', 'yes' );
 			} else {
+				$item->delete_meta_data( '_split_taxes' );
 				$order->delete_meta_data( '_has_split_tax' );
 			}
 
 			$order->update_meta_data( '_additional_costs_include_tax', wc_bool_to_string( wc_gzd_additional_costs_include_tax() ) );
 			$order->save();
 		}
+	}
+
+	/**
+	 * @param WC_Order $order
+	 */
+	protected function get_order_taxable_location( $order ) {
+		$taxable_address = array(
+			WC()->countries->get_base_country(),
+			WC()->countries->get_base_state(),
+			WC()->countries->get_base_postcode(),
+			WC()->countries->get_base_city()
+		);
+
+		$tax_based_on = get_option( 'woocommerce_tax_based_on' );
+
+		if ( 'shipping' === $tax_based_on && ! $order->get_shipping_country() ) {
+			$tax_based_on = 'billing';
+		}
+
+		$country = $tax_based_on ? $order->get_billing_country() : $order->get_shipping_country();
+
+		if ( 'base' !== $tax_based_on && ! empty( $country ) ) {
+			$taxable_address = array(
+				$country,
+				'billing' === $tax_based_on ? $order->get_billing_state() : $order->get_shipping_state(),
+				'billing' === $tax_based_on ? $order->get_billing_postcode() : $order->get_shipping_postcode(),
+				'billing' === $tax_based_on ? $order->get_billing_city() : $order->get_shipping_city(),
+			);
+		}
+
+		return $taxable_address;
 	}
 
 	/**

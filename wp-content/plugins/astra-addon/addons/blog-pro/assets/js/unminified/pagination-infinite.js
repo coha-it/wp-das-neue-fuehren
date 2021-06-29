@@ -4,7 +4,6 @@
 		count 			= parseInt( astra.infinite_count ) || '',
 		ajax_url 		= astra.ajax_url || '',
 		infinite_nonce 	= astra.infinite_nonce || '',
-	
 		pagination 		= astra.pagination || '',
 		masonryEnabled  = astra.masonryEnabled || false,
 		loadStatus 		= true,
@@ -40,9 +39,7 @@
 							count++;
 						}
 					});
-				
 					break;
-				
 				case 'scroll':
 					$('.ast-load-more').hide();
 
@@ -65,7 +62,6 @@
 							}
 						});
 					}
-					
 					break;
 			}
 		}
@@ -85,7 +81,6 @@
 				page_no	: pageNumber,
 				post_type : ast_post_type,
 				nonce: infinite_nonce,
-				query_vars: astra.query_vars,
 				astra_infinite: 'astra_pagination_ajax',
 			}
 
@@ -115,7 +110,6 @@
 
 				//	Add grid classes
 				var msg 			= astra.no_more_post_message || '';
-				
 				//	Show no more post message
 				if( count > total ) {
 					$('.ast-pagination-infinite').html( '<span class="ast-load-more no-more active" style="display: inline-block;">' + msg + "</span>" );

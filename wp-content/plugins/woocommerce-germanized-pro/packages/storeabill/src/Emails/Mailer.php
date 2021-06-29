@@ -156,7 +156,7 @@ class Mailer {
 	public static function maybe_send_invoice( $invoice ) {
 		$type = $invoice->get_type();
 
-		if ( $invoice->is_finalized() && 'yes' === Package::get_setting( "{$type}_send_to_customer" ) ) {
+		if ( $invoice->is_finalized() && apply_filters( "storeabill_send_{$invoice->get_type()}_to_customer", ( 'yes' === Package::get_setting( "{$type}_send_to_customer" ) ), $invoice ) ) {
 			$invoice->send_to_customer();
 		}
 	}

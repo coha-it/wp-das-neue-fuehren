@@ -327,8 +327,8 @@ function ColumnsEdit( props ) {
 
 	const defaultBlocks = getDefaultInnerBlocks( name );
 	const defaultColumnAttributes = {
-		headingBackgroundColor: 'black',
-		headingTextColor: 'white'
+		headingBackgroundColor: '#e5e5e5',
+		headingTextColor: 'black'
 	};
 
 	defaultBlocks.map( ( innerBlock ) => {
@@ -370,9 +370,9 @@ function ColumnsEdit( props ) {
 
 			setAttributes( {
 				borders: [ 'horizontal' ],
-				borderColor: 'black',
-				headingBackgroundColor: 'black',
-				headingTextColor: 'white'
+				customBorderColor: '#a9a9a9',
+				customHeadingBackgroundColor: '#e5e5e5',
+				headingTextColor: 'black'
 			} );
 		}
 	}, [ hasInnerBlocks, replaceInnerBlocks ]);

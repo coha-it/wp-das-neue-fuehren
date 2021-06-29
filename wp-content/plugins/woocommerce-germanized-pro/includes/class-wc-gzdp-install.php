@@ -480,7 +480,13 @@ class WC_GZDP_Install {
 			self::upgrade_2_0_0();
 		} elseif( version_compare( $current_db_version, '3.0.0', '<' ) ) {
 			self::upgrade_3_0_0();
+		} elseif( version_compare( $current_db_version, '3.2.2', '<' ) ) {
+			self::upgrade_3_2_2();
 		}
+	}
+
+	protected static function upgrade_3_2_2() {
+	    update_option( 'woocommerce_gzdp_checkout_layout_style', 'navigation' );
 	}
 
 	protected static function upgrade_3_0_0() {
@@ -1294,13 +1300,12 @@ class WC_GZDP_Install {
 	 * @access public
 	 */
 	public static function create_options() {
-
 		include_once( WC()->plugin_path() . '/includes/admin/settings/class-wc-settings-page.php' );
 		include_once( WC_germanized_pro()->plugin_path() . '/includes/admin/settings/class-wc-gzdp-settings.php' );
 		include_once( WC_germanized()->plugin_path() . '/includes/admin/settings/class-wc-gzd-settings-germanized.php' );
 		
 		$settings = new WC_GZD_Settings_Germanized();
-		$options  = $settings->get_settings();
+		$options  = is_callable( array( $settings, 'get_settings_for_section_core' ) ) ? $settings->get_settings_for_section_core( '' ) : $settings->get_settings();
 
 		foreach ( $options as $value ) {
 			if ( isset( $value['id'] ) && self::is_pro_option( $value['id'] ) && isset( $value['default'] ) ) {

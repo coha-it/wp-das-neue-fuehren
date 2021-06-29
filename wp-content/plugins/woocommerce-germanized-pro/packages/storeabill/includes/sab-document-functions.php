@@ -184,6 +184,7 @@ function sab_register_document_type( $type, $args = array() ) {
 	$args['shortcodes'] = wp_parse_args( $args['shortcodes'], array(
 		'document'      => array(),
 		'document_item' => array(),
+		'setting'       => array(),
 	) );
 
 	$args['date_types'] = array_merge( array(
@@ -225,6 +226,28 @@ function sab_register_document_type( $type, $args = array() ) {
 			'headerFooterOnly' => true,
 		)
 	), $args['shortcodes']['document'] );
+
+	/**
+	 * Default setting shortcodes
+	 */
+	$args['shortcodes']['setting'] = array_merge( array(
+		array(
+			'shortcode'        => 'setting?data=bank_account_holder',
+			'title'            => _x( 'Bank account holder', 'storeabill-core', 'woocommerce-germanized-pro' ),
+		),
+		array(
+			'shortcode'        => 'setting?data=bank_account_bank_name',
+			'title'            => _x( 'Bank name', 'storeabill-core', 'woocommerce-germanized-pro' ),
+		),
+		array(
+			'shortcode'        => 'setting?data=bank_account_iban',
+			'title'            => _x( 'IBAN', 'storeabill-core', 'woocommerce-germanized-pro' ),
+		),
+		array(
+			'shortcode'        => 'setting?data=bank_account_bic',
+			'title'            => _x( 'BIC', 'storeabill-core', 'woocommerce-germanized-pro' ),
+		),
+	), $args['shortcodes']['setting'] );
 
 	/**
 	 * Default barcode code data
@@ -800,14 +823,14 @@ function sab_upload_document( $filename, $stream, $relative = true, $force_overr
 		\Vendidero\StoreaBill\UploadManager::set_upload_dir_filter();
 
 		if ( $force_override ) {
-			add_filter( 'wp_unique_filename', '_sab_keep_force_filename', 10, 1 );
+			add_filter( 'wp_unique_filename', '_sab_keep_force_filename', 250, 1 );
 			$GLOBALS['storeabill_forced_filename'] = $filename;
 		}
 
 		$tmp = wp_upload_bits( $filename,null, $stream );
 
 		if ( $force_override ) {
-			remove_filter( 'wp_unique_filename', '_sab_keep_force_filename', 10 );
+			remove_filter( 'wp_unique_filename', '_sab_keep_force_filename', 250 );
 			unset( $GLOBALS['storeabill_forced_filename'] );
 		}
 

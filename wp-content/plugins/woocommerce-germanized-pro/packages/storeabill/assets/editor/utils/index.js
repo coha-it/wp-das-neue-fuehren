@@ -1,7 +1,5 @@
 import { isEmpty, includes, concat } from 'lodash';
 
-export * from './error';
-
 export function getDefaultPlaceholderContent( placeholder, tooltip = '' ) {
 	return '<span class="placeholder-content ' + ( ! isEmpty( tooltip ) ? 'sab-tooltip' : '' ) + '" contenteditable="false" ' + ( ! isEmpty( tooltip ) ? 'data-tooltip="' + tooltip + '"' : '' ) + '><span class="editor-placeholder"></span>' + placeholder + '</span>';
 }

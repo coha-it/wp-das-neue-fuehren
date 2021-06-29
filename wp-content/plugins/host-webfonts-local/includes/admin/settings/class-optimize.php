@@ -62,7 +62,7 @@ class OMGF_Admin_Settings_Optimize extends OMGF_Admin_Settings_Builder
 			<?= __('These settings affect the fonts OMGF downloads and the stylesheet it generates. If you\'re simply looking to replace your Google Fonts for locally hosted copies, the default settings should suffice.', $this->plugin_text_domain); ?>
 		</p>
 		<p>
-			<?= sprintf(__('To install additional Google Fonts, a (free) add-on is required, which can be downloaded <a href="%s" target="blank">here</a>.', $this->plugin_text_domain), self::FFW_PRESS_OMGF_AF_URL); ?>
+			<?= sprintf(__('To install additional Google Fonts, an add-on is required, which can be downloaded <a href="%s" target="blank">here</a>.', $this->plugin_text_domain), self::FFW_PRESS_OMGF_AF_URL); ?>
 		</p>
 	<?php
 	}
@@ -84,10 +84,10 @@ class OMGF_Admin_Settings_Optimize extends OMGF_Admin_Settings_Builder
 	public function do_promo_combine_requests()
 	{
 		$this->do_checkbox(
-			__('Combine & Dedupe Google Fonts (Pro)', $this->plugin_text_domain),
+			__('Combine & Dedupe (Pro)', $this->plugin_text_domain),
 			'omgf_pro_combine_requests',
 			defined('OMGF_PRO_COMBINE_REQUESTS') ? true : false,
-			__('Combine and deduplicate multiple font requests into one request. This feature is always on in OMGF Pro.', $this->plugin_text_domain) . ' ' . $this->promo,
+			__('Combine and deduplicate multiple Google Fonts stylesheets into one stylesheet. This feature is always on in OMGF Pro.', $this->plugin_text_domain) . ' ' . $this->promo,
 			true
 		);
 	}
@@ -98,11 +98,11 @@ class OMGF_Admin_Settings_Optimize extends OMGF_Admin_Settings_Builder
 	public function do_display_option()
 	{
 		$this->do_select(
-			__('Font-display option', $this->plugin_text_domain),
+			__('Font-Display Option', $this->plugin_text_domain),
 			OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_DISPLAY_OPTION,
 			OMGF_Admin_Settings::OMGF_FONT_DISPLAY_OPTIONS,
 			OMGF_DISPLAY_OPTION,
-			__('Select which font-display strategy to use. Defaults to Swap (recommended).', $this->plugin_text_domain)
+			__('Select which value to set the font-display attribute to. Defaults to Swap (recommended).', $this->plugin_text_domain)
 		);
 	}
 
@@ -114,7 +114,7 @@ class OMGF_Admin_Settings_Optimize extends OMGF_Admin_Settings_Builder
 	public function do_woff2_only()
 	{
 		$this->do_checkbox(
-			__('Load <code>.woff2</code> Only', $this->plugin_text_domain),
+			__('<code>WOFF2</code> Only', $this->plugin_text_domain),
 			OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_WOFF2_ONLY,
 			OMGF_WOFF2_ONLY,
 			__('Loading <code>.woff2</code> files only will result in a smaller stylesheet, but will make the stylesheet slightly less Cross Browser compatible. <code>.woff2</code> is supported by ~95% of browsers used by internet users globally.', $this->plugin_text_domain)
@@ -201,7 +201,7 @@ class OMGF_Admin_Settings_Optimize extends OMGF_Admin_Settings_Builder
 								<th colspan="5"><?= sprintf(__('Stylesheet handle: %s', $this->plugin_text_domain), $handle); ?></th>
 							</tr>
 							<?php foreach ($fonts as $font) : ?>
-								<?php if (count((array) $font->variants) <= 0) continue; ?>
+								<?php if (!is_object($font) || count((array) $font->variants) <= 0) continue; ?>
 								<?php
 								$aka = in_array($font->id, OMGF_API_Download::OMGF_RENAMED_GOOGLE_FONTS) ? array_search($font->id, OMGF_API_Download::OMGF_RENAMED_GOOGLE_FONTS) : '';
 								?>
@@ -347,7 +347,7 @@ class OMGF_Admin_Settings_Optimize extends OMGF_Admin_Settings_Builder
 		public function do_optimize_edit_roles()
 		{
 			$this->do_checkbox(
-				__('Optimize fonts for logged in editors/administrators?', $this->plugin_text_domain),
+				__('Optimize Fonts For Editors/Administrators?', $this->plugin_text_domain),
 				OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_OPTIMIZE_EDIT_ROLES,
 				OMGF_OPTIMIZE_EDIT_ROLES,
 				__('Should only be disabled while debugging/testing, e.g. using a page builder or switching themes.', $this->plugin_text_domain)

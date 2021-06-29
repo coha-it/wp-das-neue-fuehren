@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitf0e899230b92c6a146d824d14c5ee365
+class ComposerStaticInit4e52555d738676ba27d3a146e98772de
 {
     public static $files = array (
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
@@ -151,6 +151,7 @@ class ComposerStaticInitf0e899230b92c6a146d824d14c5ee365
         'Composer\\Installers\\MauticInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/MauticInstaller.php',
         'Composer\\Installers\\MayaInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/MayaInstaller.php',
         'Composer\\Installers\\MediaWikiInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/MediaWikiInstaller.php',
+        'Composer\\Installers\\MiaoxingInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/MiaoxingInstaller.php',
         'Composer\\Installers\\MicroweberInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/MicroweberInstaller.php',
         'Composer\\Installers\\ModxInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/ModxInstaller.php',
         'Composer\\Installers\\MoodleInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/MoodleInstaller.php',
@@ -186,12 +187,14 @@ class ComposerStaticInitf0e899230b92c6a146d824d14c5ee365
         'Composer\\Installers\\TYPO3CmsInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/TYPO3CmsInstaller.php',
         'Composer\\Installers\\TYPO3FlowInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/TYPO3FlowInstaller.php',
         'Composer\\Installers\\TaoInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/TaoInstaller.php',
+        'Composer\\Installers\\TastyIgniterInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/TastyIgniterInstaller.php',
         'Composer\\Installers\\TheliaInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/TheliaInstaller.php',
         'Composer\\Installers\\TuskInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/TuskInstaller.php',
         'Composer\\Installers\\UserFrostingInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/UserFrostingInstaller.php',
         'Composer\\Installers\\VanillaInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/VanillaInstaller.php',
         'Composer\\Installers\\VgmcpInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/VgmcpInstaller.php',
         'Composer\\Installers\\WHMCSInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/WHMCSInstaller.php',
+        'Composer\\Installers\\WinterInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/WinterInstaller.php',
         'Composer\\Installers\\WolfCMSInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/WolfCMSInstaller.php',
         'Composer\\Installers\\WordPressInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/WordPressInstaller.php',
         'Composer\\Installers\\YawikInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/YawikInstaller.php',
@@ -536,6 +539,7 @@ class ComposerStaticInitf0e899230b92c6a146d824d14c5ee365
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemAttributes' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemAttributes.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemDifferentialTaxationNotice' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemDifferentialTaxationNotice.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemDiscount' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemDiscount.php',
+        'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemField' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemField.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemImage' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemImage.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemLineTotal' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemLineTotal.php',
         'Vendidero\\StoreaBill\\Editor\\Blocks\\ItemMeta' => __DIR__ . '/../..' . '/packages/storeabill/src/Editor/Blocks/ItemMeta.php',
@@ -654,6 +658,7 @@ class ComposerStaticInitf0e899230b92c6a146d824d14c5ee365
         'Vendidero\\StoreaBill\\Updater' => __DIR__ . '/../..' . '/packages/storeabill/src/Updater.php',
         'Vendidero\\StoreaBill\\UploadManager' => __DIR__ . '/../..' . '/packages/storeabill/src/UploadManager.php',
         'Vendidero\\StoreaBill\\Utilities\\CacheHelper' => __DIR__ . '/../..' . '/packages/storeabill/src/Utilities/CacheHelper.php',
+        'Vendidero\\StoreaBill\\Utilities\\Numbers' => __DIR__ . '/../..' . '/packages/storeabill/src/Utilities/Numbers.php',
         'Vendidero\\StoreaBill\\Utilities\\Singleton' => __DIR__ . '/../..' . '/packages/storeabill/src/Utilities/Singleton.php',
         'Vendidero\\StoreaBill\\WooCommerce\\Admin\\Admin' => __DIR__ . '/../..' . '/packages/storeabill/src/WooCommerce/Admin/Admin.php',
         'Vendidero\\StoreaBill\\WooCommerce\\Admin\\Ajax' => __DIR__ . '/../..' . '/packages/storeabill/src/WooCommerce/Admin/Ajax.php',
@@ -733,9 +738,9 @@ class ComposerStaticInitf0e899230b92c6a146d824d14c5ee365
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitf0e899230b92c6a146d824d14c5ee365::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitf0e899230b92c6a146d824d14c5ee365::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitf0e899230b92c6a146d824d14c5ee365::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4e52555d738676ba27d3a146e98772de::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4e52555d738676ba27d3a146e98772de::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4e52555d738676ba27d3a146e98772de::$classMap;
 
         }, null, ClassLoader::class);
     }

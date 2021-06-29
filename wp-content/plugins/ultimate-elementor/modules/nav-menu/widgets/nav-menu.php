@@ -204,7 +204,6 @@ class Nav_Menu extends Common_Widget {
 					'options'      => $menus,
 					'default'      => array_keys( $menus )[0],
 					'save_default' => true,
-					'separator'    => 'after',
 					/* translators: %s Nav menu URL */
 					'description'  => sprintf( __( 'Go to the <a href="%s" target="_blank">Menus screen</a> to manage your menus.', 'uael' ), admin_url( 'nav-menus.php' ) ),
 					'condition'    => array(
@@ -437,6 +436,27 @@ class Nav_Menu extends Common_Widget {
 				),
 			)
 		);
+
+		$current_theme = wp_get_theme();
+
+		if ( 'Twenty Twenty-One' === $current_theme->get( 'Name' ) ) {
+			$this->add_control(
+				'hide_twenty_twenty_one_theme_icons',
+				array(
+					'label'        => __( 'Hide + & - Sign', 'uael' ),
+					'type'         => Controls_Manager::SWITCHER,
+					'separator'    => 'before',
+					'label_on'     => __( 'Yes', 'uael' ),
+					'label_off'    => __( 'No', 'uael' ),
+					'return_value' => 'yes',
+					'default'      => 'no',
+					'prefix_class' => 'uael-nav-menu__theme-icon-',
+					'condition'    => array(
+						'menu_type' => 'wordpress_menu',
+					),
+				)
+			);
+		}
 
 		$this->end_controls_section();
 
@@ -1928,10 +1948,10 @@ class Nav_Menu extends Common_Widget {
 	 * @access public
 	 */
 	public function get_custom_style() {
-		$settings = $this->get_settings_for_display();
-		$i        = 0;
-		$output   = ' ';
-		$in_if    = false;
+		$settings         = $this->get_settings_for_display();
+		$i                = 0;
+		$output           = ' ';
+		$is_sub_menu_item = false;
 
 		$this->add_render_attribute(
 			'uael-nav-menu-custom',
@@ -1975,7 +1995,7 @@ class Nav_Menu extends Common_Widget {
 							);
 
 							$output .= '<li ' . $this->get_render_attribute_string( 'menu-sub-item' . $item['_id'] ) . '>';
-							$output .= '<a ' . $this->get_render_attribute_string( $repeater_link ) . "class='uael-sub-menu-item'>" . $this->get_render_attribute_string( $repeater_sub_menu_item ) . $item['text'] . '</a>';
+							$output .= '<a ' . $this->get_render_attribute_string( $repeater_link ) . " class='uael-sub-menu-item'>" . $this->get_render_attribute_string( $repeater_sub_menu_item ) . $item['text'] . '</a>';
 							$output .= '</li>';
 					} else {
 							$this->add_render_attribute(
@@ -1995,9 +2015,8 @@ class Nav_Menu extends Common_Widget {
 						}
 							$output .= '</div>';
 					}
-
-					$is_child = true;
-					$in_if    = true;
+					$is_child         = true;
+					$is_sub_menu_item = true;
 				} else {
 
 						$this->add_render_attribute( 'menu-item' . $item['_id'], 'class', 'menu-item menu-item-has-children parent parent-has-no-child elementor-repeater-item-' . $item['_id'] );
@@ -2005,10 +2024,10 @@ class Nav_Menu extends Common_Widget {
 						$this->add_render_attribute( 'menu-item' . $item['_id'], 'data-dropdown-pos', $item['dropdown_position'] );
 
 						$is_child = false;
-					if ( true === $in_if ) {
+					if ( true === $is_sub_menu_item ) {
 
-						$in_if   = false;
-						$output .= '</ul></li>';
+						$is_sub_menu_item = false;
+						$output          .= '</ul></li>';
 					}
 
 						$i++;
@@ -2035,7 +2054,7 @@ class Nav_Menu extends Common_Widget {
 						}
 					}
 
-							$output .= '<a ' . $this->get_render_attribute_string( $repeater_main_link ) . "class='uael-menu-item'>";
+							$output .= '<a ' . $this->get_render_attribute_string( $repeater_main_link ) . " class='uael-menu-item'>";
 
 								$output .= $this->get_render_attribute_string( $repeater_sub_menu_item ) . $item['text'];
 								$output .= "<span class='uael-menu-toggle sub-arrow parent-item'><i class='fa'></i></span>";

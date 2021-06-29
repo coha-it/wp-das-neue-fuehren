@@ -10,6 +10,7 @@ return array(
     'baltpeter\\Internetmarke\\' => array($vendorDir . '/baltpeter/internetmarke-php/src/baltpeter/Internetmarke'),
     'WsdlToPhp\\WsSecurity\\' => array($vendorDir . '/wsdltophp/wssecurity/src'),
     'Vendidero\\TrustedShops\\' => array($baseDir . '/packages/woocommerce-trusted-shops/src'),
+    'Vendidero\\OneStopShop\\' => array($baseDir . '/packages/one-stop-shop-woocommerce/src'),
     'Vendidero\\Germanized\\Shipments\\' => array($baseDir . '/packages/woocommerce-germanized-shipments/src'),
     'Vendidero\\Germanized\\DHL\\' => array($baseDir . '/packages/woocommerce-germanized-dhl/src'),
     'Vendidero\\Germanized\\' => array($baseDir . '/src'),

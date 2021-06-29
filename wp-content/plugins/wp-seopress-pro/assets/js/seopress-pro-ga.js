@@ -1,37 +1,37 @@
 //Request Google Analytics
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
     //Tabs
     $("#seopress-tabs2 .hidden").removeClass('hidden');
     $("#seopress-tabs2").tabs();
 
     //Ajax
-    $( '.spinner' ).css( "visibility", "visible" );
-    $( '.spinner' ).css( "float", "none" );
+    $('.spinner').css("visibility", "visible");
+    $('.spinner').css("float", "none");
     $.ajax({
-        method : 'GET',
-        url : seopressAjaxRequestGoogleAnalytics.seopress_request_google_analytics,
-        data : {
-            action: 'seopress_request_google_analytics',
-            _ajax_nonce: seopressAjaxRequestGoogleAnalytics.seopress_nonce,
+        method: 'GET',
+        url: seopressAjaxRequestGoogleAnalytics.seopress_request_google_analytics,
+        data: {
+            action: 'seopress_request_google_analytics'
+            //_ajax_nonce: seopressAjaxRequestGoogleAnalytics.seopress_nonce,
         },
-        success : function( data ) {
-            if ( data.success ) {
-                $( '#seopress-ga-sessions' ).html(data.data.sessions);
-                $( '#seopress-ga-users' ).html(data.data.users);
-                $( '#seopress-ga-pageviews' ).html(data.data.pageviews);
-                $( '#seopress-ga-pageviewsPerSession' ).html(data.data.pageviewsPerSession);
-                $( '#seopress-ga-avgSessionDuration' ).html(data.data.avgSessionDuration);
-                $( '#seopress-ga-bounceRate' ).html(data.data.bounceRate + '%');
-                $( '#seopress-ga-percentNewSessions' ).html(data.data.percentNewSessions + '%');
-                
-                $( '#sp-tabs-2' ).load(' #sp-tabs-2');
-                $( '#sp-tabs-3' ).load(' #sp-tabs-3');
-                $( '#sp-tabs-4' ).load(' #sp-tabs-4');
-                $( '#sp-tabs-5' ).load(' #sp-tabs-5');
+        success: function (data) {
+            if (data.success) {
+                $('#seopress-ga-sessions').html(data.data.sessions);
+                $('#seopress-ga-users').html(data.data.users);
+                $('#seopress-ga-pageviews').html(data.data.pageviews);
+                $('#seopress-ga-pageviewsPerSession').html(data.data.pageviewsPerSession);
+                $('#seopress-ga-avgSessionDuration').html(data.data.avgSessionDuration);
+                $('#seopress-ga-bounceRate').html(data.data.bounceRate + '%');
+                $('#seopress-ga-percentNewSessions').html(data.data.percentNewSessions + '%');
 
-                
+                $('#sp-tabs-2').load(' #sp-tabs-2');
+                $('#sp-tabs-3').load(' #sp-tabs-3');
+                $('#sp-tabs-4').load(' #sp-tabs-4');
+                $('#sp-tabs-5').load(' #sp-tabs-5');
+
+
                 //Graph
-                if (typeof ctx !== 'undefined') {
+                if (typeof ctxseopress !== 'undefined') {
                     var data = {
                         labels: data.data.sessions_graph_labels,
                         datasets: [
@@ -59,7 +59,7 @@ jQuery(document).ready(function($) {
                             }
                         ]
                     };
-                    var myLineChart = new Chart(ctx, {
+                    var myLineChart = new Chart(ctxseopress, {
                         type: 'line',
                         data: data,
                         options: {
@@ -73,9 +73,9 @@ jQuery(document).ready(function($) {
                 }
             }
         },
-        complete: function(){
+        complete: function () {
             $('#seopress-request-google-analytics').removeAttr("disabled");
-            $( '.spinner' ).css( "visibility", "hidden" );
+            $('.spinner').css("visibility", "hidden");
         }
     });
 });

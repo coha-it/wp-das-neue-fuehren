@@ -135,7 +135,7 @@ export function getPreviewTaxRate() {
 export function getPreviewDiscountNotice() {
 	const preview = getPreview();
 
-	return preview.discount_notice;
+	return preview.formatted_discount_notice;
 }
 
 export function getPreviewFeeName() {
@@ -279,6 +279,8 @@ export function getShortcodeCategoryTitle( category ) {
 		title = _x( 'Document Item', 'storeabill-core', 'storeabill' );
 	} else if ( 'document_total' === category ) {
 		title = _x( 'Document Total', 'storeabill-core', 'storeabill' );
+	} else if ( 'setting' === category ) {
+		title = _x( 'Settings', 'storeabill-core', 'storeabill' );
 	}
 
 	return title;
@@ -287,12 +289,13 @@ export function getShortcodeCategoryTitle( category ) {
 export function getAvailableShortcodeTree( forType = '', blockName = '', hasHeaderOrFooterParent = false ) {
 	const shortcodes = getSetting( 'shortcodes' );
 	const entries 	 = Object.entries( shortcodes );
+	const globals    = [ 'blocks', 'setting' ];
 	let shortcodeObj = {};
 
 	entries.forEach( ( element, index ) => {
 		const category = element[0];
 
-		if ( forType.length > 0 && forType !== category && 'blocks' !== category ) {
+		if ( forType.length > 0 && forType !== category && ! includes( globals, category ) ) {
 			return;
 		} else if ( category === 'blocks' && blockName.length === 0 ) {
 			return;

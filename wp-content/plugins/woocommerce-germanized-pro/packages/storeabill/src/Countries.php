@@ -17,6 +17,13 @@ class Countries {
 		return self::get_base_location()['country'];
 	}
 
+	public static function base_country_supports_oss_procedure() {
+		$base_country     = self::get_base_country();
+		$eu_vat_countries = self::get_eu_vat_countries();
+
+		return apply_filters( 'storeabill_base_country_supports_oss_procedure', in_array( $base_country, $eu_vat_countries ) );
+	}
+
 	public static function get_base_state() {
 		return self::get_base_location()['state'];
 	}
@@ -46,18 +53,33 @@ class Countries {
 	}
 
 	public static function get_base_bank_account_data() {
-		$accounts     = get_option( 'woocommerce_bacs_accounts' );
-		$account_data = array(
-			'iban'         => '',
-			'account_name' => '',
-			'bic'          => '',
+		$data = array(
+			'holder'    => Package::get_setting( 'bank_account_holder' ),
+			'bank_name' => Package::get_setting( 'bank_account_bank_name' ),
+			'iban'      => Package::get_setting( 'bank_account_iban' ),
+			'bic'       => Package::get_setting( 'bank_account_bic' ),
 		);
 
-		if ( ! empty( $accounts ) ) {
-			return wp_parse_args( $accounts[0], $account_data );
-		} else {
-			return $account_data;
+		$fallback_accounts = get_option( 'woocommerce_bacs_accounts' );
+
+		if ( empty( $data['iban'] ) && ! empty( $fallback_accounts ) ) {
+			$default_data = wp_parse_args( $fallback_accounts[0], array(
+				'iban'         => '',
+				'account_name' => '',
+				'bank_name'    => '',
+				'bic'          => '',
+			) );
+
+			$default_data['holder'] = $default_data['account_name'];
+
+			foreach( $data as $key => $value ) {
+				if ( empty( $value ) ) {
+					$data[ $key ] = $default_data[ $key ];
+				}
+			}
 		}
+
+		return $data;
 	}
 
 	public static function has_base_bank_account() {
@@ -96,7 +118,7 @@ class Countries {
 		return $formatted_address;
 	}
 
-	public static function is_third_country( $country ) {
+	public static function is_third_country( $country, $postcode = '' ) {
 		$is_third_country = true;
 
 		/**
@@ -109,7 +131,11 @@ class Countries {
 			$is_third_country = $country !== self::get_base_country();
 		}
 
-		return apply_filters( 'storeabill_is_third_country', $is_third_country, $country );
+		if ( self::is_northern_ireland( $country, $postcode ) ) {
+			$is_third_country = false;
+		}
+
+		return apply_filters( 'storeabill_is_third_country', $is_third_country, $country, $postcode );
 	}
 
 	public static function get_eu_countries() {
@@ -122,8 +148,22 @@ class Countries {
 		return apply_filters( 'storeabill_eu_vat_countries', WC()->countries->get_european_union_countries( 'eu_vat' ) );
 	}
 
-	public static function is_eu_vat_country( $country ) {
-		return in_array( $country, self::get_eu_vat_countries() );
+	public static function is_northern_ireland( $country, $postcode = '' ) {
+		if ( 'GB' === $country && 'BT' === strtoupper( substr( trim( $postcode ), 0, 2 ) ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public static function is_eu_vat_country( $country, $postcode = '' ) {
+		$is_eu_vat_country = in_array( $country, self::get_eu_vat_countries() );
+
+		if ( self::is_northern_ireland( $country, $postcode ) ) {
+			$is_eu_vat_country = true;
+		}
+
+		return apply_filters( 'storeabill_is_eu_vat_country', $is_eu_vat_country, $country, $postcode );
 	}
 
 	public static function is_eu_country( $country ) {

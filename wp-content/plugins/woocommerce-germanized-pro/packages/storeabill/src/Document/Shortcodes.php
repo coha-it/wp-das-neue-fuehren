@@ -8,6 +8,7 @@ use Vendidero\StoreaBill\Interfaces\Customer;
 use Vendidero\StoreaBill\Interfaces\Reference;
 use Vendidero\StoreaBill\Interfaces\ShortcodeHandleable;
 use Vendidero\StoreaBill\Document\Total;
+use Vendidero\StoreaBill\Package;
 use Vendidero\StoreaBill\References\Product;
 
 defined( 'ABSPATH' ) || exit;
@@ -37,6 +38,7 @@ class Shortcodes implements ShortcodeHandleable {
 			'document_item_product'           => array( $this, 'document_item_product_data' ),
 			'document_item_product_parent'    => array( $this, 'document_item_product_parent_data' ),
 			'document_total'                  => array( $this, 'document_total_data' ),
+			'setting'                         => array( $this, 'setting_data' ),
 			'if_document'                     => array( $this, 'if_document_data' ),
 			'if_document_reference'           => array( $this, 'if_document_reference_data' ),
 			'if_document_item'                => array( $this, 'if_document_item_data' ),
@@ -442,6 +444,13 @@ class Shortcodes implements ShortcodeHandleable {
 		return apply_filters( 'storeabill_document_data_shortcode_result', $this->format_result( $this->get_document_data( $atts, $this->get_document() ), $atts ), $atts, $this->get_document(), $this );
 	}
 
+	public function setting_data( $atts ) {
+		$atts           = $this->parse_args( $atts );
+		$setting_result = Package::get_setting( $atts['data'] );
+
+		return apply_filters( 'storeabill_setting_data_shortcode_result', $this->format_result( $setting_result, $atts ), $atts, $this->get_document(), $this );
+	}
+
 	public function customer_data( $atts ) {
 		$atts = $this->parse_args( $atts );
 
@@ -564,8 +573,12 @@ class Shortcodes implements ShortcodeHandleable {
 				$inner_show = $data != $comparison;
 			} elseif( 'gt' === $c || 'greater' === $c ) {
 				$inner_show = $comparison > $data;
+			} elseif( 'gte' === $c ) {
+				$inner_show = $comparison >= $data;
 			} elseif( 'lt' === $c || 'lesser' === $c ) {
 				$inner_show = $comparison < $data;
+			} elseif( 'lte' === $c ) {
+				$inner_show = $comparison <= $data;
 			} elseif( 'empty' === $c ) {
 				$inner_show = empty( $data ) ? true : false;
 			} elseif( 'nempty' === $c ) {

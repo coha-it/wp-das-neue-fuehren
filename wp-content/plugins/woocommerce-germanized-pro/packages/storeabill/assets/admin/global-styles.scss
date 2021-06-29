@@ -100,6 +100,10 @@ a.sab-action-button {
   vertical-align: middle;
   cursor: pointer;
 
+  &.inactive {
+    filter: grayscale(100%);
+  }
+
   &.sab-action-button-has-icon {
     text-indent: 0;
     text-align: center;
@@ -109,12 +113,6 @@ a.sab-action-button {
       width: 12px;
       height: 12px;
       margin: 0;
-    }
-
-    &.inactive {
-      img {
-        filter: grayscale(100%);
-      }
     }
   }
 

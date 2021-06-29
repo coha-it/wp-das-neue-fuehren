@@ -95,7 +95,7 @@ class Automation {
 
 	public static function cancel_order_invoices( $order_id ) {
 		if ( $order = Helper::get_order( $order_id ) ) {
-			$order->cancel();
+			$order->cancel( 'order_cancelled' );
 		}
 	}
 

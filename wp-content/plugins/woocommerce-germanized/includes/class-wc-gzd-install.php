@@ -133,17 +133,6 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 			}
 		}
 
-		protected static function create_tax_class( $tax_class ) {
-			if ( is_callable( array( 'WC_Tax', 'create_tax_class' ) ) ) {
-				WC_Tax::create_tax_class( self::get_tax_class_name( $tax_class ), $tax_class );
-			} else {
-				$tax_classes = array_filter( array_map( 'trim', explode( "\n", get_option( 'woocommerce_tax_classes' ) ) ) );
-				$tax_classes = array_merge( $tax_classes, array( $tax_class ) );
-
-				update_option( 'woocommerce_tax_classes', implode( "\n", $tax_classes ) );
-			}
-		}
-
 		/**
 		 * Install WC_Germanized
 		 */
@@ -179,24 +168,6 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 			self::create_units();
 			self::create_labels();
 			self::create_options();
-
-			$tax_classes     = WC_Tax::get_tax_class_slugs();
-			$new_tax_classes = array();
-
-			if ( ! in_array( 'virtual-rate', $tax_classes ) || ! in_array( 'virtual-reduced-rate', $tax_classes ) ) {
-
-				if ( ! in_array( 'virtual-rate', $tax_classes ) ) {
-					array_push( $new_tax_classes, 'virtual-rate' );
-				}
-
-				if ( ! in_array( 'virtual-reduced-rate', $tax_classes ) ) {
-					array_push( $new_tax_classes, 'virtual-reduced-rate' );
-				}
-
-				foreach ( $new_tax_classes as $new_tax_class ) {
-					self::create_tax_class( $new_tax_class );
-				}
-			}
 
 			// Delete plugin header data for dependency check
 			delete_option( 'woocommerce_gzd_plugin_header_data' );
@@ -441,161 +412,12 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 			}
 		}
 
-		public static function create_virtual_tax_rates( $rates = array() ) {
-			global $wpdb;
-
-			$rates = wp_parse_args( $rates, array(
-				'BE' => 21,
-				'BG' => 20,
-				'CZ' => 21,
-				'DK' => 25,
-				'DE' => 19,
-				'EE' => 20,
-				'GR' => 23,
-				'ES' => 21,
-				'FR' => 20,
-				'HR' => 25,
-				'IE' => 23,
-				'IT' => 22,
-				'CY' => 19,
-				'LV' => 21,
-				'LT' => 21,
-				'LU' => 17,
-				'HU' => 27,
-				'MT' => 18,
-				'NL' => 21,
-				'AT' => 20,
-				'PL' => 23,
-				'PT' => 23,
-				'RO' => 19,
-				'SI' => 22,
-				'SK' => 20,
-				'FI' => 24,
-				'SE' => 25,
-				'MC' => 19.6
-			) );
-
-			// Delete digital rates
-			$wpdb->delete( $wpdb->prefix . 'woocommerce_tax_rates', array( 'tax_rate_class' => 'virtual-rate' ), array( '%s' ) );
-
-			self::import_rates( $rates, 'virtual-rate' );
-			self::import_rates( array(), 'virtual-reduced-rate' );
-		}
-
-		protected static function get_tax_class_name( $class ) {
-			$name = $class;
-
-			if ( 'reduced-rate' === $class ) {
-				$name = __( 'Reduced rate', 'woocommerce' );
-			} elseif( 'virtual-rate' === $class ) {
-				$name = 'Virtual rate';
-			} elseif( 'virtual-reduced-rate' === $class ) {
-				$name = 'Virtual reduced rate';
-			}
-
-			return $name;
-		}
-
-		protected static function maybe_find_tax_class( $class, $name = '' ) {
-			$names = WC_Tax::get_tax_classes();
-
-			if ( 'reduced-rate' === $class ) {
-				$find = array( 'Reduced rate', __( 'Reduced rate', 'woocommerce' ) );
+		public static function create_tax_rates() {
+			if ( \Vendidero\OneStopShop\Package::oss_procedure_is_enabled() ) {
+				\Vendidero\OneStopShop\Tax::import_oss_tax_rates();
 			} else {
-				$find = array( self::get_tax_class_name( $name ) );
+				\Vendidero\OneStopShop\Tax::import_default_tax_rates();
 			}
-
-			foreach( $names as $name ) {
-
-				if ( in_array( $name, $find ) ) {
-					return $name;
-				}
-			}
-
-			return false;
-		}
-
-		private static function import_rates( $rates = array(), $type = '' ) {
-			global $wpdb;
-
-			if ( ! empty( $type ) ) {
-				// Only import if we were able to find the right class slug
-				if ( $class_name = self::maybe_find_tax_class( $type ) ) {
-					$class_data = WC_Tax::get_tax_class_by( 'name', $class_name );
-
-					if ( isset( $class_data['slug'] ) ) {
-						$type = $class_data['slug'];
-					}
-				} else {
-					// Create tax class first
-					WC_Tax::create_tax_class( self::get_tax_class_name( $type ), $type );
-				}
-			}
-
-			if ( ! empty( $rates ) ) {
-				// Delete rates
-				$wpdb->delete( $wpdb->prefix . 'woocommerce_tax_rates', array( 'tax_rate_class' => $type ), array( '%s' ) );
-				$count = 0;
-
-				foreach ( $rates as $iso => $rate ) {
-					$_tax_rate = array(
-						'tax_rate_country'  => $iso,
-						'tax_rate_state'    => '',
-						'tax_rate'          => (string) number_format( (double) wc_clean( $rate ), 4, '.', '' ),
-						'tax_rate_name'     => sprintf( _x( 'VAT %s', 'vat-rate-import', 'woocommerce-germanized' ), ( $iso . ( ! empty( $type ) ? ' ' . $type : '' ) ) ),
-						'tax_rate_priority' => 1,
-						'tax_rate_compound' => 0,
-						'tax_rate_shipping' => ( strpos( $type, 'virtual' ) !== false ? 0 : 1 ),
-						'tax_rate_order'    => $count ++,
-						'tax_rate_class'    => $type
-					);
-
-					// Check if standard rate exists
-					if ( strpos( $type, 'virtual' ) !== false && WC()->countries->get_base_country() === $iso ) {
-						$base_rate = WC_Tax::get_base_tax_rates();
-						$base_rate = reset( $base_rate );
-
-						if ( ! empty( $base_rate ) ) {
-							$_tax_rate['tax_rate_name'] = $base_rate['label'];
-						}
-					}
-
-					$wpdb->insert( $wpdb->prefix . 'woocommerce_tax_rates', $_tax_rate );
-					$tax_rate_id = $wpdb->insert_id;
-
-					do_action( 'woocommerce_tax_rate_added', $tax_rate_id, $_tax_rate );
-				}
-
-				if ( class_exists( 'WC_Cache_Helper' ) ) {
-					WC_Cache_Helper::incr_cache_prefix( 'taxes' );
-				}
-			}
-		}
-
-		public static function create_tax_rates( $tax_rate = '', $tax_rate_reduced = '' ) {
-			$countries = WC()->countries->get_european_union_countries( 'eu_vat' );
-
-			if ( empty( $tax_rate ) || ! is_numeric( $tax_rate ) ) {
-				$tax_rate = WC()->countries->get_base_country() === 'AT' ? 20 : 19;
-			}
-
-			if ( empty( $tax_rate_reduced ) || ! is_numeric( $tax_rate_reduced ) ) {
-				$tax_rate_reduced = WC()->countries->get_base_country() === 'AT' ? 10 : 7;
-			}
-
-			foreach ( $countries as $key => $country ) {
-				$countries[ $country ] = $tax_rate;
-
-				unset( $countries[ $key ] );
-			}
-
-			self::import_rates( $countries, '' );
-
-			foreach ( $countries as $key => $country ) {
-				$countries[ $key ] = $tax_rate_reduced;
-			}
-
-			self::import_rates( $countries, 'reduced-rate' );
 		}
 
 		/**
@@ -622,10 +444,11 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 				'woocommerce_tax_display_cart'           => 'incl',
 				'woocommerce_tax_display_shop'           => 'incl',
 				'woocommerce_tax_total_display'          => 'itemized',
-				'woocommerce_tax_based_on'               => 'billing',
+				'woocommerce_tax_based_on'               => 'shipping',
 				'woocommerce_allowed_countries'          => 'specific',
 				'woocommerce_specific_allowed_countries' => $eu_countries,
-				'woocommerce_default_customer_address'   => 'base'
+				'woocommerce_default_customer_address'   => 'base',
+				'woocommerce_gzd_hide_tax_rate_shop'     => \Vendidero\OneStopShop\Package::oss_procedure_is_enabled() ? 'yes' : 'no'
 			);
 
 			if ( ! empty( $options ) ) {
@@ -658,7 +481,7 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 			$pages = apply_filters( 'woocommerce_gzd_create_pages', array(
 				'data_security'   => array(
 					'name'    => _x( 'data-security', 'Page slug', 'woocommerce-germanized' ),
-					'title'   => _x( 'Data Security Statement', 'Page title', 'woocommerce-germanized' ),
+					'title'   => _x( 'Privacy Policy', 'Page title', 'woocommerce-germanized' ),
 					'content' => ''
 				),
 				'imprint'         => array(
@@ -717,9 +540,8 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 			 * @param array $settings The settings to be added as wp_option on install.
 			 *
 			 * @since 1.0.0
-			 *
 			 */
-			$options = apply_filters( 'woocommerce_gzd_installation_default_settings', $settings->get_settings() );
+			$options = apply_filters( 'woocommerce_gzd_installation_default_settings', $settings->get_settings_for_section_core( '' ) );
 
 			$manager = WC_GZD_Legal_Checkbox_Manager::instance();
 			$manager->do_register_action();
@@ -754,7 +576,6 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 				}
 			}
 		}
-
 	}
 
 endif;

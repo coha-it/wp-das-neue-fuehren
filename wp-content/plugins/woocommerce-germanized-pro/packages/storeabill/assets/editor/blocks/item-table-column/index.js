@@ -76,6 +76,8 @@ function blockTypeFilter( settings, name ) {
                 },
                 'data-has-explicit-width': true,
             };
+        } else {
+            return {};
         }
     };
 

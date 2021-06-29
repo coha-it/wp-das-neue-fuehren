@@ -2,6 +2,7 @@
 
 namespace Vendidero\StoreaBill\Admin;
 
+use Vendidero\StoreaBill\Countries;
 use Vendidero\StoreaBill\ExternalSync\Helper;
 use Vendidero\StoreaBill\Package;
 
@@ -145,7 +146,53 @@ class Settings {
 			array( 'type' => 'sectionend', 'id' => 'invoice_date_due_settings' ),
 		) );
 
+		$settings = array_merge( $settings, array(
+			array( 'title' => _x( 'Bank account', 'storeabill-core', 'woocommerce-germanized-pro' ), 'type' => 'title', 'id' => 'invoice_bank_account_settings' ),
+
+			array(
+				'title' 	     => _x( 'Holder', 'storeabill-core', 'woocommerce-germanized-pro' ),
+				'desc_tip' 		 => _x( 'Choose an account holder', 'storeabill-core', 'woocommerce-germanized-pro' ),
+				'id' 		     => 'storeabill_bank_account_holder',
+				'default'	     => self::get_default_bank_account_data( 'holder' ),
+				'type' 		     => 'text',
+			),
+
+			array(
+				'title' 	     => _x( 'Bank Name', 'storeabill-core', 'woocommerce-germanized-pro' ),
+				'desc_tip' 		 => _x( 'Choose the name of your bank', 'storeabill-core', 'woocommerce-germanized-pro' ),
+				'id' 		     => 'storeabill_bank_account_bank_name',
+				'default'	     => self::get_default_bank_account_data( 'bank_name' ),
+				'type' 		     => 'text',
+			),
+
+			array(
+				'title' 	     => _x( 'IBAN', 'storeabill-core', 'woocommerce-germanized-pro' ),
+				'id' 		     => 'storeabill_bank_account_iban',
+				'default'	     => self::get_default_bank_account_data( 'iban' ),
+				'type' 		     => 'text',
+			),
+
+			array(
+				'title' 	     => _x( 'BIC', 'storeabill-core', 'woocommerce-germanized-pro' ),
+				'id' 		     => 'storeabill_bank_account_bic',
+				'default'	     => self::get_default_bank_account_data( 'bic' ),
+				'type' 		     => 'text',
+			),
+
+			array( 'type' => 'sectionend', 'id' => 'invoice_bank_account_settings' ),
+		) );
+
 		return $settings;
+	}
+
+	protected static function get_default_bank_account_data( $field = 'iban' ) {
+		$default_account = Countries::get_base_bank_account_data();
+
+		if ( array_key_exists( $field, $default_account ) ) {
+			return $default_account[ $field ];
+		}
+
+		return '';
 	}
 
 	public static function get_numbering_options( $document_type ) {

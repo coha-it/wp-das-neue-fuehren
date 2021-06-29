@@ -163,6 +163,7 @@ class GfStyler extends Common_Widget {
 		$this->register_general_content_controls();
 		$this->register_input_style_controls();
 		$this->register_radio_content_controls();
+		$this->register_section_field_controls();
 		$this->register_button_content_controls();
 		$this->register_error_style_controls();
 		$this->register_spacing_controls();
@@ -995,6 +996,126 @@ class GfStyler extends Common_Widget {
 					'right'  => '0',
 					'unit'   => 'px',
 				),
+			)
+		);
+
+		$this->end_controls_section();
+	}
+
+	/**
+	 * Register GForms Styler Section Fields Controls.
+	 *
+	 * @since 1.32.0
+	 * @access protected
+	 */
+	protected function register_section_field_controls() {
+		$this->start_controls_section(
+			'section_field_style',
+			array(
+				'label' => __( 'Section Field', 'uael' ),
+			)
+		);
+
+		$this->add_control(
+			'section_field_text_color',
+			array(
+				'label'     => __( 'Text Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '',
+				'selectors' => array(
+					'{{WRAPPER}} .uael-gf-style .gfield.gsection .gsection_title' => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'      => 'section_field_typography',
+				'label'     => __( 'Typography', 'uael' ),
+				'global'    => array(
+					'default' => Global_Typography::TYPOGRAPHY_ACCENT,
+				),
+				'selector'  => '{{WRAPPER}} .uael-gf-style .gfield.gsection .gsection_title',
+				'separator' => 'before',
+			)
+		);
+
+		$this->add_control(
+			'section_field_border_type',
+			array(
+				'label'     => __( 'Border Type', 'uael' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'solid',
+				'options'   => array(
+					'none'   => __( 'None', 'uael' ),
+					'solid'  => __( 'Solid', 'uael' ),
+					'double' => __( 'Double', 'uael' ),
+					'dotted' => __( 'Dotted', 'uael' ),
+					'dashed' => __( 'Dashed', 'uael' ),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .uael-gf-style .gfield.gsection' => 'border-bottom-style: {{VALUE}}',
+				),
+				'separator' => 'before',
+			)
+		);
+
+		$this->add_responsive_control(
+			'section_field_border_height',
+			array(
+				'label'      => __( 'Border Thickness', 'uael' ),
+				'type'       => Controls_Manager::SLIDER,
+				'default'    => array(
+					'size' => 1,
+				),
+				'range'      => array(
+					'px' => array(
+						'min'  => 1,
+						'max'  => 20,
+						'step' => 1,
+					),
+				),
+				'size_units' => array( 'px' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-gf-style .gfield.gsection' => 'border-bottom-width: {{SIZE}}{{UNIT}}',
+				),
+				'condition'  => array(
+					'section_field_border_type!' => 'none',
+				),
+			)
+		);
+
+		$this->add_control(
+			'section_field_border_color',
+			array(
+				'label'     => __( 'Border Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '',
+				'selectors' => array(
+					'{{WRAPPER}} .uael-gf-style .gfield.gsection' => 'border-bottom-color: {{VALUE}}',
+				),
+				'condition' => array(
+					'section_field_border_type!' => 'none',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'section_field_bottom_spacing',
+			array(
+				'label'     => __( 'Bottom Spacing', 'uael' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => array(
+					'px' => array(
+						'min' => 0,
+						'max' => 50,
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .uael-gf-style .gfield.gsection' => 'padding-bottom: {{SIZE}}{{UNIT}};',
+				),
+				'separator' => 'before',
 			)
 		);
 

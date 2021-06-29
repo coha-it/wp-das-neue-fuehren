@@ -94,7 +94,7 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 		return $new_breadcrumbs;
 	}
 
-	public function get_settings() {
+	private function _get_settings( $section_id = '' ) {
 		$settings = array();
 
 		foreach ( $this->get_tabs() as $tab ) {
@@ -110,6 +110,14 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 		}
 
 		return $settings;
+	}
+
+	public function get_settings_for_section_core( $section_id ) {
+		return $this->_get_settings( $section_id );
+	}
+
+	public function get_settings( $section_id = '' ) {
+		return $this->_get_settings( $section_id );
 	}
 
 	public function admin_styles() {
@@ -165,6 +173,7 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 		include_once dirname( __FILE__ ) . '/class-wc-gzd-settings-tab-button-solution.php';
 		include_once dirname( __FILE__ ) . '/class-wc-gzd-settings-tab-checkboxes.php';
 		include_once dirname( __FILE__ ) . '/class-wc-gzd-settings-tab-doi.php';
+		include_once dirname( __FILE__ ) . '/class-wc-gzd-settings-tab-oss.php';
 		include_once dirname( __FILE__ ) . '/class-wc-gzd-settings-tab-contract.php';
 		include_once dirname( __FILE__ ) . '/class-wc-gzd-settings-tab-invoices.php';
 		include_once dirname( __FILE__ ) . '/class-wc-gzd-settings-tab-multistep-checkout.php';
@@ -189,17 +198,18 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 			'general'              => 'WC_GZD_Settings_Tab_General',
 			'shopmarks'            => 'WC_GZD_Settings_Tab_Shopmarks',
 			'taxes'                => 'WC_GZD_Settings_Tab_Taxes',
-			'contract'             => 'WC_GZD_Settings_Tab_Contract',
 			'button_solution'      => 'WC_GZD_Settings_Tab_Button_Solution',
+			'multistep_checkout'   => 'WC_GZD_Settings_Tab_Multistep_Checkout',
+			'invoices'             => 'WC_GZD_Settings_Tab_Invoices',
 			'shipments'            => 'WC_GZD_Settings_Tab_Shipments',
 			'shipping_provider'    => 'WC_GZD_Settings_Tab_Shipping_Provider',
+			'double_opt_in'        => 'WC_GZD_Settings_Tab_DOI',
 			'emails'               => 'WC_GZD_Settings_Tab_Emails',
 			'checkboxes'           => 'WC_GZD_Settings_Tab_Checkboxes',
-			'double_opt_in'        => 'WC_GZD_Settings_Tab_DOI',
-			'invoices'             => 'WC_GZD_Settings_Tab_Invoices',
-			'multistep_checkout'   => 'WC_GZD_Settings_Tab_Multistep_Checkout',
+			'contract'             => 'WC_GZD_Settings_Tab_Contract',
 			'terms_generator'      => 'WC_GZD_Settings_Tab_Terms_Generator',
 			'revocation_generator' => 'WC_GZD_Settings_Tab_Revocation_Generator',
+			'oss'                  => 'WC_GZD_Settings_Tab_OSS',
 		) );
 
 		if ( is_null( $this->tabs ) ) {

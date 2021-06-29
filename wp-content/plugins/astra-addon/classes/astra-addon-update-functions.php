@@ -254,3 +254,58 @@ function astra_addon_header_css_optimizations() {
 function astra_addon_clear_assets_cache() {
 	Astra_Minify::refresh_assets();
 }
+
+/**
+ * Page Header's color options compatibility with new Header builder layout.
+ *
+ * @since 3.5.0
+ * @return void
+ */
+function astra_addon_page_headers_support_to_builder_layout() {
+
+	$theme_options = get_option( 'astra-settings' );
+
+	if ( ! isset( $theme_options['can-update-page-header-compatibility-to-header-builder'] ) ) {
+		// Set a flag to avoid direct changes on frontend.
+		$theme_options['can-update-page-header-compatibility-to-header-builder'] = true;
+	}
+
+	update_option( 'astra-settings', $theme_options );
+}
+
+/**
+ * Do not apply new font-weight heading support CSS in editor/frontend directly.
+ *
+ * 1. Adding Font-weight support to widget titles.
+ * 2. Customizer font CSS not supporting in editor.
+ *
+ * @since 3.5.1
+ *
+ * @return void
+ */
+function astra_addon_headings_font_support() {
+	$theme_options = get_option( 'astra-settings', array() );
+
+	if ( ! isset( $theme_options['can-support-widget-and-editor-fonts'] ) ) {
+		$theme_options['can-support-widget-and-editor-fonts'] = false;
+		update_option( 'astra-settings', $theme_options );
+	}
+}
+
+/**
+ * Cart color not working in old header > cart widget. As this change can reflect on frontend directly, adding this backward compatibility.
+ *
+ * @since 3.5.1
+ * @return void
+ */
+function astra_addon_cart_color_not_working_in_old_header() {
+
+	$theme_options = get_option( 'astra-settings' );
+
+	if ( ! isset( $theme_options['can-reflect-cart-color-in-old-header'] ) ) {
+		// Set a flag to avoid direct changes on frontend.
+		$theme_options['can-reflect-cart-color-in-old-header'] = false;
+	}
+
+	update_option( 'astra-settings', $theme_options );
+}

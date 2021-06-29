@@ -8,6 +8,7 @@
 namespace UltimateElementor\Modules\Woocommerce;
 
 use UltimateElementor\Base\Module_Base;
+use UltimateElementor\Modules\Woocommerce\Templates\Woo_Checkout_Template;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -17,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class Module.
  */
 class Module extends Module_Base {
-
+	use Woo_Checkout_Template;
 	/**
 	 * Module should load or not.
 	 *
@@ -56,6 +57,7 @@ class Module extends Module_Base {
 			'Woo_Categories',
 			'Woo_Products',
 			'Woo_Mini_Cart',
+			'Woo_Checkout',
 		);
 	}
 
@@ -287,6 +289,9 @@ class Module extends Module_Base {
 		// In Editor Woocommerce frontend hooks before the Editor init.
 		add_action( 'admin_action_elementor', array( $this, 'register_wc_hooks' ), 9 );
 
+		add_filter( 'woocommerce_checkout_redirect_empty_cart', '__return_false' );
+		add_filter( 'woocommerce_checkout_update_order_review_expired', '__return_false' );
+
 		/**
 		 * Pagination Break.
 		 *
@@ -306,6 +311,14 @@ class Module extends Module_Base {
 
 		add_action( 'wp_ajax_uael_get_products', array( $this, 'uael_get_products' ) );
 		add_action( 'wp_ajax_nopriv_uael_get_products', array( $this, 'uael_get_products' ) );
+
+		add_action( 'wp_ajax_uae_woo_checkout_update_order_review', array( $this, 'uae_woo_checkout_update_order_review' ) );
+		add_action( 'wp_ajax_nopriv_uae_woo_checkout_update_order_review', array( $this, 'uae_woo_checkout_update_order_review' ) );
+
+		if ( empty( $_REQUEST['action'] ) && ! isset( $_REQUEST['elementor-preview'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			remove_filter( 'woocommerce_checkout_redirect_empty_cart', '__return_false' );
+			remove_filter( 'woocommerce_checkout_update_order_review_expired', '__return_false' );
+		}
 
 		add_filter(
 			'woocommerce_add_to_cart_fragments',
@@ -369,6 +382,43 @@ class Module extends Module_Base {
 				return $fragments;
 
 			}
+		);
+
+		add_filter(
+			'body_class',
+			function ( $classes ) {
+				if ( is_checkout() ) {
+					$classes[] = 'uael-woocommerce-checkout';
+				}
+				return $classes;
+			}
+		);
+	}
+
+	/**
+	 * Get Order review via AJAX call.
+	 *
+	 * @since 1.32.0
+	 * @access public
+	 */
+	public function uae_woo_checkout_update_order_review() {
+		$data        = isset( $_POST['content'] ) ? $_POST['content'] : ''; //phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$page_id     = $data['page_id'];
+		$widget_id   = $data['widget_id'];
+		$elementor   = \Elementor\Plugin::$instance;
+		$meta        = $elementor->documents->get( $page_id )->get_elements_data();
+		$widget_data = $this->find_element_recursive( $meta, $widget_id );
+		$widget      = $elementor->elements_manager->create_element_instance( $widget_data );
+		$settings    = $widget->get_settings();
+
+		ob_start();
+		self::uael_set_woo_checkout_settings( $settings );
+		self::uael_order_review_template();
+		$woo_checkout_update_order_review = ob_get_clean();
+		wp_send_json(
+			array(
+				'order_review' => $woo_checkout_update_order_review,
+			)
 		);
 	}
 

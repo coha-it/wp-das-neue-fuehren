@@ -534,9 +534,10 @@ class Helper {
 			);
 
 			self::$asset_data['shortcodes'] = array(
-				'document'      => array(),
-				'document_item' => array(),
 				'blocks'        => array(),
+				'document_item' => array(),
+				'document'      => array(),
+				'setting'       => array(),
 			);
 
 			foreach ( self::get_blocks() as $block ) {
@@ -613,7 +614,7 @@ class Helper {
 				array(
 					'name' => 'storeabill/item-table-column',
 					'attributes' => array(
-						'heading' => '<strong>' . _x( 'Name', 'storeabill-core', 'woocommerce-germanized-pro' ) . '</strong>'
+						'heading' => '<strong>' . _x( 'Name', 'storeabill-core', 'woocommerce-germanized-pro' ) . '</strong>',
 					),
 					'innerBlocks' => array(
 						array(
@@ -1120,6 +1121,7 @@ class Helper {
 				'ItemTable',
 				'ItemName',
 				'ItemImage',
+				'ItemField',
 				'ItemPosition',
 				'ItemPrice',
 				'ItemAttributes',
@@ -1370,7 +1372,7 @@ class Helper {
 				) );
 
 				/**
-				 * Add blocks only available to documents supporting totals.
+				 * Add blocks only available to documents supporting items.
 				 */
 				if ( sab_document_type_supports( $template->get_document_type(), 'items' ) ) {
 					$allowed_block_types = array_merge( array(
@@ -1378,6 +1380,7 @@ class Helper {
 						'storeabill/item-table-column',
 						'storeabill/item-name',
 						'storeabill/item-image',
+						'storeabill/item-field',
 						'storeabill/item-position',
 						'storeabill/item-sku',
 						'storeabill/item-meta',

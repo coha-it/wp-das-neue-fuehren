@@ -1,3 +1,5 @@
+@import "checkout-multistep-general.scss";
+
 .woocommerce-multistep-checkout {
   ul.nav-wizard {
     background-color: #f9f9f9;
@@ -111,21 +113,6 @@
         }
       }
     }
-  }
-
-  .step-buttons {
-    display: block;
-    width: 100%;
-    clear: both;
-    margin-top: 1.5em;
-
-    .next-step-button {
-      float: right;
-    }
-  }
-
-  p.data-privacy {
-    clear: both;
   }
 }
 

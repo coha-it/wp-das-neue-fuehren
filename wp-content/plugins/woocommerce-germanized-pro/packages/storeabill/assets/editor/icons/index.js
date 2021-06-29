@@ -23,3 +23,4 @@ export { default as fingerprint } from './library/fingerprint';
 export { default as img } from './library/img';
 export { default as barcode } from './library/barcode';
 export { default as qrCode } from './library/qr-code';
+export { default as field } from './library/field';

@@ -19,7 +19,7 @@ class WC_GZDP_Settings_Tab_Taxes extends WC_GZD_Settings_Tab_Taxes {
 
 			array(
 				'title' 	=> __( 'Check', 'woocommerce-germanized-pro' ),
-				'desc' 		=> __( 'Enable VAT ID check.', 'woocommerce-germanized-pro' ) . '<div class="wc-gzd-additional-desc">' . sprintf( __( 'This will add a new field within your checkout (vat number). Customers from other EU states owning a valid VAT ID will be able to remove VAT. VAT ID is being validated through the European Union VAT service API. More information can be found <a href="%s" target="_blank">here</a>.', 'woocommerce-germanized-pro' ), 'http://ec.europa.eu/taxation_customs/vies/viesdisc.do' ) . '</div>',
+				'desc' 		=> __( 'Enable VAT ID check.', 'woocommerce-germanized-pro' ) . '<div class="wc-gzd-additional-desc">' . sprintf( __( 'This will add a new field within your checkout (vat number). Customers from other EU states owning a valid VAT ID will be able to remove VAT. VAT ID is being validated through the European Union VAT service API. <a href="%s" target="_blank">Learn more</a> about configuring your VAT ID check.', 'woocommerce-germanized-pro' ), 'https://vendidero.de/dokument/umsatzsteuer-id-check' ) . '</div>',
 				'id' 		=> 'woocommerce_gzdp_enable_vat_check',
 				'default'	=> 'no',
 				'type' 		=> 'gzd_toggle',

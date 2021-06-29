@@ -75,6 +75,7 @@ class Module_Manager {
 			'faq',
 			'ff-styler',
 			'social-share',
+			'display-conditions',
 		);
 
 		foreach ( $all_modules as $module_name ) {

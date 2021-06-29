@@ -27,7 +27,7 @@ $suggestion_link = astra_sites_get_suggestion_link();
 							<select class="elementor-template-library-order-input elementor-template-library-filter-select elementor-select2">
 								<option value=""><?php esc_html_e( 'All', 'astra-sites' ); ?></option>
 								<option value="free"><?php esc_html_e( 'Free', 'astra-sites' ); ?></option>
-								<option value="agency"><?php esc_html_e( 'Agency', 'astra-sites' ); ?></option>
+								<option value="agency"><?php esc_html_e( 'Premium', 'astra-sites' ); ?></option>
 							</select>
 						</div>
 						<div class="astra-blocks-category-inner-wrap">
@@ -38,6 +38,7 @@ $suggestion_link = astra_sites_get_suggestion_link();
 								<# } #>
 							</select>
 						</div>
+						<div class="astra-blocks-filter-inner-wrap"  id="elementor-template-block-color-filter" style="display: none;"></div>
 					</div>
 					<div class="ast-sites-template-library-filter-text-wrapper">
 						<label for="elementor-template-library-filter-text" class="elementor-screen-only"><?php esc_html_e( 'Search...', 'astra-sites' ); ?></label>
@@ -79,6 +80,15 @@ $suggestion_link = astra_sites_get_suggestion_link();
 	</div>
 </script>
 
+<script type="text/template" id="tmpl-ast-template-block-color-filters">
+	<select  class="astra-blocks-filter elementor-template-library-filter-select elementor-select2">
+		<option value=""><?php esc_html_e( 'Filter by Color', 'astra-sites' ); ?></option>
+		<# for ( key in data ) { #>
+			<option value="{{data[key]}}">{{data[key]}}</option>
+		<# } #>
+		</select>
+</script>
+
 <script type="text/template" id="tmpl-ast-template-modal__header-back">
 	<div class="dialog-lightbox-back"><span class="dialog-lightbox-back-text"><?php esc_html_e( 'Back to Pages', 'astra-sites' ); ?></span></div>
 </script>
@@ -106,7 +116,7 @@ $suggestion_link = astra_sites_get_suggestion_link();
 			</div>
 			<div class="elementor-templates-modal__header__menu-area astra-sites-step-1-wrap ast-sites-modal__options">
 				<div class="elementor-template-library-header-menu">
-					<div class="elementor-template-library-menu-item elementor-active" data-template-source="remote" data-template-type="pages"><span class="ast-icon-file"></span><?php esc_html_e( 'Pages', 'astra-sites' ); ?></div>		
+					<div class="elementor-template-library-menu-item elementor-active" data-template-source="remote" data-template-type="pages"><span class="ast-icon-file"></span><?php esc_html_e( 'Pages', 'astra-sites' ); ?></div>
 					<div class="elementor-template-library-menu-item" data-template-source="remote" data-template-type="blocks"><span class="ast-icon-layers"></span><?php esc_html_e( 'Blocks', 'astra-sites' ); ?></div>
 				</div>
 			</div>
@@ -168,7 +178,7 @@ $suggestion_link = astra_sites_get_suggestion_link();
 					</div>
 					<# if ( site_type && 'free' !== site_type ) { #>
 						<?php /* translators: %s are white label strings. */ ?>
-						<div class="agency-ribbons" title="<?php printf( esc_attr__( 'This premium template is accessible with %1$s "Agency" Package.', 'astra-sites' ), Astra_Sites_White_Label::get_instance()->get_white_label_name() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"><?php esc_html_e( 'Agency', 'astra-sites' ); ?></div>
+						<div class="agency-ribbons" title="<?php printf( esc_attr__( 'This premium template is accessible with %1$s "Premium" Package.', 'astra-sites' ), Astra_Sites_White_Label::get_instance()->get_white_label_name() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"><?php esc_html_e( 'Premium', 'astra-sites' ); ?></div>
 					<# } #>
 				</div>
 			</div>
@@ -295,7 +305,7 @@ $suggestion_link = astra_sites_get_suggestion_link();
 				</div>
 				<# if ( site_type && 'free' !== site_type ) { #>
 					<?php /* translators: %s are white label strings. */ ?>
-					<div class="agency-ribbons" title="<?php printf( esc_attr__( 'This premium template is accessible with %1$s "Agency" Package.', 'astra-sites' ), Astra_Sites_White_Label::get_instance()->get_white_label_name() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"><?php esc_html_e( 'Agency', 'astra-sites' ); ?></div>
+					<div class="agency-ribbons" title="<?php printf( esc_attr__( 'This premium template is accessible with %1$s "Premium" Package.', 'astra-sites' ), Astra_Sites_White_Label::get_instance()->get_white_label_name() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"><?php esc_html_e( 'Premium', 'astra-sites' ); ?></div>
 				<# } #>
 			</div>
 		</div>
@@ -370,7 +380,7 @@ $suggestion_link = astra_sites_get_suggestion_link();
 
 			var type_class = ' site-type-' + site_type;
 			count++;
-	#> 
+	#>
 		<div class="theme astra-theme site-single publish page-builder-elementor {{type_class}}" data-template-id={{ind}} data-site-id={{site_id}}>
 			<div class="inner">
 				<span class="site-preview" data-href="" data-title={{title2}}>
@@ -381,7 +391,7 @@ $suggestion_link = astra_sites_get_suggestion_link();
 				</div>
 				<# if ( site_type && 'free' !== site_type ) { #>
 					<?php /* translators: %1$s External Link */ ?>
-					<div class="agency-ribbons" title="<?php printf( esc_attr__( 'This premium template is accessible with %1$s "Agency" Package.', 'astra-sites' ), Astra_Sites_White_Label::get_instance()->get_white_label_name() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"><?php esc_html_e( 'Agency', 'astra-sites' ); ?></div>
+					<div class="agency-ribbons" title="<?php printf( esc_attr__( 'This premium template is accessible with %1$s "Premium" Package.', 'astra-sites' ), Astra_Sites_White_Label::get_instance()->get_white_label_name() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"><?php esc_html_e( 'Premium', 'astra-sites' ); ?></div>
 				<# } #>
 			</div>
 		</div>

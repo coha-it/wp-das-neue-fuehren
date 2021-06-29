@@ -6,6 +6,7 @@ use Vendidero\StoreaBill\Document\Shortcodes;
 use Vendidero\StoreaBill\Interfaces\Compatibility;
 use Vendidero\StoreaBill\Invoice\Simple;
 use Vendidero\StoreaBill\WooCommerce\Automation;
+use Vendidero\StoreaBill\WooCommerce\Helper;
 use Vendidero\StoreaBill\WooCommerce\Order;
 
 defined( 'ABSPATH' ) || exit;
@@ -47,9 +48,26 @@ class Subscriptions implements Compatibility {
 		/**
 		 * In case the after checkout automation option has been chosen
 		 * lets create invoices for renewals right after they have been created
+		 *
+		 * In case other timing exists, lets check whether the default order status has already been set and maybe sync immediately.
 		 */
-		if ( Automation::create_invoices() && Automation::has_invoice_timing( 'checkout' ) ) {
-			Automation::sync_invoices( $renewal_order->get_id() );
+		if ( Automation::create_invoices() ) {
+			if ( Automation::has_invoice_timing( 'checkout' ) ) {
+				Automation::sync_invoices( $renewal_order->get_id() );
+			} elseif ( Automation::has_invoice_timing( 'paid' ) || Automation::has_invoice_timing( 'status' ) ) {
+				$statuses = Automation::has_invoice_timing( 'paid' ) ? wc_get_is_paid_statuses() : array_map( array( '\Vendidero\StoreaBill\WooCommerce\Helper', 'clean_order_status' ), Automation::get_invoice_order_statuses() );
+				$sync     = false;
+
+				if ( $order = Helper::get_order( $renewal_order ) ) {
+					if ( in_array( $order->get_status(), $statuses ) ) {
+						$sync = true;
+					}
+				}
+
+				if ( $sync ) {
+					Automation::sync_invoices( $renewal_order->get_id() );
+				}
+			}
 		}
 
 		return $renewal_order;

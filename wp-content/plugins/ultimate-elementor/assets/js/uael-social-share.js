@@ -46,7 +46,6 @@
 			pocket: 'https://getpocket.com/edit?url=' + uael_page_url,
 			whatsapp: 'https://api.whatsapp.com/send?text=' + uael_page_url,
 			xing: 'https://www.xing.com/app/user?op=share&url=' + uael_page_url,
-			print: 'javascript:print()',
 			email: 'mailto:?subject={SocialShare}&body={SocialShare}\n{' + uael_page_url + '}',
 			telegram: 'https://telegram.me/share/url?url=' + uael_page_url,
 			skype: 'https://web.skype.com/share?url=' + uael_page_url,
@@ -57,11 +56,13 @@
 			var uael_share_link_index = Object.keys( uael_share_links );
 
 			$.each( uael_share_link_index , function( links ) {
-
 				$scope.find( '.uael-share-btn-' + uael_share_link_index[links] ).on( 'click', function() {
-			
 					popupWindow = window.open( uael_share_links[uael_share_link_index[links]],"popUpWindow","height=400,width=600,left="+left+",top="+top+",resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes" );
 				});
+			});
+
+			$scope.find( '.uael-share-btn-print' ).on( 'click', function() {
+    			window.print();	
 			});
 		}
 			

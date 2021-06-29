@@ -51,16 +51,22 @@ class ThirdCountryNotice extends DynamicBlock {
 		$document         = $GLOBALS['document'];
 		$this->attributes = $this->parse_attributes( $attributes );
 		$country          = $document->get_country();
+		$postcode         = $document->get_postcode();
 
 		if ( apply_filters( 'storeabill_use_third_country_notice_shipping_country', true, $document ) && is_callable( array( $document, 'get_shipping_country' ) ) ) {
-			$country = $document->get_shipping_country();
+			$country  = $document->get_shipping_country();
+			$postcode = $document->get_shipping_postcode();
 
 			if ( empty( $country ) ) {
 				$country = $document->get_country();
 			}
+
+			if ( empty( $postcode ) ) {
+				$postcode = $document->get_postcode();
+			}
 		}
 
-		if ( ! empty( $country ) && Countries::is_third_country( $country ) ) {
+		if ( ! empty( $country ) && Countries::is_third_country( $country, $postcode ) ) {
 			$this->content = $content;
 		}
 

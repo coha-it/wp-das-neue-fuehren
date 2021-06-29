@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'f6df7d574c2492b13e5d411dd91805cd33705de7',
+    'reference' => 'ab5c0d0d0d189d41f54866a208052d17eca1ef25',
     'name' => 'vendidero/woocommerce-germanized',
   ),
   'versions' => 
@@ -101,6 +101,15 @@
         0 => '*',
       ),
     ),
+    'vendidero/one-stop-shop-woocommerce' => 
+    array (
+      'pretty_version' => 'v1.0.4',
+      'version' => '1.0.4.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'dac5b9b0d3592fa23622e17e86e1ad2919c9f49c',
+    ),
     'vendidero/woocommerce-germanized' => 
     array (
       'pretty_version' => 'dev-master',
@@ -108,34 +117,34 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'f6df7d574c2492b13e5d411dd91805cd33705de7',
+      'reference' => 'ab5c0d0d0d189d41f54866a208052d17eca1ef25',
     ),
     'vendidero/woocommerce-germanized-dhl' => 
+    array (
+      'pretty_version' => 'v1.5.8',
+      'version' => '1.5.8.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '5a6601ad98ca5abcefac84c8dab2b7dbb7374d20',
+    ),
+    'vendidero/woocommerce-germanized-shipments' => 
     array (
       'pretty_version' => 'v1.5.6',
       'version' => '1.5.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => '25e35587c9ef73a2215f15208f568b26083940fc',
-    ),
-    'vendidero/woocommerce-germanized-shipments' => 
-    array (
-      'pretty_version' => 'v1.5.5',
-      'version' => '1.5.5.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '7d79aa67c692a2d34c23ff56d508b9ca5cd8fd09',
+      'reference' => 'd690e823fbbfdc7ab63122b47240dd62a21c95b0',
     ),
     'vendidero/woocommerce-trusted-shops' => 
     array (
-      'pretty_version' => 'v4.0.10',
-      'version' => '4.0.10.0',
+      'pretty_version' => 'v4.0.11',
+      'version' => '4.0.11.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'adbf9c35120a52bb8fd5119834f79f4cc50696fd',
+      'reference' => '3b8ee60cd8dd1d54e1964085e29f8b63e4968c54',
     ),
     'wsdltophp/wssecurity' => 
     array (

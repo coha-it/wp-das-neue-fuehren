@@ -812,6 +812,75 @@ class UAEL_Helper {
 		return $is_activate;
 	}
 
+	/**
+	 * Condition compare.
+	 *
+	 * @param string $left_value left value to be compare.
+	 * @param string $right_value right value to be compare.
+	 * @param string $operator operator.
+	 * @return string
+	 * @since 1.32.0
+	 */
+	public static function display_conditions_compare( $left_value, $right_value, $operator ) {
+		switch ( $operator ) {
+			case 'is':
+				return $left_value === $right_value;
+			case 'not':
+				return $left_value !== $right_value;
+			default:
+				return $left_value === $right_value;
+		}
+	}
+
+	/**
+	 * Get Client Site Time
+	 *
+	 * @param string $format Time format.
+	 * @return string
+	 * @since 1.32.0
+	 */
+	public static function get_local_time( $format = 'Y-m-d h:i:s A' ) {
+		$local_time_zone = isset( $_COOKIE['GetLocalTimeZone'] ) && ! empty( $_COOKIE['GetLocalTimeZone'] ) ? str_replace( 'GMT ', 'GMT+', $_COOKIE['GetLocalTimeZone'] ) : date_default_timezone_get();
+		$now_date        = new \DateTime( 'now', new \DateTimeZone( $local_time_zone ) );
+		$today           = $now_date->format( $format );
+		return $today;
+	}
+
+	/**
+	 * Get Server Time
+	 *
+	 * @param string $format time format.
+	 * @return string
+	 * @since 1.32.0
+	 */
+	public static function get_server_time( $format = 'Y-m-d h:i:s A' ) {
+		$today = gmdate( $format, strtotime( 'now' ) + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) );
+		return $today;
+	}
+
+	/**
+	 * Get User Browser name
+	 *
+	 * @param string $user_agent Browser names.
+	 * @return string
+	 * @since 1.32.0
+	 */
+	public static function get_browser_name( $user_agent ) {
+
+		if ( strpos( $user_agent, 'Opera' ) || strpos( $user_agent, 'OPR/' ) ) {
+			return 'opera';
+		} elseif ( strpos( $user_agent, 'Edg' ) || strpos( $user_agent, 'Edge' ) ) {
+			return 'edge';
+		} elseif ( strpos( $user_agent, 'Chrome' ) ) {
+			return 'chrome';
+		} elseif ( strpos( $user_agent, 'Safari' ) ) {
+			return 'safari';
+		} elseif ( strpos( $user_agent, 'Firefox' ) ) {
+			return 'firefox';
+		} elseif ( strpos( $user_agent, 'MSIE' ) || strpos( $user_agent, 'Trident/7' ) ) {
+			return 'ie';
+		}
+	}
 
 	/**
 	 * Returns Script array.
@@ -1309,7 +1378,7 @@ class UAEL_Helper {
 
 			$block_name = str_replace( 'uael/', '', $key );
 
-			if ( isset( $saved_blocks[ $block_name ] ) && 'disabled' === $saved_blocks[ $block_name ] ) {
+			if ( isset( $saved_blocks[ $block_name ] ) && 'disabled' === $saved_blocks[ $block_name ] || 'DisplayConditions' === $block_name ) {
 				continue;
 			}
 
@@ -1366,6 +1435,7 @@ class UAEL_Helper {
 				case 'Woo_Categories':
 				case 'Woo_Products':
 				case 'Woo_Mini_Cart':
+				case 'Woo_Checkout':
 					if ( ! $is_already_wc ) {
 						$combined['uael-woocommerce'] = array(
 							'path'     => 'assets/' . $folder . '/modules/uael-woocommerce' . $suffix . '.css',

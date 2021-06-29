@@ -72,7 +72,7 @@ class Sync extends SyncHandler {
 
 	public function __construct() {
 		$this->auth_api = new Auth( $this );
-		$this->api      = new Models( $this );
+		$this->api      = new Models( $this, $this->get_hook_prefix() );
 
 		parent::__construct();
 	}
@@ -300,6 +300,7 @@ class Sync extends SyncHandler {
 		 */
 		foreach( $invoice->get_items( $invoice->get_item_types_for_totals() ) as $item ) {
 			$category_id = $this->get_category_id( $item, $invoice );
+			$item_total  = $item->get_total();
 
 			$item_data = array(
 				'accountingType' => array(
@@ -327,6 +328,11 @@ class Sync extends SyncHandler {
 					$percentage  = $tax->get_tax_rate()->get_percent();
 					$total_gross = $tax->get_total_net() + $tax->get_total_tax();
 					$total       = $tax->get_total_net();
+
+					// Vouchers
+					if ( $total_gross > $item_total ) {
+					    $total_gross = $item_total;
+                    }
 
 					$item_tax_data = array_merge( $item_data, array(
 						'sum'       => $total,
@@ -539,44 +545,97 @@ class Sync extends SyncHandler {
 		 */
 		if ( $this->auto_book_vouchers() && $invoice->has_been_externally_synced( self::get_name() ) && $invoice->is_paid() && ! $this->is_booked( $invoice ) ) {
 
-			$sync_data      = $invoice->get_external_sync_handler_data( self::get_name() );
-			$amount         = $invoice->get_total();
-			$account_id     = $this->get_account_id( $invoice->get_payment_method_name() );
-			$purpose        = $invoice->get_order_number();
-			$transaction_id = '';
-			$is_manual      = $this->is_manual_account( $account_id );
-			$accounts       = $this->get_accounts();
+			$sync_data          = $invoice->get_external_sync_handler_data( self::get_name() );
+			$amount             = $invoice->get_total();
+			$account_id         = $this->get_account_id( $invoice->get_payment_method_name() );
+			$purpose            = $invoice->get_order_number();
+			$invoice_trans_id   = $invoice->get_payment_transaction_id();
+			$transaction_id     = '';
+			$is_manual          = $this->is_manual_account( $account_id );
+			$accounts           = $this->get_accounts();
+			$default_account_id = $this->get_default_account_id();
+
+			/**
+			 * No account id was found.
+             * Use case: Booking should only happen for certain gateway(s) and no default account has been chosen.
+			 */
+			if ( empty( $account_id ) ) {
+			    return false;
+            }
+
+			$start_date_obj = clone $invoice->get_date_created();
+			$end_date_obj   = clone ( $invoice->get_date_paid() ? $invoice->get_date_paid() : $invoice->get_date_created() );
+
+			// By default start searching 1 week in the past
+			$start_date_obj->modify( '-1 week' );
+
+			$start_date = $start_date_obj->getOffsetTimestamp();
+			$end_date   = $end_date_obj->getOffsetTimestamp();
 
             /**
-             * Search the transaction based on purpose and amount.
-             * In case no account id was provided, search transactions in all accounts.
-             * By default search for the formatted order number (purpose).
+             * Search the transaction based on amount and date.
              */
-            $transaction = $this->get_api()->search_transactions( $purpose, array(
+            $transaction_result = $this->get_api()->search_transactions( array(
                 'amount_from' => $invoice->get_total(),
-                'account'     => apply_filters( "{$this->get_hook_prefix()}search_transaction_account_id", $account_id, $invoice, $this )
+                'account'     => apply_filters( "{$this->get_hook_prefix()}search_transaction_account_id", $account_id, $invoice, $this ),
+                'start_date'  => apply_filters( "{$this->get_hook_prefix()}search_transaction_start_date", $start_date, $invoice, $this ),
+                'end_date'    => apply_filters( "{$this->get_hook_prefix()}search_transaction_end_date", $end_date, $invoice, $this ),
             ) );
 
-            if ( ! $this->get_api()->has_failed( $transaction ) && ! empty( $transaction['objects'] ) ) {
-                $remote_purpose  = $transaction['objects'][0]['paymtPurpose'];
-                $purpose_numbers = preg_replace( '/[^0-9]/', '', $purpose );
-                $is_match        = true;
+            if ( ! $this->get_api()->has_failed( $transaction_result ) && ! empty( $transaction_result['objects'] ) ) {
+                $is_match = false;
 
-                /**
-                 * In case the purpose contains numbers make sure to check whether numbers from the original purpose
-                 * match remote purpose numbers to prevent that searching for 83718 matches 3718.
-                 */
-                if ( ! empty( $purpose_numbers ) ) {
-                    $remote_purpose = preg_replace( '/[^0-9]/', '', $remote_purpose );
+                foreach( $transaction_result['objects'] as $transaction ) {
 
-                    if ( $remote_purpose != $purpose ) {
-                        $is_match = false;
+                    if ( 'Bankeinzug' === $transaction['payeePayerName'] ) {
+                        continue;
                     }
-                }
 
-                if ( $is_match ) {
-                    $transaction_id = $transaction['objects'][0]['id'];
-                    $account_id     = $transaction['objects'][0]['checkAccount']['id'];
+	                $remote_purposes       = explode( '/', $transaction['paymtPurpose'] );
+	                $remote_main_purpose   = ! empty( $remote_purposes[0] ) ? trim( $remote_purposes[0] ) : '';
+	                $remote_transaction_id = '';
+
+	                // Parse remote transaction id
+	                foreach( $remote_purposes as $remote_purpose_piece ) {
+	                    $remote_purpose_piece = trim( strtolower( $remote_purpose_piece ) );
+
+	                    if ( strstr( $remote_purpose_piece, 'txid' ) ) {
+	                        $remote_transaction_id = trim( str_replace( 'txid', '', $remote_purpose_piece ) );
+                        }
+                    }
+
+	                // Check if transaction id matches
+	                if ( ! empty( $invoice_trans_id ) && ! empty( $remote_transaction_id ) && $remote_transaction_id == $invoice_trans_id ) {
+		                $is_match = true;
+	                } else {
+		                if ( ! empty( $remote_main_purpose ) ) {
+			                $purpose_numbers = preg_replace( '/[^0-9]/', '', $purpose );
+
+			                /**
+			                 * In case the purpose contains numbers (e.g. order id) make sure to check whether numbers from the original purpose
+			                 * match remote purpose numbers to prevent that searching for 83718 matches 3718.
+			                 */
+			                if ( ! empty( $purpose_numbers ) ) {
+				                $remote_purpose_numbers = preg_replace( '/[^0-9]/', '', $remote_main_purpose );
+
+				                // Check if numeric representation (e.g. order number) matches
+				                if ( $remote_purpose_numbers == $purpose_numbers ) {
+					                $is_match = true;
+				                }
+			                } else {
+			                    // Fallback string existence search
+				                $is_match = strstr( $remote_main_purpose, $purpose );
+			                }
+		                }
+	                }
+
+	                // Stop if we've found the first match
+	                if ( $is_match ) {
+		                $transaction_id = $transaction['id'];
+		                $account_id     = $transaction['checkAccount']['id'];
+
+		                break;
+	                }
                 }
             }
 
@@ -585,8 +644,8 @@ class Sync extends SyncHandler {
              * Use default account as fallback.
 			 */
 			if ( ( ! $is_manual && empty( $transaction_id ) ) || ! array_key_exists( $account_id, $accounts ) ) {
-				$account_id = $this->get_default_sevdesk_account();
-			}
+				$account_id = apply_filters( "{$this->get_hook_prefix()}book_voucher_failed_default_account_id", $default_account_id, $invoice, $this );
+ 			}
 
 			if ( ! empty( $account_id ) ) {
 				$result = $this->get_api()->book_voucher( $sync_data->get_id(), $amount, array(
@@ -601,8 +660,6 @@ class Sync extends SyncHandler {
 				} else {
 				    return $result;
                 }
-            } else {
-			    return new \WP_Error( 'api-error', _x( 'No matching account id could be found. Please check your sevDesk settings.', 'sevdesk', 'woocommerce-germanized-pro' ) );
             }
 		}
 

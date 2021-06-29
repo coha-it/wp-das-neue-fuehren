@@ -28,14 +28,17 @@ class WC_GZDP_Settings {
 		include_once dirname( __FILE__ ) . '/class-wc-gzdp-settings-tab-contract.php';
 		include_once dirname( __FILE__ ) . '/class-wc-gzdp-settings-tab-emails.php';
 		include_once dirname( __FILE__ ) . '/class-wc-gzdp-settings-tab-taxes.php';
-		include_once dirname( __FILE__ ) . '/class-wc-gzdp-settings-tab-shipments.php';
 
 		$tabs['invoices']           = 'WC_GZDP_Settings_Tab_Invoices';
 		$tabs['multistep_checkout'] = 'WC_GZDP_Settings_Tab_Multistep_Checkout';
 		$tabs['contract']           = 'WC_GZDP_Settings_Tab_Contract';
 		$tabs['emails']             = 'WC_GZDP_Settings_Tab_Emails';
 		$tabs['taxes']              = 'WC_GZDP_Settings_Tab_Taxes';
-		$tabs['shipments']          = 'WC_GZDP_Settings_Tab_Shipments';
+
+		if ( class_exists( 'WC_GZD_Settings_Tab_Shipments' ) ) {
+			include_once dirname( __FILE__ ) . '/class-wc-gzdp-settings-tab-shipments.php';
+			$tabs['shipments'] = 'WC_GZDP_Settings_Tab_Shipments';
+		}
 
 		if ( apply_filters( 'woocommerce_gzdp_enable_legal_generator', true ) ) {
 			include_once dirname( __FILE__ ) . '/class-wc-gzdp-settings-tab-terms-generator.php';

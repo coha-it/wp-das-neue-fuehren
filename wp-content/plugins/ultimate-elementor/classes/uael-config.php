@@ -177,15 +177,6 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/modal-popup/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'CafStyler'         => array(
-					'slug'      => 'uael-caf-styler',
-					'title'     => __( 'Caldera Form Styler', 'uael' ),
-					'keywords'  => array( 'uael', 'caldera', 'form', 'styler' ),
-					'icon'      => 'uael-icon-caldera-form-styler',
-					'title_url' => '#',
-					'default'   => true,
-					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/caldera-form-styler/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
-				),
 				'Buttons'           => array(
 					'slug'      => 'uael-buttons',
 					'title'     => __( 'Multi Buttons', 'uael' ),
@@ -457,7 +448,44 @@ class UAEL_Config {
 					'setting_url'  => admin_url( 'options-general.php?page=' . UAEL_SLUG . '&action=integration' ),
 					'doc_url'      => UAEL_DOMAIN . 'docs-category/widgets/social-share/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
+				'Woo_Checkout'      => array(
+					'slug'      => 'uael-woo-checkout',
+					'title'     => __( 'Woo - Checkout', 'uael' ),
+					'keywords'  => array( 'uael', 'woo', 'checkout', 'page', 'check' ),
+					'icon'      => 'uael-icon-woo-checkout-1',
+					'title_url' => '#',
+					'default'   => true,
+					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/woo-checkout/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+				),
+				'DisplayConditions' => array(
+					'slug'      => 'uael-display-conditions',
+					'title'     => __( 'Display Conditions', 'uael' ),
+					'keywords'  => array(),
+					'icon'      => '',
+					'title_url' => '#',
+					'default'   => true,
+					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/display-conditions/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+				),
 			);
+		}
+
+		if ( class_exists( 'Caldera_Forms' ) || class_exists( 'Caldera_Forms_Forms' ) ) {
+			$forms = \Caldera_Forms_Forms::get_forms( true );
+			if ( ! empty( $forms ) ) {
+				$caldera = array(
+					'CafStyler' => array(
+						'slug'      => 'uael-caf-styler',
+						'title'     => __( 'Caldera Form Styler', 'uael' ),
+						'keywords'  => array( 'uael', 'caldera', 'form', 'styler' ),
+						'icon'      => 'uael-icon-caldera-form-styler',
+						'title_url' => '#',
+						'default'   => true,
+						'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/caldera-form-styler/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					),
+				);
+
+				self::$widget_list = array_merge_recursive( self::$widget_list, $caldera );
+			}
 		}
 
 		return self::$widget_list;

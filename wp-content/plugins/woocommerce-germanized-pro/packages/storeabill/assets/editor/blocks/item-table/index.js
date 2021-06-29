@@ -30,7 +30,7 @@ const settings = {
         },
         "borders": {
             "type": "array",
-            "default": ['outer', 'horizontal']
+            "default": ['horizontal']
         },
         "headingBackgroundColor": {
             "type": "string"
@@ -39,7 +39,7 @@ const settings = {
             "type": "string"
         },
         "customHeadingBackgroundColor": {
-            "type": "string"
+            "type": "string",
         },
         "customHeadingTextColor": {
             "type": "string"

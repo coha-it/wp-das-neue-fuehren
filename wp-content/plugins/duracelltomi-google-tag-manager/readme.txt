@@ -4,8 +4,8 @@ Donate link: https://gtm4wp.com/
 Tags: google tag manager, tag manager, gtm, google, adwords, google adwords, google ads, adwords remarketing, google ads remarketing, remarketing, google analytics, analytics, facebook ads, facebook remarketing, facebook pixel, google optimize, personalisation
 Requires at least: 3.4.0
 Requires PHP: 5.6
-Tested up to: 5.7
-Stable tag: 1.12.3
+Tested up to: 5.7.2
+Stable tag: 1.13.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -139,8 +139,6 @@ http://cutroni.com/blog/2012/02/21/advanced-content-tracking-with-google-analyti
 Google Tag Manager for WordPress can add each dataLayer variable as a Google Ads remarketing custom parameter list.
 This enables you to build sophisticated remarketing lists.
 
-NOTE: the current implementation can be used to populate Google ads in an old fashioned way, codes will be updated soon in this plugin.
-
 = Blacklist & Whitelist Tag Manager tags, triggers and variables =
 
 To increase website security, you have the option to white- and blacklist tags/triggers/variables.
@@ -165,6 +163,11 @@ Google Tag Manager for WordPress integrates with several popular plugins. More i
 		*	implementation of [Enhanced E-commerce GA4](https://developers.google.com/tag-manager/ecommerce-ga4)
 		* Does not support promotions since WooCommerce does not have such a feature (yet)
 		* Does not support refunds
+
+= Server side containers =
+
+If you are using a [server side container](https://developers.google.com/tag-manager/serverside/send-data#update_the_gtmjs_source_domain)
+you can enter your custom domain name to load gtm.js from your there.
 
 == Installation ==
 
@@ -229,6 +232,33 @@ https://gtm4wp.com/how-to-articles/how-to-exclude-admin-users-from-being-tracked
 6. Scroll tracking
 
 == Changelog ==
+
+= 1.13.1 =
+
+* Fix: better PHP8 compatibility
+* Fix: PHP notice on admin page
+
+= 1.13 =
+
+WARNING!
+If you are using the geo or weather options of this plugin, make sure your hosting is using PHP 7.0 or newer!
+
+If you are using the WooCommerce integration with enhanced ecommerce, once again you will need to update your GTM container.
+Please check the [setup article](https://gtm4wp.com/how-to-articles/how-to-setup-enhanced-ecommerce-tracking) to see what needs to be changed.
+The goal is to keep this setup in the upcoming versions.
+
+* Added: Google Business Vertical option to populate Google Ads dynamic remarketing
+* Added: Make automatic cookie blocking mode of Cookiebot to work with your Google Tag Manager container (new option in the Integration tab)
+* Added: support for [server side containers with custom domains](https://developers.google.com/tag-manager/serverside/send-data#update_the_gtmjs_source_domain)
+* Added: improved duplacate WooCommerce order tracking prevention by also checking the age of the order. You can adjust the value in minutes on the plugin options page - by [Code-Craze](https://github.com/Code-Craze)
+* Fixed: prices rounded to 2 decimals in the data layer (WooCommerce integration)
+* Fixed: select_item event fired multiple times (at least twice)
+* Fixed: frontend protection to preveent double tracking transactions had a bug
+* Fixed: missing product detail and first checkout step tracking in WooCommerce shops with Enhanced Ecommerce
+* Fixed: JavaScript type error if product category is a number
+* Updated: WhichBrowser v2.1.1 (requires PHP 7.0 or newer)
+* Updated: descriptions of WooCommerce tracking methods to emphasize the importance to migrate from standard to enhanced ecommerce
+* Updated: added links to enhanced ecommerce setup guides (GA3 and GA4)
 
 = 1.12.3 =
 
@@ -685,6 +715,14 @@ Please report all bugs found in my plugin using the [contact form on my website]
 * First beta release
 
 == Upgrade Notice ==
+
+= 1.13.1 =
+
+Bugfix release
+
+= 1.13 =
+
+Updated support for Google Ads dynamic remarketing with WooCommerce, added support for server side containers and Cookiebot + fixes
 
 = 1.12.3 =
 

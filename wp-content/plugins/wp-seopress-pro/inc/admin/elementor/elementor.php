@@ -54,6 +54,7 @@ class Plugin {
 	 */
 	public function includes() {
 		require_once( __DIR__ . '/widget-breadcrumbs.php' );
+		require_once( __DIR__ . '/faq-schema.php' );
 	}
 	
 	/**

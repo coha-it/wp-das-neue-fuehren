@@ -246,7 +246,7 @@ class DocumentNotice extends WC_Data_Store_WP implements WC_Object_Data_Store_In
 				'document_id'       => $data->document_id,
 				'text'              => wp_unslash( $data->document_notice_text ),
 				'type'              => $data->document_notice_type,
-				'date_created'      => 0 < $data->document_notice_date_created_gmt ? wc_string_to_timestamp( $data->document_notice_date_created_gmt ) : null,
+				'date_created'      => '0000-00-00 00:00:00' !== $data->document_notice_date_created_gmt ? wc_string_to_timestamp( $data->document_notice_date_created_gmt ) : null,
 			)
 		);
 

@@ -254,15 +254,15 @@ class Helper {
 		return $object;
 	}
 
-	public static function sync_callback( $object_id, $object_type, $handler_name, $reference_type = '' ) {
+	public static function sync_callback( $object_id, $object_type, $handler, $reference_type = '' ) {
 		$object = self::get_object( $object_id, $object_type, $reference_type );
 
 		if ( is_a( $object, '\Vendidero\StoreaBill\Interfaces\ExternalSyncable' ) ) {
-			$result = self::sync( $object, $handler_name );
+			$result = self::sync( $object, $handler );
 
 			if ( is_wp_error( $result ) ) {
 				foreach( $result->get_error_messages() as $message ) {
-					Package::log( sprintf( 'Error while syncing %1$d of type %2$s with %3$s: %4$s', $object_id, $object_type, $handler_name, $message ), 'info', 'sync' );
+					Package::log( sprintf( 'Error while syncing %1$d of type %2$s with %3$s: %4$s', $object_id, $object_type, $handler, $message ), 'info', 'sync' );
 				}
 			}
 		}

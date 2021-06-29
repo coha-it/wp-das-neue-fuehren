@@ -99,11 +99,19 @@ class OMGF_API_Download extends WP_REST_Controller
         $fonts            = [];
 
         foreach ($font_families as $font_family) {
+            if (empty($font_family)) {
+                continue;
+            }
+
             $fonts[] = $this->grab_font_family($font_family, $query);
         }
 
         // Filter out empty elements, i.e. failed requests.
         $fonts = array_filter($fonts);
+
+        if (empty($fonts)) {
+            exit();
+        }
 
         foreach ($fonts as $font_key => &$font) {
             $fonts_request = $this->build_fonts_request($font_families, $font);
@@ -300,10 +308,16 @@ class OMGF_API_Download extends WP_REST_Controller
             sprintf($url, $family) . $query_string
         );
 
-        $response_code = $response['response']['code'] ?? '';
+        if (is_wp_error($response)) {
+            OMGF_Admin_Notice::set_notice(sprintf(__('An error occurred while trying to fetch fonts: %s', $this->plugin_text_domain), $response->get_error_message()), $response->get_error_code(), true, 'error', 500);
+        }
+
+        $response_code = wp_remote_retrieve_response_code($response);
 
         if ($response_code !== 200) {
-            $message = sprintf(__('<strong>%s</strong> could not be found using the current configuration. The API returned the following error: %s', $this->plugin_text_domain), ucfirst($family), wp_remote_retrieve_body($response));
+            $font_family   = str_replace('-', ' ', $family);
+            $error_message = wp_remote_retrieve_body($response);
+            $message       = sprintf(__('<strong>%s</strong> could not be found. The API returned the following error: %s.', $this->plugin_text_domain), ucwords($font_family), $error_message);
 
             OMGF_Admin_Notice::set_notice(
                 $message,
@@ -312,12 +326,22 @@ class OMGF_API_Download extends WP_REST_Controller
                 'error'
             );
 
+            if ($error_message == 'Not found') {
+                $message = sprintf(__('Please verify that %s is available for free at Google Fonts by doing <a href="%s" target="_blank">a manual search</a>. Maybe it\'s a Premium font?', $this->plugin_text_domain), ucwords($font_family), 'https://fonts.google.com/?query=' . str_replace('-', '+', $family));
+
+                OMGF_Admin_Notice::set_notice($message, 'omgf_api_info_not_found', false, 'info');
+            }
+
+            if ($error_message == 'Internal Server Error') {
+                $message = sprintf(__('Try using the Force Subsets option (available in OMGF Pro) to force loading %s in a subset in which it\'s actually available. Use the Language filter <a href="%s" target="_blank">here</a> to verify which subsets are available for %s.', $this->plugin_text_domain), ucwords($font_family), 'https://fonts.google.com/?query=' . str_replace('-', '+', $family), ucwords($font_family));
+
+                OMGF_Admin_Notice::set_notice($message, 'omgf_api_info_internal_server_error', false, 'info');
+            }
+
             return [];
         }
 
-        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) == 200) {
-            return json_decode(wp_remote_retrieve_body($response));
-        }
+        return json_decode(wp_remote_retrieve_body($response));
     }
 
     /**

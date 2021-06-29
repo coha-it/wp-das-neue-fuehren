@@ -6,6 +6,8 @@ window.germanized = window.germanized || {};
         params: {},
 
         init: function() {
+            this.params = wc_gzdp_multistep_checkout_payment_compatibility_params;
+
             $( document )
                 .on( 'click', '.next-step-button', this.onClickNextStep )
                 .on( 'click', '.prev-step-button', this.onClickPrevStep )
@@ -16,9 +18,24 @@ window.germanized = window.germanized || {};
                 .on( 'updated_checkout', this.onUpdateCheckout );
         },
 
+        isActivated : function() {
+            var self    = germanized.multistep_checkout_payment_compatibility,
+                $form   = $( 'form.woocommerce-checkout' ),
+                $method = $form.find( 'input[name=payment_method]:checked' ),
+                method  = $method.length > 0 ? $method.val() : false,
+                force   = Boolean( Number( self.params.force_enable ) );
+
+            if ( $method.length > 0 && ( $.inArray( method, self.params.gateways ) !== -1 || 'placeholder' === method || true === force ) ) {
+                return true;
+            }
+
+            return false;
+        },
+
         maybeAddPlaceholderCheckbox: function( stepId ) {
-            var $wrapper = $( '.step-wrapper-active' ),
-                $form = $( 'form.woocommerce-checkout' );
+            var self     = germanized.multistep_checkout_payment_compatibility,
+                $wrapper = $( '.step-wrapper-active' ),
+                $form    = $( 'form.woocommerce-checkout' );
 
             if ( $form.find( '.wc-gzdp-cc-terms-placeholder' ).length > 0 ) {
                 $form.find( '.wc-gzdp-cc-terms-placeholder' ).remove();
@@ -28,7 +45,7 @@ window.germanized = window.germanized || {};
              * Temporarily append a terms placeholder checkbox to
              * improve compatibility with payment plugins explicitly checking for terms
              */
-            if ( 'payment' === stepId ) {
+            if ( 'payment' === stepId && self.isActivated() ) {
                 $form.prepend( '<input class="wc-gzdp-cc-terms-placeholder" type="checkbox" name="terms" value="1" style="display: none" checked />' );
             }
         },
@@ -52,7 +69,7 @@ window.germanized = window.germanized || {};
 
             self.maybeAddPlaceholderCheckbox( currentStepId );
 
-            if ( currentStepId === 'payment' ) {
+            if ( self.isActivated() && currentStepId === 'payment' ) {
                 var current = $form.find( ".wc-gzdp-payment-method-placeholder" ).data( 'current' );
 
                 if ( current && $form.find( 'input#' + current ).length > 0 ) {
@@ -66,7 +83,9 @@ window.germanized = window.germanized || {};
         },
 
         maybeInitPaymentPlaceholders: function( stepId ) {
-            if ( stepId !== 'payment' ) {
+            var self = germanized.multistep_checkout_payment_compatibility;
+
+            if ( self.isActivated() && stepId !== 'payment' ) {
                 var $current = $( 'input[name=payment_method]:checked' ),
                     $form    = $( 'form.woocommerce-checkout' );
 
@@ -97,7 +116,7 @@ window.germanized = window.germanized || {};
             /**
              * Fake pay now button click for improved compatibility
              */
-            if ( 'payment' === currentStepId ) {
+            if ( self.isActivated() && 'payment' === currentStepId ) {
                 $( '#place_order' ).trigger( 'click' );
                 e.preventDefault();
             }
