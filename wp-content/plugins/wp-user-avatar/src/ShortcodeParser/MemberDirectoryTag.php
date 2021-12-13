@@ -49,39 +49,35 @@ class MemberDirectoryTag
 
         $attribution_start = apply_filters('ppress_hide_attribution', '<!-- This WordPress member directory is built and powered by ProfilePress WordPress plugin - https://profilepress.net -->' . "\r\n");
         $attribution_end   = apply_filters('ppress_hide_attribution', "\r\n" . '<!-- / ProfilePress WordPress plugin. -->' . "\r\n");
-        $css               = self::get_user_profile_css($id);
+        $css               = self::directory_css($id);
 
-        return apply_filters('ppress_member_directory', $attribution_start . $css . $this->get_user_profile_structure($id) . $attribution_end, $id);
+        return apply_filters('ppress_member_directory', $attribution_start . $css . $this->directory_structure($id) . $attribution_end, $id);
     }
 
 
     /**
-     * Get the registration structure from the database
-     *
      * @param int $id
      *
      * @return string
      */
-    public static function get_user_profile_structure($id)
+    public static function directory_structure($id)
     {
         if (FR::is_drag_drop($id, FR::MEMBERS_DIRECTORY_TYPE)) {
             $form_instance = FR::dnd_class_instance($id, FR::MEMBERS_DIRECTORY_TYPE);
             if ( ! $form_instance) return esc_html__('Member directory class not found. Please check it actually exist in ProfilePress.', 'wp-user-avatar');
-            $user_profile_structure = $form_instance->form_structure();
+            $structure = $form_instance->form_structure();
         } else {
-            $user_profile_structure = FR::get_form_meta($id, FR::MEMBERS_DIRECTORY_TYPE, FR::FORM_STRUCTURE);
+            $structure = FR::get_form_meta($id, FR::MEMBERS_DIRECTORY_TYPE, FR::FORM_STRUCTURE);
         }
 
-        return do_shortcode($user_profile_structure);
+        return do_shortcode($structure);
     }
 
 
     /**
-     * Get the CSS stylesheet for the ID registration
-     *
      * @return mixed
      */
-    public static function get_user_profile_css($id)
+    public static function directory_css($id)
     {
         if (FR::is_drag_drop($id, FR::MEMBERS_DIRECTORY_TYPE)) {
             $form_instance = FR::dnd_class_instance($id, FR::MEMBERS_DIRECTORY_TYPE);

@@ -88,7 +88,6 @@ class Team_Member extends Common_Widget {
 	 * @access protected
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-
 		$this->register_controls();
 	}
 
@@ -102,6 +101,8 @@ class Team_Member extends Common_Widget {
 	 */
 	protected function register_controls() {
 
+		$this->register_presets_control( 'Team_Member', $this );
+
 		$this->render_team_member_content_control();
 		$this->register_content_separator();
 		$this->register_content_social_icons_controls();
@@ -109,6 +110,7 @@ class Team_Member extends Common_Widget {
 
 		/* Style */
 		$this->register_style_team_member_image();
+		$this->register_style_team_member_content();
 		$this->register_style_team_member_name();
 		$this->register_style_team_member_designation();
 		$this->register_style_team_member_desc();
@@ -159,7 +161,7 @@ class Team_Member extends Common_Widget {
 			array(
 				'label'      => __( 'Width', 'uael' ),
 				'type'       => Controls_Manager::SLIDER,
-				'size_units' => array( 'px', 'em', 'rem' ),
+				'size_units' => array( 'px', 'em', 'rem', '%' ),
 				'range'      => array(
 					'px' => array(
 						'min' => 1,
@@ -176,6 +178,24 @@ class Team_Member extends Common_Widget {
 			)
 		);
 
+		$this->add_responsive_control(
+			'member_image_height',
+			array(
+				'label'      => __( 'Height', 'uael' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', 'em', 'rem', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min' => 1,
+						'max' => 2000,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-team-member-image img' => 'height: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+
 		$this->add_control(
 			'team_member_name',
 			array(
@@ -188,6 +208,19 @@ class Team_Member extends Common_Widget {
 				'default'     => __( 'John Doe', 'uael' ),
 			)
 		);
+
+		$this->add_control(
+			'show_team_member_desig',
+			array(
+				'label'        => __( 'Show Designation', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'uael' ),
+				'label_off'    => __( 'No', 'uael' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+			)
+		);
+
 		$this->add_control(
 			'team_member_desig',
 			array(
@@ -198,8 +231,24 @@ class Team_Member extends Common_Widget {
 				),
 				'placeholder' => __( 'Enter Designation', 'uael' ),
 				'default'     => __( 'CEO', 'uael' ),
+				'condition'   => array(
+					'show_team_member_desig' => 'yes',
+				),
 			)
 		);
+
+		$this->add_control(
+			'show_team_member_desc',
+			array(
+				'label'        => __( 'Show Description', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'uael' ),
+				'label_off'    => __( 'No', 'uael' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+			)
+		);
+
 		$this->add_control(
 			'team_member_desc',
 			array(
@@ -209,7 +258,10 @@ class Team_Member extends Common_Widget {
 					'active' => true,
 				),
 				'placeholder' => __( 'Describe here', 'uael' ),
-				'default'     => __( 'Use this space to tell a little about your team member. Make it interesting by mentioning his expertise, achievements, interests, hobbies and more.', 'uael' ),
+				'default'     => __( 'Enter description text here.Lorem ipsum dolor sit amet consectetur adipiscing.', 'uael' ),
+				'condition'   => array(
+					'show_team_member_desc' => 'yes',
+				),
 			)
 		);
 
@@ -596,7 +648,8 @@ class Team_Member extends Common_Widget {
 					'{{WRAPPER}} .elementor-social-icon' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 				'condition'  => array(
-					'shape' => array( 'rounded' ),
+					'shape'                 => array( 'rounded' ),
+					'social_icons_settings' => 'yes',
 				),
 			)
 		);
@@ -707,33 +760,6 @@ class Team_Member extends Common_Widget {
 			)
 		);
 
-		$this->add_responsive_control(
-			'align_team_member',
-			array(
-				'label'        => __( 'Overall Alignment', 'uael' ),
-				'type'         => Controls_Manager::CHOOSE,
-				'options'      => array(
-					'left'   => array(
-						'title' => __( 'Left', 'uael' ),
-						'icon'  => 'fa fa-align-left',
-					),
-					'center' => array(
-						'title' => __( 'Center', 'uael' ),
-						'icon'  => 'fa fa-align-center',
-					),
-					'right'  => array(
-						'title' => __( 'Right', 'uael' ),
-						'icon'  => 'fa fa-align-right',
-					),
-				),
-				'condition'    => array(
-					'image_position' => 'above',
-				),
-				'default'      => 'center',
-				'prefix_class' => 'uael%s-team-member-align-',
-			)
-		);
-
 		$this->add_control(
 			'image_shape',
 			array(
@@ -741,7 +767,7 @@ class Team_Member extends Common_Widget {
 				'type'         => Controls_Manager::SELECT,
 				'default'      => 'square',
 				'options'      => array(
-					'square'  => __( 'Square', 'uael' ),
+					'square'  => __( 'Default', 'uael' ),
 					'rounded' => __( 'Rounded', 'uael' ),
 					'circle'  => __( 'Circle', 'uael' ),
 				),
@@ -864,6 +890,63 @@ class Team_Member extends Common_Widget {
 	}
 
 	/**
+	 * Register team member content style.
+	 *
+	 * @since 1.33.0
+	 * @access protected
+	 */
+	protected function register_style_team_member_content() {
+
+		$this->start_controls_section(
+			'section_team_member_content_style',
+			array(
+				'label' => __( 'Content', 'uael' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+			)
+		);
+
+		$this->add_responsive_control(
+			'align_team_member',
+			array(
+				'label'        => __( 'Overall Alignment', 'uael' ),
+				'type'         => Controls_Manager::CHOOSE,
+				'options'      => array(
+					'left'   => array(
+						'title' => __( 'Left', 'uael' ),
+						'icon'  => 'fa fa-align-left',
+					),
+					'center' => array(
+						'title' => __( 'Center', 'uael' ),
+						'icon'  => 'fa fa-align-center',
+					),
+					'right'  => array(
+						'title' => __( 'Right', 'uael' ),
+						'icon'  => 'fa fa-align-right',
+					),
+				),
+				'condition'    => array(
+					'image_position' => 'above',
+				),
+				'default'      => 'center',
+				'prefix_class' => 'uael%s-team-member-align-',
+			)
+		);
+
+		$this->add_responsive_control(
+			'content_padding',
+			array(
+				'label'     => __( 'Padding', 'uael' ),
+				'type'      => Controls_Manager::DIMENSIONS,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-team-member-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->end_controls_section();
+	}
+
+	/**
 	 * Register Team member Name style.
 	 *
 	 * @since 1.16.0
@@ -942,7 +1025,7 @@ class Team_Member extends Common_Widget {
 				'label'     => __( 'Designation', 'uael' ),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => array(
-					'team_member_desig!' => '',
+					'show_team_member_desig' => 'yes',
 				),
 			)
 		);
@@ -989,7 +1072,7 @@ class Team_Member extends Common_Widget {
 				'label'     => __( 'Description', 'uael' ),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => array(
-					'team_member_desc!' => '',
+					'show_team_member_desc' => 'yes',
 				),
 			)
 		);
@@ -1054,6 +1137,23 @@ class Team_Member extends Common_Widget {
 				'selectors' => array(
 					'{{WRAPPER}} .elementor-social-icon' => 'font-size: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .elementor-social-icon svg' => 'height: {{SIZE}}{{UNIT}}; width: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'icon_bg_size',
+			array(
+				'label'     => __( 'Icon Background Size', 'uael' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => array(
+					'px' => array(
+						'min' => 0,
+						'max' => 100,
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .elementor-social-icon, {{WRAPPER}} .elementor-social-icon svg' => 'height: {{SIZE}}{{UNIT}}; width: {{SIZE}}{{UNIT}}; line-height: {{SIZE}}{{UNIT}};',
 				),
 			)
 		);
@@ -1373,7 +1473,7 @@ class Team_Member extends Common_Widget {
 					'{{WRAPPER}} .uael-team-desig' => 'margin-bottom:{{SIZE}}{{UNIT}};',
 				),
 				'condition'  => array(
-					'team_member_desig!' => '',
+					'show_team_member_desig' => 'yes',
 				),
 			)
 		);
@@ -1417,7 +1517,7 @@ class Team_Member extends Common_Widget {
 					'{{WRAPPER}} .uael-team-desc' => 'margin-bottom:{{SIZE}}{{UNIT}};',
 				),
 				'condition'  => array(
-					'team_member_desc!' => '',
+					'show_team_member_desc' => 'yes',
 				),
 			)
 		);
@@ -1506,10 +1606,12 @@ class Team_Member extends Common_Widget {
 						}
 					}
 
-					$this->add_render_attribute( 'team_member_desig', 'class', 'uael-team-desig' );
-					$this->add_inline_editing_attributes( 'team_member_desig' );
 					?>
-					<?php if ( '' !== $settings['team_member_desig'] ) { ?>
+					<?php if ( 'yes' === $settings['show_team_member_desig'] && '' !== $settings['team_member_desig'] ) { ?>
+						<?php
+						$this->add_render_attribute( 'team_member_desig', 'class', 'uael-team-desig' );
+						$this->add_inline_editing_attributes( 'team_member_desig' );
+						?>
 						<div class="uael-team-member-designation">
 							<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'team_member_desig' ) ); ?>><?php echo wp_kses_post( $settings['team_member_desig'] ); ?>
 							</div>
@@ -1521,10 +1623,13 @@ class Team_Member extends Common_Widget {
 							$this->get_separator_position();
 						}
 					}
-					$this->add_render_attribute( 'team_member_desc', 'class', 'uael-team-desc' );
-					$this->add_inline_editing_attributes( 'team_member_desc' );
+
 					?>
-					<?php if ( '' !== $settings['team_member_desc'] ) { ?>
+					<?php if ( 'yes' === $settings['show_team_member_desc'] && '' !== $settings['team_member_desc'] ) { ?>
+						<?php
+						$this->add_render_attribute( 'team_member_desc', 'class', 'uael-team-desc' );
+						$this->add_inline_editing_attributes( 'team_member_desc' );
+						?>
 						<div class="uael-team-member-desc">
 							<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'team_member_desc' ) ); ?>><?php echo wp_kses_post( $settings['team_member_desc'] ); ?></div>
 						</div>
@@ -1575,8 +1680,6 @@ class Team_Member extends Common_Widget {
 									$link_key        = 'link_' . $index;
 									$class_animation = ' elementor-animation-' . $settings['icon_hover_animation'];
 
-									$this->add_render_attribute( $link_key, 'href', $item['link']['url'] );
-
 									$this->add_render_attribute(
 										$link_key,
 										'class',
@@ -1588,12 +1691,7 @@ class Team_Member extends Common_Widget {
 										)
 									);
 
-									if ( $item['link']['is_external'] ) {
-										$this->add_render_attribute( $link_key, 'target', '_blank' );
-									}
-									if ( $item['link']['nofollow'] ) {
-										$this->add_render_attribute( $link_key, 'rel', 'nofollow' );
-									}
+									$this->add_link_attributes( $link_key, $item['link'] );
 
 									?>
 									<a <?php echo wp_kses_post( $this->get_render_attribute_string( $link_key ) ); ?>>
@@ -1709,7 +1807,7 @@ class Team_Member extends Common_Widget {
 							<# } #>
 						<# } #>
 						<div class="uael-team-member-designation">
-							<# if ( '' !== settings.team_member_desig ) {
+							<# if ( 'yes' === settings.show_team_member_desig && '' !== settings.team_member_desig ) {
 								view.addRenderAttribute( 'team_member_desig', 'class', 'uael-team-desig' );
 
 								view.addInlineEditingAttributes( 'team_member_desig' );
@@ -1727,7 +1825,7 @@ class Team_Member extends Common_Widget {
 							<# } #>
 						<# } #>
 						<div class="uael-team-member-desc">
-							<# if ( '' !== settings.team_member_desc ) {
+							<# if ( 'yes' === settings.show_team_member_desc && '' !== settings.team_member_desc ) {
 								view.addRenderAttribute( 'team_member_desc', 'class', 'uael-team-desc' );
 
 								view.addInlineEditingAttributes( 'team_member_desc' );
@@ -1784,19 +1882,5 @@ class Team_Member extends Common_Widget {
 			</div>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Render team member output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 1.16.0
-	 * @access protected
-	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-		$this->content_template();
 	}
 }

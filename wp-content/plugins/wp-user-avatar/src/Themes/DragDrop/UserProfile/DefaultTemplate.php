@@ -4,6 +4,7 @@ namespace ProfilePress\Core\Themes\DragDrop\UserProfile;
 
 use ProfilePress\Core\Admin\SettingsPages\DragDropBuilder\DragDropBuilder;
 use ProfilePress\Core\Classes\ExtensionManager as EM;
+use ProfilePress\Core\ShortcodeParser\Builder\FrontendProfileBuilder;
 use ProfilePress\Core\Themes\DragDrop\AbstractTheme;
 use ProfilePress\Core\Admin\SettingsPages\DragDropBuilder\Fields;
 
@@ -46,7 +47,6 @@ class DefaultTemplate extends AbstractTheme
         $data['ppress_dpf_profile_user_meta']           = [];
         $data['ppress_dpf_profile_menu_tabs']           = ['main', 'posts', 'comments'];
 
-
         $data['ppress_dpf_profile_header_name_color']        = '#555555';
         $data['ppress_dpf_profile_body_text_color']          = '#666666';
         $data['ppress_dpf_profile_menu_background_color']    = '#444444';
@@ -79,7 +79,7 @@ class DefaultTemplate extends AbstractTheme
         $settings[] = [
             'id'       => 'ppress_dpf_profile_cover_enabled',
             'type'     => 'checkbox',
-            'label'    => esc_html__('Enable Cover Image', 'wp-user-avatar'),
+            'label'    => esc_html__('Enable Cover Photo', 'wp-user-avatar'),
             'priority' => 40
         ];
 
@@ -92,7 +92,7 @@ class DefaultTemplate extends AbstractTheme
                 '2.7' => '2.7:1',
                 '3.2' => '3.2:1',
             ],
-            'description' => esc_html__('Choose an aspect ratio of the profile cover image.', 'wp-user-avatar'),
+            'description' => esc_html__('Choose an aspect ratio of the profile cover photo.', 'wp-user-avatar'),
             'priority'    => 50
         ];
 
@@ -238,7 +238,7 @@ class DefaultTemplate extends AbstractTheme
                 'icon'  => 'comment',
                 'title' => esc_html__('Comments', 'wp-user-avatar')
             ]
-        ]);
+        ], $this);
     }
 
     private function active_tab()
@@ -272,7 +272,7 @@ class DefaultTemplate extends AbstractTheme
             echo '<div class="ppress-dpf-profile-nav">';
 
             foreach ($saved_tabs as $tab_id) :
-                $url = esc_url(add_query_arg('tab', $tab_id));
+                $url = esc_url(remove_query_arg('pfpage', add_query_arg('tab', $tab_id)));
                 ?>
                 <div class="ppress-dpf-profile-nav-item ppress-dpf-nav-<?= $tab_id ?><?= $this->active_tab() == $tab_id ? ' ppress-dpf-active' : ''; ?>">
                     <a href="<?= $url ?>">
@@ -323,19 +323,65 @@ class DefaultTemplate extends AbstractTheme
 
     public function profile_content_posts()
     {
-        echo '[profile-post-list]';
-        if (ppress_settings_by_key('author_slug_to_profile') != 'on') {
+        /** @var \WP_User */
+        global $ppress_frontend_profile_user_obj;
+
+        $current_page    = absint(ppressGET_var('pfpage', 1));
+        $pagination_args = apply_filters('ppress_profile_posts_pagination_args', ['limit' => 10], $this);
+        $limit           = absint($pagination_args['limit']);
+
+        $offset = $current_page > 1 ? ($current_page - 1) * $limit : 0;
+
+        $posts = FrontendProfileBuilder::author_posts_query(
+            $ppress_frontend_profile_user_obj->ID,
+            ['limit' => $limit, 'offset' => $offset]
+        );
+
+        echo $posts['structure'];
+
+        if (ppress_settings_by_key('author_slug_to_profile') != 'on' && $posts['total_post_count'] >= $limit) {
+
             printf(
                 '<div class="ppress-dpf-more-post-wrap"><a href="%s" class="ppress-dpf-more-post-btn">%s</a></div>',
-                '[profile-author-posts-url]',
-                esc_html__('See all Posts', 'wp-user-avatar')
+                esc_url(add_query_arg('pfpage', ++$current_page)),
+                apply_filters(
+                    'ppress_profile_posts_pagination_button',
+                    esc_html__('See More Posts', 'wp-user-avatar'),
+                    $this
+                )
             );
         }
     }
 
     public function profile_content_comments()
     {
-        echo '[profile-comment-list]';
+        /** @var \WP_User */
+        global $ppress_frontend_profile_user_obj;
+
+        $current_page    = absint(ppressGET_var('pfpage', 1));
+        $pagination_args = apply_filters('ppress_profile_comments_pagination_args', ['limit' => 10], $this);
+        $limit           = absint($pagination_args['limit']);
+
+        $offset = $current_page > 1 ? ($current_page - 1) * $limit : 0;
+
+        $comments = FrontendProfileBuilder::author_comment_query(
+            $ppress_frontend_profile_user_obj->ID,
+            ['limit' => $limit, 'offset' => $offset]
+        );
+
+        echo $comments['structure'];
+
+        if ($comments['comment_count'] >= $limit) {
+            printf(
+                '<div class="ppress-dpf-more-post-wrap"><a href="%s" class="ppress-dpf-more-post-btn">%s</a></div>',
+                esc_url(add_query_arg('pfpage', ++$current_page)),
+                apply_filters(
+                    'ppress_profile_comments_pagination_button',
+                    esc_html__('See More Comments', 'wp-user-avatar'),
+                    $this
+                )
+            );
+        }
     }
 
     public function form_structure()

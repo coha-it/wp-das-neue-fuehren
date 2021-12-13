@@ -177,7 +177,7 @@ class Sync extends SyncHandler {
 		/**
 		 * Maybe force individual customers for some invoices
 		 */
-		if ( $invoice && ( $this->invoice_supports_eu_taxation( $invoice ) ||  $this->is_reverse_charge( $invoice ) || $this->is_third_country( $invoice ) ) ) {
+		if ( $invoice && ( $this->invoice_supports_eu_taxation( $invoice ) || $this->is_reverse_charge( $invoice ) || $this->is_third_country( $invoice ) ) ) {
 			$use_collective_customer = false;
 		}
 
@@ -201,6 +201,9 @@ class Sync extends SyncHandler {
 	 * @param \Vendidero\StoreaBill\Interfaces\Customer $customer
 	 */
 	protected function sync_customer( $customer, $force_business = false ) {
+		$shipping_country  = $customer->has_shipping_address() ? $customer->get_shipping_country() : $customer->get_billing_country();
+		$shipping_postcode = $customer->has_shipping_address() ? $customer->get_shipping_postcode() : $customer->get_billing_postcode();
+
 		$request = array(
 			'roles' => array(
 				'customer' => array( 'number' => '' ),
@@ -217,11 +220,11 @@ class Sync extends SyncHandler {
 				),
 				'shipping' => array(
 					array(
-						'supplement'  => $customer->get_shipping_address_2(),
-						'street'      => $customer->get_shipping_address(),
-						'zip'         => $customer->get_shipping_postcode(),
-						'city'        => $customer->get_shipping_city(),
-						'countryCode' => $this->is_northern_ireland( $customer->get_shipping_country(), $customer->get_shipping_postcode() ) ? 'IX' : $customer->get_shipping_country()
+						'supplement'  => $customer->has_shipping_address() ? $customer->get_shipping_address_2() : $customer->get_billing_address_2(),
+						'street'      => $customer->has_shipping_address() ? $customer->get_shipping_address() : $customer->get_billing_address(),
+						'zip'         => $shipping_postcode,
+						'city'        => $customer->has_shipping_address() ? $customer->get_shipping_city() : $customer->get_billing_city(),
+						'countryCode' => $this->is_northern_ireland( $shipping_country, $shipping_postcode ) ? 'IX' : $shipping_country
 					)
 				),
 			),
@@ -249,8 +252,15 @@ class Sync extends SyncHandler {
 				);
 			}
 		} else {
+			$company_name = $customer->get_company_name();
+
+			if ( $force_business && '' === $customer->get_company_name() ) {
+				/* translators: 1: first name 2: last name */
+				$company_name = sprintf( _x( '%1$s %2$s', 'storeabill-company-customer-name', 'storeabill' ), $customer->get_first_name(), $customer->get_last_name() );
+			}
+
 			$request['company'] = array(
-				'name'                 => $customer->get_company_name(),
+				'name'                 => $company_name,
 				'allowTaxFreeInvoices' => $customer->is_vat_exempt(),
 				'contactPersons'       => array()
 			);
@@ -354,11 +364,19 @@ class Sync extends SyncHandler {
 			$voucher_number = $invoice->get_order_number();
 		}
 
+		$shipping_date = $invoice->get_date_created()->date_i18n( 'Y-m-d' );
+
+		if ( $invoice->get_date_of_service_end() ) {
+			$shipping_date = $invoice->get_date_of_service_end()->date_i18n( 'Y-m-d' );
+		} elseif( $invoice->get_date_of_service() ) {
+			$shipping_date = $invoice->get_date_of_service()->date_i18n( 'Y-m-d' );
+		}
+
 		$request = array(
 			'type'                 => 'cancellation' === $invoice->get_invoice_type() ? 'salescreditnote' : 'salesinvoice',
 			'voucherNumber'        => apply_filters( "{$this->get_hook_prefix()}voucher_number", $voucher_number, $invoice ),
 			'voucherDate'          => $invoice->get_date_created()->date_i18n( 'Y-m-d' ),
-			'shippingDate'         => $invoice->get_date_of_service_end() ? $invoice->get_date_of_service_end()->date_i18n( 'Y-m-d' ) : $invoice->get_date_of_service()->date_i18n( 'Y-m-d' ),
+			'shippingDate'         => $shipping_date,
 			'dueDate'              => $invoice->get_date_due() ? $invoice->get_date_due()->date_i18n( 'Y-m-d' ) : $invoice->get_date_created()->date_i18n( 'Y-m-d' ),
 			'totalGrossAmount'     => sab_format_decimal( $invoice->get_total(), 2 ),
 			'totalTaxAmount'       => $total_tax,
@@ -393,7 +411,7 @@ class Sync extends SyncHandler {
 				}
 			} elseif( $this->force_company_contact_existence( $invoice ) ) {
 				$invoice_customer = new \Vendidero\StoreaBill\Lexoffice\Customer( $invoice, array(
-					'is_business' => $this->force_company_contact_existence( $invoice ),
+					'is_business' => true,
 				) );
 
 				$customer_result = $this->sync_customer( $invoice_customer, true );
@@ -493,6 +511,7 @@ class Sync extends SyncHandler {
 
 		$column_total_tax = 0;
 		$total_tax_diff   = 0;
+		$gross_total      = 0;
 
 		/**
 		 * Format totals.
@@ -519,6 +538,8 @@ class Sync extends SyncHandler {
 
 				$items[ $voucher_item_key ]['taxAmount'] = sab_format_decimal( $column_tax, 2 );
 			}
+
+			$gross_total += ( $invoice->prices_include_tax() ? $items[ $voucher_item_key ]['amount'] : ( $items[ $voucher_item_key ]['amount'] + $items[ $voucher_item_key ]['taxAmount'] ) );
 		}
 
 		/**
@@ -533,12 +554,21 @@ class Sync extends SyncHandler {
 					 */
 					$request['totalGrossAmount'] = sab_format_decimal( $request['totalGrossAmount'] + abs( $total_tax_diff ), 2 );
 				} else {
-					$items[] = array(
-						'amount'			=>	$total_tax_diff,
-						'taxAmount'			=>	0.0,
-						'taxRatePercent'	=>	0.0,
-						'categoryId'		=> 'aba9020f-d0a6-47ca-ace6-03d6ed492351'
-					);
+					/**
+					 * In case the calculated gross total (from the items containing adjusted column-wise tax totals)
+					 * is smaller than the actual gross total there is no other way but to adjust the gross amount and tax amount to be transmitted to lexoffice.
+					 */
+					if ( $request['totalGrossAmount'] > $gross_total ) {
+						$request['totalTaxAmount']   = sab_format_decimal( $request['totalTaxAmount'] - abs( $total_tax_diff ), 2 );
+						$request['totalGrossAmount'] = sab_format_decimal( $gross_total, 2 );
+					} else {
+						$items[] = array(
+							'amount'			=>	$total_tax_diff,
+							'taxAmount'			=>	0.0,
+							'taxRatePercent'	=>	0.0,
+							'categoryId'		=> 'aba9020f-d0a6-47ca-ace6-03d6ed492351'
+						);
+					}
 				}
 			}
 
@@ -656,7 +686,7 @@ class Sync extends SyncHandler {
 			'eu_revenues'             => '7c112b66-0565-479c-bc18-5845e080880a',
 			'eu_digital'              => 'd73b880f-c24a-41ea-a862-18d90e1c3d82',
 			'eu_revenues_oss'         => '4ebd965a-7126-416c-9d8c-a5c9366ee473',
-			'eu_digital_oss'          => 'efa82f40-fd85-11e1-a21f-0800200c9a66',
+			'eu_digital_oss'          => '7ecea006-844c-4c98-a02d-aa3142640dd5',
 		);
 
 		$default_category_name = 'revenues';

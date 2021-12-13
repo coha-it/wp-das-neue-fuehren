@@ -42,9 +42,8 @@ class FrontendProfileTag
             if (is_user_logged_in()) {
                 $user = $this->get_current_user_data();
             } else {
-                $profile_slug_with_slash = ppress_get_profile_slug() . '/';
 
-                if (strpos($_SERVER['REQUEST_URI'], $profile_slug_with_slash) !== false) {
+                if (strpos($_SERVER['REQUEST_URI'], '/' . ppress_get_profile_slug() . '/') !== false) {
                     wp_safe_redirect(home_url());
                     exit;
                 }
@@ -205,8 +204,7 @@ class FrontendProfileTag
         return $title;
     }
 
-    /** Singleton instance */
-    static public function get_instance()
+    public static function get_instance()
     {
         static $instance = false;
 

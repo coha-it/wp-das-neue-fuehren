@@ -41,6 +41,7 @@ class AjaxHandler
 
     public function menu_bar($builder_type)
     {
+        $builder_type = sanitize_text_field($builder_type);
         $melange_jbox = esc_html__('Melange is a way to combine login, registration & password reset forms in a single form.', 'wp-user-avatar');
         ?>
         <div id="pp-sub-bar">
@@ -49,35 +50,35 @@ class AjaxHandler
                 <span class="sr-only"><?php esc_html__('Loading...', 'wp-user-avatar'); ?></span>
                 <ul class="pp-design-options">
                     <li>
-                        <a href="#" class="pp-select-form-type pp-type-active" data-form-type="<?= FR::LOGIN_TYPE ?>" data-builder-type="<?= $builder_type ?>">
+                        <a href="#" class="pp-select-form-type pp-type-active" data-form-type="<?= esc_attr(FR::LOGIN_TYPE) ?>" data-builder-type="<?= esc_attr($builder_type) ?>">
                             <?php _e('Login', 'wp-user-avatar'); ?>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="pp-select-form-type" data-form-type="<?= FR::REGISTRATION_TYPE ?>" data-builder-type="<?= $builder_type ?>">
+                        <a href="#" class="pp-select-form-type" data-form-type="<?= FR::REGISTRATION_TYPE ?>" data-builder-type="<?= esc_attr($builder_type) ?>">
                             <?php _e('Registration', 'wp-user-avatar'); ?>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="pp-select-form-type" data-form-type="<?= FR::PASSWORD_RESET_TYPE ?>" data-builder-type="<?= $builder_type ?>">
+                        <a href="#" class="pp-select-form-type" data-form-type="<?= FR::PASSWORD_RESET_TYPE ?>" data-builder-type="<?= esc_attr($builder_type) ?>">
                             <?php _e('Password Reset', 'wp-user-avatar'); ?>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="pp-select-form-type" data-form-type="<?= FR::EDIT_PROFILE_TYPE ?>" data-builder-type="<?= $builder_type ?>">
+                        <a href="#" class="pp-select-form-type" data-form-type="<?= FR::EDIT_PROFILE_TYPE ?>" data-builder-type="<?= esc_attr($builder_type) ?>">
                             <?php _e('Edit Profile', 'wp-user-avatar'); ?>
                         </a>
                     </li>
                     <?php if ($builder_type == 'shortcodeBuilder') : ?>
                         <li>
-                            <a href="#" class="pp-select-form-type" data-form-type="<?= FR::MELANGE_TYPE ?>" data-builder-type="<?= $builder_type ?>">
+                            <a href="#" class="pp-select-form-type" data-form-type="<?= FR::MELANGE_TYPE ?>" data-builder-type="<?= esc_attr($builder_type) ?>">
                                 <?php _e('Melange', 'wp-user-avatar'); ?>
                             </a>
                             <span class="pp-melange-jbox dashicons dashicons-editor-help" title="<?php echo $melange_jbox; ?>"></span>
                         </li>
                     <?php endif; ?>
                     <li>
-                        <a href="#" class="pp-select-form-type" data-form-type="<?= FR::USER_PROFILE_TYPE ?>" data-builder-type="<?= $builder_type ?>">
+                        <a href="#" class="pp-select-form-type" data-form-type="<?= FR::USER_PROFILE_TYPE ?>" data-builder-type="<?= esc_attr($builder_type) ?>">
                             <?php _e('User Profile', 'wp-user-avatar'); ?>
                         </a>
                     </li>
@@ -99,7 +100,7 @@ class AjaxHandler
 
         $label = esc_html__('Create from Scratch', 'wp-user-avatar');
         ?>
-        <div id="pp-optin-theme-list" class="pp-optin-theme ppress-allow-activate" data-builder-type="<?php echo $type; ?>" data-theme-type="<?php echo $form_type; ?>">
+        <div id="pp-optin-theme-list" class="pp-optin-theme ppress-allow-activate" data-builder-type="<?php echo esc_attr($type); ?>" data-theme-type="<?php echo esc_attr($form_type); ?>">
             <div class="pp-optin-theme-screenshot">
                 <div style="position: absolute;top: 40%;display: block;width: 100%;">
                     <h2 style="text-transform: uppercase;margin: 0 0 5px;font-size: 2em;padding: 0;text-align: center;">
@@ -120,10 +121,10 @@ class AjaxHandler
 
     public function form_template_single($theme, $builder_type)
     {
-        $screenshot  = $theme['screenshot'];
+        $screenshot  = esc_attr($theme['screenshot']);
         $name        = $theme['name'];
-        $theme_class = $theme['theme_class'];
-        $theme_type  = $theme['theme_type'];
+        $theme_class = esc_attr($theme['theme_class']);
+        $theme_type  = esc_attr($theme['theme_type']);
 
         $upgrade_url = 'https://profilepress.net/pricing/?utm_source=wp_dashboard&utm_medium=upgrade&utm_campaign=premium_template';
 
@@ -136,7 +137,7 @@ class AjaxHandler
         $url_target  = $is_premium_theme_disallowed ? ' target="_blank"' : '';
 
         ?>
-        <div class="pp-optin-theme<?= $extra_class; ?>" data-builder-type="<?= $builder_type; ?>" data-theme-class="<?= $theme_class; ?>" data-theme-type="<?= $theme_type; ?>">
+        <div class="pp-optin-theme<?= esc_attr($extra_class); ?>" data-builder-type="<?= esc_attr($builder_type); ?>" data-theme-class="<?= esc_attr($theme_class); ?>" data-theme-type="<?= esc_attr($theme_type); ?>">
             <a <?= $url_target; ?> href="<?= $url; ?>">
                 <div class="pp-optin-theme-screenshot">
                     <img src="<?= $screenshot; ?>" alt="<?= $name; ?>">
@@ -161,8 +162,8 @@ class AjaxHandler
         $placeholder = ! empty($placeholder) ? $placeholder : '';
         ?>
         <div class="pp-form-new-list pp-optin-clear">
-            <h4><?php echo $label; ?>
-                <input type="text" id="pp-add-form-title" placeholder="<?= $placeholder; ?>">
+            <h4><?php echo esc_html($label); ?>
+                <input type="text" id="pp-add-form-title" placeholder="<?= esc_attr($placeholder); ?>">
                 <span class="spinner pp-dash-spinner"></span>
             </h4>
         </div>
@@ -171,7 +172,7 @@ class AjaxHandler
 
     public function get_forms_by_builder_type($form_type = FR::LOGIN_TYPE, $builder_type = false)
     {
-        $form_type    = ! empty($form_type) ? $form_type : FR::LOGIN_TYPE;
+        $form_type    = ! empty($form_type) ? sanitize_text_field($form_type) : FR::LOGIN_TYPE;
         $builder_type = ! $builder_type ? sanitize_text_field($_POST['data']) : $builder_type;
 
         $this->form_name_field();
@@ -267,6 +268,7 @@ class AjaxHandler
     function ajax_delete_avatar()
     {
         if (current_user_can('read')) {
+
             if ( ! wp_verify_nonce($_POST['nonce'], 'ppress-frontend-nonce')) {
                 wp_send_json(array('error' => 'nonce_failed'));
             }
@@ -289,7 +291,7 @@ class AjaxHandler
 
             $default = get_option('wp_user_cover_default_image_url', '');
 
-            wp_send_json(['success' => true, 'default' => $default]);
+            wp_send_json(['success' => true, 'default' => esc_url_raw($default)]);
         }
     }
 
@@ -371,11 +373,12 @@ class AjaxHandler
         wp_die();
     }
 
-    function ajax_login_func()
+    public function ajax_login_func()
     {
         if ( ! defined('W3GUY_LOCAL') && is_user_logged_in()) wp_send_json_error();
 
         if (isset($_REQUEST['data'])) {
+
             parse_str($_REQUEST['data'], $data); //tabbed-login-name
 
             // populate global $_POST variable.
@@ -393,9 +396,9 @@ class AjaxHandler
             $login_username = trim($login_username);
             $login_remember = sanitize_text_field($login_remember);
 
-            $login_redirect = ! empty($data['login_redirect']) ? esc_url_raw($data['login_redirect']) : '';
+            $login_redirect = ! empty($data['login_redirect']) ? sanitize_text_field($data['login_redirect']) : '';
             if ( ! empty($data['melange_redirect'])) {
-                $login_redirect = esc_url_raw($data['melange_redirect']);
+                $login_redirect = sanitize_text_field($data['melange_redirect']);
             }
 
             /** @var \WP_Error|string $response */
@@ -404,7 +407,7 @@ class AjaxHandler
             $ajax_response = array('success' => true, 'redirect' => $response);
 
             if (isset($response) && is_wp_error($response)) {
-                $login_error = '<div class="' . $login_status_css_class . '">';
+                $login_error = '<div class="' . esc_attr($login_status_css_class) . '">';
                 $login_error .= $response->get_error_message();
                 $login_error .= '</div>';
 
@@ -430,10 +433,10 @@ class AjaxHandler
 
             $redirect = ppressPOST_var('signup_redirect', '', true);
             if ( ! empty($_POST['melange_redirect'])) {
-                $redirect = esc_url_raw($_POST['melange_redirect']);
+                $redirect = sanitize_text_field($_POST['melange_redirect']);
             }
 
-            $no_login_redirect = esc_url_raw(@$_POST['signup_no_login_redirect']);
+            $no_login_redirect = sanitize_text_field(@$_POST['signup_no_login_redirect']);
 
             // if this is tab widget.
             if (isset($_POST['is-pp-tab-widget']) && $_POST['is-pp-tab-widget'] == 'true') {

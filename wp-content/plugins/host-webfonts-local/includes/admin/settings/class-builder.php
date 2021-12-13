@@ -96,13 +96,13 @@ class OMGF_Admin_Settings_Builder
 			<td>
 				<?php foreach ($inputs as $option => $option_label) : ?>
 					<label>
-						<input type="radio" class="<?= str_replace('_', '-', $name . '_' . $option); ?>" name="<?= $name; ?>" value="<?= $option; ?>" <?= $option == $checked ? 'checked="checked"' : ''; ?> />
+						<input type="radio" <?= strpos($option_label, '(Pro)') !== false ? apply_filters($name . '_' . $option . '_setting_disabled', 'disabled') : ''; ?> class="<?= str_replace('_', '-', $name . '_' . $option); ?>" name="<?= $name; ?>" value="<?= $option; ?>" <?= $option == $checked ? 'checked="checked"' : ''; ?> />
 						<?= $option_label; ?>
 					</label>
 					<br />
 				<?php endforeach; ?>
 				<p class="description">
-					<?= $description; ?>
+					<?= $description . ' ' . $this->promo; ?>
 				</p>
 			</td>
 		</tr>
@@ -158,10 +158,10 @@ class OMGF_Admin_Settings_Builder
 	 * @param $value
 	 * @param $description
 	 */
-	public function do_number($label, $name, $value, $description, $min = 0)
+	public function do_number($label, $name, $value, $description, $min = 0, $visible = true)
 	{
 	?>
-		<tr valign="top">
+		<tr valign="top" <?= $visible ? '' : 'style="display: none;"'; ?>>
 			<th scope="row"><?= apply_filters($name . '_setting_label', $label); ?></th>
 			<td>
 				<input class="<?= str_replace('_', '-', $name); ?>" type="number" name="<?= $name; ?>" min="<?= $min; ?>" value="<?= $value; ?>" />

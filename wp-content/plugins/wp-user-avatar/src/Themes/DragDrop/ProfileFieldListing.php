@@ -144,6 +144,10 @@ class ProfileFieldListing
 
                 $this->has_field_data = true;
 
+                if ($field_type == 'profile-website') {
+                    $parsed_shortcode = sprintf('<a href="%1$s" rel="nofollow" target="_blank">%1$s</a>', $parsed_shortcode);
+                }
+
                 if ( ! empty($field_key) && strpos($field_type, 'profile-cpf') !== false && in_array($field_key, array_keys(ppress_social_network_fields()))) {
                     $parsed_shortcode = sprintf('<a href="%s">%s</a>', $parsed_shortcode, ppress_var(ppress_social_network_fields(), $field_key));
                 }

@@ -40,11 +40,54 @@ const settings = {
             "type": "string",
         },
         "customFontSize": {
-            "type": "number"
+            "type": "string"
         },
     },
     edit,
-    save
+    save,
+    deprecated: [
+        {
+            supports: {
+                html: false,
+                className: false,
+            },
+            attributes: {
+                "title": {
+                    "type": 'string',
+                    "source": 'html',
+                    "selector": 'p'
+                },
+                "align": {
+                    "type": 'string',
+                    "default": 'left'
+                },
+                "textColor": {
+                    "type": "string"
+                },
+                "customTextColor": {
+                    "type": "string"
+                },
+                "fontSize": {
+                    "type": "string",
+                },
+                "customFontSize": {
+                    "type": "number"
+                },
+            },
+            isEligible( { customFontSize } ) {
+                return typeof customFontSize === 'number';
+            },
+            migrate( attributes ) {
+                return {
+                    ...attributes,
+                    customFontSize: attributes.customFontSize ? '' + attributes.customFontSize : undefined,
+                };
+            },
+            save( attributes ) {
+                return save( attributes );
+            }
+        },
+    ]
 };
 
 registerBlockType( 'storeabill/document-title', settings );

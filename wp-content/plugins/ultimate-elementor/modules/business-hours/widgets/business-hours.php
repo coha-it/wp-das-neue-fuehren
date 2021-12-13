@@ -92,6 +92,7 @@ class Business_Hours extends Common_Widget {
 	 * @access protected
 	 */
 	protected function register_controls() {
+		$this->register_presets_control( 'Business_Hours', $this );
 
 		$this->register_general_content_controls();
 		$this->register_helpful_information();
@@ -173,9 +174,6 @@ class Business_Hours extends Common_Widget {
 			array(
 				'label'     => __( 'Day Color', 'uael' ),
 				'type'      => Controls_Manager::COLOR,
-				'global'    => array(
-					'default' => Global_Colors::COLOR_SECONDARY,
-				),
 				'default'   => '#db6159',
 				'selectors' => array(
 					'{{WRAPPER}} {{CURRENT_ITEM}} .uael-business-day-highlight' => 'color: {{VALUE}}',
@@ -193,9 +191,6 @@ class Business_Hours extends Common_Widget {
 			array(
 				'label'     => __( 'Time Color', 'uael' ),
 				'type'      => Controls_Manager::COLOR,
-				'global'    => array(
-					'default' => Global_Colors::COLOR_ACCENT,
-				),
 				'default'   => '#db6159',
 				'selectors' => array(
 					'{{WRAPPER}} {{CURRENT_ITEM}} .uael-business-timing-highlight' => 'color: {{VALUE}}',
@@ -661,20 +656,6 @@ class Business_Hours extends Common_Widget {
 			</div>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Render Heading widgets output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 0.0.1
-	 * @access protected
-	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-		$this->content_template();
 	}
 
 }

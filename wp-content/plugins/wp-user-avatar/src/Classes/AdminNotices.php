@@ -24,11 +24,29 @@ class AdminNotices
             add_action('admin_init', array('PAnD', 'init'));
         }
         add_action('admin_init', array($this, 'act_on_request'));
+
+        add_filter('admin_body_class', [$this, 'add_admin_body_class']);
+    }
+
+    public function add_admin_body_class($classes)
+    {
+        $current_screen = get_current_screen();
+
+        if (empty ($current_screen)) return $classes;
+
+        if (false !== strpos($current_screen->id, 'pp-')) {
+            // Leave space on both sides so other plugins do not conflict.
+            $classes .= ' ppress-admin ';
+        }
+
+        return $classes;
     }
 
     public function admin_notices_bucket()
     {
         do_action('ppress_admin_notices');
+
+        $this->seo_friendly_permalink_not_set();
 
         $this->registration_disabled_notice();
 
@@ -76,7 +94,7 @@ class AdminNotices
 
         $review_url = 'https://wordpress.org/support/plugin/wp-user-avatar/reviews/?filter=5#new-post';
 
-        $dismiss_url = esc_url_raw(add_query_arg('ppress_admin_action', 'dismiss_leave_review_forever'));
+        $dismiss_url = esc_url(add_query_arg('ppress_admin_action', 'dismiss_leave_review_forever'));
 
         $notice = sprintf(
             __('Hey, I noticed you have been using ProfilePress for at least 7 days now - that\'s awesome! Could you please do us a BIG favor and give it a %1$s5-star rating on WordPress?%2$s This will help us spread the word and boost our motivation - thanks!', 'wp-user-avatar'),
@@ -85,7 +103,7 @@ class AdminNotices
         );
         $label  = __('Sure! I\'d love to give a review', 'wp-user-avatar');
 
-        $dismiss_label = __('Dimiss Forever', 'wp-user-avatar');
+        $dismiss_label = __('Dismiss Forever', 'wp-user-avatar');
 
         $notice .= "<div style=\"margin:10px 0 0;\"><a href=\"$review_url\" target='_blank' class=\"button-primary\">$label</a></div>";
         $notice .= "<div style=\"margin:10px 0 0;\"><a href=\"$dismiss_url\">$dismiss_label</a></div>";
@@ -93,6 +111,29 @@ class AdminNotices
         echo '<div data-dismissible="ppress-review-plugin-notice-forever" class="update-nag notice notice-warning is-dismissible">';
         echo "<p>$notice</p>";
         echo '</div>';
+    }
+
+    public function seo_friendly_permalink_not_set()
+    {
+        if ( ! PAnD::is_admin_notice_active('ppress_seo_friendly_permalink_not_set-2')) return;
+
+        if (is_admin() && current_user_can('administrator') && ! get_option('permalink_structure')) {
+
+            $change_permalink_button = sprintf(
+                '<a class="button" href="%s">%s</a>',
+                admin_url('options-permalink.php'),
+                __('Change Permalink Structure', 'wp-user-avatar')
+            );
+
+            $notice = sprintf(
+                __("Your site permalink structure is currently set to <code>Plain</code>. This setting is not compatible with ProfilePress. Change your permalink structure to any other setting to avoid issues. We recommend <code>Post name</code>.</p><p>%s", 'wp-user-avatar'),
+                $change_permalink_button
+            );
+
+            echo '<div data-dismissible="ppress_seo_friendly_permalink_not_set-2" class="update-nag notice notice-warning is-dismissible">';
+            echo "<p>$notice</p>";
+            echo '</div>';
+        }
     }
 
     /**
@@ -104,7 +145,7 @@ class AdminNotices
 
         if (get_option('ppress_is_from_wp_user_avatar', false) != 'true') return;
 
-        $dismiss_url = esc_url_raw(add_query_arg('ppress_admin_action', 'dismiss_wp_user_avatar_now_ppress'));
+        $dismiss_url = esc_url(add_query_arg('ppress_admin_action', 'dismiss_wp_user_avatar_now_ppress'));
 
         $notice = sprintf(
             __('Important news! %1$sWP User Avatar%2$s is now %1$sProfilePress%2$s. We added new features such as member directories, frontend user registration & login forms, user profile, content protection and more. %3$sCheck Them Out%5$s | %4$sDismiss Notice%5$s', 'wp-user-avatar'),

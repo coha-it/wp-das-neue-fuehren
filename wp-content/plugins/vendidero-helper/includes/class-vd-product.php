@@ -12,25 +12,27 @@ class VD_Product {
 	public $blog_ids = array();
 	public $expires;
 	public $home_url = array();
+	public $supports_renewals = true;
     private $key;
 
 	public function __construct( $file, $product_id, $args = array() ) {
 
         $args = wp_parse_args( $args, array(
-            'free'     => false,
-            'blog_ids' => array(),
+            'free'              => false,
+            'blog_ids'          => array(),
+	        'supports_renewals' => true,
         ) );
 
-        $this->id       = $product_id;
-        $this->file     = $file;
-        $this->free     = $args['free'];
-        $this->blog_ids = $args['blog_ids'];
-		$this->key      = '';
-		$this->expires  = '';
-		$this->home_url = array();
+        $this->id                = $product_id;
+        $this->file              = $file;
+        $this->free              = $args['free'];
+        $this->blog_ids          = $args['blog_ids'];
+        $this->supports_renewals = $args['supports_renewals'];
+		$this->key               = '';
+		$this->expires           = '';
+		$this->home_url          = array();
 
 		if ( ! empty( $this->blog_ids ) ) {
-
 			foreach( $this->blog_ids as $blog_id ) {
 				$this->home_url[] = VD()->sanitize_domain( get_home_url( $blog_id, '/' ) );
 			}
@@ -82,13 +84,17 @@ class VD_Product {
 		return $this->get_url() . '?renew=true&license=' . $this->key;
 	}
 
+	public function supports_renewals() {
+		return $this->is_free() ? false : $this->supports_renewals;
+	}
+
 	public function is_registered() {
 		return ( ( ! empty( $this->key ) || $this->is_free() ) ? true : false );
 	}
 
-	public function refresh_expiration_date() {
+	public function refresh_expiration_date( $force = false ) {
 		if ( $this->is_registered() ) {
-			$expire = VD()->api->expiration_check( $this );
+			$expire = VD()->api->expiration_check( $this, $force );
 
 			if ( ! is_wp_error( $expire ) ) {
                 $this->set_expiration_date( $expire );
@@ -98,6 +104,12 @@ class VD_Product {
 		}
 
 		return false;
+	}
+
+	public function flush_api_cache() {
+		delete_transient( "_vendidero_helper_updates_{$this->id}" );
+		delete_transient( "_vendidero_helper_update_info_{$this->id}" );
+		delete_transient( "_vendidero_helper_expiry_{$this->id}" );
 	}
 
 	public function get_expiration_date( $format = 'd.m.Y' ) {

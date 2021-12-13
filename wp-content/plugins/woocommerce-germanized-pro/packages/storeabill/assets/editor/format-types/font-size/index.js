@@ -77,7 +77,6 @@ class FontSizeEdit extends Component {
 					className="format-library-text-size-button"
 					icon={ icon }
 					title={ title }
-					isActive={ isActive }
 					onClick={ this.addFontSize }
 				/>
 				{ this.state.addingFontSize && (
@@ -85,7 +84,6 @@ class FontSizeEdit extends Component {
 						addingFontSize={ this.state.addingFontSize }
 						stopAddingFontSize={ this.stopAddingFontSize }
 						removeFontSize={ this.onRemoveFormat }
-						isActive={ isActive }
 						activeAttributes={ activeAttributes }
 						value={ value }
 						onChange={ onChange }

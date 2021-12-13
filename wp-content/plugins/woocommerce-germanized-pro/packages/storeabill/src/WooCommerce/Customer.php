@@ -190,6 +190,21 @@ class Customer implements \Vendidero\StoreaBill\Interfaces\Customer {
 		return $this->customer->get_shipping_city();
 	}
 
+	public function has_shipping_address() {
+		if ( is_callable( array( $this->customer, 'has_shipping_address' ) ) ) {
+			return $this->customer->has_shipping_address();
+		} else {
+			foreach ( $this->customer->get_shipping() as $address_field ) {
+				// Trim guards against a case where a subset of saved shipping address fields contain whitespace.
+				if ( strlen( trim( $address_field ) ) > 0 ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
+
 	public function get_meta( $key, $single = true, $context = 'view' ) {
 		$meta = $this->customer->get_meta( $key, $single, $context );
 

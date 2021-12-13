@@ -80,10 +80,10 @@ class DragDropBuilder
 
                 $fields[$key] = [
                     'definedFieldKey'  => $field_key,
-                    'definedFieldType' => $definedFieldType,
+                    'definedFieldType' => esc_attr($definedFieldType),
                     'fieldTitle'       => ppress_decode_html_strip_tags($label),
-                    'label'            => $label,
-                    'placeholder'      => $label,
+                    'label'            => esc_attr($label),
+                    'placeholder'      => esc_attr($label),
                     'fieldIcon'        => '<span class="dashicons dashicons-portfolio"></span>',
                 ];
             }
@@ -123,11 +123,11 @@ class DragDropBuilder
 
             $fields[$key] = [
                 'definedFieldKey'  => $field_key,
-                'definedFieldType' => $definedFieldType,
+                'definedFieldType' => esc_attr($definedFieldType),
                 'fieldTitle'       => ppress_decode_html_strip_tags($title) . ($woocommerce_field !== false ? (sprintf(' (WC%s)', 'billing' == $woocommerce_field ? 'BA' : 'SA')) : ''),
                 'fieldBarTitle'    => ppress_decode_html_strip_tags($title),
-                'label'            => $title,
-                'placeholder'      => $title,
+                'label'            => esc_attr($title),
+                'placeholder'      => esc_attr($title),
                 'fieldIcon'        => '<span class="dashicons dashicons-portfolio"></span>',
             ];
         }
@@ -1249,12 +1249,12 @@ class DragDropBuilder
     {
         settings_errors('pp_drag_drop_builder_notice');
         $title     = FR::get_name($this->form_id, $this->form_type);
-        $shortcode = sprintf('&lsqb;profilepress-%s id=&quot;%s&quot;&rsqb;', $this->form_type, $this->form_id);
+        $shortcode = sprintf('[profilepress-%s id="%s"]', $this->form_type, $this->form_id);
         ?>
         <div id="titlediv">
             <div id="titlewrap">
                 <label class="screen-reader-text" id="title-prompt-text" for="title"><?php _e('Enter title here', 'wp-user-avatar'); ?></label>
-                <input type="text" name="pp_form_title" size="30" value="<?= $title ?>" id="title">
+                <input type="text" name="pp_form_title" size="30" value="<?= esc_attr($title) ?>" id="title">
                 <a class="pp-form-save-changes button button-primary button-large" style="margin: 2px 0 0 10px;text-align: center;" href="#"><?php _e('Save Changes', 'wp-user-avatar'); ?></a>
             </div>
             <div class="inside">
@@ -1263,7 +1263,7 @@ class DragDropBuilder
                         <?php esc_html_e('Copy this shortcode and paste it into your post, page, or text widget content:', 'wp-user-avatar') ?>
                     </label>
                     <span class="shortcode wp-ui-highlight">
-                        <input type="text" id="ppress-shortcode" onfocus="this.select();" readonly="readonly" class="large-text code" value="<?= $shortcode ?>">
+                        <input type="text" id="ppress-shortcode" onfocus="this.select();" readonly="readonly" class="large-text code" value="<?= esc_attr($shortcode) ?>">
                     </span>
                 </p>
             </div>
@@ -1284,7 +1284,7 @@ class DragDropBuilder
                         <a class="pp-form-save-changes button button-primary button-large" style="margin: 0 10px 0 0;vertical-align: middle;" href="#">
                             <?php _e('Save Changes', 'wp-user-avatar'); ?>
                         </a>
-                        <a href="<?php echo FormList::delete_url($this->form_id, $this->form_type) ?>" class="pp-form-delete button-link button-link-delete">
+                        <a href="<?= esc_url(FormList::delete_url($this->form_id, $this->form_type)) ?>" class="pp-form-delete button-link button-link-delete">
                             <?php _e('Delete Form', 'wp-user-avatar'); ?>
                         </a>
                     </div>
@@ -1522,7 +1522,6 @@ class DragDropBuilder
     {
         // Enable rich editing for this view (Overrides 'Disable the visual editor when writing' option for current user)
         add_filter('user_can_richedit', '__return_true');
-        wp_enqueue_editor();
         wp_enqueue_editor();
 
         if ( ! empty($GLOBALS['post'])) {

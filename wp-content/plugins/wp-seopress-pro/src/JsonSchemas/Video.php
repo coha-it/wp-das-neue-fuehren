@@ -30,14 +30,14 @@ class Video extends JsonSchemaValue implements GetJsonData {
      */
     protected function getVariablesForManualSnippet($schemaManual) {
         $keys = [
-            'type'                      => '_seopress_pro_rich_snippets_type',
-            'name'                      => '_seopress_pro_rich_snippets_videos_name',
-            'description'               => '_seopress_pro_rich_snippets_videos_description',
-            'thumbnailUrl'              => '_seopress_pro_rich_snippets_videos_img',
-            'imgWidth'                  => '_seopress_pro_rich_snippets_videos_img_width',
-            'imgHeight'                 => '_seopress_pro_rich_snippets_videos_img_height',
-            'duration'                  => '_seopress_pro_rich_snippets_videos_duration',
-            'url'                       => '_seopress_pro_rich_snippets_videos_url',
+            'type' => '_seopress_pro_rich_snippets_type',
+            'name' => '_seopress_pro_rich_snippets_videos_name',
+            'description' => '_seopress_pro_rich_snippets_videos_description',
+            'thumbnailUrl' => '_seopress_pro_rich_snippets_videos_img',
+            'imgWidth' => '_seopress_pro_rich_snippets_videos_img_width',
+            'imgHeight' => '_seopress_pro_rich_snippets_videos_img_height',
+            'duration' => '_seopress_pro_rich_snippets_videos_duration',
+            'url' => '_seopress_pro_rich_snippets_videos_url',
         ];
         $variables = [];
 
@@ -78,10 +78,10 @@ class Video extends JsonSchemaValue implements GetJsonData {
             $variables['uploadDate'] = get_the_date('c', $context['post']->ID);
         }
 
-        if (isset($variables['duration']) && ! empty($variables['duration']) ) {
-            $time   = explode(':', $variables['duration']);
-            $sec 	  = isset($time[2]) ? intval($time[2]) : 00;
-            $min 	  = isset($time[0]) && isset($time[1]) ? intval($time[0]) * 60.0 + intval($time[1]) * 1.0 : $_seopress_pro_rich_snippets_videos_duration;
+        if (isset($variables['duration']) && ! empty($variables['duration'])) {
+            $time = explode(':', $variables['duration']);
+            $sec = isset($time[2]) ? intval($time[2]) : 00;
+            $min = isset($time[0]) && isset($time[1]) ? intval($time[0]) * 60.0 + intval($time[1]) * 1.0 : '00:00';
 
             $variables['duration'] = sprintf('PT%sM%sS', $min, $sec);
         }
@@ -90,23 +90,23 @@ class Video extends JsonSchemaValue implements GetJsonData {
             $variables['contentUrl'] = $variables['embedUrl'] = $variables['url'];
         }
 
-        $publisher  = seopress_get_service('SocialOption')->getSocialKnowledgeName();
+        $publisher = seopress_get_service('SocialOption')->getSocialKnowledgeName();
 
         if ( ! empty($publisher)) {
             $variablesSchema = [
-                'type'    => 'Organization',
-                'name'    => $publisher,
+                'type' => 'Organization',
+                'name' => $publisher,
             ];
-            $contextWithVariables              = $context;
+            $contextWithVariables = $context;
             $contextWithVariables['variables'] = $variablesSchema;
-            $contextWithVariables['type']      = RichSnippetType::SUB_TYPE;
-            $schema                            = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(Organization::NAME, $contextWithVariables, ['remove_empty'=> true]);
+            $contextWithVariables['type'] = RichSnippetType::SUB_TYPE;
+            $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(Organization::NAME, $contextWithVariables, ['remove_empty' => true]);
             if (count($schema) > 1) {
-                $data['publisher']                 = $schema;
+                $data['publisher'] = $schema;
                 $contextWithVariables['variables'] = [
-                    'url'    => seopress_get_service('SocialOption')->getSocialKnowledgeImage(),
+                    'url' => seopress_get_service('SocialOption')->getSocialKnowledgeImage(),
                 ];
-                $schema                            = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(Image::NAME, $contextWithVariables, ['remove_empty'=> true]);
+                $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(Image::NAME, $contextWithVariables, ['remove_empty' => true]);
                 if (count($schema) > 1) {
                     $data['publisher']['logo'] = $schema;
                 }

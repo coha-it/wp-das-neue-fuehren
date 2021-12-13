@@ -21,7 +21,7 @@ class PrintRichSnippets implements ExecuteHooksFrontend {
 
         $render = false;
         if (is_singular()) {
-            $render =true;
+            $render = true;
         }
 
         if ( ! $render) {
@@ -40,20 +40,20 @@ class PrintRichSnippets implements ExecuteHooksFrontend {
         }
 
         $jsonsNeedToCreate = [];
-        $jsonsCustom       = [];
+        $jsonsCustom = [];
 
         foreach ($schemas as $schema) {
             if ( ! isset($schema['_seopress_pro_rich_snippets_type'])) {
                 continue;
             }
-            if ('custom' === $schema['_seopress_pro_rich_snippets_type']) {
+            if ('custom' === $schema['_seopress_pro_rich_snippets_type'] && isset($schema['_seopress_pro_rich_snippets_custom'])) {
                 $jsonsCustom[] = $schema['_seopress_pro_rich_snippets_custom'];
             }
 
             $jsonsNeedToCreate[] = $schema['_seopress_pro_rich_snippets_type'];
         }
 
-        $context         = seopress_get_service('ContextPage')->getContext();
+        $context = seopress_get_service('ContextPage')->getContext();
         $context['type'] = RichSnippetType::MANUAL;
 
         $jsons = seopress_get_service('JsonSchemaGenerator')->getJsonsEncoded($jsonsNeedToCreate, $context);
@@ -61,18 +61,19 @@ class PrintRichSnippets implements ExecuteHooksFrontend {
         foreach ($jsons as $key => $json) {
             if (null === $json) {
                 continue;
-            } ?> <script type="application/ld+json">
-                <?php echo apply_filters('seopress_rich_snippets_' . $jsonsNeedToCreate[$key] . '_html', $json, $context); ?>
-                </script><?php
+            } ?>
+<script type="application/ld+json">
+    <?php echo apply_filters('seopress_rich_snippets_' . $jsonsNeedToCreate[$key] . '_html', $json, $context); ?>
+</script><?php
                 echo "\n";
         }
 
-        $jsonsCustom  =seopress_get_service('TagsToString')->replaceDataToString($jsonsCustom, $context);
+        $jsonsCustom = seopress_get_service('TagsToString')->replaceDataToString($jsonsCustom, $context);
 
         foreach ($jsonsCustom as $key => $json) {
             echo apply_filters('seopress_rich_snippets_custom_' . $key . '_html', $json, $context);
             echo "\n";
         } ?>
-        <?php
+<?php
     }
 }

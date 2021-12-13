@@ -8,7 +8,6 @@ import {
 	FontSizePicker,
 	InspectorControls,
 	withFontSizes,
-	__experimentalUseColors,
 	RichText,
 	BlockControls,
 	AlignmentToolbar,
@@ -17,6 +16,7 @@ import {
 import { PanelBody } from "@wordpress/components";
 import { compose } from "@wordpress/compose";
 import { getSetting } from '@storeabill/settings';
+import { getFontSizeStyle, convertFontSizeForPicker, useColors } from '@storeabill/utils';
 import { useRef, useState, useEffect } from "@wordpress/element";
 
 import ServerSideRender from '@wordpress/server-side-render';
@@ -42,7 +42,7 @@ function DynamicContentEdit( {
 	const {
 		TextColor,
 		InspectorControlsColorPanel,
-	} = __experimentalUseColors(
+	} = useColors(
 		[
 			{ name: 'textColor', property: 'color' },
 		],
@@ -69,14 +69,16 @@ function DynamicContentEdit( {
 			<InspectorControls>
 				<PanelBody title={ _x( 'Typography', 'storeabill-core', 'storeabill' ) }>
 					<FontSizePicker
-						value={ fontSize.size }
+						value={ convertFontSizeForPicker( fontSize.size ) }
 						onChange={ setFontSize }
 					/>
 				</PanelBody>
 			</InspectorControls>
 			{ InspectorControlsColorPanel }
 			<TextColor>
-				<div className={ classes }>
+				<div className={ classes } style={ {
+					fontSize: getFontSizeStyle( fontSize )
+				} }>
 					{ serverSideRenderResult }
 				</div>
 			</TextColor>

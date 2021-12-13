@@ -122,7 +122,7 @@ abstract class FieldBase implements FieldInterface
                         <?php foreach ($tabs as $tab_id => $tab_title) {
                             if ( ! empty($field_settings[$tab_id])) {
                                 ?>
-                                <a href="#<?= $tab_id ?>" class="pp-form-buider-settings-popup-tab-menu"><?= $tab_title ?></a>
+                                <a href="#<?= $tab_id ?>" class="pp-form-buider-settings-popup-tab-menu"><?= esc_html($tab_title) ?></a>
                                 <?php
                             }
                         }

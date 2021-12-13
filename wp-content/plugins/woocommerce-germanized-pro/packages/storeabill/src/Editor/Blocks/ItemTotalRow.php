@@ -47,7 +47,6 @@ class ItemTotalRow extends DynamicBlock {
 			'textColor'             => $this->get_schema_string(),
 			'customTextColor'       => $this->get_schema_string(),
 			'fontSize'              => $this->get_schema_string( '' ),
-			'customFontSize'        => $this->get_schema_number( '' ),
 			'hideIfEmpty'           => $this->get_schema_boolean( false ),
 			'renderNumber'          => $this->get_schema_number( 1 ),
 			'renderTotal'           => $this->get_schema_number( 1 ),
@@ -80,6 +79,7 @@ class ItemTotalRow extends DynamicBlock {
 		 */
 		$document   = $GLOBALS['document'];
 		$attributes = $this->parse_attributes( $attributes );
+
 		$classes    = array_merge( sab_generate_block_classes( $attributes ), array( 'item-total' ) );
 		$styles     = sab_generate_block_styles( $attributes );
 
@@ -146,7 +146,7 @@ class ItemTotalRow extends DynamicBlock {
 				/**
 				 * Skip for empty amounts.
 				 */
-				if ( true === $attributes['hideIfEmpty'] && empty( $total->get_total() ) ) {
+				if ( ( true === $attributes['hideIfEmpty'] && empty( $total->get_total() ) ) || apply_filters( "storeabill_hide_{$document->get_type()}_total_row", false, $attributes, $total, $document ) ) {
 					continue;
 				}
 

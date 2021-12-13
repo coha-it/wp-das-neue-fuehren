@@ -2,29 +2,37 @@
     "packages": [
         {
             "name": "automattic/jetpack-autoloader",
-            "version": "v2.7.1",
-            "version_normalized": "2.7.1.0",
+            "version": "2.10.1",
+            "version_normalized": "2.10.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Automattic/jetpack-autoloader.git",
-                "reference": "5437697a56aefbdf707849b9833e1b36093d7a73"
+                "reference": "20393c4677765c3e737dcb5aee7a3f7b90dce4b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/5437697a56aefbdf707849b9833e1b36093d7a73",
-                "reference": "5437697a56aefbdf707849b9833e1b36093d7a73",
+                "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/20393c4677765c3e737dcb5aee7a3f7b90dce4b3",
+                "reference": "20393c4677765c3e737dcb5aee7a3f7b90dce4b3",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^1.1 || ^2.0"
             },
             "require-dev": {
+                "automattic/jetpack-changelogger": "^1.1",
                 "yoast/phpunit-polyfills": "0.2.0"
             },
-            "time": "2020-12-18T22:33:59+00:00",
+            "time": "2021-03-30T15:15:59+00:00",
             "type": "composer-plugin",
             "extra": {
-                "class": "Automattic\\Jetpack\\Autoloader\\CustomAutoloaderPlugin"
+                "class": "Automattic\\Jetpack\\Autoloader\\CustomAutoloaderPlugin",
+                "mirror-repo": "Automattic/jetpack-autoloader",
+                "changelogger": {
+                    "link-template": "https://github.com/Automattic/jetpack-autoloader/compare/v${old}...v${new}"
+                },
+                "branch-alias": {
+                    "dev-master": "2.10.x-dev"
+                }
             },
             "installation-source": "dist",
             "autoload": {
@@ -41,23 +49,23 @@
             ],
             "description": "Creates a custom autoloader for a plugin or theme.",
             "support": {
-                "source": "https://github.com/Automattic/jetpack-autoloader/tree/v2.7.1"
+                "source": "https://github.com/Automattic/jetpack-autoloader/tree/2.10.1"
             },
             "install-path": "../automattic/jetpack-autoloader"
         },
         {
             "name": "composer/installers",
-            "version": "v1.11.0",
-            "version_normalized": "1.11.0.0",
+            "version": "v1.12.0",
+            "version_normalized": "1.12.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/installers.git",
-                "reference": "ae03311f45dfe194412081526be2e003960df74b"
+                "reference": "d20a64ed3c94748397ff5973488761b22f6d3f19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/installers/zipball/ae03311f45dfe194412081526be2e003960df74b",
-                "reference": "ae03311f45dfe194412081526be2e003960df74b",
+                "url": "https://api.github.com/repos/composer/installers/zipball/d20a64ed3c94748397ff5973488761b22f6d3f19",
+                "reference": "d20a64ed3c94748397ff5973488761b22f6d3f19",
                 "shasum": ""
             },
             "require": {
@@ -75,7 +83,7 @@
                 "symfony/phpunit-bridge": "^4.2 || ^5",
                 "symfony/process": "^2.3"
             },
-            "time": "2021-04-28T06:42:17+00:00",
+            "time": "2021-09-13T08:19:44+00:00",
             "type": "composer-plugin",
             "extra": {
                 "class": "Composer\\Installers\\Plugin",
@@ -158,6 +166,7 @@
                 "modx",
                 "moodle",
                 "osclass",
+                "pantheon",
                 "phpbb",
                 "piwik",
                 "ppi",
@@ -180,7 +189,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/installers/issues",
-                "source": "https://github.com/composer/installers/tree/v1.11.0"
+                "source": "https://github.com/composer/installers/tree/v1.12.0"
             },
             "funding": [
                 {
@@ -199,420 +208,61 @@
             "install-path": "./installers"
         },
         {
-            "name": "mpdf/mpdf",
-            "version": "v8.0.11",
-            "version_normalized": "8.0.11.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mpdf/mpdf.git",
-                "reference": "af17afbbfa0b6ce76defc8da5d02a73d54f94c64"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/af17afbbfa0b6ce76defc8da5d02a73d54f94c64",
-                "reference": "af17afbbfa0b6ce76defc8da5d02a73d54f94c64",
-                "shasum": ""
-            },
-            "require": {
-                "ext-gd": "*",
-                "ext-mbstring": "*",
-                "myclabs/deep-copy": "^1.7",
-                "paragonie/random_compat": "^1.4|^2.0|^9.99.99",
-                "php": "^5.6 || ^7.0 || ~8.0.0",
-                "psr/log": "^1.0",
-                "setasign/fpdi": "^2.1"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.3.0",
-                "mpdf/qrcode": "^1.1.0",
-                "phpunit/phpunit": "^5.7",
-                "squizlabs/php_codesniffer": "^3.5.0",
-                "tracy/tracy": "^2.4"
-            },
-            "suggest": {
-                "ext-bcmath": "Needed for generation of some types of barcodes",
-                "ext-xml": "Needed mainly for SVG manipulation",
-                "ext-zlib": "Needed for compression of embedded resources, such as fonts"
-            },
-            "time": "2021-05-12T14:18:06+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Mpdf\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Matěj Humpál",
-                    "role": "Developer, maintainer"
-                },
-                {
-                    "name": "Ian Back",
-                    "role": "Developer (retired)"
-                }
-            ],
-            "description": "PHP library generating PDF files from UTF-8 encoded HTML",
-            "homepage": "https://mpdf.github.io",
-            "keywords": [
-                "pdf",
-                "php",
-                "utf-8"
-            ],
-            "support": {
-                "docs": "http://mpdf.github.io",
-                "issues": "https://github.com/mpdf/mpdf/issues",
-                "source": "https://github.com/mpdf/mpdf"
-            },
-            "funding": [
-                {
-                    "url": "https://www.paypal.me/mpdf",
-                    "type": "custom"
-                }
-            ],
-            "install-path": "../mpdf/mpdf"
-        },
-        {
-            "name": "mpdf/qrcode",
-            "version": "v1.1.1",
-            "version_normalized": "1.1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mpdf/qrcode.git",
-                "reference": "f3c0a99e37e8489f0b91b7d2c394dcba0b38d71c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mpdf/qrcode/zipball/f3c0a99e37e8489f0b91b7d2c394dcba0b38d71c",
-                "reference": "f3c0a99e37e8489f0b91b7d2c394dcba0b38d71c",
-                "shasum": ""
-            },
-            "require": {
-                "paragonie/random_compat": "^1.4|^2.0|^9.99.99",
-                "php": "^5.6 || ^7.0 || ^8.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^0.9.5",
-                "phpunit/phpunit": "^5.0",
-                "squizlabs/php_codesniffer": "^3.4",
-                "tracy/tracy": "^2.5"
-            },
-            "suggest": {
-                "ext-gd": "To output QR codes to PNG files"
-            },
-            "time": "2021-01-12T18:16:41+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Mpdf\\QrCode\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Matěj Humpál",
-                    "role": "maintainer"
-                },
-                {
-                    "name": "Laurent Minguet",
-                    "role": "author"
-                }
-            ],
-            "description": "QR code generator for mPDF",
-            "keywords": [
-                "mpdf",
-                "pdf",
-                "php",
-                "qr",
-                "qrcode"
-            ],
-            "support": {
-                "issues": "https://github.com/mpdf/qrcode/issues",
-                "source": "https://github.com/mpdf/qrcode/tree/v1.1.1"
-            },
-            "install-path": "../mpdf/qrcode"
-        },
-        {
-            "name": "myclabs/deep-copy",
-            "version": "1.7.0",
-            "version_normalized": "1.7.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e",
-                "reference": "3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.6 || ^7.0"
-            },
-            "require-dev": {
-                "doctrine/collections": "^1.0",
-                "doctrine/common": "^2.6",
-                "phpunit/phpunit": "^4.1"
-            },
-            "time": "2017-10-19T19:58:43+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "DeepCopy\\": "src/DeepCopy/"
-                },
-                "files": [
-                    "src/DeepCopy/deep_copy.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Create deep copies (clones) of your objects",
-            "keywords": [
-                "clone",
-                "copy",
-                "duplicate",
-                "object",
-                "object graph"
-            ],
-            "support": {
-                "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.x"
-            },
-            "install-path": "../myclabs/deep-copy"
-        },
-        {
-            "name": "paragonie/random_compat",
-            "version": "v9.99.100",
-            "version_normalized": "9.99.100.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "996434e5492cb4c3edcb9168db6fbb1359ef965a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/996434e5492cb4c3edcb9168db6fbb1359ef965a",
-                "reference": "996434e5492cb4c3edcb9168db6fbb1359ef965a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">= 7"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*|5.*",
-                "vimeo/psalm": "^1"
-            },
-            "suggest": {
-                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
-            },
-            "time": "2020-10-15T08:29:30+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Paragon Initiative Enterprises",
-                    "email": "security@paragonie.com",
-                    "homepage": "https://paragonie.com"
-                }
-            ],
-            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
-            "keywords": [
-                "csprng",
-                "polyfill",
-                "pseudorandom",
-                "random"
-            ],
-            "support": {
-                "email": "info@paragonie.com",
-                "issues": "https://github.com/paragonie/random_compat/issues",
-                "source": "https://github.com/paragonie/random_compat"
-            },
-            "install-path": "../paragonie/random_compat"
-        },
-        {
-            "name": "psr/log",
-            "version": "1.1.4",
-            "version_normalized": "1.1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/log.git",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "time": "2021-05-03T11:20:27+00:00",
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1.x-dev"
-                }
-            },
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Psr\\Log\\": "Psr/Log/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "https://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for logging libraries",
-            "homepage": "https://github.com/php-fig/log",
-            "keywords": [
-                "log",
-                "psr",
-                "psr-3"
-            ],
-            "support": {
-                "source": "https://github.com/php-fig/log/tree/1.1.4"
-            },
-            "install-path": "../psr/log"
-        },
-        {
-            "name": "setasign/fpdi",
-            "version": "v2.3.6",
-            "version_normalized": "2.3.6.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Setasign/FPDI.git",
-                "reference": "6231e315f73e4f62d72b73f3d6d78ff0eed93c31"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Setasign/FPDI/zipball/6231e315f73e4f62d72b73f3d6d78ff0eed93c31",
-                "reference": "6231e315f73e4f62d72b73f3d6d78ff0eed93c31",
-                "shasum": ""
-            },
-            "require": {
-                "ext-zlib": "*",
-                "php": "^5.6 || ^7.0 || ^8.0"
-            },
-            "conflict": {
-                "setasign/tfpdf": "<1.31"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~5.7",
-                "setasign/fpdf": "~1.8",
-                "setasign/tfpdf": "1.31",
-                "squizlabs/php_codesniffer": "^3.5",
-                "tecnickcom/tcpdf": "~6.2"
-            },
-            "suggest": {
-                "setasign/fpdf": "FPDI will extend this class but as it is also possible to use TCPDF or tFPDF as an alternative. There's no fixed dependency configured."
-            },
-            "time": "2021-02-11T11:37:01+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "setasign\\Fpdi\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jan Slabon",
-                    "email": "jan.slabon@setasign.com",
-                    "homepage": "https://www.setasign.com"
-                },
-                {
-                    "name": "Maximilian Kresse",
-                    "email": "maximilian.kresse@setasign.com",
-                    "homepage": "https://www.setasign.com"
-                }
-            ],
-            "description": "FPDI is a collection of PHP classes facilitating developers to read pages from existing PDF documents and use them as templates in FPDF. Because it is also possible to use FPDI with TCPDF, there are no fixed dependencies defined. Please see suggestions for packages which evaluates the dependencies automatically.",
-            "homepage": "https://www.setasign.com/fpdi",
-            "keywords": [
-                "fpdf",
-                "fpdi",
-                "pdf"
-            ],
-            "support": {
-                "issues": "https://github.com/Setasign/FPDI/issues",
-                "source": "https://github.com/Setasign/FPDI/tree/v2.3.6"
-            },
-            "funding": [
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/setasign/fpdi",
-                    "type": "tidelift"
-                }
-            ],
-            "install-path": "../setasign/fpdi"
-        },
-        {
             "name": "vendidero/storeabill",
-            "version": "v1.6.0",
-            "version_normalized": "1.6.0.0",
+            "version": "v1.8.2",
+            "version_normalized": "1.8.2.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:vendidero/storeabill.git",
-                "reference": "3bb30b5e9fb3bb44bbbdf7f4b23177e43bcc7922"
+                "reference": "df0e34c6460599434011e515a1125d8bf3654b67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vendidero/storeabill/zipball/3bb30b5e9fb3bb44bbbdf7f4b23177e43bcc7922",
-                "reference": "3bb30b5e9fb3bb44bbbdf7f4b23177e43bcc7922",
+                "url": "https://api.github.com/repos/vendidero/storeabill/zipball/df0e34c6460599434011e515a1125d8bf3654b67",
+                "reference": "df0e34c6460599434011e515a1125d8bf3654b67",
                 "shasum": ""
             },
             "require": {
-                "automattic/jetpack-autoloader": "^2.6.0",
-                "mpdf/mpdf": "8.*",
-                "mpdf/qrcode": "^1.1.1"
+                "automattic/jetpack-autoloader": "^2.6.0"
             },
             "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.4",
                 "phpunit/phpunit": "7.5.14"
             },
-            "time": "2021-06-28T13:11:24+00:00",
+            "time": "2021-11-01T10:47:10+00:00",
             "type": "wordpress-plugin",
+            "extra": {
+                "bamarni-bin": {
+                    "target-directory": "bin/composer"
+                }
+            },
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "Vendidero\\StoreaBill\\": "src"
+                    "Vendidero\\StoreaBill\\": "src",
+                    "Vendidero\\StoreaBill\\Vendor\\": "lib/packages/"
+                },
+                "psr-0": {
+                    "Vendidero\\StoreaBill\\Vendor\\": "lib/packages/"
                 }
             },
             "scripts": {
                 "post-install-cmd": [
+                    "@composer bin all install --ansi",
                     "sh ./bin/vendor-clean.sh"
                 ],
                 "post-update-cmd": [
+                    "@composer bin all update --ansi",
                     "sh ./bin/vendor-clean.sh"
                 ],
                 "makepot": [
                     "@makepot-audit --skip-audit"
+                ],
+                "build-lib": [
+                    "sh ./bin/build-lib.sh"
+                ],
+                "bin": [
+                    "echo 'bin not installed'"
                 ]
             },
             "license": [
@@ -624,17 +274,17 @@
         },
         {
             "name": "vendidero/storeabill-lexoffice",
-            "version": "v1.1.0",
-            "version_normalized": "1.1.0.0",
+            "version": "v1.1.6",
+            "version_normalized": "1.1.6.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:vendidero/storeabill-lexoffice.git",
-                "reference": "2eb215615e6ff220b49c2503eedd7dfce9fe041c"
+                "reference": "66406847fbfd336c2fae4de302ec56a93da4a874"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vendidero/storeabill-lexoffice/zipball/2eb215615e6ff220b49c2503eedd7dfce9fe041c",
-                "reference": "2eb215615e6ff220b49c2503eedd7dfce9fe041c",
+                "url": "https://api.github.com/repos/vendidero/storeabill-lexoffice/zipball/66406847fbfd336c2fae4de302ec56a93da4a874",
+                "reference": "66406847fbfd336c2fae4de302ec56a93da4a874",
                 "shasum": ""
             },
             "require": {
@@ -643,7 +293,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^6.5.14"
             },
-            "time": "2021-06-28T12:24:02+00:00",
+            "time": "2021-11-01T10:48:50+00:00",
             "type": "wordpress-plugin",
             "installation-source": "dist",
             "autoload": {
@@ -668,17 +318,17 @@
         },
         {
             "name": "vendidero/storeabill-sevdesk",
-            "version": "v1.0.11",
-            "version_normalized": "1.0.11.0",
+            "version": "v1.1.2",
+            "version_normalized": "1.1.2.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:vendidero/storeabill-sevdesk.git",
-                "reference": "0db86da85ae18aca3b0c36353d24efa30ef3ccea"
+                "reference": "5121560fc151b307fb462b12aed6d14fc5166e88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vendidero/storeabill-sevdesk/zipball/0db86da85ae18aca3b0c36353d24efa30ef3ccea",
-                "reference": "0db86da85ae18aca3b0c36353d24efa30ef3ccea",
+                "url": "https://api.github.com/repos/vendidero/storeabill-sevdesk/zipball/5121560fc151b307fb462b12aed6d14fc5166e88",
+                "reference": "5121560fc151b307fb462b12aed6d14fc5166e88",
                 "shasum": ""
             },
             "require": {
@@ -687,7 +337,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^6.5.14"
             },
-            "time": "2021-06-28T12:25:53+00:00",
+            "time": "2021-09-16T09:55:18+00:00",
             "type": "wordpress-plugin",
             "installation-source": "dist",
             "autoload": {
@@ -709,6 +359,50 @@
             "description": "The StoreaBill sevDesk integration.",
             "homepage": "https://vendidero.de",
             "install-path": "../../packages/storeabill-sevdesk"
+        },
+        {
+            "name": "vendidero/woocommerce-germanized-dpd",
+            "version": "v1.0.2",
+            "version_normalized": "1.0.2.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:vendidero/woocommerce-germanized-dpd.git",
+                "reference": "b5ab028959672b2c9b9c3a6e00b6846a6915cd87"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vendidero/woocommerce-germanized-dpd/zipball/b5ab028959672b2c9b9c3a6e00b6846a6915cd87",
+                "reference": "b5ab028959672b2c9b9c3a6e00b6846a6915cd87",
+                "shasum": ""
+            },
+            "require": {
+                "automattic/jetpack-autoloader": "^2.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "6.5.14"
+            },
+            "time": "2021-09-02T15:40:53+00:00",
+            "type": "wordpress-plugin",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Vendidero\\Germanized\\DPD\\": "src"
+                }
+            },
+            "scripts": {
+                "post-install-cmd": [
+                    "composer dump-autoload"
+                ],
+                "post-update-cmd": [
+                    "composer dump-autoload"
+                ]
+            },
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "description": "The Germanized DPD implementation.",
+            "homepage": "https://github.com/vendidero/woocommerce-germanized-dpd",
+            "install-path": "../../packages/woocommerce-germanized-dpd"
         }
     ],
     "dev": false,

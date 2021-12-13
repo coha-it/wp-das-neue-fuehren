@@ -781,7 +781,7 @@ class UpdraftPlus_CLI_Command extends WP_CLI_Command {
 			}
 		} else {
 			if (isset($assoc_args['over-write-wp-config'])) {
-				$this->addon_not_exist_error('over-write-wp-config', 'More files', 'https://updraftplus.com/shop/more-files/');
+				$this->addon_not_exist_error('over-write-wp-config', 'More files', $updraftplus->get_url('premium'));
 			}
 		}
 		
@@ -817,7 +817,7 @@ class UpdraftPlus_CLI_Command extends WP_CLI_Command {
 			}
 		} else {
 			if (isset($assoc_args['site-id-to-restore'])) {
-				$this->addon_not_exist_error('site-id-to-restore', 'Network / Multisite', 'https://updraftplus.com/shop/network-multisite/');
+				$this->addon_not_exist_error('site-id-to-restore', 'Network / Multisite', $updraftplus->get_url('premium'));
 			}
 		}
 		
@@ -839,7 +839,7 @@ class UpdraftPlus_CLI_Command extends WP_CLI_Command {
 				$restore_options['incremental-restore-point'] = -1;
 			}
 		} elseif (isset($assoc_args['incremental-restore-point'])) {
-			$this->addon_not_exist_error('incremental-restore-point', 'Support for incremental backups', 'https://updraftplus.com/shop/incremental/');
+			$this->addon_not_exist_error('incremental-restore-point', 'Support for incremental backups', $updraftplus->get_url('premium'));
 		}
 		
 		if (isset($assoc_args['delete-during-restore'])) {
@@ -982,7 +982,8 @@ class UpdraftPlus_CLI_Command extends WP_CLI_Command {
 	 * @alias incremental-backups
 	 */
 	public function incremental_backups() {
-
+		global $updraftplus;
+		
 		$items = array();
 
 		if (class_exists('UpdraftPlus_Addons_Incremental')) {
@@ -1005,10 +1006,70 @@ class UpdraftPlus_CLI_Command extends WP_CLI_Command {
 				WP_CLI::error(__('There are no incremental backup restore points available.', 'updraftplus'), true);
 			}
 		} else {
-			$this->addon_not_exist_error('incremental-restore-point', 'Support for incremental backups', 'https://updraftplus.com/shop/incremental/');
+			$this->addon_not_exist_error('incremental-restore-point', 'Support for incremental backups', $updraftplus->get_url('premium'));
 		}
 
 		WP_CLI\Utils\format_items('table', $items, array('incremental_backups'));
+	}
+
+	/**
+	 * Login to UpdraftPlus.com server to connect this plugin with your associated account
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--email=<email-address>]
+	 * : The email address that is registered on UpdraftPlus.com system/server
+	 *
+	 * [--password=<password>]
+	 * : The associated password with the registered email address
+	 *
+	 * [--password-file=<path-to-file>]
+	 * : The path to a file that contains an associated password with the registered email address
+	 *
+	 * ## EXAMPLES
+	 *
+	 * wp updraftplus connect --email="myemail@somewhere.com" [--password="dC6UdyF4CGzmTxzt" or --password-file="/path/to/file"]
+	 *
+	 * @subcommand connect
+	 * @when after_wp_load
+	 *
+	 * @param Array $args       A indexed array of command line arguments
+	 * @param Array $assoc_args Key value pair of command line arguments
+	 */
+	public function connect($args, $assoc_args) {
+		global $updraftplus_addons2;
+		if ('' == $assoc_args['email'] || ('' == $assoc_args['password'] && '' == $assoc_args['password-file'])) {
+			WP_CLI::error(__('An email and password are required to connect to UpdraftPlus.com. Please make sure these two parameters are set.', 'updraftplus'), true);
+		}
+		if (!filter_var($assoc_args['email'], FILTER_VALIDATE_EMAIL)) {
+			WP_CLI::error(__('The email address provided appears to be invalid, please double-check your email address again and try again.', 'updraftplus'), true);
+		}
+		if ('' != $assoc_args['password-file'] && !file_exists(realpath($assoc_args['password-file']))) {
+			WP_CLI::error(__("The password file you specified doesn't exist; please check the --password-file parameter.", 'updraftplus'));
+		}
+		if ('' != $assoc_args['password-file'] && false === ($password_from_file = file_get_contents($assoc_args['password-file']))) {
+			WP_CLI::error(__("The attempt to open and read contents from the password file failed; please make sure the file is readable and is not being exclusively locked by another process", 'updraftplus'));
+		}
+		$password = '' != $assoc_args['password'] ? $assoc_args['password'] : $password_from_file;
+		$updraftplus_addons2->update_option(UDADDONS2_SLUG.'_options', array('email' => $assoc_args['email'], 'password' => $password));
+
+		WP_CLI::log(__('Please wait while connecting to UpdraftPlus.com ...', 'updraftplus'));
+		$_GET['udm_refresh'] = 1; // don't use cache, we always refresh when connecting even if already connected
+		$result = $updraftplus_addons2->connection_status();
+		unset($_GET['udm_refresh']);
+		
+		if (true !== $result) {
+			if (is_wp_error($result)) {
+				foreach ($result->get_error_messages() as $msg) {
+					if (empty($msg)) continue;
+					WP_CLI::error($msg);
+				}
+			} else {
+				WP_CLI::error(__('An unknown error occurred when trying to connect to UpdraftPlus.Com', 'updraftplus'));
+			}
+		} else {
+			WP_CLI::success(__('You successfully logged in to UpdraftPlus.Com and connected this plugin with your account', 'updraftplus'));
+		}
 	}
 }
 

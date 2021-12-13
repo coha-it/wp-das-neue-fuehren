@@ -26,8 +26,7 @@ class ThirdCountryNotice extends DynamicBlock {
 
 	public function get_attributes() {
 		return array(
-			'textSize'  => $this->get_schema_number( sab_get_document_default_font_size() ),
-			'align'     => $this->get_schema_align(),
+			'align' => $this->get_schema_align(),
 		);
 	}
 
@@ -42,7 +41,7 @@ class ThirdCountryNotice extends DynamicBlock {
 		self::maybe_setup_document();
 
 		if ( ! isset( $GLOBALS['document'] ) ) {
-			return $content;
+			return '';
 		}
 
 		/**
@@ -52,6 +51,7 @@ class ThirdCountryNotice extends DynamicBlock {
 		$this->attributes = $this->parse_attributes( $attributes );
 		$country          = $document->get_country();
 		$postcode         = $document->get_postcode();
+		$this->content    = '';
 
 		if ( apply_filters( 'storeabill_use_third_country_notice_shipping_country', true, $document ) && is_callable( array( $document, 'get_shipping_country' ) ) ) {
 			$country  = $document->get_shipping_country();
@@ -68,6 +68,13 @@ class ThirdCountryNotice extends DynamicBlock {
 
 		if ( ! empty( $country ) && Countries::is_third_country( $country, $postcode ) ) {
 			$this->content = $content;
+		}
+
+		/**
+		 * In case the document/invoice is a reverse charge do not show the third country tax notice.
+		 */
+		if ( is_callable( array( $document, 'is_reverse_charge' ) ) && $document->is_reverse_charge() && apply_filters( 'storeabill_hide_third_country_notice_reverse_charge', true ) ) {
+			$this->content = '';
 		}
 
 		return $this->content;

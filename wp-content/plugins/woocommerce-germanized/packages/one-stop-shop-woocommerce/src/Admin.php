@@ -340,7 +340,20 @@ class Admin {
         $decimals  = isset( $_GET['decimals'] ) ? absint( $_GET['decimals'] ) : wc_get_price_decimals();
 
 		if ( ! empty( $report_id ) && ( $report = Package::get_report( $report_id ) ) ) {
-			$csv = new CSVExporter( $report_id, $decimals );
+		    $exporter_class = '\Vendidero\OneStopShop\CSVExporter';
+			$base_country   = Package::get_base_country();
+
+			if ( 'DE' === $base_country && apply_filters( 'oss_experimental_use_de_bop_csv_exporter', false ) ) {
+				$exporter_class = '\Vendidero\OneStopShop\CSVExporterBOP';
+			}
+
+		    $exporter_class = apply_filters( 'oss_csv_exporter_classname', $exporter_class, $base_country );
+
+		    if ( ! class_exists( $exporter_class ) ) {
+			    $exporter_class = '\Vendidero\OneStopShop\CSVExporter';
+		    }
+
+			$csv = new $exporter_class( $report_id, $decimals );
 			$csv->export();
 		} else {
 			wp_safe_redirect( wp_get_referer() );
@@ -486,7 +499,7 @@ class Admin {
                         </tr>
                         <tr id="oss-report-year-wrapper" class="oss-report-hidden oss-report-yearly">
                             <th scope="row">
-                                <label for="oss-report-year"><?php echo esc_html_x( 'Year', 'storeabill-core', 'storeabill' ); ?></label>
+                                <label for="oss-report-year"><?php echo esc_html_x( 'Year', 'oss', 'woocommerce-germanized' ); ?></label>
                             </th>
                             <td id="oss-report-year-data">
                                 <select name="report_year" id="oss-report-year" class="wc-enhanced-select">
@@ -498,7 +511,7 @@ class Admin {
                         </tr>
                         <tr id="oss-report-quarter-wrapper" class="oss-report-hidden oss-report-quarterly">
                             <th scope="row">
-                                <label for="oss-report-quarter"><?php echo esc_html_x( 'Quarter', 'storeabill-core', 'storeabill' ); ?></label>
+                                <label for="oss-report-quarter"><?php echo esc_html_x( 'Quarter', 'oss', 'woocommerce-germanized' ); ?></label>
                             </th>
                             <td id="oss-report-quarter-data">
                                 <select name="report_quarter" id="oss-report-quarter" class="wc-enhanced-select">
@@ -510,7 +523,7 @@ class Admin {
                         </tr>
                         <tr id="oss-report-month-wrapper" class="oss-report-hidden oss-report-monthly">
                             <th scope="row">
-                                <label for="oss-report-month"><?php echo esc_html_x( 'Month', 'storeabill-core', 'storeabill' ); ?></label>
+                                <label for="oss-report-month"><?php echo esc_html_x( 'Month', 'oss', 'woocommerce-germanized' ); ?></label>
                             </th>
                             <td id="oss-report-month-data">
                                 <select name="report_month" id="oss-report-month" class="wc-enhanced-select">
@@ -522,7 +535,7 @@ class Admin {
                         </tr>
                         <tr id="oss-report-timeframe-wrapper" class="oss-report-hidden oss-report-custom">
                             <th scope="row">
-                                <label for="oss-report-date-start"><?php echo esc_html_x( 'Date range', 'storeabill-core', 'storeabill' ); ?></label>
+                                <label for="oss-report-date-start"><?php echo esc_html_x( 'Date range', 'oss', 'woocommerce-germanized' ); ?></label>
                             </th>
                             <td id="oss-report-custom-data">
                                 <input type="text" size="11" placeholder="yyyy-mm-dd" value="" id="oss-report-date-start" name="date_start" class="oss_range_datepicker from" autocomplete="off" /><?php //@codingStandardsIgnoreLine ?>

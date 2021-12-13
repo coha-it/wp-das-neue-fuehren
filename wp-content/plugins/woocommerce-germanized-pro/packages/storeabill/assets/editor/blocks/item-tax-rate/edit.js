@@ -6,12 +6,11 @@ import {
     FontSizePicker,
     InspectorControls,
     withFontSizes,
-    __experimentalUseColors,
     RichText,
 } from '@wordpress/block-editor';
 
 import { getPreviewItem, FORMAT_TYPES } from '@storeabill/settings';
-import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview } from "@storeabill/utils";
+import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview, getFontSizeStyle, convertFontSizeForPicker, useColors } from "@storeabill/utils";
 
 import { PanelBody } from "@wordpress/components";
 import { compose } from "@wordpress/compose";
@@ -31,7 +30,7 @@ const ItemTaxRateEdit = ( {
     const {
         TextColor,
         InspectorControlsColorPanel
-    } = __experimentalUseColors(
+    } = useColors(
         [
             { name: 'textColor', property: 'color' },
         ],
@@ -43,7 +42,7 @@ const ItemTaxRateEdit = ( {
             <InspectorControls>
                 <PanelBody title={ _x( 'Typography', 'storeabill-core', 'storeabill' ) }>
                     <FontSizePicker
-                        value={ fontSize.size }
+                        value={ convertFontSizeForPicker( fontSize.size ) }
                         onChange={ setFontSize }
                     />
                 </PanelBody>
@@ -61,9 +60,7 @@ const ItemTaxRateEdit = ( {
                         }
                         allowedFormats={ FORMAT_TYPES }
                         style={ {
-                            fontSize: fontSize.size
-                                ? fontSize.size + 'px'
-                                : undefined,
+                            fontSize: getFontSizeStyle( fontSize )
                         } }
                     />
                 </TextColor>

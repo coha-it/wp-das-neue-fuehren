@@ -64,7 +64,7 @@ class Redirect
                 if (Checker::content_match($meta['content'], true)) {
 
                     if (Checker::is_blocked($who_can_access, $access_roles)) {
-                        wp_safe_redirect($redirect_url);
+                        wp_safe_redirect(esc_url_raw($redirect_url));
                         exit;
                     }
 

@@ -2,11 +2,11 @@
 
 namespace Vendidero\StoreaBill\PDF;
 
-use Mpdf\Config\ConfigVariables;
-use Mpdf\Config\FontVariables;
-use Mpdf\Mpdf;
-use Mpdf\MpdfException;
-use Mpdf\Output\Destination;
+use Vendidero\StoreaBill\Vendor\Mpdf\Config\ConfigVariables;
+use Vendidero\StoreaBill\Vendor\Mpdf\Config\FontVariables;
+use Vendidero\StoreaBill\Vendor\Mpdf\Mpdf;
+use Vendidero\StoreaBill\Vendor\Mpdf\MpdfException;
+use Vendidero\StoreaBill\Vendor\Mpdf\Output\Destination;
 use Vendidero\StoreaBill\Fonts\Embed;
 use Vendidero\StoreaBill\Fonts\Fonts;
 use Vendidero\StoreaBill\Interfaces\PDFMerge;

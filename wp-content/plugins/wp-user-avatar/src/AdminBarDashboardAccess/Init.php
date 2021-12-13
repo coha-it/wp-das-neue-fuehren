@@ -5,16 +5,17 @@ namespace ProfilePress\Core\AdminBarDashboardAccess;
 use ProfilePress\Core\Admin\SettingsPages\AbstractSettingsPage;
 use ProfilePress\Custom_Settings_Page_Api;
 
-class Init extends AbstractSettingsPage
+class Init
 {
     public function __construct()
     {
         add_filter('show_admin_bar', [$this, 'admin_bar_control'], PHP_INT_MAX - 1);
         add_action('admin_init', [$this, 'dashboard_access_control'], 1);
 
-        add_filter('ppress_settings_page_tabs', [$this, 'menu_tab']);
+        add_action('admin_init', [$this, 'save_options']);
+        add_filter('ppress_settings_page_submenus_tabs', [$this, 'menu_tab']);
 
-        add_filter('ppress_general_settings_admin_page_short_circuit', [$this, 'settings_page_callback']);
+        add_action('ppress_admin_settings_submenu_page_general_admin-bar-dashboard', [$this, 'settings_page_callback']);
         add_filter('ppress_general_settings_admin_page_title', [$this, 'change_page_title']);
     }
 
@@ -26,7 +27,8 @@ class Init extends AbstractSettingsPage
     public function menu_tab($tabs)
     {
         $tabs[50] = [
-            'url'   => add_query_arg('view', 'admin-bar-dashboard', PPRESS_SETTINGS_SETTING_PAGE),
+            'parent' => 'general',
+            'id'    => 'admin-bar-dashboard',
             'label' => esc_html__('Admin Bar & Dashboard', 'wp-user-avatar')
         ];
 
@@ -35,44 +37,33 @@ class Init extends AbstractSettingsPage
 
     public function change_page_title($title)
     {
-        if (isset($_GET['view']) && $_GET['view'] == 'admin-bar-dashboard') {
+        if (isset($_GET['section']) && $_GET['section'] == 'admin-bar-dashboard') {
             $title = esc_html__('Admin Bar & Dashboard Access', 'wp-user-avatar');
         }
 
         return $title;
     }
 
-    public function settings_page_callback($page)
+    public function settings_page_callback()
     {
-        if (isset($_GET['view']) && $_GET['view'] == 'admin-bar-dashboard') {
+        add_filter('wp_cspa_main_content_area', function () {
+            ob_start();
+            require dirname(__FILE__) . '/include.settings-page.php';
 
-            // call to save the setting options
-            self::save_options();
+            return ob_get_clean();
+        });
 
-            add_filter('wp_cspa_main_content_area', function () {
-                ob_start();
-                require dirname(__FILE__) . '/include.settings-page.php';
-
-                return ob_get_clean();
-            });
-
-            $instance = Custom_Settings_Page_Api::instance();
-            $instance->option_name('ppress_abdc_options');
-            $instance->page_header(esc_html__('Admin Bar & Dashboard Access', 'wp-user-avatar'));
-            $this->register_core_settings($instance);
-            $instance->tab($this->settings_tab_args());
-            $instance->build();
-
-            return true;
-        }
-
-        return $page;
+        $instance = Custom_Settings_Page_Api::instance();
+        $instance->option_name('ppress_abdc_options');
+        $instance->page_header(esc_html__('Admin Bar & Dashboard Access', 'wp-user-avatar'));
+        AbstractSettingsPage::register_core_settings($instance);
+        $instance->build();
     }
 
 
     public static function save_options()
     {
-        if (isset($_POST['settings_submit'])) {
+        if (isset($_GET['section']) && $_GET['section'] == 'admin-bar-dashboard' && isset($_POST['settings_submit'])) {
 
             check_admin_referer('ppress_abc_settings_nonce', '_wpnonce');
 
@@ -82,7 +73,7 @@ class Init extends AbstractSettingsPage
 
             update_option('ppress_abdc_options', $saved_options);
 
-            wp_safe_redirect(add_query_arg(['view' => 'admin-bar-dashboard', 'settings-updated' => 'true'], PPRESS_SETTINGS_SETTING_PAGE));
+            wp_safe_redirect(esc_url_raw(add_query_arg(['settings-updated' => 'true'])));
             exit;
         }
     }

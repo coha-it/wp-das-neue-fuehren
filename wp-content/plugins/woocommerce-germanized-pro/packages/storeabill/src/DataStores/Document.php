@@ -95,7 +95,7 @@ abstract class Document extends WC_Data_Store_WP implements WC_Object_Data_Store
 		$document->set_version( SAB_VERSION );
 
 		if ( ! $document->get_date_created() ) {
-			$document->set_date_created( current_time( 'timestamp', true ) );
+			$document->set_date_created( time() );
 		}
 
 		if ( 0 >= $document->get_author_id() ) {

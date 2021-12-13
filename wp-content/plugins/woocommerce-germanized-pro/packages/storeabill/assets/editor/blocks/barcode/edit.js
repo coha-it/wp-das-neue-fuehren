@@ -6,7 +6,6 @@ import classnames from 'classnames';
 
 import {
 	InspectorControls,
-	__experimentalUseColors,
 	BlockControls,
 	AlignmentToolbar,
 } from '@wordpress/block-editor';
@@ -14,6 +13,7 @@ import {
 import { PanelBody, TextControl, Toolbar, DropdownMenu, ToolbarGroup, SelectControl, Icon } from "@wordpress/components";
 import { getSetting, getBarcodeTypes, getBarcodeCodeTypes } from '@storeabill/settings';
 import { settings, arrowRight, qrCode, barcode } from '@storeabill/icons';
+import { useColors } from '@storeabill/utils';
 
 function BarcodeEdit( {
 	attributes,
@@ -25,7 +25,7 @@ function BarcodeEdit( {
 	const {
 		TextColor,
 		InspectorControlsColorPanel,
-	} = __experimentalUseColors(
+	} = useColors(
 		[
 			{ name: 'textColor', property: 'color' },
 		]

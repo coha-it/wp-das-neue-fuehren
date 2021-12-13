@@ -6,7 +6,7 @@
  * Description: Sell memberships that provide access to restricted content, products, discounts, and more!
  * Author: SkyVerge
  * Author URI: https://www.woocommerce.com/
- * Version: 1.22.2
+ * Version: 1.22.9
  * Text Domain: woocommerce-memberships
  * Domain Path: /i18n/languages/
  *
@@ -21,24 +21,10 @@
  *
  * Woo: 958589:9288e7609ad0b487b81ef6232efa5cfc
  * WC requires at least: 3.5
- * WC tested up to: 5.4.1
+ * WC tested up to: 5.9.0
  */
 
 defined( 'ABSPATH' ) or exit;
-
-// Required functions
-if ( ! function_exists( 'woothemes_queue_update' ) ) {
-	require_once( plugin_dir_path( __FILE__ ) . 'woo-includes/woo-functions.php' );
-}
-
-// Plugin updates
-woothemes_queue_update( plugin_basename( __FILE__ ), '9288e7609ad0b487b81ef6232efa5cfc', '958589' );
-
-// WC active check
-if ( ! is_woocommerce_active() ) {
-	return;
-}
-
 
 // Load required Action Scheduler library:
 // during deploy of 1.16.0 Action Scheduler we accidentally bundled AS 3.0.0-beta-1 and some customers may have migrated: these customers need to continue using version 3.0.0 as they can't roll back to 2.x

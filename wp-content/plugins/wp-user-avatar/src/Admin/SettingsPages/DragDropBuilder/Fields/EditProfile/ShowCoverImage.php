@@ -19,7 +19,7 @@ class ShowCoverImage extends FieldBase
 
     public function field_title()
     {
-        return esc_html__('Show Cover Image', 'wp-user-avatar');
+        return esc_html__('Show Cover Photo', 'wp-user-avatar');
     }
 
     public function field_settings()

@@ -84,7 +84,7 @@ $sub_menus = apply_filters('ppress_my_account_settings_sub_menus', ['general' =>
                     <div class="ppmyac-custom-file">
                         <?= do_shortcode('[edit-profile-cover-image id="pp-cover-image" class="ppmyac-custom-file-input"]', true) ?>
                         <label for="pp-cover-image" class="ppmyac-custom-file-label" data-browse="<?= esc_html__('Browse', 'wp-user-avatar'); ?>">
-                            <?= esc_html__('Cover Image (min. width: 1000px)', 'wp-user-avatar') ?>
+                            <?= esc_html__('Cover photo (min. width: 1000px)', 'wp-user-avatar') ?>
                         </label>
                     </div>
                 </div>

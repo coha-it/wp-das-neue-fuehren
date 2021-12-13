@@ -11,7 +11,7 @@ Latest Change: 1.16.24
 
 if (!defined('UPDRAFTPLUS_DIR')) die('No direct access allowed');
 
-$updraftplus_addon_moredatabase = new UpdraftPlus_Addon_MoreDatabase;
+new UpdraftPlus_Addon_MoreDatabase;
 
 class UpdraftPlus_Addon_MoreDatabase {
 

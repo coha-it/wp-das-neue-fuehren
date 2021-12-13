@@ -56,5 +56,7 @@ interface Customer extends Reference, ExternalSyncable {
 
 	public function get_shipping_city();
 
+	public function has_shipping_address();
+
 	public function save();
 }

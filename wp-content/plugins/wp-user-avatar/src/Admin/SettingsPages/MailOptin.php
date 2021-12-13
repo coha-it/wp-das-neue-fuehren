@@ -23,7 +23,7 @@ class MailOptin
     {
         if ( ! $this->is_configured()) {
             add_action('ppress_admin_hooks', function () {
-                add_action('admin_menu', array($this, 'register_settings_page'));
+                add_action('ppress_register_menu_page', array($this, 'register_settings_page'));
             });
         }
 
@@ -213,7 +213,7 @@ class MailOptin
                     ),
                 )
             ),
-            esc_url($this->config['lite_download_url'])
+            esc_url_raw($this->config['lite_download_url'])
         );
 
         $error_could_not_activate = sprintf(
@@ -225,7 +225,7 @@ class MailOptin
                     ),
                 )
             ),
-            esc_url(admin_url('plugins.php'))
+            esc_url_raw(admin_url('plugins.php'))
         );
 
         return array(

@@ -71,7 +71,7 @@ class PasswordReset
     /**
      * Callback function for filter
      *
-     * @param string $user_data
+     * @param mixed $user_data
      * @param $key
      *
      * @return string formatted message for use by the password reset form
@@ -215,8 +215,8 @@ class PasswordReset
      */
     public static function do_password_reset()
     {
-        $reset_key   = $_REQUEST['reset_key'];
-        $reset_login = $_REQUEST['reset_login'];
+        $reset_key   = wp_unslash($_REQUEST['reset_key']);
+        $reset_login = wp_unslash($_REQUEST['reset_login']);
 
         $user = check_password_reset_key($reset_key, $reset_login);
 

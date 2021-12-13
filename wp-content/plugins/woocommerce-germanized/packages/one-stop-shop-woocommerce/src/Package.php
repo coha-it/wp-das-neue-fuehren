@@ -2,8 +2,6 @@
 
 namespace Vendidero\OneStopShop;
 
-use Automattic\WooCommerce\Admin\Notes\Notes;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -16,7 +14,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.0.4';
+	const VERSION = '1.1.7';
 
 	/**
 	 * Init the package
@@ -45,11 +43,6 @@ class Package {
 		}
 
 		/**
-		 * Support a taxable country field within Woo order queries
-		 */
-		add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', array( __CLASS__, 'query_taxable_country' ), 10, 2 );
-
-		/**
 		 * Listen to action scheduler hooks for report generation
 		 */
 		foreach( Queue::get_reports_running() as $id ) {
@@ -67,7 +60,8 @@ class Package {
 		}
 
 		// Setup or cancel recurring observer task
-		add_action( 'init', array( __CLASS__, 'setup_recurring_observer' ), 10 );
+		add_action( 'init', array( __CLASS__, 'setup_recurring_actions' ), 10 );
+		add_action( 'oss_woocommerce_daily_cleanup', array( __CLASS__, 'cleanup' ), 10 );
 
 		if ( Package::enable_auto_observer() ) {
 			add_action( 'oss_woocommerce_daily_observer', array( __CLASS__, 'update_observer_report' ), 10 );
@@ -79,6 +73,96 @@ class Package {
 		add_action( 'wc_admin_daily', array( '\Vendidero\OneStopShop\Admin', 'queue_wc_admin_notes' ) );
 		add_action( 'woocommerce_note_updated', array( '\Vendidero\OneStopShop\Admin', 'on_wc_admin_note_update' ) );
 	}
+
+	public static function cleanup() {
+	    $running              = array();
+		$has_running_observer = false;
+		$running_observers    = array();
+
+		/**
+		 * Remove reports from running Queue in case they are not queued any longer.
+		 */
+	    foreach( Queue::get_reports_running() as $report_id ) {
+	        $details = Queue::get_queue_details( $report_id );
+
+	        if ( $details['has_action'] && ! $details['is_finished'] ) {
+		        if ( strstr( $report_id, 'observer_' ) ) {
+		            $running_observers[]  = $report_id;
+                    $has_running_observer = $report_id;
+		        }
+
+		        $running[] = $report_id;
+            } else {
+	            if ( $report = self::get_report( $report_id ) ) {
+	                if ( 'completed' !== $report->get_status() ) {
+		                $report->delete();
+                    }
+                }
+            }
+        }
+
+		/**
+		 * Make sure there is only one observer running at a time.
+		 */
+	    foreach( $running as $k => $report_id ) {
+	        if ( in_array( $report_id, $running_observers ) && $report_id !== $has_running_observer ) {
+	            if ( $report = self::get_report( $report_id ) ) {
+	                $report->delete();
+                }
+
+	            unset( $running[ $k ] );
+            }
+        }
+
+	    $running = array_values( $running );
+
+		update_option( 'oss_woocommerce_reports_running', $running, false );
+		Queue::clear_cache();
+
+	    $observer_reports = self::get_reports( array(
+            'type'             => 'observer',
+            'include_observer' => true
+        ) );
+
+		foreach( $observer_reports as $observer ) {
+		    if ( ! self::enable_auto_observer() ) {
+			    /**
+			     * Delete observers in case observing was disabled.
+			     */
+			    $observer->delete();
+            } else {
+			    /*
+			     * Do not delete running observers (which are orphans by design)
+			     */
+			    if ( $observer->get_id() === $has_running_observer ) {
+				    continue;
+			    }
+
+			    $year = $observer->get_date_start()->format( 'Y' );
+
+			    /**
+			     * Delete orphan observer reports (reports not linked as a main observer for a certain year).
+			     */
+			    if ( get_option( 'oss_woocommerce_observer_report_' . $year ) !== $observer->get_id() ) {
+				    $observer->delete();
+			    }
+            }
+		}
+
+		/**
+		 * In case the current observer report does not exist - delete the option
+		 */
+		if ( self::enable_auto_observer() ) {
+		    $year      = date( 'Y' );
+			$report_id = get_option( 'oss_woocommerce_observer_report_' . $year );
+
+			if ( ! empty( $report_id ) ) {
+				if ( ! Package::get_report( $report_id ) ) {
+				    delete_option( 'oss_woocommerce_observer_report_' . $year );
+                }
+			}
+        }
+    }
 
 	public static function dependency_notice() {
 		?>
@@ -291,6 +375,29 @@ class Package {
 		return $title;
 	}
 
+	/**
+	 * @param Report $report
+	 */
+	public static function remove_report( $report ) {
+		$reports_available = self::get_report_ids();
+
+		if ( in_array( $report->get_id(), $reports_available[ $report->get_type() ] ) ) {
+			$reports_available[ $report->get_type() ] = array_diff( $reports_available[  $report->get_type() ], array( $report->get_id() ) );
+
+			update_option( 'oss_woocommerce_reports', $reports_available, false );
+
+			/**
+			 * Force non-cached option
+			 */
+			wp_cache_delete( 'oss_woocommerce_reports', 'options' );
+		}
+	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return Report[]
+	 */
 	public static function get_reports( $args = array() ) {
 		$args = wp_parse_args( $args, array(
 			'type'             => '',
@@ -341,6 +448,7 @@ class Package {
 
  	public static function clear_caches() {
 		delete_transient( 'oss_reports_counts' );
+		wp_cache_delete( 'oss_woocommerce_reports', 'options' );
     }
 
  	public static function get_report_counts() {
@@ -431,19 +539,54 @@ class Package {
 		}
 	}
 
+	/**
+     * Let the observer date back 7 days to make sure most of the orders
+     * have already been processed (e.g. received payment etc) to reduce the chance of missing out on orders.
+     *
+	 * @return int
+	 */
+	public static function get_observer_backdating_days() {
+	    return 7;
+	}
+
 	public static function update_observer_report() {
 		if ( Package::enable_auto_observer() ) {
+			/**
+			 * Delete observer reports with missing versions to make sure the report
+             * is re-created with the new backdating functionality.
+			 */
+		    if ( $report = self::get_observer_report() ) {
+		        if ( '' === $report->get_version() ) {
+		            $report->delete();
+		        }
+ 		    }
+
+		    $days = (int) self::get_observer_backdating_days();
+
 			$date_start = new \WC_DateTime();
-			$date_start->modify( '-1 day' );
+			$date_start->modify( "-{$days} day" . ( $days > 1 ? 's' : '' ) );
 
 			Queue::start( 'observer', $date_start );
 		}
 	}
 
-	public static function setup_recurring_observer() {
+	public static function setup_recurring_actions() {
 		if ( $queue = Queue::get_queue() ) {
+
+		    // Schedule once per day at 2:00
+			if ( null === $queue->get_next( 'oss_woocommerce_daily_cleanup', array(), 'oss_woocommerce' ) ) {
+				$timestamp = strtotime('tomorrow midnight' );
+				$date      = new \WC_DateTime();
+
+				$date->setTimestamp( $timestamp );
+				$date->modify( '+2 hours' );
+
+				$queue->cancel_all( 'oss_woocommerce_daily_cleanup', array(), 'oss_woocommerce' );
+				$queue->schedule_recurring( $date->getTimestamp(), DAY_IN_SECONDS, 'oss_woocommerce_daily_cleanup', array(), 'oss_woocommerce' );
+			}
+
 			if ( Package::enable_auto_observer() ) {
-				// Schedule once per day at 3:00
+			    // Schedule once per day at 3:00
 				if ( null === $queue->get_next( 'oss_woocommerce_daily_observer', array(), 'oss_woocommerce' ) ) {
 					$timestamp = strtotime('tomorrow midnight' );
 					$date      = new \WC_DateTime();
@@ -495,38 +638,17 @@ class Package {
 		return array_key_exists( $status, $statuses ) ? $statuses[ $status ] : '';
 	}
 
-	public static function query_taxable_country( $query, $query_vars ) {
-		if ( ! empty( $query_vars['taxable_country'] ) ) {
-			$taxable_country = is_array( $query_vars['taxable_country'] ) ? $query_vars['taxable_country'] : array( $query_vars['taxable_country'] );
-			$taxable_country = wc_clean( $taxable_country );
-
-			$query['meta_query'][] = array(
-				'relation' => 'OR',
-				array(
-					array(
-						'key'     => '_shipping_country',
-						'compare' => 'NOT EXISTS',
-					),
-					array(
-						'key'     => '_billing_country',
-						'value'   => $taxable_country,
-						'compare' => 'IN',
-					),
-				),
-				array(
-					'key'     => '_shipping_country',
-					'value'   => $taxable_country,
-					'compare' => 'IN',
-				)
-			);
-		}
-
-		return $query;
-	}
-
 	public static function has_dependencies() {
 		return ( class_exists( 'WooCommerce' ) );
 	}
+
+    public static function get_base_country() {
+        if ( WC()->countries ) {
+            return WC()->countries->get_base_country();
+        } else {
+            return wc_get_base_location()['country'];
+        }
+    }
 
 	/**
 	 * Returns a list of EU countries except base country.
@@ -543,7 +665,7 @@ class Package {
 			$countries = array_merge( $countries, array( 'GB' ) );
 		}
 
-		$base_country = wc_get_base_location()['country'];
+		$base_country = Package::get_base_country();
 		$countries    = array_diff( $countries, array( $base_country ) );
 
 		return $countries;
@@ -551,11 +673,26 @@ class Package {
 
 	public static function country_supports_eu_vat( $country, $postcode = '' ) {
 	    $supports_vat = in_array( $country, self::get_non_base_eu_countries() );
+	    $exemptions   = Tax::get_vat_postcode_exemptions_by_country( $country );
+		$postcode     = wc_normalize_postcode( $postcode );
+		$wildcards    = wc_get_wildcard_postcodes( $postcode, $country );
 
-		if ( 'GB' === $country && 'BT' === strtoupper( substr( $postcode, 0, 2 ) ) ) {
+		if ( 'GB' === $country && in_array( 'BT*', $wildcards ) ) {
 			$supports_vat = true;
 		} elseif( 'IX' === $country ) {
 		    $supports_vat = true;
+		}
+
+		/**
+		 * Check whether the country + postcode is a VAT exemption.
+		 */
+		if ( ! empty( $exemptions ) ) {
+			foreach( $exemptions as $exempt_postcode ) {
+				if ( in_array( $exempt_postcode, $wildcards, true ) ) {
+					$supports_vat = false;
+					break;
+				}
+			}
 		}
 
 		return $supports_vat;
@@ -637,7 +774,7 @@ class Package {
 	}
 
 	public static function extended_log( $message, $type = 'info' ) {
-		if ( apply_filters( 'oss_woocommerce_enable_extended_logging', false ) ) {
+		if ( apply_filters( 'oss_woocommerce_enable_extended_logging', ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ) ) {
 			self::log( $message, $type );
 		}
 	}

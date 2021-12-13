@@ -55,7 +55,7 @@ define('PPRESS_EXTENSIONS_SETTINGS_SLUG', 'pp-extensions');
 
 define('PPRESS_SETTINGS_SETTING_PAGE', admin_url('admin.php?page=' . PPRESS_SETTINGS_SLUG));
 define('PPRESS_CUSTOM_FIELDS_SETTINGS_PAGE', add_query_arg(['view' => 'custom-fields'], PPRESS_SETTINGS_SETTING_PAGE));
-define('PPRESS_CONTACT_INFO_SETTINGS_PAGE', add_query_arg(['view' => 'custom-fields', 'type' => 'contact-info'], PPRESS_SETTINGS_SETTING_PAGE));
+define('PPRESS_CONTACT_INFO_SETTINGS_PAGE', add_query_arg(['section' => 'contact-info'], PPRESS_CUSTOM_FIELDS_SETTINGS_PAGE));
 define('PPRESS_SETTINGS_EMAIL_SETTING_PAGE', add_query_arg('view', 'email', PPRESS_SETTINGS_SETTING_PAGE));
 define('PPRESS_FORMS_SETTINGS_PAGE', admin_url('admin.php?page=' . PPRESS_FORMS_SETTINGS_SLUG));
 define('PPRESS_MEMBER_DIRECTORIES_SETTINGS_PAGE', admin_url('admin.php?page=' . PPRESS_MEMBER_DIRECTORIES_SLUG));
@@ -233,6 +233,8 @@ class Base
         IDUserColumn::get_instance();
 
         GDPR::get_instance();
+
+        \PPressBFnote::instance();
 
         do_action('ppress_admin_hooks');
     }

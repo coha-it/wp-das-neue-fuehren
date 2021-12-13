@@ -7,6 +7,7 @@ import { _x } from '@wordpress/i18n';
 import { get, isEmpty, cloneDeep, merge } from 'lodash';
 import { isDocumentTemplate, getSetting } from '@storeabill/settings';
 import FontSelect from '@storeabill/components/fonts';
+import { convertFontSizeForPicker } from "@storeabill/utils";
 
 import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { registerPlugin } from '@wordpress/plugins';
@@ -35,7 +36,7 @@ function EditFontsPanel( {
             <PanelRow>
                 <FontSizePicker
                     fontSizes={ getSetting( 'customFontSizes' ) }
-                    value={ fontSize }
+                    value={ convertFontSizeForPicker( fontSize ) }
                     onChange={ onUpdateFontSize }
                     withSlider={ false }
                     fallbackFontSize={ getSetting( 'defaultFontSize' ) }

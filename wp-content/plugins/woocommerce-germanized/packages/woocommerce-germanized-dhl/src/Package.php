@@ -11,7 +11,7 @@ use Vendidero\Germanized\DHL\ShippingProvider\DHL;
 use Vendidero\Germanized\DHL\ShippingProvider\ShippingMethod;
 use Vendidero\Germanized\DHL\Api\Internetmarke;
 use Vendidero\Germanized\Shipments\Interfaces\ShippingProvider;
-use Vendidero\Germanized\Shipments\ShipmentItem;
+use Vendidero\Germanized\Shipments\ShippingProvider\Helper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,7 +25,7 @@ class Package {
      *
      * @var string
      */
-    const VERSION = '1.5.8';
+    const VERSION = '1.6.4';
 
     public static $upload_dir_suffix = '';
 
@@ -44,6 +44,11 @@ class Package {
      * Init the package - load the REST API Server class.
      */
     public static function init() {
+	    if ( self::has_dependencies() ) {
+		    // Add shipping provider
+		    add_filter( 'woocommerce_gzd_shipping_provider_class_names', array( __CLASS__, 'add_shipping_provider_class_name' ), 10, 1 );
+	    }
+
 	    /**
 	     * Make sure provider is loaded after main shipments module.
 	     */
@@ -59,9 +64,6 @@ class Package {
 	    if ( ! self::has_dependencies() ) {
 		    return;
 	    }
-
-	    // Add shipping provider
-	    add_filter( 'woocommerce_gzd_shipping_provider_class_names', array( __CLASS__, 'add_shipping_provider_class_name' ), 10, 1 );
 
 	    // Legacy data store
 	    add_filter( 'woocommerce_data_stores', array( __CLASS__, 'register_data_stores' ), 10, 1 );
@@ -212,13 +214,7 @@ class Package {
     }
 
 	public static function is_dhl_enabled() {
-		$is_enabled = false;
-
-		if ( $provider = self::get_dhl_shipping_provider() ) {
-			$is_enabled = $provider->is_activated();
-		}
-
-		return $is_enabled;
+		return Helper::instance()->is_shipping_provider_activated( 'dhl' );
 	}
     
     public static function get_country_iso_alpha3( $country_code ) {
@@ -252,7 +248,7 @@ class Package {
 	         * Additional services are only available for DHL products
 	         */
 	        if ( self::is_dhl_enabled() && ParcelServices::is_enabled() ) {
-	        	ParcelServices::init();
+		        ParcelServices::init();
 	        }
 
 	        Ajax::init();
@@ -265,24 +261,7 @@ class Package {
 
 	    // Register additional label types
 	    add_filter( 'woocommerce_gzd_shipment_label_types', array( __CLASS__, 'register_label_types' ), 10 );
-
-	    // Sync shipment items
-	    add_action( 'woocommerce_gzd_shipment_item_synced', array( __CLASS__, 'sync_item_meta' ), 10, 3 );
     }
-
-	/**
-	 * @param ShipmentItem   $item
-	 * @param \WC_Order_Item $order_item
-	 * @param $args
-	 */
-	public static function sync_item_meta( $item, $order_item, $args ) {
-		if ( $product = $item->get_product() ) {
-			$dhl_product = wc_gzd_dhl_get_product( $product );
-
-			$item->update_meta_data( '_dhl_hs_code', $dhl_product->get_hs_code() );
-			$item->update_meta_data( '_dhl_manufacture_country', $dhl_product->get_manufacture_country() );
-		}
-	}
 
 	public static function register_label_types( $types ) {
         $types[] = 'inlay_return';
@@ -466,7 +445,7 @@ class Package {
     }
 
     public static function get_internetmarke_products_url() {
-        return 'https://prodws.deutschepost.de:8443/ProdWSProvider_1_1/prodws?wsdl';
+        return 'https://prodws.deutschepost.de/ProdWSProvider_1_1/prodws?wsdl';
     }
 
     public static function get_internetmarke_refund_url() {
@@ -498,13 +477,7 @@ class Package {
 	}
 
 	public static function is_deutsche_post_enabled() {
-    	$is_enabled = false;
-
-    	if ( $provider = self::get_deutsche_post_shipping_provider() ) {
-    	    $is_enabled = $provider->is_activated();
-	    }
-
-    	return $is_enabled;
+		return Helper::instance()->is_shipping_provider_activated( 'deutsche_post' );
 	}
 
 	public static function get_internetmarke_username() {
@@ -764,6 +737,27 @@ class Package {
 	    }
     }
 
+    public static function get_core_wsdl_file( $file ) {
+        $local_file = trailingslashit( self::get_path() ) . 'assets/wsdl/' . $file;
+
+        if ( file_exists( $local_file ) ) {
+            return $local_file;
+        }
+
+        return false;
+    }
+
+	/**
+     * Retrieves a local, cached, WSDL file by a WSDL link.
+     * In case the file exists in core direction (assets/wsdl) prefer this file otherwise
+     * try to download and cache the WSDL file locally for 14 days.
+     *
+     * In case of enabled debug mode - use WSDL link instead of cached files.
+     *
+	 * @param $wsdl_link
+	 *
+	 * @return false|mixed|string|void
+	 */
     public static function get_wsdl_file( $wsdl_link ) {
         if ( self::is_debug_mode() ) {
             return $wsdl_link;
@@ -781,11 +775,12 @@ class Package {
 		    );
 	    }
 
-	    $file_link       = $wsdl_link;
-	    $transient       = 'wc_gzd_dhl_wsdl_' . sanitize_key( $main_file );
-	    $new_file_name   = $main_file;
-	    $files_exist     = true;
-	    $is_zip          = false;
+	    $file_link     = $wsdl_link;
+	    $transient     = 'wc_gzd_dhl_wsdl_' . sanitize_key( $main_file );
+	    $new_file_name = $main_file;
+	    $files_exist   = true;
+	    $is_zip        = false;
+	    $is_core_file  = false;
 
 	    // Renew files every 14 days
 	    $transient_valid = DAY_IN_SECONDS * 14;
@@ -796,23 +791,28 @@ class Package {
 	    	$is_zip        = true;
 	    }
 
-	    /**
-	     * Check if all required files exist locally
-	     */
-	    foreach( $required_files as $file ) {
-		    $inner_transient = 'wc_gzd_dhl_wsdl_' . sanitize_key( $file );
-		    $file_path       = get_transient( $inner_transient );
+	    if ( $file_path = self::get_core_wsdl_file( $main_file ) ) {
+            $files_exist  = true;
+            $is_core_file = true;
+	    } else {
+		    /**
+		     * Check if all required files exist locally
+		     */
+		    foreach( $required_files as $file ) {
+			    $inner_transient = 'wc_gzd_dhl_wsdl_' . sanitize_key( $file );
+			    $file_path       = get_transient( $inner_transient );
 
-		    if ( $file_path ) {
-			    $file_path = \Vendidero\Germanized\Shipments\Package::get_file_by_path( $file_path );
+			    if ( $file_path ) {
+				    $file_path = \Vendidero\Germanized\Shipments\Package::get_file_by_path( $file_path );
+			    }
+
+			    if ( ! $file_path || ! file_exists( $file_path ) ) {
+				    $files_exist = false;
+			    }
 		    }
 
-		    if ( ! $file_path || ! file_exists( $file_path ) ) {
-			    $files_exist = false;
-		    }
+		    $file_path = get_transient( $transient );
 	    }
-
-	    $file_path = get_transient( $transient );
 
 	    /**
 	     * This filter may be used to force loading an alternate (local) WSDL file
@@ -828,7 +828,11 @@ class Package {
 	    $alternate_file = apply_filters( 'woocommerce_gzd_dhl_alternate_wsdl_file', false, $wsdl_link );
 
 	    if ( ( $files_exist && $file_path ) || $alternate_file ) {
-		    $wsdl_link = $alternate_file ? $alternate_file : \Vendidero\Germanized\Shipments\Package::get_file_by_path( $file_path );
+	        if ( $is_core_file ) {
+		        $wsdl_link = $alternate_file ? $alternate_file : $file_path;
+	        } else {
+		        $wsdl_link = $alternate_file ? $alternate_file : \Vendidero\Germanized\Shipments\Package::get_file_by_path( $file_path );
+	        }
 	    } else {
 
 	    	if ( ! function_exists( 'download_url' ) ) {
@@ -853,11 +857,10 @@ class Package {
 			    if ( ! is_wp_error( $tmp_file ) ) {
 
 				    $uploads    = \Vendidero\Germanized\Shipments\Package::get_upload_dir();
-				    $new_file   = $uploads['path'] . "/$new_file_name";
+				    $new_file   = trailingslashit( $uploads['path'] ) . $new_file_name;
 				    $has_copied = @copy( $tmp_file, $new_file );
 
 				    if ( $has_copied ) {
-
 				    	if ( $is_zip ) {
 						    global $wp_filesystem;
 
@@ -1051,35 +1054,24 @@ class Package {
 	/**
 	 * Function return whether the sender and receiver country is the same territory
 	 */
-	public static function is_shipping_domestic( $country_receiver ) {
-		// If base is US territory
-		if ( in_array( self::get_base_country(), self::get_us_territories() ) ) {
-			// ...and destination is US territory, then it is "domestic"
-			if ( in_array( $country_receiver, self::get_us_territories() ) ) {
-				return true;
-			} else {
-				return false;
-			}
-		} elseif ( $country_receiver == self::get_base_country() ) {
-			return true;
-		} else {
-			return false;
+	public static function is_shipping_domestic( $country_receiver, $postcode = '' ) {
+		$is_domestic = \Vendidero\Germanized\Shipments\Package::is_shipping_domestic( $country_receiver, array( 'postcode' => $postcode ) );
+
+		/**
+		 * Shipments from DE to Helgoland are not treated as crossborder
+		 */
+		if ( ! $is_domestic && 'DE' === $country_receiver && \Vendidero\Germanized\Shipments\Package::base_country_belongs_to_eu_customs_area() ) {
+		    $is_domestic = true;
 		}
+
+		return $is_domestic;
 	}
 
 	/**
 	 * Check if it is an EU shipment
 	 */
-	public static function is_eu_shipment( $country_receiver ) {
-		if ( self::is_shipping_domestic( $country_receiver ) ) {
-			return false;
-		}
-
-        if ( in_array( $country_receiver, self::get_eu_countries() ) ) {
-            return true;
-        } else {
-            return false;
-        }
+	public static function is_eu_shipment( $country_receiver, $postcode = '' ) {
+        return \Vendidero\Germanized\Shipments\Package::is_shipping_inner_eu_country( $country_receiver, array( 'postcode' => $postcode ) );
 	}
 
 	protected static function get_eu_countries() {
@@ -1095,21 +1087,16 @@ class Package {
 	/**
 	 * Function return whether the sender and receiver country is "crossborder" i.e. needs CUSTOMS declarations (outside EU)
 	 */
-	public static function is_crossborder_shipment( $country_receiver ) {
-		if ( self::is_shipping_domestic( $country_receiver ) ) {
-			return false;
+	public static function is_crossborder_shipment( $country_receiver, $postcode = '' ) {
+		$is_crossborder = \Vendidero\Germanized\Shipments\Package::is_shipping_international( $country_receiver, array( 'postcode' => $postcode ) );
+
+		/**
+		 * Shipments from DE to Helgoland are not treated as crossborder
+		 */
+		if ( $is_crossborder && 'DE' === $country_receiver && \Vendidero\Germanized\Shipments\Package::base_country_belongs_to_eu_customs_area() ) {
+		    $is_crossborder = false;
 		}
 
-		// Is sender country in EU...
-		if ( in_array( self::get_base_country(), self::get_eu_countries() ) ) {
-			// ... and receiver country is in EU means NOT crossborder!
-			if ( in_array( $country_receiver, self::get_eu_countries() ) ) {
-				return false;
-			} else {
-				return true;
-			}
-		} else {
-			return true;
-		}
+		return $is_crossborder;
 	}
 }

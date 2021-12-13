@@ -88,7 +88,6 @@ class Infobox extends Common_Widget {
 	 * @access protected
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-
 		$this->register_controls();
 	}
 
@@ -99,6 +98,8 @@ class Infobox extends Common_Widget {
 	 * @access protected
 	 */
 	protected function register_controls() {
+
+		$this->register_presets_control( 'Infobox', $this );
 
 		$this->register_general_content_controls();
 		$this->register_imgicon_content_controls();
@@ -155,7 +156,7 @@ class Infobox extends Common_Widget {
 				'dynamic'  => array(
 					'active' => true,
 				),
-				'default'  => __( 'Enter description text here.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.​', 'uael' ),
+				'default'  => __( 'Enter description text here.Lorem ipsum dolor sit amet, consectetur adipiscing. Quo incidunt ullamco.​', 'uael' ),
 			)
 		);
 
@@ -322,7 +323,7 @@ class Infobox extends Common_Widget {
 				'options' => array(
 					'photo' => array(
 						'title' => __( 'Image', 'uael' ),
-						'icon'  => 'fa fa-picture-o',
+						'icon'  => 'fa fa-image',
 					),
 					'icon'  => array(
 						'title' => __( 'Font Icon', 'uael' ),
@@ -1415,11 +1416,12 @@ class Infobox extends Common_Widget {
 					'default'     => 'none',
 					'label_block' => false,
 					'options'     => array(
-						'none'   => __( 'None', 'uael' ),
-						'solid'  => __( 'Solid', 'uael' ),
-						'double' => __( 'Double', 'uael' ),
-						'dotted' => __( 'Dotted', 'uael' ),
-						'dashed' => __( 'Dashed', 'uael' ),
+						'none'    => __( 'None', 'uael' ),
+						'default' => __( 'Default', 'uael' ),
+						'solid'   => __( 'Solid', 'uael' ),
+						'double'  => __( 'Double', 'uael' ),
+						'dotted'  => __( 'Dotted', 'uael' ),
+						'dashed'  => __( 'Dashed', 'uael' ),
 					),
 					'condition'   => array(
 						'infobox_cta_type' => 'button',
@@ -1436,7 +1438,7 @@ class Infobox extends Common_Widget {
 					'type'      => Controls_Manager::COLOR,
 					'condition' => array(
 						'infobox_cta_type'       => 'button',
-						'infobox_button_border!' => 'none',
+						'infobox_button_border!' => array( 'none', 'default' ),
 					),
 					'default'   => '',
 					'selectors' => array(
@@ -1459,7 +1461,7 @@ class Infobox extends Common_Widget {
 					),
 					'condition'  => array(
 						'infobox_cta_type'       => 'button',
-						'infobox_button_border!' => 'none',
+						'infobox_button_border!' => array( 'none', 'default' ),
 					),
 					'selectors'  => array(
 						'{{WRAPPER}} .elementor-button' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -2270,12 +2272,14 @@ class Infobox extends Common_Widget {
 		$dynamic_settings = $this->get_settings_for_display();
 
 		if ( 'link' === $settings['infobox_cta_type'] ) {
-			$_nofollow = ( 'on' === $dynamic_settings['infobox_text_link']['nofollow'] ) ? 'nofollow' : '';
-			$_target   = ( 'on' === $dynamic_settings['infobox_text_link']['is_external'] ) ? '_blank' : '';
-			$_link     = ( isset( $dynamic_settings['infobox_text_link']['url'] ) ) ? $dynamic_settings['infobox_text_link']['url'] : '';
+			if ( ! empty( $dynamic_settings['infobox_text_link']['url'] ) ) {
+				$this->add_link_attributes( 'cta_link', $dynamic_settings['infobox_text_link'] );
+			}
+
+			$this->add_render_attribute( 'cta_link', 'class', 'uael-infobox-cta-link ' );
 			?>
 			<div class="uael-infobox-cta-link-style">
-				<a href="<?php echo $_link; ?>" rel="<?php echo esc_attr( $_nofollow ); ?>" target="<?php echo esc_attr( $_target ); ?>"  class="uael-infobox-cta-link"> <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'cta_link' ) ); ?>> <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<?php
 					if ( 'left' === $settings['infobox_button_icon_position'] ) {
 						if ( UAEL_Helper::is_elementor_updated() ) {
@@ -2330,15 +2334,9 @@ class Infobox extends Common_Widget {
 			$this->add_render_attribute( 'wrapper', 'class', 'uael-button-wrapper elementor-button-wrapper' );
 
 			if ( ! empty( $dynamic_settings['infobox_text_link']['url'] ) ) {
-				$this->add_render_attribute( 'button', 'href', $dynamic_settings['infobox_text_link']['url'] );
-				$this->add_render_attribute( 'button', 'class', 'elementor-button-link' );
 
-				if ( $dynamic_settings['infobox_text_link']['is_external'] ) {
-					$this->add_render_attribute( 'button', 'target', '_blank' );
-				}
-				if ( $dynamic_settings['infobox_text_link']['nofollow'] ) {
-					$this->add_render_attribute( 'button', 'rel', 'nofollow' );
-				}
+				$this->add_link_attributes( 'button', $dynamic_settings['infobox_text_link'] );
+				$this->add_render_attribute( 'button', 'class', 'elementor-button-link' );
 			}
 			$this->add_render_attribute( 'button', 'class', ' elementor-button' );
 
@@ -2582,10 +2580,9 @@ class Infobox extends Common_Widget {
 		<#
 		function render_link() {
 
-			if ( 'link' == settings.infobox_cta_type ) {
-				#>
+			if ( 'link' == settings.infobox_cta_type ) { #>
 				<div class="uael-infobox-cta-link-style">
-					<a href="{{ settings.infobox_text_link }}" class="uael-infobox-cta-link">
+					<a href="{{ settings.infobox_text_link.url }}" class="uael-infobox-cta-link">
 						<#
 						if ( 'left' == settings.infobox_button_icon_position ) {
 						#>
@@ -2662,7 +2659,10 @@ class Infobox extends Common_Widget {
 						#>
 						<span {{{ view.getRenderAttributeString( 'content-wrapper' ) }}}>
 							<?php if ( UAEL_Helper::is_elementor_updated() ) { ?>
-								<# if ( settings.infobox_button_icon || settings.new_infobox_button_icon ) { #>
+								<# if ( settings.infobox_button_icon || settings.new_infobox_button_icon ) { 
+									var buttoniconHTML = elementor.helpers.renderIcon( view, settings.new_infobox_button_icon, { 'aria-hidden': true }, 'i' , 'object' );
+									var buttonMigrated = elementor.helpers.isIconMigrated( settings, 'new_infobox_button_icon' );
+									#>
 									<span {{{ view.getRenderAttributeString( 'icon-align' ) }}}>
 										<# if ( buttoniconHTML && buttoniconHTML.rendered && ( ! settings.infobox_button_icon || buttonMigrated ) ) { #>
 											{{{ buttoniconHTML.value }}}
@@ -2776,19 +2776,5 @@ class Infobox extends Common_Widget {
 				</div>
 			</div>
 		<?php
-	}
-
-	/**
-	 * Render Info Box widget output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 0.0.1
-	 * @access protected
-	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-		$this->content_template();
 	}
 }

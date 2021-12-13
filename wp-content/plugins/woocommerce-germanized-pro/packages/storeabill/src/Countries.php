@@ -126,13 +126,9 @@ class Countries {
 		 * In any other case consider every non-base-country as third country.
 		 */
 		if ( in_array( self::get_base_country(), self::get_eu_vat_countries() ) ) {
-			$is_third_country = ! in_array( $country, self::get_eu_vat_countries() );
+			$is_third_country = ! self::is_eu_vat_country( $country, $postcode );
 		} else {
 			$is_third_country = $country !== self::get_base_country();
-		}
-
-		if ( self::is_northern_ireland( $country, $postcode ) ) {
-			$is_third_country = false;
 		}
 
 		return apply_filters( 'storeabill_is_third_country', $is_third_country, $country, $postcode );
@@ -156,14 +152,63 @@ class Countries {
 		return false;
 	}
 
+	public static function is_eu_vat_postcode_exemption( $country, $postcode = '' ) {
+		$country    = sab_strtoupper( $country );
+		$postcode   = sab_normalize_postcode( $postcode );
+		$exemptions = self::get_eu_vat_postcode_exemptions();
+		$is_exempt  = false;
+
+		if ( ! empty( $postcode ) && in_array( $country, self::get_eu_vat_countries() ) ) {
+			if ( array_key_exists( $country, $exemptions ) ) {
+				$wildcards = sab_get_wildcard_postcodes( $postcode, $country );
+
+				foreach( $exemptions[ $country ] as $exempt_postcode ) {
+					if ( in_array( $exempt_postcode, $wildcards, true ) ) {
+						$is_exempt = true;
+						break;
+					}
+				}
+			}
+		}
+
+		return $is_exempt;
+	}
+
 	public static function is_eu_vat_country( $country, $postcode = '' ) {
+		$country           = sab_strtoupper( $country );
+		$postcode          = sab_normalize_postcode( $postcode );
 		$is_eu_vat_country = in_array( $country, self::get_eu_vat_countries() );
 
 		if ( self::is_northern_ireland( $country, $postcode ) ) {
 			$is_eu_vat_country = true;
+		} elseif ( self::is_eu_vat_postcode_exemption( $country, $postcode ) ) {
+			$is_eu_vat_country = false;
 		}
 
 		return apply_filters( 'storeabill_is_eu_vat_country', $is_eu_vat_country, $country, $postcode );
+	}
+
+	public static function get_eu_vat_postcode_exemptions() {
+		return apply_filters( 'storeabill_eu_vat_postcode_exemptions', array(
+			'DE' => array(
+				'27498', // Helgoland
+				'78266' // Büsingen am Hochrhein
+			),
+			'ES' => array(
+				'35*', // Canary Islands
+				'38*', // Canary Islands
+				'51*', // Ceuta
+				'52*' // Melilla
+			),
+			'GR' => array(
+				'63086', // Mount Athos
+				'63087' // Mount Athos
+			),
+			'IT' => array(
+				'22060', // Livigno, Campione d’Italia
+				'23030', // Lake Lugano
+			),
+		) );
 	}
 
 	public static function is_eu_country( $country ) {

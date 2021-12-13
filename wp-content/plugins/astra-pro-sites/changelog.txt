@@ -1,3 +1,113 @@
+v3.0.11 - 13-December-2021
+- Fix: Fixed an issue where synchronization of the library was not working on sites where CRON was disabled.
+
+v3.0.10 - 11-December-2021
+- Fix: Timeout errors when activating required plugins.
+- Fix: `folder_exists` error when installing required plugins.
+
+v3.0.9 - 10-December-2021
+- Fix: Fixed an issue with resetting posts requests.
+- Fix: Fixed an undefined variable console error with plugin activation request.
+
+v3.0.8 - 10-December-2021
+- Improvement: Added backward screen navigation for welcome and page builders screen.
+- Improvement: Better handling of errors of final import step.
+- Fix: Retry import restricted to maximum 3 times.
+
+v3.0.7 - 9-December-2021
+- Fix: Fixed an issue with import failure when user activates the license for the first time.
+- Fix: Fixed the errors on final import step.
+
+v3.0.6 - 9-December-2021
+- Fix: Plugin installation failed error fixed after retry action.
+- Fix: Removed unused SVG images.
+
+v3.0.5 - 9-December-2021
+- Fix: Import process stopping after the posts are deleted.
+
+v3.0.4 - 8-December-2021
+- Fix: Log the errors reported on the posts delete step during deleting old site.
+
+v3.0.3 - 8-December-2021
+- Fix: Import failing when "Delete Previously imported sites" checkbox is checked.
+
+v3.0.2 - 8-December-2021
+- Fix: Improvised errors for the Site Reset step while importing.
+
+v3.0.1 - 8-December-2021
+- Improvement: Better handling of errors.
+- Fix: Removed extra sub directory from v3.0.0 update. 
+
+v3.0.0 - 8-December-2021
+- New: All new user interface to make it easier to select and customize the templates when you are building your website.
+- New: Amazing search to find the template suitable for your needs.
+- New: Ability to try the logo, colors and typography before importing.
+- New: Improved stability. We have improved our importer, which already was very stable. Now after this release, imports will rarely fail.
+- New: Brizy starter templates are deprecated in this release, you will still be able to import Brizy starter templates after you enable option in <code>Settings -> General -> Starter Templates</code>
+
+v2.7.5 - 27-October-2021
+- Fix: Elementor blocks not being imported due to missing required plugins.
+
+v2.7.4 - 26-October-2021
+- Fix: Fixed the issue with Elementor blocks contact form not being imported due to invalid form JSON file URL.
+
+v2.7.3 - 19-October-2021
+- Improvement: Validate the whitelisted host's URLs from the import process.
+
+v2.7.2 - 7-October-2021
+- Fix: No route was found matching the URL and request method.
+
+v2.7.1 - 7-October-2021
+- Security Improvement: Validate the site URL before processing the import request.
+- Security Improvement: Updated right file upload permission before importing images.
+
+v2.7.0 - 4-October-2021
+- New: Wireframe blocks for Gutenberg - [Doc](https://wpastra.com/docs/starter-templates-wireframe-blocks/)
+
+v2.6.22
+- Fix: Contact Forms not appearing after the import process is complete.
+
+v2.6.21
+- Improvement: Rectified the condition to load the scripts in other screens.
+- Fix: Starter template button not visible when gutenberg plugin is activated.
+
+v2.6.20
+- Improvement: Better handling of 500 errors on the import screen.
+
+v2.6.19
+- Fix: Fixed the "Customizer data is empty!" AJAX failed request while importing.
+- Fix: The Pixabay image library not visible for the multiple image instances.
+
+v2.6.18
+- Improvement: Avoided loading a few scripts in the customizer screen.
+- Improvement: Free Images from Pixabay can be downloaded from the main grid too with the use of a download icon.
+- Fix: Updated the Quick Links to Upgrade the plugin, page builder wise.
+
+v2.6.17
+- Improvement: Avoided loading the Gutenberg Blocks scripts in the customizer screen.
+- Fix: Fixed the missing 'Create Gallery' button in Media Popup for Elementor editor.
+
+v2.6.16
+- Fix: Fixed the issue where Free Images by Pixabay were not available on Elementor Editor.
+
+v2.6.15
+- Fix: Rectified the failing import process on multisite due to an issue introduced in v2.6.14
+- Fix: Fixed the broken invalid license document links.
+
+v2.6.14
+- Improvement: Compatibility to WordPress 5.8.
+- Improvement: Improved the import process by reducing the body size of the AJAX calls for better performance.
+- Improvement: Added support for dark and light support for block patterns with improved sidebar UI.
+- Fix: Handle the white label support.
+
+v2.6.13 - 06-July-2021
+- Fix: Rectified the 'Free Images by Pixabay' not visible since v2.6.12.
+
+v2.6.12 - 30-June-2021
+- Improvement: Updated the widget reset logic in which old widget moved to the inactive list.
+- Improvement: Quick Links UI improvements.
+- Improvement: Premium Templates UI improvements.
+
 v2.6.11 - 9-June-2021
 - Fix: Single pages not getting imported when no required plugin is associated to it.
 

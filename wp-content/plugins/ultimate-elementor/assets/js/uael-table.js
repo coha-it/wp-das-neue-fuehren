@@ -9,7 +9,6 @@
 			return;
 		}
 		// Define variables.
-		var $this                = $scope.find( '.uael-table-wrapper' );
 		var node_id              = $scope.data( 'id' );
 		var uael_table           = $scope.find( '.uael-table' );
 		var uael_table_id        = $scope.find( '#uael-table-id-' + node_id );
@@ -20,22 +19,43 @@
 		if ( 0 == uael_table_id.length )
 			return;
 
+		var uael_table_responsive = $( '.elementor-element-' + node_id + ' #' + uael_table_id[0].id ).data( 'responsive' );
+
+		if( 'yes' === uael_table_responsive ) {
+			var column_head = $scope.find( '.uael-table-head-cell-text' );
+			var rowtr = $scope.find( '.uael-table-row' );
+			
+			rowtr.each( function( i, tr ){
+				var th = $( tr ).find( '.uael-table-body-cell-text' );
+				th.each( function( index, th ){
+					var classList = $scope.find( 'thead th.uael-table-col' ).eq( index ).attr( 'class' );
+					var sort1 = $scope.find( 'thead th.uael-table-col' ).eq( index ).data( 'sort' );
+				
+					$( th ).prepend( '<div class="uael-table-head ' + classList + '"data-sort=' + sort1 + '>' + column_head.eq( index ).html() + '</div>' );
+					$( '.uael-table-head span.uael-table__text:nth-child(1)' ).addClass( 'uael-tbody-head-text' );
+					$( 'div.uael-table-head' ).addClass( 'responsive-header-text' );
+				});
+			});
+		}
+
+		var table_node =  $( '.elementor-element-' + node_id + ' #' + uael_table_id[0].id );
+
 		//Search entries
-		var search_entry = $( '.elementor-element-' + node_id + ' #' + uael_table_id[0].id ).data( 'searchable' );
+		var search_entry = table_node.data( 'searchable' );
 		
 		if ( 'yes' == search_entry ) {
 			searchable = true;
 		}
 
 		//Show entries select
-		var show_entry = $( '.elementor-element-' + node_id + ' #' + uael_table_id[0].id ).data( 'show-entry' );
+		var show_entry = table_node.data( 'show-entry' );
 
 		if ( 'yes' == show_entry ) {
 			showentries = true;
 		}
 
 		//Sort entries
-		var sort_table = $( '.elementor-element-' + node_id + ' #' + uael_table_id[0].id ).data( 'sort-table' );
+		var sort_table = table_node.data( 'sort-table' );
 
 		if ( 'yes' == sort_table ) {
 			$( '.elementor-element-' + node_id + ' #' + uael_table_id[0].id + ' th' ).css({'cursor': 'pointer'});
@@ -43,9 +63,10 @@
 			sortable = true;
 		}
 
-		var search_string = $( '.elementor-element-' + node_id + ' #' + uael_table_id[0].id ).data( 'search_text' ) || '';
+		var search_string = table_node.data( 'search_text' ) || '';
 		var length_string = uael_table_script.table_length_string;
 		var no_record_found_string = uael_table_script.table_not_found_str;
+
 
 		if( searchable || showentries || sortable ) {
 			$( '#' + uael_table_id[0].id ).DataTable( {
@@ -69,15 +90,15 @@
 			$scope.find( '.uael-table-info').wrapAll( '<div class="uael-advance-heading"></div>' );
 
 		}
-
-
+	
 		function coloumn_rules() {
-			if($(window).width() > 767) {
-				$(uael_table).addClass('uael-column-rules');
-				$(uael_table).removeClass('uael-no-column-rules');
+			var uael_table_widget = $( uael_table );
+			if( $( window ).width() > 767 ) {
+				uael_table_widget.addClass( 'uael-column-rules' );
+				uael_table_widget.removeClass( 'uael-no-column-rules' );
 			}else{
-				$(uael_table).removeClass('uael-column-rules');
-				$(uael_table).addClass('uael-no-column-rules');
+				uael_table_widget.removeClass( 'uael-column-rules' );
+				uael_table_widget.addClass( 'uael-no-column-rules' );
 			}
 		}
 

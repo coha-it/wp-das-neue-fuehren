@@ -60,10 +60,6 @@ class Customer implements \Vendidero\StoreaBill\Interfaces\Customer {
 			'country'     => '',
 		) );
 
-		if ( empty( $this->data['shipping_address']['address_1'] ) ) {
-			$this->data['shipping_address'] = $this->data['billing_address'];
-		}
-
 		$this->document = $invoice;
 	}
 
@@ -199,6 +195,24 @@ class Customer implements \Vendidero\StoreaBill\Interfaces\Customer {
 
 	public function get_shipping_city() {
 		return $this->get_address_data( 'city', 'shipping' );
+	}
+
+	public function has_shipping_address() {
+		/**
+		 * Some fields (e.g. shipping email) may have a value although there is no address available
+		 */
+		$fields_to_check            = array( 'address_1', 'country', 'postcode' );
+		$has_valid_shipping_address = true;
+
+		foreach( $fields_to_check as $field_name ) {
+			$value = array_key_exists( $field_name, $this->data['shipping_address'] ) ? trim( $this->data['shipping_address'][ $field_name ] ) : '';
+
+			if ( strlen( $value ) <= 0 ) {
+				$has_valid_shipping_address = false;
+			}
+		}
+
+		return $has_valid_shipping_address;
 	}
 
 	public function get_meta( $key, $single = true, $context = 'view' ) {

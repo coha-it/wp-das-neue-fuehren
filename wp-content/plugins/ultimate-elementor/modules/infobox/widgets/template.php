@@ -70,11 +70,12 @@ $this->add_render_attribute( 'classname', 'class', ' uael-infobox-link-type-' . 
 	<div class="uael-infobox-left-right-wrap">
 		<?php
 		if ( 'module' === $settings['infobox_cta_type'] && '' !== $settings['infobox_text_link'] ) {
-			$_nofollow = ( 'on' === $dynamic_settings['infobox_text_link']['nofollow'] ) ? '1' : '0';
-			$_target   = ( 'on' === $dynamic_settings['infobox_text_link']['is_external'] ) ? '_blank' : '';
-			$_link     = ( isset( $dynamic_settings['infobox_text_link']['url'] ) ) ? $dynamic_settings['infobox_text_link']['url'] : '';
+			if ( ! empty( $dynamic_settings['infobox_text_link']['url'] ) ) {
+				$this->add_link_attributes( 'module_link', $dynamic_settings['infobox_text_link'] );
+			}
+			$this->add_render_attribute( 'module_link', 'class', 'uael-infobox-module-link' );
 			?>
-			<a href="<?php echo $_link; ?>" target="<?php echo esc_attr( $_target ); ?>" <?php UAEL_Helper::get_link_rel( $_target, $_nofollow, 1 ); ?> class="uael-infobox-module-link"></a><?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>  
+			<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'module_link' ) ); ?>></a><?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>  
 			<?php
 		}
 		?>

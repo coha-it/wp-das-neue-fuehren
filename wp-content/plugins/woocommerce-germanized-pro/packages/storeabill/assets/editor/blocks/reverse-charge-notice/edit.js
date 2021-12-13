@@ -8,7 +8,6 @@ import {
     FontSizePicker,
     InspectorControls,
     withFontSizes,
-    __experimentalUseColors,
     RichText,
     BlockControls,
     AlignmentToolbar,
@@ -18,6 +17,7 @@ import { PanelBody } from "@wordpress/components";
 import { compose } from "@wordpress/compose";
 import { FORMAT_TYPES } from '@storeabill/settings';
 import { useRef } from "@wordpress/element";
+import { getFontSizeStyle, convertFontSizeForPicker, useColors } from '@storeabill/utils';
 
 function ReverseChargeNoticeEdit( {
     attributes,
@@ -38,7 +38,7 @@ function ReverseChargeNoticeEdit( {
     const {
         TextColor,
         InspectorControlsColorPanel,
-    } = __experimentalUseColors(
+    } = useColors(
         [
             { name: 'textColor', property: 'color' },
         ],
@@ -58,7 +58,7 @@ function ReverseChargeNoticeEdit( {
             <InspectorControls>
                 <PanelBody title={ _x( 'Typography', 'storeabill-core', 'storeabill' ) }>
                     <FontSizePicker
-                        value={ fontSize.size }
+                        value={ convertFontSizeForPicker( fontSize.size ) }
                         onChange={ setFontSize }
                     />
                 </PanelBody>
@@ -76,9 +76,7 @@ function ReverseChargeNoticeEdit( {
                     }
                     allowedFormats={ FORMAT_TYPES }
                     style={ {
-                        fontSize: fontSize.size
-                            ? fontSize.size + 'px'
-                            : undefined
+                        fontSize: getFontSizeStyle( fontSize )
                     } }
                 />
             </TextColor>

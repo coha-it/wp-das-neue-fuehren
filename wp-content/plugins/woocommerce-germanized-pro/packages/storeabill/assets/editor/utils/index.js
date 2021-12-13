@@ -1,7 +1,43 @@
 import { isEmpty, includes, concat } from 'lodash';
+import { __experimentalUseColors } from '@wordpress/block-editor';
+import { default as useColorsLegacy } from './use-colors';
+
+/**
+ * In case the __experimentalUseColors exists (older versions) load it - if not, load our custom replacement instead.
+ */
+const useColors = typeof __experimentalUseColors === 'undefined' ? useColorsLegacy : __experimentalUseColors;
+export { useColors };
 
 export function getDefaultPlaceholderContent( placeholder, tooltip = '' ) {
 	return '<span class="placeholder-content ' + ( ! isEmpty( tooltip ) ? 'sab-tooltip' : '' ) + '" contenteditable="false" ' + ( ! isEmpty( tooltip ) ? 'data-tooltip="' + tooltip + '"' : '' ) + '><span class="editor-placeholder"></span>' + placeholder + '</span>';
+}
+
+export function sabIsNumber( n ) {
+	return ! isNaN( parseFloat( n ) ) && ! isNaN( n - 0 );
+}
+
+export function convertFontSizeForPicker( fontSize ) {
+	if ( typeof fontSize == 'string' ) {
+		/**
+		 * For backwards compatibility (pre 5.8) convert strings with numbers only (e.g. without units)
+		 * to integers instead.
+		 */
+		if ( /^\d+$/.test( fontSize ) ) {
+			fontSize = parseInt( fontSize );
+		}
+	}
+
+	return fontSize;
+}
+
+export function getFontSizeStyle( fontSize ) {
+	let size = fontSize;
+
+	if ( fontSize && fontSize.hasOwnProperty( 'size' ) ) {
+		size = fontSize.size;
+	}
+
+	return size ? ( sabIsNumber( size ) ? size + 'px' : size ) : undefined;
 }
 
 export function replacePlaceholderWithPreview( content, replacement, placeholder, defaultContent, tooltip = '' ) {

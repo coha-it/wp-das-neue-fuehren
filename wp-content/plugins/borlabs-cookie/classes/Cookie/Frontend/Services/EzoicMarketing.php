@@ -33,6 +33,17 @@ class EzoicMarketing
         return self::$instance;
     }
 
+    /**
+     * __construct function.
+     *
+     * @access public
+     * @return void
+     */
+    public function __construct()
+    {
+        add_action('borlabsCookie/cookie/edit/template/settings/EzoicMarketing', [$this, 'additionalSettingsTemplate']);
+    }
+
     public function __clone()
     {
         trigger_error('Cloning is not allowed.', E_USER_ERROR);
@@ -43,14 +54,31 @@ class EzoicMarketing
         trigger_error('Unserialize is forbidden.', E_USER_ERROR);
     }
 
-    /**
-     * __construct function.
-     *
-     * @access public
-     * @return void
-     */
-    public function __construct()
+    public function additionalSettingsTemplate($data)
     {
+        ?>
+        <div class="form-group row">
+            <div class="col-sm-8 offset-4">
+                <div
+                    class="alert alert-warning mt-2"><?php
+                    $kbLink = _x(
+                        'https://borlabs.io/kb/ezoic/',
+                        'Backend / Cookie / Ezoic / Alert Message',
+                        'borlabs-cookie'
+                    );
+                    printf(
+                        _x(
+                            'Your cookie description needs to be updated. Please read <a href="%s" target="_blank" rel="nofollow noopener noreferrer">%s</a>.',
+                            'Backend / Cookie / Ezoic / Alert Message',
+                            'borlabs-cookie'
+                        ),
+                        $kbLink,
+                        $kbLink
+                    ); ?></div>
+
+            </div>
+        </div>
+        <?php
     }
 
     /**
@@ -66,8 +94,16 @@ class EzoicMarketing
             'service' => 'EzoicMarketing',
             'name' => 'Ezoic - Marketing',
             'provider' => 'Ezoic Inc.',
-            'purpose' => _x('Are used to track visitors across websites. The intent is to display ads that are relevant and appealing to the individual user.', 'Frontend / Cookie / Ezoic - Marketing / Text', 'borlabs-cookie'),
-            'privacyPolicyURL' => _x('https://www.ezoic.com/privacy-policy/', 'Frontend / Cookie / Ezoic - Marketing / Text', 'borlabs-cookie'),
+            'purpose' => _x(
+                'Are used to track visitors across websites. The intent is to display ads that are relevant and appealing to the individual user.',
+                'Frontend / Cookie / Ezoic - Marketing / Text',
+                'borlabs-cookie'
+            ),
+            'privacyPolicyURL' => _x(
+                'https://www.ezoic.com/privacy-policy/',
+                'Frontend / Cookie / Ezoic - Marketing / Text',
+                'borlabs-cookie'
+            ),
             'hosts' => [],
             'cookieName' => 'ez*, _sm_au, cto*, __gads, mind*, _ym_uid, GoogleAdServingTest',
             'cookieExpiry' => _x('1 Year', 'Frontend / Cookie / Ezoic - Marketing / Text', 'borlabs-cookie'),
@@ -100,6 +136,7 @@ if (typeof window.BorlabsEZConsentCategories == 'object') {
 }
 </script>
 EOT;
+
         return $code;
     }
 
@@ -118,6 +155,7 @@ if (typeof window.BorlabsEZConsentCategories == 'object') {
 }
 </script>
 EOT;
+
         return $code;
     }
 }

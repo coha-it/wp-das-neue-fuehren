@@ -24,7 +24,7 @@ const settings = {
             "type": "string"
         },
         "customFontSize": {
-            "type": "number"
+            "type": "string"
         },
         "content": {
             "type": 'string',
@@ -34,7 +34,43 @@ const settings = {
         },
     },
     edit,
-    save
+    save,
+    deprecated: [
+        {
+            attributes: {
+                "textColor": {
+                    "type": "string"
+                },
+                "customTextColor": {
+                    "type": "string"
+                },
+                "fontSize": {
+                    "type": "string"
+                },
+                "customFontSize": {
+                    "type": "number"
+                },
+                "content": {
+                    "type": 'string',
+                    "source": 'html',
+                    "selector": 'p.sab-block-item-content',
+                    "default": ''
+                },
+            },
+            isEligible( { customFontSize } ) {
+                return typeof customFontSize === 'number';
+            },
+            migrate( attributes ) {
+                return {
+                    ...attributes,
+                    customFontSize: attributes.customFontSize ? '' + attributes.customFontSize : undefined,
+                };
+            },
+            save( attributes ) {
+                return save( attributes );
+            }
+        },
+    ]
 };
 
 registerBlockType( 'storeabill/item-sku', settings );

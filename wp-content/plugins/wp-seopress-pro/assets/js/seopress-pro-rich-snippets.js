@@ -387,6 +387,9 @@ jQuery(document).ready(function ($) {
                     }
 
                     $(item_id + "_meta").val(attachment.url);
+                    if ($(item_id + "_attachment_id").length > 0) {
+                        $(item_id + "_attachment_id").val(attachment.id);
+                    }
                     $(item_id + "_width").val(attachment.width);
                     $(item_id + "_height").val(attachment.height);
                 });
@@ -424,6 +427,7 @@ jQuery(document).ready(function ($) {
         $(
             ".box-schema-item[data-key='" + number + "'] #wrap-faq .faq"
         ).accordion({
+            animate: false,
             collapsible: true,
             active: false,
             heightStyle: "panel",
@@ -557,6 +561,7 @@ jQuery(document).ready(function ($) {
         $(
             ".box-schema-item[data-key='" + number + "'] #wrap-how-to .step"
         ).accordion({
+            animate: false,
             collapsible: true,
             active: false,
             heightStyle: "panel",

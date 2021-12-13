@@ -1167,6 +1167,10 @@ abstract class Skin_Style {
 			return;
 		}
 
+		if ( ! wp_script_is( 'jquery', 'enqueued' ) ) {
+			wp_enqueue_script( 'jquery' );
+		}
+
 		$is_rtl      = is_rtl();
 		$direction   = $is_rtl ? 'rtl' : 'ltr';
 		$show_dots   = ( in_array( $this->get_instance_value( 'navigation' ), array( 'dots', 'both' ), true ) );

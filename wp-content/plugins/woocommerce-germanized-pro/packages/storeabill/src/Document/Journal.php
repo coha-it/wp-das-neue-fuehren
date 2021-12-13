@@ -131,28 +131,31 @@ class Journal extends Data {
 		$this->set_prop( 'reset_interval', $value );
 	}
 
-	public function needs_reset() {
+	public function needs_reset( $when = null ) {
 		$reset_date     = $this->get_date_last_reset();
 		$reset_interval = $this->get_reset_interval();
-		$now            = new \WC_DateTime();
 		$needs_reset    = false;
+		$when           = ! is_null( $when ) ? $when : sab_get_current_datetime();
 
 		if ( ! $reset_date ) {
-			$reset_date = new \WC_DateTime();
+			$reset_date = clone $when;
 		}
 
+		/**
+		 * Compare local times and watch for changes.
+		 */
 		switch( $reset_interval ) {
 			case "yearly":
-				$needs_reset = ( $now->format( 'Y' ) != $reset_date->format( 'Y' ) );
+				$needs_reset = ( $when->date_i18n( 'Y' ) != $reset_date->date_i18n( 'Y' ) );
 				break;
 			case "monthly":
-				$needs_reset = ( $now->format( 'm' ) != $reset_date->format( 'm' ) );
+				$needs_reset = ( $when->date_i18n( 'm' ) != $reset_date->date_i18n( 'm' ) );
 				break;
 			case "weekly":
-				$needs_reset = ( $now->format( 'W' ) != $reset_date->format( 'W' ) );
+				$needs_reset = ( $when->date_i18n( 'W' ) != $reset_date->date_i18n( 'W' ) );
 				break;
 			case "daily":
-				$needs_reset = ( $now->format( 'd' ) != $reset_date->format( 'd' ) );
+				$needs_reset = ( $when->date_i18n( 'd' ) != $reset_date->date_i18n( 'd' ) );
 				break;
 			default:
 				$needs_reset = false;
@@ -175,7 +178,7 @@ class Journal extends Data {
 	}
 
 	public function set_is_archived( $value ) {
-		$this->set_prop( 'is_archived', wc_string_to_bool( $value ) );
+		$this->set_prop( 'is_archived', sab_string_to_bool( $value ) );
 	}
 
 	public function reset() {
@@ -200,7 +203,7 @@ class Journal extends Data {
 		if ( ! is_wp_error( $result ) ) {
 			Package::log( sprintf( 'Journal %1$s last number forced update to %2$s', $this->get_type(), $last_number ) );
 
-			$this->set_date_last_reset( current_time( 'timestamp', true )  );
+			$this->set_date_last_reset( time() );
 			$this->save();
 		}
 

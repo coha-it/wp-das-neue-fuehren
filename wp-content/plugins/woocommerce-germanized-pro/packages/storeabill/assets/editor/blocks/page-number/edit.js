@@ -10,11 +10,10 @@ import {
   FontSizePicker,
   InspectorControls,
   withFontSizes,
-  __experimentalUseColors,
   RichText,
 } from '@wordpress/block-editor';
 
-import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview, replaceOptionalPlaceholderWithPreview } from "@storeabill/utils";
+import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview, replaceOptionalPlaceholderWithPreview, getFontSizeStyle, convertFontSizeForPicker, useColors } from "@storeabill/utils";
 import { compose } from "@wordpress/compose";
 
 const PageNumberEdit = ( {
@@ -46,7 +45,7 @@ const PageNumberEdit = ( {
     const {
       TextColor,
       InspectorControlsColorPanel
-    } = __experimentalUseColors(
+    } = useColors(
       [
         { name: 'textColor', property: 'color' },
       ],
@@ -64,7 +63,7 @@ const PageNumberEdit = ( {
             <InspectorControls>
               <PanelBody title={ _x( 'Typography', 'storeabill-core', 'storeabill' ) }>
                 <FontSizePicker
-                  value={ fontSize.size }
+                  value={ convertFontSizeForPicker( fontSize.size ) }
                   onChange={ setFontSize }
                 />
               </PanelBody>
@@ -81,9 +80,7 @@ const PageNumberEdit = ( {
                   }
                   allowedFormats={ FORMAT_TYPES }
                   style={ {
-                    fontSize: fontSize.size
-                      ? fontSize.size + 'px'
-                      : undefined,
+                    fontSize: getFontSizeStyle( fontSize )
                   } }
                 />
             </TextColor>

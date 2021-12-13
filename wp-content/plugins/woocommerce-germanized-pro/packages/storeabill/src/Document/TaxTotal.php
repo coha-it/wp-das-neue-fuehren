@@ -44,7 +44,7 @@ class TaxTotal {
 	public function __construct() {}
 
 	public function get_total_tax( $round = true ) {
-		return $round ? sab_format_decimal( $this->total, '' ) : sab_format_decimal( $this->total );
+		return $round ? wc_round_tax_total( $this->total ) : sab_format_decimal( $this->total );
 	}
 
 	public function get_total_net( $round = true ) {
@@ -52,7 +52,7 @@ class TaxTotal {
 	}
 
 	public function get_subtotal_tax( $round = true ) {
-		return $round ? sab_format_decimal( $this->subtotal, '' ) : sab_format_decimal( $this->subtotal );
+		return $round ? wc_round_tax_total( $this->subtotal ) : sab_format_decimal( $this->subtotal );
 	}
 
 	public function get_subtotal_net( $round = true ) {
@@ -279,11 +279,11 @@ class TaxTotal {
 				$net_subtotals[ $child->get_tax_type() ] = 0;
 			}
 
-			$totals[ $child->get_tax_type() ]        += $child->get_total_tax();
-			$net_totals[ $child->get_tax_type() ]    += $child->get_total_net();
+			$totals[ $child->get_tax_type() ]        += (float) $child->get_total_tax();
+			$net_totals[ $child->get_tax_type() ]    += (float) $child->get_total_net();
 
-			$subtotals[ $child->get_tax_type() ]     += $child->get_subtotal_tax();
-			$net_subtotals[ $child->get_tax_type() ] += $child->get_subtotal_net();
+			$subtotals[ $child->get_tax_type() ]     += (float) $child->get_subtotal_tax();
+			$net_subtotals[ $child->get_tax_type() ] += (float) $child->get_subtotal_net();
 		}
 
 		$this->set_total_tax( array_sum( $totals ) );
@@ -297,5 +297,9 @@ class TaxTotal {
 
 		$this->set_item_type_subtotals( $subtotals );
 		$this->set_item_type_net_subtotals( $net_subtotals );
+	}
+
+	public function get_taxes() {
+		return $this->taxes;
 	}
 }

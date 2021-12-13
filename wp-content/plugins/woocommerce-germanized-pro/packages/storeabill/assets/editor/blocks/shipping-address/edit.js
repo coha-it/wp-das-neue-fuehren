@@ -11,11 +11,10 @@ import {
     FontSizePicker,
     InspectorControls,
     withFontSizes,
-    __experimentalUseColors,
     RichText,
 } from '@wordpress/block-editor';
 
-import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview } from "@storeabill/utils";
+import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview, getFontSizeStyle, convertFontSizeForPicker, useColors } from "@storeabill/utils";
 import { compose } from "@wordpress/compose";
 
 const ShippingAddressEdit = ( {
@@ -34,7 +33,7 @@ const ShippingAddressEdit = ( {
     const {
         TextColor,
         InspectorControlsColorPanel
-    } = __experimentalUseColors(
+    } = useColors(
         [
             { name: 'textColor', property: 'color' },
         ],
@@ -62,7 +61,7 @@ const ShippingAddressEdit = ( {
                         onChange={ () => setAttributes( { hideIfEqualsBilling: ! hideIfEqualsBilling } ) }
                     />
                     <FontSizePicker
-                        value={ fontSize.size }
+                        value={ convertFontSizeForPicker( fontSize.size ) }
                         onChange={ setFontSize }
                     />
                 </PanelBody>
@@ -81,9 +80,7 @@ const ShippingAddressEdit = ( {
                         }
                         allowedFormats={ FORMAT_TYPES }
                         style={ {
-                            fontSize: fontSize.size
-                                ? fontSize.size + 'px'
-                                : undefined,
+                            fontSize: getFontSizeStyle( fontSize )
                         } }
                     />
                 </TextColor>

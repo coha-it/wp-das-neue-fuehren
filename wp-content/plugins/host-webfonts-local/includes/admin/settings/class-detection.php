@@ -68,7 +68,7 @@ class OMGF_Admin_Settings_Detection extends OMGF_Admin_Settings_Builder
 						$disabled = apply_filters($name . '_setting_disabled', true) ? 'disabled' : '';
 						?>
 						<label for="<?= $name; ?>">
-							<input type="checkbox" name="<?= $name; ?>" <?= $checked ? 'checked="checked"' : ''; ?> <?= $disabled; ?> /><?= $data['label']; ?>
+							<input type="checkbox" name="<?= $name; ?>" id="<?= $name; ?>" <?= $checked ? 'checked="checked"' : ''; ?> <?= $disabled; ?> /><?= $data['label']; ?>
 							&nbsp;
 						</label>
 					<?php endforeach; ?>
@@ -99,6 +99,10 @@ class OMGF_Admin_Settings_Detection extends OMGF_Admin_Settings_Builder
 			'omgf_pro_process_stylesheet_imports' => [
 				'label'		  => __('Process Stylesheet Imports', $this->plugin_text_domain),
 				'description' => __('Scan stylesheets loaded by your theme and plugins for <code>@import</code> statements loading Google Fonts and process them.', $this->plugin_text_domain)
+			],
+			'omgf_pro_process_stylesheet_font_faces' => [
+				'label'		  => __('Process Stylesheet Font Faces', $this->plugin_text_domain),
+				'description' => __('Scan stylesheets loaded by your theme and plugins for <code>@font-face</code> statements loading Google Fonts and process them.', $this->plugin_text_domain)
 			],
 			'omgf_pro_process_inline_styles'  => [
 				'label'       => __('Process Inline Styles', $this->plugin_text_domain),
@@ -140,13 +144,13 @@ class OMGF_Admin_Settings_Detection extends OMGF_Admin_Settings_Builder
 			__('Safe Mode (Pro)', $this->plugin_text_domain),
 			'omgf_pro_safe_mode',
 			defined('OMGF_PRO_SAFE_MODE') ? OMGF_PRO_SAFE_MODE : false,
-			__('Enable Safe Mode if Advanced Processing (Pro) breaks styling of certain pages.'),
+			__('Enable Safe Mode if Advanced Processing (Pro) breaks styling of certain pages.', $this->plugin_text_domain) . ' ' . $this->promo,
 			true
 		);
 	}
 
 	/**
-	 *
+	 * Add promo options for Process Resource Hints
 	 */
 	public function do_promo_process_resource_hints()
 	{

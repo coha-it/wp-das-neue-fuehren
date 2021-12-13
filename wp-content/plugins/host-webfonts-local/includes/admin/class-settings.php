@@ -21,6 +21,12 @@ class OMGF_Admin_Settings extends OMGF_Admin
 	const OMGF_ADMIN_PAGE = 'optimize-webfonts';
 
 	/**
+	 * Transients
+	 */
+	const OMGF_NEWS_REEL          = 'omgf_news_reel';
+	const OMGF_CURRENT_DB_VERSION = 'omgf_current_db_version';
+
+	/**
 	 * Settings Fields
 	 */
 	const OMGF_SETTINGS_FIELD_OPTIMIZE  = 'omgf-optimize-settings';
@@ -33,7 +39,7 @@ class OMGF_Admin_Settings extends OMGF_Admin
 	 */
 	const OMGF_OPTIMIZATION_MODE       = [
 		'manual' => 'Manual (default)',
-		'auto'   => 'Automatic'
+		'auto'   => 'Automatic (Pro)'
 	];
 	const OMGF_FONT_PROCESSING_OPTIONS = [
 		'replace' => 'Replace (default)',
@@ -45,6 +51,13 @@ class OMGF_Admin_Settings extends OMGF_Admin
 		'block'    => 'Block',
 		'fallback' => 'Fallback',
 		'optional' => 'Optional'
+	];
+	const OMGF_FILE_TYPES_OPTIONS = [
+		'woff2' => 'Web Open Font Format 2.0 (WOFF2)',
+		'woff'  => 'Web Open Font Format (WOFF)',
+		'eot'   => 'Embedded OpenType (EOT)',
+		'ttf'   => 'TrueType Font (TTF)',
+		'svg'   => 'Scalable Vector Graphics (SVG)'
 	];
 	const OMGF_FORCE_SUBSETS_OPTIONS   = [
 		'arabic'              => 'Arabic',
@@ -76,12 +89,48 @@ class OMGF_Admin_Settings extends OMGF_Admin
 		'tibetan'             => 'Tibetan',
 		'vietnamese'          => 'Vietnamese'
 	];
+	const OMGF_FALLBACK_FONT_STACKS_OPTIONS = [
+		'arial'       => 'Arial',
+		'baskerville' => 'Baskerville',
+		'bodoni-mt'      => 'Bodoni MT',
+		'calibri'        => 'Calibri',
+		'calisto-mt'     => 'Calisto MT',
+		'cambria'        => 'Cambria',
+		'candara'        => 'Candara',
+		'century-gothic' => 'Century Gothic',
+		'consolas'       => 'Consolas',
+		'copperplate-gothic' => 'Copperplate Gothic',
+		'courier-new'        => 'Courier New',
+		'dejavu-sans'        => 'Dejavu Sans',
+		'didot'              => 'Didot',
+		'franklin-gothic'    => 'Franklin Gothic',
+		'garamond'           => 'Garamond',
+		'georgia'            => 'Georgia',
+		'gill-sans'          => 'Gill Sans',
+		'goudy-old-style' => 'Goudy Old Style',
+		'helvetica'       => 'Helvetica',
+		'impact'		  => 'Impact',
+		'lucida-bright'   => 'Lucida Bright',
+		'lucida-sans'     => 'Lucida Sans',
+		'ms-sans-serif'   => 'Microsoft Sans Serif',
+		'optima'          => 'Optima',
+		'palatino' 		  => 'Palatino',
+		'perpetua'		  => 'Perpetua',
+		'rockwell'		  => 'Rockwell',
+		'segoe-ui'		  => 'Segoe UI',
+		'tahoma'		  => 'Tahoma',
+		'trebuchet-ms'	  => 'Trebuchet MS',
+		'verdana'		  => 'Verdana'
+	];
+	const OMGF_AMP_HANDLING_OPTIONS = [
+		'fallback' => 'Fallback (default)',
+		'disable'  => 'Disable'
+	];
 
 	/**
 	 * Optimize Fonts
 	 */
 	const OMGF_OPTIMIZE_SETTING_DISPLAY_OPTION      = 'omgf_display_option';
-	const OMGF_OPTIMIZE_SETTING_WOFF2_ONLY          = 'omgf_woff2_only';
 	const OMGF_OPTIMIZE_SETTING_MANUAL_OPTIMIZE_URL = 'omgf_manual_optimize_url';
 	const OMGF_OPTIMIZE_SETTING_OPTIMIZATION_MODE   = 'omgf_optimization_mode';
 	const OMGF_OPTIMIZE_SETTING_OPTIMIZED_FONTS     = 'omgf_optimized_fonts';
@@ -99,16 +148,16 @@ class OMGF_Admin_Settings extends OMGF_Admin
 	/**
 	 * Advanced Settings
 	 */
+	const OMGF_ADV_SETTING_AMP_HANDLING = 'omgf_amp_handling';
 	const OMGF_ADV_SETTING_CACHE_PATH   = 'omgf_cache_dir';
-	const OMGF_ADV_SETTING_CACHE_URI    = 'omgf_cache_uri';
-	const OMGF_ADV_SETTING_CDN_URL      = 'omgf_cdn_url';
+	const OMGF_ADV_SETTING_SOURCE_URL   = 'omgf_fonts_url';
 	const OMGF_ADV_SETTING_UNINSTALL    = 'omgf_uninstall';
-	const OMGF_ADV_SETTING_RELATIVE_URL = 'omgf_relative_url';
 
 	/**
 	 * Miscellaneous
 	 */
 	const OMGF_OPTIONS_GENERAL_PAGE_OPTIMIZE_WEBFONTS = 'options-general.php?page=optimize-webfonts';
+	const OMGF_PLUGINS_INSTALL_CHANGELOG_SECTION      = 'plugin-install.php?tab=plugin-information&plugin=host-webfonts-local&TB_iframe=true&width=772&height=1015&section=changelog';
 	const FFWP_WORDPRESS_PLUGINS_OMGF_PRO             = 'https://ffw.press/wordpress/omgf-pro/';
 
 	/** @var string $active_tab */
@@ -145,7 +194,8 @@ class OMGF_Admin_Settings extends OMGF_Admin
 		}
 
 		// Footer Text
-		add_filter('admin_footer_text', [$this, 'footer_text_left']);
+		add_filter('admin_footer_text', [$this, 'footer_text_left'], 99);
+		add_filter('update_footer', [$this, 'footer_text_right'], 11);
 
 		// Tabs
 		add_action('omgf_settings_tab', [$this, 'optimize_fonts_tab'], 0);
@@ -372,7 +422,7 @@ class OMGF_Admin_Settings extends OMGF_Admin
 			?>
 			<?php if ($this->active_tab !== self::OMGF_SETTINGS_FIELD_HELP) : ?>
 				<?php submit_button($this->submit_button_text, 'primary', 'submit', false); ?>
-				<a id="omgf-empty" class="omgf-empty button-cancel"><?php _e('Empty Cache Directory', $this->plugin_text_domain); ?></a>
+				<a id="omgf-empty" data-cache-section="/*" data-nonce="<?= wp_create_nonce(self::OMGF_ADMIN_PAGE); ?>" class="omgf-empty button-cancel"><?php _e('Empty Cache Directory', $this->plugin_text_domain); ?></a>
 			<?php endif; ?>
 		</form>
 <?php
@@ -399,10 +449,78 @@ class OMGF_Admin_Settings extends OMGF_Admin
 	 */
 	public function footer_text_left()
 	{
-		$logo_url = plugin_dir_url(OMGF_PLUGIN_BASENAME) . 'assets/images/ffw-press-logo.png';
-		$logo = "<a target='_blank' title='Visit FFW Press' href='https://ffw.press/wordpress-plugins/'><img class='signature-image' alt='Visit FFW Press' src='$logo_url'></a>";
-		$text = sprintf(__('Coded with %s in The Netherlands.', $this->plugin_text_domain), '<span class="dashicons dashicons-heart ffwp-heart"></span>');
+		$text = sprintf(__('Coded with %s in The Netherlands @ <strong>FFW.Press</strong>.', $this->plugin_text_domain), '<span class="dashicons dashicons-heart ffwp-heart"></span>');
 
-		return '<span id="footer-thankyou">' . $logo . ' ' . $text . '</span>';
+		return '<span id="footer-thankyou">' . $text . '</span>';
+	}
+
+	/**
+	 * All logic to generate the news reel in the bottom right of the footer on all of OMGF's settings pages.
+	 * 
+	 * Includes multiple checks to make sure the reel is only shown if a recent post is available.
+	 * 
+	 * @param mixed $text 
+	 * @return mixed 
+	 */
+	public function footer_text_right($text)
+	{
+		if (!extension_loaded('simplexml')) {
+			return $text;
+		}
+
+		/**
+		 * If a WordPress update is available, show the original text.
+		 */
+		if (strpos($text, 'Get Version') !== false) {
+			return $text;
+		}
+
+		// Prevents bashing the API.
+		$xml = get_transient(self::OMGF_NEWS_REEL);
+
+		if (!$xml) {
+			$response = wp_remote_get('https://ffw.press/blog/tag/omgf/feed');
+
+			if (!is_wp_error($response)) {
+				$xml = wp_remote_retrieve_body($response);
+
+				// Refresh the feed once a day to prevent bashing of the API.
+				set_transient(self::OMGF_NEWS_REEL, $xml, DAY_IN_SECONDS);
+			}
+		}
+
+		if (!$xml) {
+			return $text;
+		}
+
+		/**
+		 * Make sure the XML is properly encoded.
+		 */
+		$xml = utf8_encode(html_entity_decode($xml));
+		$xml = simplexml_load_string($xml);
+
+		if (!$xml) {
+			return $text;
+		}
+
+		$items = $xml->channel->item ?? [];
+
+		if (empty($items)) {
+			return $text;
+		}
+
+		$text = sprintf(__('Recently tagged <a target="_blank" href="%s"><strong>#OMGF</strong></a> on my blog:', $this->plugin_text_domain), 'https://daan.dev/tag/omgf') . ' ';
+		$text .= '<span id="omgf-ticker-wrap">';
+		$i    = 0;
+
+		foreach ($items as $item) {
+			$hide = $i > 0 ? 'style="display: none;"' : '';
+			$text .= "<span class='ticker-item' $hide>" . sprintf('<a target="_blank" href="%s"><em>%s</em></a>', $item->link, $item->title) . '</span>';
+			$i++;
+		}
+
+		$text .= "</span>";
+
+		return $text;
 	}
 }

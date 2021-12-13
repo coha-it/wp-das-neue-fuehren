@@ -20,7 +20,7 @@ class GlobalShortcodes
         add_shortcode('link-lost-password', array(__CLASS__, 'link_lost_password'));
         add_shortcode('link-login', array(__CLASS__, 'link_login'));
         add_shortcode('link-logout', array(__CLASS__, 'link_logout'));
-        add_shortcode('link-edit-user-profile', array(__CLASS__, 'link_edit_profile'));
+        add_shortcode('link-edit-user-profile', array(__CLASS__, 'link_edit_profile')); // backward compat
         add_shortcode('link-my-account', array(__CLASS__, 'link_edit_profile'));
         add_shortcode('pp-login-form', array(__CLASS__, 'login_form_tag'));
         add_shortcode('pp-registration-form', array(__CLASS__, 'registration_form_tag'));
@@ -79,7 +79,7 @@ class GlobalShortcodes
     {
         $tag = '<form method="post" data-pp-form-submit="login">';
         $tag .= self::melange_hidden_fields();
-        $tag .= '<input type="hidden" name="pp_current_url" value="' . ppress_get_current_url_raw() . '">';
+        $tag .= '<input type="hidden" name="pp_current_url" value="' . esc_attr(ppress_get_current_url_raw()) . '">';
         $tag .= do_shortcode($content);
         $tag .= '</form>';
 
@@ -152,10 +152,12 @@ class GlobalShortcodes
     {
         $atts = shortcode_atts(['custom_html' => ''], $atts);
 
-        return do_shortcode(stripslashes($atts['custom_html']));
+        return do_shortcode(stripslashes(wp_kses_post($atts['custom_html'])));
     }
 
-    /** registration url */
+    /**
+     * Registration url
+     */
     public static function link_registration($atts)
     {
         $atts = ppress_normalize_attributes($atts);
@@ -285,7 +287,6 @@ class GlobalShortcodes
 
     /**
      * URL to user edit page
-     * @return string
      */
     public static function link_edit_profile($atts)
     {
@@ -338,19 +339,21 @@ class GlobalShortcodes
     {
         $atts = shortcode_atts(
             array(
-                'user'  => '',
-                'class' => '',
-                'id'    => '',
-                'size'  => 300,
-                'alt'   => '',
+                'user'     => '',
+                'class'    => '',
+                'id'       => '',
+                'size'     => 300,
+                'alt'      => '',
+                'original' => false,
             ),
             $atts
         );
 
-        $class = $atts['class'];
-        $id    = $atts['id'];
-        $size  = absint($atts['size']);
-        $alt   = $atts['alt'];
+        $class    = $atts['class'];
+        $id       = $atts['id'];
+        $size     = absint($atts['size']);
+        $alt      = $atts['alt'];
+        $original = in_array($atts['original'], ['true', true], true);
 
         $user_id = self::$current_user->ID;
 
@@ -363,7 +366,7 @@ class GlobalShortcodes
             }
         }
 
-        return UserAvatar::get_avatar_img($user_id, $size, $alt, $class, $id);
+        return UserAvatar::get_avatar_img($user_id, $size, $alt, $class, $id, $original);
     }
 
     public static function user_cover_image($atts)
@@ -425,6 +428,7 @@ class GlobalShortcodes
 
         ob_start();
         ppress_content_http_redirect($url);
+
         return ob_get_clean();
     }
 
@@ -453,6 +457,7 @@ class GlobalShortcodes
 
         ob_start();
         ppress_content_http_redirect($url);
+
         return ob_get_clean();
     }
 
@@ -497,7 +502,7 @@ class GlobalShortcodes
     public static function bbp_topic_started_url()
     {
         if (function_exists('bbp_get_user_topics_created_url')) {
-            return esc_url(bbp_get_user_topics_created_url(self::$current_user->ID));
+            return esc_url_raw(bbp_get_user_topics_created_url(self::$current_user->ID));
         }
     }
 
@@ -523,7 +528,7 @@ class GlobalShortcodes
     public static function bbp_favorites_url()
     {
         if (function_exists('bbp_get_favorites_permalink')) {
-            return esc_url(bbp_get_favorites_permalink(self::$current_user->ID));
+            return esc_url_raw(bbp_get_favorites_permalink(self::$current_user->ID));
         }
     }
 

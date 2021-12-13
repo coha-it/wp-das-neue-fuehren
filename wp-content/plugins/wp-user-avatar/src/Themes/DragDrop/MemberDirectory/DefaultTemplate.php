@@ -50,7 +50,7 @@ class DefaultTemplate extends AbstractMemberDirectoryTheme
         $settings[] = [
             'id'       => 'ppress_md_default_cover_image',
             'type'     => 'checkbox',
-            'label'    => esc_html__('Enable Cover Image', 'wp-user-avatar'),
+            'label'    => esc_html__('Enable Cover Photo', 'wp-user-avatar'),
             'priority' => 20
         ];
 
@@ -164,7 +164,7 @@ class DefaultTemplate extends AbstractMemberDirectoryTheme
                     <?php if ($cover_image_enabled) : ?>
                         <div class="ppmd-member-cover">
                             <div class="ppress-md-member-cover-e">
-                                <a href="<?= $profile_url ?>" title="<?= $display_name ?>">
+                                <a href="<?= $profile_url ?>">
                                     <?php if ( ! empty($cover_image)) : ?>
                                         <?= sprintf('<img src="%s" alt="%s">', $cover_image, esc_attr($display_name)); ?>
                                     <?php endif; ?>
@@ -175,8 +175,8 @@ class DefaultTemplate extends AbstractMemberDirectoryTheme
 
                     <?php if ($profile_picture_enabled) : ?>
                         <div class="ppmd-member-photo">
-                            <a href="<?= $profile_url ?>" title="<?= $display_name ?>">
-                                [pp-user-avatar user="<?= $user->ID ?>" size=40]
+                            <a href="<?= $profile_url ?>">
+                                [pp-user-avatar user="<?= $user->ID ?>" size=40 original=true]
                             </a>
                         </div>
                     <?php endif; ?>

@@ -28,7 +28,7 @@ if (function_exists('pll_home_url')) {
 
 $home_url = apply_filters('seopress_sitemaps_home_url', $home_url);
 echo '<?xml version="1.0" encoding="UTF-8"?>';
-echo sprintf('<?xml-stylesheet type="text/xsl" href="%s"?>', $home_url . 'sitemaps_xsl.xsl');
+printf('<?xml-stylesheet type="text/xsl" href="%s"?>', $home_url . 'sitemaps_xsl.xsl');
 ?>
 
 <?php
@@ -56,6 +56,8 @@ if (true == get_post_type_archive_link($path) && 0 == $offset) {
     }
 }
 
+remove_all_filters('pre_get_posts');
+
 $args = [
     'posts_per_page' => 1000,
     'offset'         => $offset,
@@ -81,9 +83,20 @@ $args = [
     'has_password' => false,
 ];
 
-if ($path ==='attachment') {
+if ('attachment' === $path) {
     unset($args['post_status']);
 }
+
+if ( $path == 'product' ) {
+    $args['tax_query'][] = [
+        'taxonomy' => 'product_visibility',
+        'field'    => 'slug',
+        'terms'    => ['exclude-from-catalog'],
+        'operator' => 'NOT IN',
+    ];
+}
+
+
 
 $args = apply_filters('seopress_sitemaps_single_query', $args, $path);
 
@@ -94,10 +107,21 @@ foreach ($postslist as $post) {
     $dom    = '';
     $images = '';
 
+    $modified_date = '';
     if (get_the_modified_date('c', $post)) {
-        $seopress_mod = get_the_modified_date('c', $post);
-    } else {
-        $seopress_mod = get_post_modified_time('c', false, $post);
+        $modified_date = get_the_modified_date('c', $post);
+    }
+    else{
+        $modified_date = get_post_modified_time('c', false, $post);
+    }
+
+    $post_date = get_the_date('c', $post);
+    $seopress_mod = $modified_date;
+
+    if(!empty($modified_date)){
+        if((new DateTime($post_date)) > (new DateTime($modified_date))){
+            $seopress_mod = $post_date;
+        }
     }
 
     // initialize the sitemap url output
@@ -158,7 +182,7 @@ foreach ($postslist as $post) {
             }
 
             //Post Thumbnail
-            $post_thumbnail    = get_the_post_thumbnail_url($post);
+            $post_thumbnail    = get_the_post_thumbnail_url($post, 'full');
             $post_thumbnail_id = get_post_thumbnail_id($post);
 
             if ((isset($images) && ! empty($images) && $images->length >= 1) || (isset($product) && ! empty($product_img)) || '' != $post_thumbnail) {
@@ -320,4 +344,3 @@ foreach ($postslist as $post) {
 wp_reset_postdata();
 ?>
 </urlset>
-

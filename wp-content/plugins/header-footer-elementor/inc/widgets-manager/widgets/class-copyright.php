@@ -200,17 +200,14 @@ class Copyright extends Widget_Base {
 		$settings = $this->get_settings_for_display();
 		$link     = isset( $settings['link']['url'] ) ? $settings['link']['url'] : '';
 
-		if ( ! empty( $settings['link']['nofollow'] ) ) {
-			$this->add_render_attribute( 'link', 'rel', 'nofollow' );
-		}
-		if ( ! empty( $settings['link']['is_external'] ) ) {
-			$this->add_render_attribute( 'link', 'target', '_blank' );
+		if ( ! empty( $link ) ) {
+			$this->add_link_attributes( 'link', $settings['link'] );
 		}
 
 		$copy_right_shortcode = do_shortcode( shortcode_unautop( $settings['shortcode'] ) ); ?>
 		<div class="hfe-copyright-wrapper">
 			<?php if ( ! empty( $link ) ) { ?>
-				<a href="<?php echo esc_url( $link ); ?>" <?php echo $this->get_render_attribute_string( 'link' ); ?>>
+				<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'link' ) ); ?>>
 					<span><?php echo wp_kses_post( $copy_right_shortcode ); ?></span>
 				</a>
 			<?php } else { ?>
@@ -242,18 +239,4 @@ class Copyright extends Widget_Base {
 	 * @access protected
 	 */
 	protected function content_template() {}
-
-	/**
-	 * Render shortcode output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 1.2.0
-	 * @access protected
-	 */
-	protected function _content_template() {
-		$this->content_template();
-	}
 }

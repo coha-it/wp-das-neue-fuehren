@@ -3,6 +3,7 @@
 namespace Vendidero\Germanized\Shipments\ShippingProvider;
 
 use Vendidero\Germanized\Shipments\Interfaces\ShippingProvider;
+use Vendidero\Germanized\Shipments\Package;
 use WC_Data_Store;
 
 defined( 'ABSPATH' ) || exit;
@@ -131,6 +132,17 @@ class Helper {
 		 * @package Vendidero/Germanized/Shipments
 		 */
 		return apply_filters( 'woocommerce_gzd_shipping_provider_class_names', $class_names );
+	}
+
+	public function is_shipping_provider_activated( $name ) {
+		/**
+		 * Make sure that the plugin has initialised, e.g. during installs of shipping provider
+		 */
+		if ( ! did_action( 'woocommerce_gzd_shipments_init' ) ) {
+			Package::init();
+		}
+
+		return WC_Data_Store::load( 'shipping-provider' )->is_activated( $name );
 	}
 
 	/**

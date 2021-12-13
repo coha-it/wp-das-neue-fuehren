@@ -8,6 +8,7 @@ import edit from './edit';
  * Internal dependencies
  */
 import './editor.scss';
+import save from "../document-date/save";
 
 const settings = {
     title: _x( 'Item Attributes', 'storeabill-core', 'storeabill' ),
@@ -27,7 +28,7 @@ const settings = {
             "type": "string"
         },
         "customFontSize": {
-            "type": "number"
+            "type": "string"
         },
         "customAttributes": {
             "type": "array"
@@ -45,6 +46,39 @@ const settings = {
         }
     ],
     edit,
+    deprecated: [
+        {
+            attributes: {
+                "textColor": {
+                    "type": "string"
+                },
+                "customTextColor": {
+                    "type": "string"
+                },
+                "fontSize": {
+                    "type": "string"
+                },
+                "customFontSize": {
+                    "type": "number"
+                },
+                "customAttributes": {
+                    "type": "array"
+                },
+            },
+            isEligible( { customFontSize } ) {
+                return typeof customFontSize === 'number';
+            },
+            migrate( attributes ) {
+                return {
+                    ...attributes,
+                    customFontSize: attributes.customFontSize ? '' + attributes.customFontSize : undefined,
+                };
+            },
+            save( attributes ) {
+                return null;
+            }
+        },
+    ]
 };
 
 registerBlockType( 'storeabill/item-attributes', settings );

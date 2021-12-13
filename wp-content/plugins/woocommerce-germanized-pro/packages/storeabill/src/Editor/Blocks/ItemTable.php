@@ -63,6 +63,16 @@ class ItemTable extends DynamicBlock {
 				$column_classes[]  = 'sab-item-table-column-' . $attributes['align'];
 				$column_classes    = array_merge( $column_classes, sab_get_html_loop_classes( 'sab-item-table-column', sizeof( $block['innerBlocks'] ), $count ) );
 				$column_classes    = array_unique( array_merge( $column_classes, $border_classes ) );
+				$heading_styles    = sab_generate_block_styles( $attributes, array( 'headingTextColor' => 'textColor', 'headingBackgroundColor' => 'backgroundColor', 'headingFontSize' => 'fontSize' ) );
+				$column_styles     = array();
+
+				/**
+				 * Copy global border color styles to headings and rows to support custom border colors
+				 */
+				if ( isset( $styles['border-color'] ) && ! empty( $styles['border-color'] ) ) {
+					$column_styles['border-color']  = $styles['border-color'];
+					$heading_styles['border-color'] = $styles['border-color'];
+				}
 
 				$new_column = array(
 					'width'          => ( ! empty( $attributes['width'] ) ) ? $attributes['width'] . '%' : '',
@@ -70,7 +80,8 @@ class ItemTable extends DynamicBlock {
 					'heading'        => '',
 					'classes'        => $column_classes,
 					'innerBlocks'    => $column['innerBlocks'],
-					'header_styles'  => sab_generate_block_styles( $attributes, array( 'headingTextColor' => 'textColor', 'headingBackgroundColor' => 'backgroundColor', 'headingFontSize' => 'fontSize' ) ),
+					'header_styles'  => $heading_styles,
+					'styles'         => $column_styles,
 					'header_classes' => sab_get_html_classes( $column['innerContent'][0] )
 				);
 

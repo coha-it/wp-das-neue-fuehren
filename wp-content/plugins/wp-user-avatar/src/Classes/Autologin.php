@@ -16,7 +16,7 @@ class Autologin
      * @param string $login_id
      * @param string $redirect
      *
-     * @return  mixed
+     * @return  void|mixed
      */
     public static function initialize($user_id, $login_id = '', $redirect = '')
     {
@@ -38,18 +38,28 @@ class Autologin
                     }
                 }
 
-                if (defined('FORCE_SSL_ADMIN') && FORCE_SSL_ADMIN === true) {
-                    $secure_cookie = true;
-                }
-
                 wp_set_auth_cookie($user_id, true, $secure_cookie);
                 wp_set_current_user($user_id);
+
+                get_user_by('id', $user_id);
             }
 
             do_action('ppress_before_auto_login_redirect', $login_id, $user_id);
         }
 
-        $login_redirect = ! empty($redirect) ? $redirect : ppress_login_redirect();
+        if ( ! empty($redirect)) {
+
+            $previous_page = ppress_var($_POST, 'login_referrer_page', ppress_var($_POST, 'signup_referrer_page'));
+
+            if ($redirect == 'previous_page' && ! empty($previous_page)) {
+                $redirect = esc_url_raw($previous_page);
+            }
+
+            $login_redirect = $redirect;
+
+        } else {
+            $login_redirect = ppress_login_redirect();
+        }
 
         /** Setup a custom location for "auto login after registration" */
         $login_redirection = apply_filters('ppress_auto_login_redirection', $login_redirect, $login_id, $user_id);

@@ -126,7 +126,14 @@ class RegistrationAuth
             }
 
             if (in_array($key, $valid_userdata)) {
-                $segregated_userdata[$key] = sanitize_text_field($value);
+
+                if (in_array($key, ['reg_email', 'reg_email2'])) {
+                    $segregated_userdata[$key] = sanitize_email($value);
+                    continue;
+                }
+
+                // sanitize_textarea_field is used to preserve any line breaks
+                $segregated_userdata[$key] = sanitize_textarea_field($value);
             }
         }
 
@@ -250,7 +257,7 @@ class RegistrationAuth
                 if ( ! in_array($key, $valid_userdata)) {
 
                     if (in_array($key, array_keys(ppress_custom_fields_key_value_pair(true)))) {
-                        $custom_usermeta[$key] = is_array($value) ? array_map('sanitize_text_field', $value) : sanitize_text_field($value);
+                        $custom_usermeta[$key] = is_array($value) ? array_map('sanitize_textarea_field', $value) : sanitize_textarea_field($value);
                     }
                 }
             }
@@ -296,7 +303,7 @@ class RegistrationAuth
         // --------END ---------   validation for avatar upload ----------------------//
 
 
-        // --------START ---------   validation for cover image upload ----------------------//
+        // --------START ---------   validation for cover photo upload ----------------------//
         if (isset($files['reg_cover_image']['name']) && ! empty($files['reg_cover_image']['name'])) {
 
             $upload_cover_image = ImageUploader::process($files['reg_cover_image'], ImageUploader::COVER_IMAGE, PPRESS_COVER_IMAGE_UPLOAD_DIR);
@@ -305,7 +312,7 @@ class RegistrationAuth
                 return "<div class='profilepress-reg-status'>" . $upload_cover_image->get_error_message() . "</div>";
             }
         }
-        // --------END ---------   validation for cover image upload ----------------------//
+        // --------END ---------   validation for cover photo upload ----------------------//
 
         do_action('ppress_before_registration', $form_id, $user_data);
 
@@ -423,16 +430,32 @@ class RegistrationAuth
      */
     public static function acceptable_defined_roles($form_id)
     {
-        $registration_structure = FormRepository::get_form_meta($form_id, FormRepository::REGISTRATION_TYPE, FormRepository::FORM_STRUCTURE);
+        if (FormRepository::is_drag_drop($form_id, FormRepository::REGISTRATION_TYPE)) {
 
-        // find the first occurrence of reg-select-role shortcode.
-        preg_match('/\[reg-select-role.*\]/', $registration_structure, $matches);
+            $settings = FormRepository::form_builder_fields_settings($form_id, FormRepository::REGISTRATION_TYPE);
 
-        if (empty($matches) || ! isset($matches[0])) return;
+            $reg_select_field = array_values(
+                wp_list_pluck(
+                    wp_list_filter($settings, ['fieldType' => 'reg-select-role']),
+                    'options'
+                )
+            );
 
-        preg_match('/options="([,\s\w]+)"/', $matches[0], $matches2);
+            $options = isset($reg_select_field[0]) ? $reg_select_field[0] : [];
 
-        $options = $matches2[1];
+        } else {
+
+            $registration_structure = FormRepository::get_form_meta($form_id, FormRepository::REGISTRATION_TYPE, FormRepository::FORM_STRUCTURE);
+
+            // find the first occurrence of reg-select-role shortcode.
+            preg_match('/\[reg-select-role.*\]/', $registration_structure, $matches);
+
+            if (empty($matches) || ! isset($matches[0])) return;
+
+            preg_match('/options="([,\s\w]+)"/', $matches[0], $matches2);
+
+            $options = isset($matches2[1]) ? $matches2[1] : [];
+        }
 
         //if no options attribute was found in the shortcode, default to all list of editable roles
         if (empty($options)) {

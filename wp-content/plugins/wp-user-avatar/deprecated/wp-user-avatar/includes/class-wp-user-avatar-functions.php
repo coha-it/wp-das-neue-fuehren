@@ -252,10 +252,11 @@ class WP_User_Avatar_Functions
      *
      * @param int|string $id_or_email
      * @param int|string $size
+     * @param bool $original whether to return the full image url regardless of the image size
      *
      * @return string $avatar
      */
-    public function get_wp_user_avatar($id_or_email, $size = '96')
+    public function get_wp_user_avatar($id_or_email, $size = '96', $original = false)
     {
         global $all_sizes, $_wp_additional_image_sizes;
 
@@ -272,7 +273,7 @@ class WP_User_Avatar_Functions
         }
 
         // User with no WPUA uses get_avatar
-        $avatar = get_avatar($id_or_email, $get_size);
+        $avatar = get_avatar($id_or_email, $get_size,'','', ['ppress-full' => $original]);
         // Remove width and height for non-numeric sizes
         if (in_array($size, array('original', 'large', 'medium', 'thumbnail'))) {
             $avatar = preg_replace('/(width|height)=\"\d*\"\s/', "", $avatar);
@@ -299,14 +300,15 @@ class WP_User_Avatar_Functions
      *
      * @param int|string $id_or_email
      * @param int|string $size
+     * @param bool $original whether to return the image full url
      *
      * @return string
      */
-    public function get_wp_user_avatar_src($id_or_email = "", $size = "")
+    public function get_wp_user_avatar_src($id_or_email = "", $size = "", $original = false)
     {
         $wpua_image_src = "";
         // Gets the avatar img tag
-        $wpua_image = $this->get_wp_user_avatar($id_or_email, $size);
+        $wpua_image = $this->get_wp_user_avatar($id_or_email, $size, $original);
         // Takes the img tag, extracts the src
         if ( ! empty($wpua_image)) {
             $output         = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $wpua_image, $matches, PREG_SET_ORDER);

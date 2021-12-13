@@ -10,9 +10,15 @@ class UserAvatar
 
             if (ppress_var($args, 'force_default') === true || ppress_var($args, 'ppress_skip') === true) return $args;
 
+            $size = apply_filters('ppress_user_avatar_image_size', ppress_var($args, 'size'), $id_or_email);
+
+            $original = ppress_var($args, 'ppress-full') === true;
+
+            if ( ! empty($size)) $size = absint($size);
+
             if (self::user_has_pp_avatar($id_or_email)) {
 
-                $args['url'] = self::get_pp_avatar_url($id_or_email, ppress_var($args, 'size'));
+                $args['url'] = self::get_pp_avatar_url($id_or_email, $size, $original);
 
             } else {
                 /** WP User Avatar Adapter STARTS */
@@ -20,13 +26,14 @@ class UserAvatar
 
                 // First checking custom avatar.
                 if ($wpua_disable_gravatar == '1') {
-                    $args['url'] = $wpua_functions->wpua_get_default_avatar_url(ppress_var($args, 'size'));
+                    $args['url'] = $wpua_functions->wpua_get_default_avatar_url($size);
                 } else {
-                    
+
                     $has_valid_url = $wpua_functions->wpua_has_gravatar($id_or_email);
 
                     if ( ! $has_valid_url) {
-                        $args['url'] = $wpua_functions->wpua_get_default_avatar_url(ppress_var($args, 'size', 96, true));
+                        $wpua_size   = ! empty($size) ? $size : 96;
+                        $args['url'] = $wpua_functions->wpua_get_default_avatar_url($wpua_size);
                     }
                 }
                 /** WP User Avatar Adapter ENDS */
@@ -55,7 +62,9 @@ class UserAvatar
 
                     $class = esc_attr(implode(' ', $class));
 
-                    $avatar = self::get_avatar_img($id_or_email, $size, $alt, $class);
+                    $original = ppress_var($args, 'ppress-full') === true;
+
+                    $avatar = self::get_avatar_img($id_or_email, $size, $alt, $class, '', $original);
                 }
             }
 
@@ -93,7 +102,7 @@ class UserAvatar
      *
      * @return string
      */
-    public static function get_pp_avatar_url($id_or_email, $size = false)
+    public static function get_pp_avatar_url($id_or_email, $size = false, $original = false)
     {
         $user_id = self::get_avatar_user_id($id_or_email);
 
@@ -111,7 +120,7 @@ class UserAvatar
 
         if ( ! empty($attachment_id) && wp_attachment_is_image($attachment_id)) {
 
-            if ( ! empty($size)) {
+            if ( ! empty($size) && ! $original) {
 
                 $size = is_numeric($size) ? [$size, $size] : $size;
 
@@ -134,10 +143,11 @@ class UserAvatar
      * @param string $alt
      * @param string $class
      * @param string $css_id
+     * @param bool $original
      *
      * @return mixed
      */
-    public static function get_avatar_img($id_or_email, $size = '96', $alt = '', $class = '', $css_id = '')
+    public static function get_avatar_img($id_or_email, $size = '96', $alt = '', $class = '', $css_id = '', $original = true)
     {
         $alt = esc_attr($alt);
 
@@ -145,11 +155,13 @@ class UserAvatar
 
         if ( ! empty($css_id)) $css_id = " id='$css_id'";
 
-        $size = absint($size);
+        $size = apply_filters('ppress_user_avatar_image_size', absint($size), $id_or_email);
 
-        $avatar_url = get_avatar_url($id_or_email, ['size' => $size]);
+        $avatar_url = get_avatar_url($id_or_email, ['size' => $size, 'ppress-full' => $original]);
 
-        return "<img data-del=\"avatar\" alt='{$alt}' src='{$avatar_url}' class='avatar pp-user-avatar avatar-{$size} photo {$class}' height='{$size}' width='{$size}'$css_id/>";
+        $alt_attr = ! empty($alt) ? " alt=\"{$alt}\"" : '';
+
+        return "<img data-del=\"avatar\"" . $alt_attr . " src='{$avatar_url}' class='avatar pp-user-avatar avatar-{$size} photo {$class}' height='{$size}' width='{$size}'$css_id/>";
     }
 
     /**

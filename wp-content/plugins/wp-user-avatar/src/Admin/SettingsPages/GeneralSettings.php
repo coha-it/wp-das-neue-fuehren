@@ -2,16 +2,26 @@
 
 namespace ProfilePress\Core\Admin\SettingsPages;
 
-use ProfilePress\Core\Admin\SettingsPages\EmailSettings\EmailSettingsPage;
+use ProfilePress\Core\Classes\ExtensionManager;
 use ProfilePress\Core\Classes\FormRepository;
 use ProfilePress\Custom_Settings_Page_Api;
 
 class GeneralSettings extends AbstractSettingsPage
 {
+    public $settingsPageInstance;
+
     public function __construct()
     {
-        $this->init_menu();
-        add_action('admin_menu', array($this, 'register_settings_page'));
+        // registers the global ProfilePress dashboard menu
+        add_action('admin_menu', array($this, 'register_core_menu'));
+
+        add_action('ppress_register_menu_page_general_general', function () {
+            $this->settingsPageInstance = Custom_Settings_Page_Api::instance([], PPRESS_SETTINGS_DB_OPTION_NAME, esc_html__('General', 'wp-user-avatar'));
+        });
+
+        add_action('ppress_register_menu_page', array($this, 'register_menu_page'));
+
+        add_action('ppress_admin_settings_submenu_page_general_general', [$this, 'settings_admin_page_callback']);
 
         // flush rewrite rule on save/persistence
         add_action('wp_cspa_persist_settings', function () {
@@ -21,7 +31,7 @@ class GeneralSettings extends AbstractSettingsPage
         $this->custom_sanitize();
     }
 
-    public function register_settings_page()
+    public function register_menu_page()
     {
         $hook = add_submenu_page(
             PPRESS_SETTINGS_SLUG,
@@ -29,10 +39,54 @@ class GeneralSettings extends AbstractSettingsPage
             esc_html__('Settings', 'wp-user-avatar'),
             'manage_options',
             PPRESS_SETTINGS_SLUG,
-            array($this, 'settings_admin_page_callback')
+            array($this, 'admin_page_callback')
         );
 
         add_action("load-$hook", [$this, 'screen_option']);
+    }
+
+    public function default_header_menu()
+    {
+        return 'general';
+    }
+
+    public function header_menu_tabs()
+    {
+        $tabs = apply_filters('ppress_settings_page_tabs', [
+            20 => ['id' => 'general', 'url' => PPRESS_SETTINGS_SETTING_PAGE, 'label' => esc_html__('General', 'wp-user-avatar')],
+            40 => ['id' => 'email', 'url' => add_query_arg('view', 'email', PPRESS_SETTINGS_SETTING_PAGE), 'label' => esc_html__('Emails', 'wp-user-avatar')],
+        ]);
+
+        if ( ! empty($this->integrations_submenu_tabs())) {
+            $tabs[60] = ['id' => 'integrations', 'url' => add_query_arg('view', 'integrations', PPRESS_SETTINGS_SETTING_PAGE), 'label' => esc_html__('Integrations', 'wp-user-avatar')];
+        }
+
+        if ( ! ExtensionManager::is_premium()) {
+            $tabs[999] = ['url' => PPRESS_EXTENSIONS_SETTINGS_PAGE, 'label' => esc_html__('Premium Addons', 'wp-user-avatar')];
+        }
+
+        ksort($tabs);
+
+        return $tabs;
+    }
+
+    public function integrations_submenu_tabs()
+    {
+        return apply_filters('ppress_integrations_submenu_tabs', []);
+    }
+
+    public function header_submenu_tabs()
+    {
+        $tabs = apply_filters('ppress_settings_page_submenus_tabs', [
+            0     => ['parent' => 'general', 'id' => 'general', 'label' => esc_html__('General', 'wp-user-avatar')],
+            99999 => ['parent' => 'general', 'id' => 'tools', 'label' => esc_html__('Tools', 'wp-user-avatar')],
+        ]);
+
+        $tabs = $tabs + $this->integrations_submenu_tabs();
+
+        ksort($tabs);
+
+        return $tabs;
     }
 
     public function screen_option()
@@ -42,14 +96,6 @@ class GeneralSettings extends AbstractSettingsPage
 
     public function settings_admin_page_callback()
     {
-        if (isset($_GET['view']) && $_GET['view'] == 'email') {
-            return EmailSettingsPage::get_instance()->admin_page();
-        }
-
-        if (isset($_GET['view']) && $_GET['view'] == 'tools') {
-            return ToolsSettingsPage::get_instance()->admin_page();
-        }
-
         $custom_page = apply_filters('ppress_general_settings_admin_page_short_circuit', false);
 
         if (false !== $custom_page) return $custom_page;
@@ -60,6 +106,16 @@ class GeneralSettings extends AbstractSettingsPage
 
                 return $carry;
             }, ['default' => esc_html__('My Account edit profile form (default)', 'wp-user-avatar')]);
+
+        $login_redirect_page_dropdown_args = [
+            ['key' => 'current_page', 'label' => esc_html__('Currently viewed page', 'wp-user-avatar')],
+            ['key' => '', 'label' => esc_html__('Previous/Referrer page (Pro feature)', 'wp-user-avatar'), 'disabled' => true],
+            ['key' => 'dashboard', 'label' => esc_html__('WordPress Dashboard', 'wp-user-avatar')]
+        ];
+
+        if (ExtensionManager::is_premium()) {
+            $login_redirect_page_dropdown_args[1] = ['key' => 'previous_page', 'label' => esc_html__('Previous/Referrer page', 'wp-user-avatar')];
+        }
 
         $args = [
             'global_settings'           => apply_filters('ppress_global_settings_page', [
@@ -109,7 +165,7 @@ class GeneralSettings extends AbstractSettingsPage
                     'remove_plugin_data'    => [
                         'type'           => 'checkbox',
                         'value'          => 'yes',
-                        'label'          => esc_html__('Remove Data on Uninstall?', 'wp-user-avatar'),
+                        'label'          => esc_html__('Remove Data on Uninstall', 'wp-user-avatar'),
                         'checkbox_label' => esc_html__('Delete', 'wp-user-avatar'),
                         'description'    => esc_html__('Check this box if you would like ProfilePress to completely remove all of its data when the plugin is deleted.', 'wp-user-avatar'),
                     ]
@@ -235,7 +291,8 @@ class GeneralSettings extends AbstractSettingsPage
                             [
                                 ['key' => 'default', 'label' => esc_html__('Select...', 'wp-user-avatar')],
                                 ['key' => 'current_view_page', 'label' => esc_html__('Currently viewed page', 'wp-user-avatar')]
-                            ]
+                            ],
+                            ['skip_append_default_select' => true]
                         ) . $this->custom_text_input('custom_url_log_out'),
                     'description' => sprintf(
                         esc_html__('Select the page users will be redirected to after logout. To redirect to a custom URL instead of a selected page, enter the URL in input field directly above this description.', 'wp-user-avatar') . '%s' .
@@ -246,14 +303,7 @@ class GeneralSettings extends AbstractSettingsPage
                 'set_login_redirect'          => [
                     'type'        => 'custom_field_block',
                     'label'       => esc_html__('Login', 'wp-user-avatar'),
-                    'data'        => $this->page_dropdown(
-                            'set_login_redirect',
-                            [
-                                ['key' => 'current_page', 'label' => esc_html__('Currently viewed page', 'wp-user-avatar')],
-                                ['key' => 'dashboard', 'label' => esc_html__('WordPress Dashboard', 'wp-user-avatar')]
-                            ]
-                        )
-                                     . $this->custom_text_input('custom_url_login_redirect'),
+                    'data'        => $this->page_dropdown('set_login_redirect', $login_redirect_page_dropdown_args) . $this->custom_text_input('custom_url_login_redirect'),
                     'description' => sprintf(
                         esc_html__('Select the page or custom URL users will be redirected to after login. To redirect to a custom URL instead of a selected page, enter the URL in input field directly above this description', 'wp-user-avatar') . '%s' .
                         esc_html__('Leave the "custom URL" field empty to fallback to the selected page.', 'wp-user-avatar'),
@@ -376,11 +426,8 @@ class GeneralSettings extends AbstractSettingsPage
             );
         }
 
-        $settings_args = apply_filters('ppress_settings_page_args', $args);
-        $instance      = Custom_Settings_Page_Api::instance($settings_args, PPRESS_SETTINGS_DB_OPTION_NAME, esc_html__('General', 'wp-user-avatar'));
-        $this->register_core_settings($instance, true);
-        $instance->tab($this->settings_tab_args());
-        $instance->build_sidebar_tab_style();
+        $this->settingsPageInstance->main_content(apply_filters('ppress_settings_page_args', $args));
+        $this->settingsPageInstance->build_sidebar_tab_style();
     }
 
     public function custom_sanitize()

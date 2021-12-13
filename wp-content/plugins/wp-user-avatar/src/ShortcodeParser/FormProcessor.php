@@ -158,10 +158,10 @@ class FormProcessor
 
             $redirect = ppressPOST_var('signup_redirect', '', true);
             if ( ! empty($_POST['melange_redirect'])) {
-                $redirect = esc_url_raw($_POST['melange_redirect']);
+                $redirect = sanitize_text_field($_POST['melange_redirect']);
             }
 
-            $no_login_redirect = ! empty($_POST['signup_no_login_redirect']) ? esc_url_raw($_POST['signup_no_login_redirect']) : '';
+            $no_login_redirect = ! empty($_POST['signup_no_login_redirect']) ? sanitize_text_field($_POST['signup_no_login_redirect']) : '';
 
             $is_melange = isset($_POST['is_melange']) && $_POST['is_melange'] == 'true';
 
@@ -203,9 +203,9 @@ class FormProcessor
 
             $form_id = absint(! empty($_POST['pp_melange_id']) ? $_POST['pp_melange_id'] : @$_POST['login_form_id']);
 
-            $redirect = ! empty($_POST['login_redirect']) ? esc_url_raw($_POST['login_redirect']) : '';
+            $redirect = ! empty($_POST['login_redirect']) ? sanitize_text_field($_POST['login_redirect']) : '';
             if ( ! empty($_POST['melange_redirect'])) {
-                $redirect = esc_url_raw($_POST['melange_redirect']);
+                $redirect = sanitize_text_field($_POST['melange_redirect']);
             }
 
             $login_status = LoginAuth::login_auth($username, $password, $remember_login, $form_id, $redirect);

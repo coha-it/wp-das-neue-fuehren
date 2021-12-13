@@ -34,7 +34,7 @@ class ItemField extends ItemTableColumnBlock {
 			'customTextColor'       => $this->get_schema_string(),
 			'backgroundColor'       => $this->get_schema_string(),
 			'fontSize'              => $this->get_schema_string( '' ),
-			'customFontSize'        => $this->get_schema_number( '' ),
+			'customFontSize'        => $this->get_schema_string( '' ),
 			'placeholder'           => $this->get_schema_string(),
 			'customBackgroundColor' => $this->get_schema_string(),
 			'renderTotal'           => $this->get_schema_number( 1 ),

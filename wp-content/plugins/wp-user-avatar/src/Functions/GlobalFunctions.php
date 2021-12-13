@@ -6,6 +6,7 @@ use ProfilePress\Core\Classes\ExtensionManager as EM;
 use ProfilePress\Core\Classes\FormRepository as FR;
 use ProfilePress\Core\Classes\PROFILEPRESS_sql as PROFILEPRESS_sql;
 use ProfilePress\Core\Classes\SendEmail;
+use ProfilePress\Core\ShortcodeParser\Builder\FieldsShortcodeCallback;
 
 /** Plugin DB settings data */
 function ppress_db_data()
@@ -218,29 +219,32 @@ function ppress_login_redirect()
     } else {
         $login_redirect            = ppress_get_setting('set_login_redirect');
         $custom_url_login_redirect = ppress_get_setting('custom_url_login_redirect');
+        $referrer_url              = ppress_var($_POST, 'login_referrer_page', ppress_var($_POST, 'signup_referrer_page'));
 
-        if (isset($custom_url_login_redirect) && ! empty($custom_url_login_redirect)) {
+        if ( ! empty($custom_url_login_redirect)) {
             $redirect = $custom_url_login_redirect;
         } elseif ($login_redirect == 'dashboard') {
             $redirect = network_site_url('/wp-admin');
+        } elseif ($login_redirect == 'previous_page' && ! empty($referrer_url)) {
+            $redirect = $referrer_url;
         } elseif ('current_page' == $login_redirect) {
             // in ajax mode, pp_current_url is set so we can do client-side redirection to current page after login.
             // no way to get current url in social login hence, look it up from $_GET['pp_current_url']
             if ( ! empty($_GET['pp_current_url'])) {
                 $redirect = rawurldecode($_GET['pp_current_url']);
-            } elseif (isset($_POST['pp_current_url'])) {
-                $redirect = $_POST['pp_current_url'];
+            } elseif ( ! empty($_POST['pp_current_url'])) {
+                $redirect = rawurldecode($_POST['pp_current_url']);
             } else {
                 $redirect = ppress_get_current_url_raw();
             }
-        } elseif (isset($login_redirect) && ! empty($login_redirect)) {
+        } elseif ( ! empty($login_redirect)) {
             $redirect = get_permalink($login_redirect);
         } else {
             $redirect = network_site_url('/wp-admin');
         }
     }
 
-    return apply_filters('ppress_login_redirect', esc_url_raw($redirect));
+    return apply_filters('ppress_login_redirect', wp_validate_redirect($redirect));
 }
 
 /**
@@ -264,7 +268,7 @@ function ppress_password_reset_redirect()
         $redirect = ppress_password_reset_url() . '?password=changed';
     }
 
-    return apply_filters('ppress_do_password_reset_redirect', esc_url($redirect));
+    return apply_filters('ppress_do_password_reset_redirect', esc_url_raw($redirect));
 }
 
 /**
@@ -310,7 +314,7 @@ function ppress_my_account_url()
 
     $page_id = ppress_settings_by_key('edit_user_profile_url');
 
-    if ( ! empty($page_id)) {
+    if ( ! empty($page_id) && get_post_status($page_id)) {
         $url = get_permalink($page_id);
     }
 
@@ -328,7 +332,7 @@ function ppress_password_reset_url()
 
     $page_id = ppress_get_setting('set_lost_password_url');
 
-    if ( ! empty($page_id)) {
+    if ( ! empty($page_id) && get_post_status($page_id)) {
         $url = get_permalink($page_id);
     }
 
@@ -349,12 +353,12 @@ function ppress_login_url($redirect = '')
 
     $login_page_id = ppress_get_setting('set_login_url');
 
-    if ( ! empty($login_page_id)) {
+    if ( ! empty($login_page_id) && get_post_status($login_page_id)) {
         $login_url = get_permalink($login_page_id);
     }
 
     if ( ! empty($redirect)) {
-        $login_url = add_query_arg('redirect_to', rawurlencode($redirect), $login_url);
+        $login_url = add_query_arg('redirect_to', rawurlencode(wp_validate_redirect($redirect)), $login_url);
     }
 
     return apply_filters('ppress_login_url', $login_url);
@@ -366,9 +370,10 @@ function ppress_login_url($redirect = '')
 function ppress_registration_url()
 {
     $reg_url = wp_registration_url();
+
     $page_id = ppress_get_setting('set_registration_url');
 
-    if ( ! empty($page_id)) {
+    if ( ! empty($page_id) && get_post_status($page_id)) {
         $reg_url = get_permalink($page_id);
     }
 
@@ -1440,4 +1445,13 @@ function ppress_shortcode_exist_in_post($shortcode)
     }
 
     return false;
+}
+
+function ppress_clean($var)
+{
+    if (is_array($var)) {
+        return array_map('ppress_clean', $var);
+    } else {
+        return is_scalar($var) ? sanitize_textarea_field($var) : $var;
+    }
 }

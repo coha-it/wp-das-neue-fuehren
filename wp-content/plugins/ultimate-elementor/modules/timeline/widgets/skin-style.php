@@ -427,7 +427,9 @@ class Skin_Style {
 													</div>
 												<?php } ?>
 											</div>
-											<div class="uael-timeline-arrow"></div>
+											<?php if ( 'yes' === $settings['show_card_arrow'] ) { ?>
+												<div class="uael-timeline-arrow"></div>
+											<?php } ?>
 										</div>
 									<?php if ( 'module' === $settings['post_timeline_cta_type'] ) { ?>
 										</a>

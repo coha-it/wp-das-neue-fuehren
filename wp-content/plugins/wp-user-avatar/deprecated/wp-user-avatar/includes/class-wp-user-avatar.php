@@ -1,12 +1,16 @@
 <?php
+
+use ProfilePress\Core\Classes\ImageUploader;
+
 /**
  * Defines all profile and upload settings.
  *
  *
  */
-
 class WP_User_Avatar
 {
+    public static $cover_photo_upload_error = false;
+
     public function __construct()
     {
         global $pagenow, $wpua_admin;
@@ -17,6 +21,9 @@ class WP_User_Avatar
             add_action('edit_user_profile_update', array($this, 'wpua_action_process_option_update'));
             add_action('user_new_form', array($this, 'wpua_action_show_user_profile'));
             add_action('user_register', array($this, 'wpua_action_process_option_update'));
+
+            // Upload errors
+            add_action('user_profile_update_errors', array($this, 'wpua_upload_errors'), 10, 3);
 
             // backward compat eg https://wordpress.org/support/topic/avatar-section-not-showing/#post-13916424
             add_action('show_user_profile', function ($user) {
@@ -33,6 +40,8 @@ class WP_User_Avatar
                 ob_start();
                 echo '<style>.user-profile-picture > td > .avatar {display: none;}</style>';
                 self::wpua_core_show_user_profile($profileuser);
+                printf('</p></td></tr><tr class="ppress-user-cover-image"><th>%s</th><td>', esc_html__('Cover Photo', 'wp-user-avatar'));
+                self::wpua_core_show_cover_photo($profileuser);
 
                 return ob_get_clean();
 
@@ -48,16 +57,31 @@ class WP_User_Avatar
                 add_action('show_user_profile', array($this, 'wpua_media_upload_scripts'));
                 add_action('edit_user_profile', array($this, 'wpua_media_upload_scripts'));
             }
-
-            if ( ! $this->wpua_is_author_or_above()) {
-                // Upload errors
-                add_action('user_profile_update_errors', array($this, 'wpua_upload_errors'), 10, 3);
-                // Prefilter upload size. @see https://developer.wordpress.org/reference/hooks/wp_handle_upload_prefilter/#comment-2359
-                add_filter('wp_handle_upload_prefilter', array($this, 'wpua_handle_upload_prefilter'));
-            }
         }
 
         add_filter('media_view_settings', array($this, 'wpua_media_view_settings'), 10, 1);
+    }
+
+    /**
+     * @param WP_User $user
+     */
+    public static function wpua_core_show_cover_photo($user)
+    {
+        ?>
+        <div class="ppress-cover-photo-uploader">
+            <input type="file" name="eup_cover_image">
+            <input type="submit" name="submit" class="button" value="<?php esc_attr_e('Upload', 'wp-user-avatar'); ?>">
+        </div>
+        <div class="ppress-cover-photo-wrap" style="margin-top: 10px">
+            <img style="width: 450px;height:auto" src="<?= ppress_get_cover_image_url($user->ID) ?>">
+            <?php if (ppress_user_has_cover_image($user->ID)) : ?>
+                <br>
+                <a href="#" class="button ppress-remove-cover-photo"><?php esc_attr_e('Remove', 'wp-user-avatar'); ?></a>
+            <?php endif; ?>
+        </div>
+        <p>
+        <?php
+        // <p> is necessary because we are hacking into profile picture filter to display these uploaders
     }
 
     /**
@@ -90,6 +114,8 @@ class WP_User_Avatar
 
         wp_enqueue_script('jquery');
 
+        wp_enqueue_script('ppress-admin-cover-photo', WPUA_URL . 'js/cover-photo.js', array('jquery'), WPUA_VERSION, true);
+
         if ($wp_user_avatar->wpua_is_author_or_above()) {
             wp_enqueue_script('admin-bar');
             wp_enqueue_media(array('post' => $post));
@@ -110,7 +136,18 @@ class WP_User_Avatar
         } else {
             // Original user avatar
             $avatar_medium_src = (bool)$show_avatars == 1 ? $wpua_functions->wpua_get_avatar_original($user->user_email, 'medium') : includes_url() . 'images/blank.gif';
-            wp_localize_script('wp-user-avatar', 'wpua_custom', array('avatar_thumb' => $avatar_medium_src));
+            wp_localize_script(
+                'ppress-admin-cover-photo',
+                'wpua_custom',
+                array(
+                    'avatar_thumb' => $avatar_medium_src,
+
+                    'confirm_delete' => esc_html__('Are you sure?', 'wp-user-avatar'),
+                    'deleting_text'  => esc_html__('Deleting...', 'wp-user-avatar'),
+                    'deleting_error' => esc_html__('An error occurred. Please try again.', 'wp-user-avatar'),
+                    'nonce'          => wp_create_nonce('ppress-frontend-nonce')
+                )
+            );
         }
     }
 
@@ -195,24 +232,33 @@ class WP_User_Avatar
      * @param bool $update
      * @param object $user
      */
-    public static function wpua_upload_errors($errors, $update, $user)
+    public function wpua_upload_errors($errors, $update, $user)
     {
         global $wpua_upload_size_limit;
-        if ($update && ! empty($_FILES['wpua-file'])) {
-            $size       = $_FILES['wpua-file']['size'];
-            $type       = $_FILES['wpua-file']['type'];
-            $upload_dir = wp_upload_dir();
-            // Allow only JPG, GIF, PNG
-            if ( ! empty($type) && ! preg_match('/(jpe?g|gif|png)$/i', $type)) {
-                $errors->add('wpua_file_type', __('This file is not an image. Please try another.', 'wp-user-avatar'));
-            }
-            // Upload size limit
-            if ( ! empty($size) && $size > $wpua_upload_size_limit) {
-                $errors->add('wpua_file_size', __('Memory exceeded. Please try another smaller file.', 'wp-user-avatar'));
-            }
-            // Check if directory is writeable
-            if ( ! is_writeable($upload_dir['path'])) {
-                $errors->add('wpua_file_directory', sprintf(__('Unable to create directory %s. Is its parent directory writable by the server?', 'wp-user-avatar'), $upload_dir['path']));
+
+        // cover photo shim
+        if (self::$cover_photo_upload_error) {
+            $errors->add('eup_cover_image', self::$cover_photo_upload_error);
+        }
+
+        if ( ! $this->wpua_is_author_or_above()) {
+
+            if ($update && ! empty($_FILES['wpua-file'])) {
+                $size       = $_FILES['wpua-file']['size'];
+                $type       = $_FILES['wpua-file']['type'];
+                $upload_dir = wp_upload_dir();
+                // Allow only JPG, GIF, PNG
+                if ( ! empty($type) && ! preg_match('/(jpe?g|gif|png)$/i', $type)) {
+                    $errors->add('wpua_file_type', __('This file is not an image. Please try another.', 'wp-user-avatar'));
+                }
+                // Upload size limit
+                if ( ! empty($size) && $size > $wpua_upload_size_limit) {
+                    $errors->add('wpua_file_size', __('Memory exceeded. Please try another smaller file.', 'wp-user-avatar'));
+                }
+                // Check if directory is writeable
+                if ( ! is_writeable($upload_dir['path'])) {
+                    $errors->add('wpua_file_directory', sprintf(__('Unable to create directory %s. Is its parent directory writable by the server?', 'wp-user-avatar'), $upload_dir['path']));
+                }
             }
         }
     }
@@ -224,10 +270,11 @@ class WP_User_Avatar
      *
      * @return object $file
      */
-    public function wpua_handle_upload_prefilter($file)
+    public static function wpua_handle_upload_prefilter($file)
     {
         global $wpua_upload_size_limit;
         $size = $file['size'];
+
         if ( ! empty($size) && $size > $wpua_upload_size_limit) {
             /**
              * Error handling that only appears on front pages
@@ -250,6 +297,20 @@ class WP_User_Avatar
     public static function wpua_action_process_option_update($user_id)
     {
         global $blog_id, $post, $wpdb, $wp_user_avatar, $wpua_resize_crop, $wpua_resize_h, $wpua_resize_upload, $wpua_resize_w;
+
+        // cover photo upload handler
+
+        if ( ! empty($_FILES['eup_cover_image']['name'])) {
+
+            $upload_cover_image = ImageUploader::process($_FILES['eup_cover_image'], ImageUploader::COVER_IMAGE, PPRESS_COVER_IMAGE_UPLOAD_DIR);
+
+            if (is_wp_error($upload_cover_image)) {
+                self::$cover_photo_upload_error = $upload_cover_image->get_error_message();
+            } else {
+                update_user_meta($user_id, 'pp_profile_cover_image', $upload_cover_image);
+            }
+        }
+
         // Check if user has publish_posts capability
         if ($wp_user_avatar->wpua_is_author_or_above()) {
             $wpua_id = isset($_POST['wp-user-avatar']) ? strip_tags($_POST['wp-user-avatar']) : "";
@@ -299,6 +360,12 @@ class WP_User_Avatar
 
             // Create attachment from upload
             if (isset($_POST['submit']) && $_POST['submit'] && ! empty($_FILES['wpua-file'])) {
+
+                if ( ! $wp_user_avatar->wpua_is_author_or_above()) {
+                    // Prefilter upload size. @see https://developer.wordpress.org/reference/hooks/wp_handle_upload_prefilter/#comment-2359
+                    add_filter('wp_handle_upload_prefilter', array(__CLASS__, 'wpua_handle_upload_prefilter'));
+                }
+
                 $name       = $_FILES['wpua-file']['name'];
                 $file       = wp_handle_upload($_FILES['wpua-file'], array('test_form' => false));
                 $type       = $_FILES['wpua-file']['type'];

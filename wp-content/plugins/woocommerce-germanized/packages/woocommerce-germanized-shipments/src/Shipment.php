@@ -237,6 +237,40 @@ abstract class Shipment extends WC_Data {
 		return "woocommerce_gzd_{$shipment_prefix}shipment_";
 	}
 
+	public function is_shipping_domestic() {
+		return Package::is_shipping_domestic( $this->get_country(), array(
+			'sender_country'  => $this->get_sender_country(),
+			'sender_postcode' => $this->get_sender_postcode(),
+			'postcode'        => $this->get_postcode()
+		) );
+	}
+
+	/**
+	 * Returns true in case the shipment is being shipped inner EU, e.g.
+	 * from a base country inside of the EU to another country inside the EU.
+	 *
+	 * @return bool
+	 */
+	public function is_shipping_inner_eu() {
+		if ( Package::is_shipping_inner_eu_country( $this->get_country(), array(
+			'sender_country'  => $this->get_sender_country(),
+			'sender_postcode' => $this->get_sender_postcode(),
+			'postcode'        => $this->get_postcode()
+		) ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function is_shipping_international() {
+		if ( $this->is_shipping_domestic() || $this->is_shipping_inner_eu() ) {
+			return false;
+		}
+
+		return true;
+	}
+
     /**
      * Return the shipment statuses without gzd- internal prefix.
      *
@@ -749,12 +783,11 @@ abstract class Shipment extends WC_Data {
 	 *
 	 * @return string
 	 */
-	public function get_tracking_instruction() {
+	public function get_tracking_instruction( $plain = false ) {
 		$instruction = '';
 
 		if ( $provider = $this->get_shipping_provider_instance() ) {
-			// $instruction = sprintf( _x( 'Your shipment is being processed by %s. If you want to track the shipment, please use the following tracking number: %s. Depending on the chosen shipping method it is possible that the tracking data does not reflect the current status when receiving this email.', 'shipments', 'woocommerce-germanized' ), wc_gzd_get_shipping_provider_title( $this->get_shipping_provider() ), $this->get_tracking_id() );
-			$instruction = $provider->get_tracking_desc( $this );
+			$instruction = $provider->get_tracking_desc( $this, $plain );
 		}
 
 		/**
@@ -780,7 +813,7 @@ abstract class Shipment extends WC_Data {
 	 * @return boolean
 	 */
 	public function has_tracking_instruction() {
-    	$instruction = $this->get_tracking_instruction();
+    	$instruction = $this->get_tracking_instruction( true );
 
     	return ( ! empty( $instruction ) ) ? true : false;
 	}
@@ -1068,6 +1101,274 @@ abstract class Shipment extends WC_Data {
     public function get_country( $context = 'view' ) {
         return $this->get_address_prop( 'country', $context ) ? $this->get_address_prop( 'country', $context ) : '';
     }
+
+	/**
+	 * Returns the shipment address customs reference number.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_customs_reference_number( $context = 'view' ) {
+		return $this->get_address_prop( 'customs_reference_number', $context ) ? $this->get_address_prop( 'customs_reference_number', $context ) : '';
+	}
+
+	/**
+	 * Returns a sender address prop by checking the corresponding provider and falling back to
+	 * global sender address setting data.
+	 *
+	 * @param string $prop
+	 * @param string $context
+	 *
+	 * @return null|string
+	 */
+	protected function get_sender_address_prop( $prop, $context = 'view' ) {
+		$value = null;
+
+		if ( $provider = $this->get_shipping_provider_instance() ) {
+			$getter = "get_shipper_{$prop}";
+
+			if ( is_callable( array( $provider, $getter ) ) ) {
+				$value = $provider->$getter( $context );
+			}
+		} else {
+			$key   = "woocommerce_gzd_shipments_shipper_address_{$prop}";
+			$value = get_option( $key, '' );
+		}
+
+		if ( 'view' === $context ) {
+			/**
+			 * Filter to adjust a shipment's sender address property e.g. first_name.
+			 *
+			 * The dynamic portion of this hook, `$this->get_hook_prefix()` is used to construct a
+			 * unique hook for a shipment type. `$prop` refers to the actual address property e.g. first_name.
+			 *
+			 * Example hook name: woocommerce_gzd_shipment_get_sender_address_first_name
+			 *
+			 * @param string   $value The address property value.
+			 * @param Shipment $this The shipment object.
+			 *
+			 * @since 3.0.0
+			 * @package Vendidero/Germanized/Shipments
+			 */
+			$value = apply_filters( "{$this->get_hook_prefix()}sender_address_{$prop}", $value, $this );
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Returns the formatted sender address.
+	 *
+	 * @param  string $empty_content Content to show if no address is present.
+	 * @return string
+	 */
+	public function get_formatted_sender_address( $empty_content = '' ) {
+		$address = WC()->countries->get_formatted_address( $this->get_sender_address() );
+
+		return $address ? $address : $empty_content;
+	}
+
+	/**
+	 * Returns the address of the sender e.g. customer.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string[]
+	 */
+	public function get_sender_address( $context = 'view' ) {
+		return apply_filters( "{$this->get_hook_prefix()}sender_address", array(
+			'company'    => $this->get_sender_company( $context ),
+			'first_name' => $this->get_sender_first_name( $context ),
+			'last_name'  => $this->get_sender_last_name( $context ),
+			'address_1'  => $this->get_sender_address_1( $context ),
+			'address_2'  => $this->get_sender_address_2( $context ),
+			'postcode'   => $this->get_sender_postcode( $context ),
+			'city'       => $this->get_sender_city( $context ),
+			'country'    => $this->get_sender_country( $context ),
+			'state'      => $this->get_sender_state( $context ),
+		), $this );
+	}
+
+	/**
+	 * Returns the sender address phone number.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_phone( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'phone', $context );
+	}
+
+	/**
+	 * Returns the sender address email.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_email( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'email', $context );
+	}
+
+	/**
+	 * Returns the sender address first line.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_address_1( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'address_1', $context );
+	}
+
+	/**
+	 * Returns the sender address second line.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_address_2( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'address_2', $context );
+	}
+
+	/**
+	 * Returns the sender address street number by splitting the address.
+	 *
+	 * @param  string $type The address type e.g. address_1 or address_2.
+	 *
+	 * @return string
+	 */
+	public function get_sender_address_street_number( $type = 'address_1' ) {
+		$split = wc_gzd_split_shipment_street( $this->{"get_sender_$type"}() );
+
+		return $split['number'];
+	}
+
+	/**
+	 * Returns the sender address street without number by splitting the address.
+	 *
+	 * @param  string $type The address type e.g. address_1 or address_2.
+	 *
+	 * @return string
+	 */
+	public function get_sender_address_street( $type = 'address_1' ) {
+		$split = wc_gzd_split_shipment_street( $this->{"get_sender_$type"}() );
+
+		return $split['street'];
+	}
+
+	/**
+	 * Returns the sender address street addition by splitting the address.
+	 *
+	 * @param  string $type The address type e.g. address_1 or address_2.
+	 *
+	 * @return string
+	 */
+	public function get_sender_address_street_addition( $type = 'address_1' ) {
+		$split = wc_gzd_split_shipment_street( $this->{"get_sender_$type"}() );
+
+		return $split['addition'];
+	}
+
+	public function get_sender_address_street_addition_2( $type = 'address_1' ) {
+		$split = wc_gzd_split_shipment_street( $this->{"get_sender_$type"}() );
+
+		return $split['addition_2'];
+	}
+
+	/**
+	 * Returns the sender address company.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_company( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'company', $context );
+	}
+
+	/**
+	 * Returns the sender address first name.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_first_name( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'first_name', $context );
+	}
+
+	/**
+	 * Returns the shipment address last name.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_last_name( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'last_name', $context );
+	}
+
+	/**
+	 * Returns the sender address formatted full name.
+	 *
+	 * @return string
+	 */
+	public function get_formatted_sender_full_name() {
+		return sprintf( _x( '%1$s %2$s', 'full name', 'woocommerce-germanized' ), $this->get_sender_first_name(), $this->get_sender_last_name() );
+	}
+
+	/**
+	 * Returns the sender address postcode.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_postcode( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'postcode', $context );
+	}
+
+	/**
+	 * Returns the sender address city.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_city( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'city', $context );
+	}
+
+	/**
+	 * Returns the sender address state.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_state( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'state', $context );
+	}
+
+	/**
+	 * Returns the sender address customs reference number.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_customs_reference_number( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'customs_reference_number', $context ) ? $this->get_sender_address_prop( 'customs_reference_number', $context ) : '';
+	}
+
+	public function get_formatted_sender_state() {
+		if ( '' === $this->get_sender_state() || '' === $this->get_sender_country() ) {
+			return '';
+		}
+
+		return wc_gzd_get_formatted_state( $this->get_sender_state(), $this->get_sender_country() );
+	}
+
+	/**
+	 * Returns the sender address country.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return string
+	 */
+	public function get_sender_country( $context = 'view' ) {
+		return $this->get_sender_address_prop( 'country', $context ) ? $this->get_sender_address_prop( 'country', $context ) : '';
+	}
 
 	/**
 	 * Return the date this shipment is estimated to be delivered.
@@ -1557,10 +1858,18 @@ abstract class Shipment extends WC_Data {
 
 			$this->set_props( $props );
 		} else {
-			$props = array( 'packaging_weight' => '' );
+			$props   = array( 'packaging_weight' => '' );
+			$changes = $this->get_changes();
 
-			if ( array_key_exists( 'packaging_id', $this->get_changes() ) ) {
-				$props = array_merge( $props, array( 'length' => '', 'width' => '', 'height' => '' ) );
+			/**
+			 * Maybe reset dimensions in case they've not been explicitly set
+			 */
+			if ( array_key_exists( 'packaging_id', $changes ) ) {
+				foreach( array( 'length', 'width', 'height' ) as $dim_prop ) {
+					if ( ! array_key_exists( $dim_prop, $changes ) ) {
+						$props = array_merge( $props, array( $dim_prop => '' ) );
+					}
+				}
 			}
 
 			// Reset

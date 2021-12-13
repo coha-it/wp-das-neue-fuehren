@@ -40,8 +40,8 @@ $disable_dashboard_access_roles = ppress_var($abdc_options, 'disable_dashboard_a
                         <?php foreach (ppress_get_editable_roles() as $role_key => $data) :
                             ?>
                             <label>
-                                <input id="admin-bar-<?php echo $role_key; ?>" type="checkbox" name="ppress_abdc_options[disable_admin_bar_roles][]" value="<?php echo $role_key; ?>" <?php checked(in_array($role_key, $disable_admin_bar_roles)); ?>>
-                                <?php echo $data['name']; ?></label><br/>
+                                <input id="admin-bar-<?php echo $role_key; ?>" type="checkbox" name="ppress_abdc_options[disable_admin_bar_roles][]" value="<?php echo esc_attr($role_key); ?>" <?php checked(in_array($role_key, $disable_admin_bar_roles)); ?>>
+                                <?php echo esc_html($data['name']); ?></label><br/>
                         <?php endforeach; ?>
                         <p class="description">
                             <?php _e('Select the user roles that the admin bar will be disabled for. It will be disabled for everyone except admins if none is checked.', 'wp-user-avatar'); ?>
@@ -84,7 +84,7 @@ $disable_dashboard_access_roles = ppress_var($abdc_options, 'disable_dashboard_a
                         <?php foreach (ppress_get_editable_roles() as $role_key => $data) :
                             ?>
                             <label>
-                                <input id="dashboard-access-<?php echo $role_key; ?>" type="checkbox" name="ppress_abdc_options[disable_dashboard_access_roles][]" value="<?php echo $role_key; ?>" <?php checked(in_array($role_key, $disable_dashboard_access_roles)); ?>>
+                                <input id="dashboard-access-<?php echo esc_attr($role_key); ?>" type="checkbox" name="ppress_abdc_options[disable_dashboard_access_roles][]" value="<?php echo esc_attr($role_key); ?>" <?php checked(in_array($role_key, $disable_dashboard_access_roles)); ?>>
                                 <?php echo $data['name']; ?></label><br/>
                         <?php endforeach; ?>
                         <p class="description">
@@ -97,7 +97,7 @@ $disable_dashboard_access_roles = ppress_var($abdc_options, 'disable_dashboard_a
                         <label for="dashboard_redirect_url"><?php _e('Dashboard Redirect URL', 'wp-user-avatar'); ?></label>
                     </th>
                     <td>
-                        <input id="dashboard_redirect_url" type="text" name="ppress_abdc_options[dashboard_redirect_url]" value="<?php echo $dashboard_redirect_url; ?>">
+                        <input id="dashboard_redirect_url" type="text" name="ppress_abdc_options[dashboard_redirect_url]" value="<?php echo esc_url($dashboard_redirect_url); ?>">
                         <p class="description">
                             <?php _e('Enter URL to redirect users to without dashboard access. If empty, users will be redirected to website homepage.', 'wp-user-avatar'); ?>
                         </p>

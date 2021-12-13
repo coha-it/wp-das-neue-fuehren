@@ -515,10 +515,10 @@ class FormRepository
      */
     public static function forge_class($form_id, $form_theme_class, $form_type)
     {
-        /** @var AbstractTheme $class */
         $class = self::make_class($form_theme_class, $form_type);
 
         if (class_exists($class)) {
+            /** @var AbstractTheme $class */
             return $class::get_instance($form_id, $form_type);
         }
 

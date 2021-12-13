@@ -10,8 +10,8 @@ class WPListTable extends \WP_List_Table
     public function __construct()
     {
         parent::__construct(array(
-            'singular' => esc_html__('Protection Rule', 'wp-user-avatar'),
-            'plural'   => esc_html__('Protection Rules', 'wp-user-avatar'),
+            'singular' => 'ppress-protection-rule',
+            'plural'   => 'ppress-protection-rules',
             'ajax'     => false
         ));
     }
@@ -313,6 +313,9 @@ class WPListTable extends \WP_List_Table
     {
         $rule_id = absint(ppress_var($_GET, 'id', 0));
 
+        // Bail if user is not an admin or without admin privileges.
+        if ( ! current_user_can('manage_options')) return;
+
         if ('deactivate' === $this->current_action()) {
 
             check_admin_referer('pp_content_protection_deactivate_rule');
@@ -377,7 +380,8 @@ class WPListTable extends \WP_List_Table
         }
 
         if ('bulk-delete' === $this->current_action()) {
-            check_admin_referer('bulk-pp_cp_rules');
+
+            check_admin_referer('bulk-' . $this->_args['plural']);
 
             $delete_ids = array_map('absint', $_POST['rule_id']);
 

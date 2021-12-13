@@ -24,7 +24,7 @@ const settings = {
             "type": "string"
         },
         "customFontSize": {
-            "type": "number"
+            "type": "string"
         },
         "content": {
             "type": 'string',

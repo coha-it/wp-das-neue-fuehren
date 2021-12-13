@@ -148,15 +148,15 @@ class DeutschePost extends Auto {
 	}
 
 	protected function get_label_settings( $for_shipping_method = false ) {
-		$api      = Package::get_internetmarke_api();
+		$im       = Package::get_internetmarke_api();
 		$settings = parent::get_label_settings( $for_shipping_method );
 
-		if ( $api && $api->is_configured() && $api->auth() && $api->is_available() ) {
-			$api->reload_products();
+		if ( $im && $im->is_configured() && $im->auth() && $im->is_available() ) {
+			$im->reload_products();
 
-			$balance                    = $api->get_balance( true );
+			$balance                    = $im->get_balance( true );
 			$settings_url               = $this->get_edit_link( 'label' );
-			$default_available_products = $api->get_default_available_products();
+			$default_available_products = $im->get_default_available_products();
 
 			$settings = array_merge( $settings, array(
 				array( 'title' => _x( 'Portokasse', 'dhl', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'deutsche_post_portokasse_options' ),
@@ -267,9 +267,9 @@ class DeutschePost extends Auto {
 
 				array( 'type' => 'sectionend', 'id' => 'deutsche_post_print_options' )
 			) );
-		} elseif ( $api && $api->has_errors() ) {
+		} elseif ( $im && $im->has_errors() ) {
 			$settings = array_merge( $settings, array(
-				array( 'title' => _x( 'API Error', 'dhl', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'deutsche_post_api_error', 'desc' => '<div class="notice inline notice-error"><p>' . implode( ", ", $api->get_errors()->get_error_messages() ) . '</p></div>' ),
+				array( 'title' => _x( 'API Error', 'dhl', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'deutsche_post_api_error', 'desc' => '<div class="notice inline notice-error"><p>' . implode( ", ", $im->get_errors()->get_error_messages() ) . '</p></div>' ),
 				array( 'type' => 'sectionend', 'id' => 'deutsche_post_api_error' )
 			) );
 		}
@@ -385,6 +385,30 @@ class DeutschePost extends Auto {
 					'type'        => 'select',
 					'options'	  => Package::get_internetmarke_api()->get_page_format_list(),
 					'value'       => isset( $default_args['page_format'] ) ? $default_args['page_format'] : '',
+				),
+				array(
+					'id'          	=> '',
+					'type'          => 'columns',
+				),
+				array(
+					'id'                => 'position_x',
+					'label'             => _x( 'Print X-Position', 'dhl', 'woocommerce-germanized' ),
+					'description'       => '',
+					'type'              => 'number',
+					'wrapper_class'     => 'column col-6',
+					'style'             => 'width: 100%;',
+					'custom_attributes' => array( 'min' => 0, 'step' => 1 ),
+					'value'             => isset( $default_args['position_x'] ) ? $default_args['position_x'] : 1,
+				),
+				array(
+					'id'                => 'position_y',
+					'label'             => _x( 'Print Y-Position', 'dhl', 'woocommerce-germanized' ),
+					'description'       => '',
+					'type'              => 'number',
+					'wrapper_class'     => 'column col-6',
+					'style'             => 'width: 100%;',
+					'custom_attributes' => array( 'min' => 0, 'step' => 1 ),
+					'value'             => isset( $default_args['position_y'] ) ? $default_args['position_y'] : 1,
 				)
 			) );
 		}
@@ -405,12 +429,10 @@ class DeutschePost extends Auto {
 		foreach( $services as $service ) {
 			$settings[] = array(
 				'id'            => 'service_' . $service,
-				'name'          => 'services[]',
 				'wrapper_class' => 'form-field-checkbox',
 				'type'          => 'checkbox',
 				'label'         => \Vendidero\Germanized\DHL\Package::get_internetmarke_api()->get_product_list()->get_additional_service_title( $service ),
-				'cbvalue'       => $service,
-				'value'         => in_array( $service, $selected_services ) ? $service : '',
+				'value'         => in_array( $service, $selected_services ) ? 'yes' : 'no',
 			);
 		}
 
@@ -452,15 +474,17 @@ class DeutschePost extends Auto {
 	 * @param \Vendidero\Germanized\Shipments\Shipment $shipment
 	 */
 	public function get_default_label_product( $shipment ) {
-		$country = $shipment->get_country();
+		$country  = $shipment->get_country();
+		$postcode = $shipment->get_postcode();
 
 		if ( 'return' === $shipment->get_type() ) {
-			$country = $shipment->get_sender_country();
+			$country  = $shipment->get_sender_country();
+			$postcode = $shipment->get_sender_postcode();
 		}
 
-		if ( Package::is_shipping_domestic( $country ) ) {
+		if ( Package::is_shipping_domestic( $country, $postcode ) ) {
 			return $this->get_shipment_setting( $shipment, 'label_default_product_dom' );
-		} elseif( Package::is_eu_shipment( $country ) ) {
+		} elseif( Package::is_eu_shipment( $country, $postcode ) ) {
 			return $this->get_shipment_setting( $shipment, 'label_default_product_eu' );
 		} else {
 			return $this->get_shipment_setting( $shipment, 'label_default_product_int' );
@@ -473,8 +497,8 @@ class DeutschePost extends Auto {
 	public function get_available_label_services( $shipment ) {
 		$services = array();
 
-		if ( $api = Package::get_internetmarke_api()->get_product_list() ) {
-			$services = array_keys( $api->get_additional_services() );
+		if ( $im = Package::get_internetmarke_api()->get_product_list() ) {
+			$services = array_keys( $im->get_additional_services() );
 		}
 
 		return $services;
@@ -507,6 +531,8 @@ class DeutschePost extends Auto {
 	protected function get_default_simple_label_props( $shipment ) {
 		$defaults = array(
 			'page_format' => $this->get_shipment_setting( $shipment, 'label_default_page_format' ),
+			'position_x'  => $this->get_shipment_setting( $shipment, 'label_position_x' ),
+			'position_y'  => $this->get_shipment_setting( $shipment, 'label_position_y' ),
 			'stamp_total' => 0,
 			'services'    => array(),
 		);

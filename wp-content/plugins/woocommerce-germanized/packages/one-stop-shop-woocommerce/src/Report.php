@@ -42,11 +42,13 @@ class Report {
 
 		$args['meta'] = wp_parse_args( $args['meta'], array(
 			'date_requested' => null,
-			'status'         => 'pending'
+			'status'         => 'pending',
+			'version'        => '',
 		) );
 
 		$this->set_date_requested( $args['meta']['date_requested'] );
 		$this->set_status( $args['meta']['status'] );
+		$this->set_version( $args['meta']['version'] );
 
 		$this->args = $args;
 	}
@@ -120,8 +122,16 @@ class Report {
 		return $this->args['meta']['status'];
 	}
 
+	public function get_version() {
+		return $this->args['meta']['version'];
+	}
+
 	public function set_status( $status ) {
 		$this->args['meta']['status'] = $status;
+	}
+
+	public function set_version( $version ) {
+		$this->args['meta']['version'] = $version;
 	}
 
 	public function get_date_requested() {
@@ -163,6 +173,7 @@ class Report {
 		$this->set_tax_total( 0 );
 		$this->set_date_requested( new \WC_DateTime() );
 		$this->set_status( 'pending' );
+		$this->set_version( Package::get_version() );
 
 		delete_option( $this->id . '_tmp_result' );
 	}
@@ -234,14 +245,14 @@ class Report {
 	}
 
 	public function save() {
-		update_option( $this->id . '_result', $this->args );
+		update_option( $this->id . '_result', $this->args, false );
 
 		$reports_available = Package::get_report_ids();
 
 		if ( ! in_array( $this->get_id(), $reports_available[ $this->get_type() ] ) ) {
 			// Add new report to start of the list
 			array_unshift( $reports_available[ $this->get_type() ], $this->get_id() );
-			update_option( 'oss_woocommerce_reports', $reports_available );
+			update_option( 'oss_woocommerce_reports', $reports_available, false );
 		}
 
 		delete_option( $this->id . '_tmp_result' );
@@ -255,12 +266,8 @@ class Report {
 		delete_option( $this->id . '_result' );
 		delete_option( $this->id . '_tmp_result' );
 
-		$reports_available = Package::get_report_ids();
-
-		if ( in_array( $this->get_id(), $reports_available[ $this->get_type() ] ) ) {
-			$reports_available[ $this->get_type() ] = array_diff( $reports_available[ $this->get_type() ], array( $this->get_id() ) );
-			update_option( 'oss_woocommerce_reports', $reports_available );
-		}
+		Queue::maybe_stop_report( $this->get_id() );
+		Package::remove_report( $this );
 
 		if ( 'observer' === $this->get_type() ) {
 			delete_option( 'oss_woocommerce_observer_report_' . $this->get_date_start()->format( 'Y' ) );

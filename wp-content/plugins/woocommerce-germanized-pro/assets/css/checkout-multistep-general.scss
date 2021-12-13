@@ -61,3 +61,12 @@
     }
   }
 }
+
+/**
+ * Hide amazon details from second/third step
+ */
+.woocommerce-multistep-checkout-active-order, .woocommerce-multistep-checkout-active-payment {
+  #amazon_customer_details {
+    display: none;
+  }
+}

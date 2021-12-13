@@ -110,6 +110,8 @@ class Fancy_Heading extends Common_Widget {
 	 */
 	protected function register_controls() {
 
+		$this->register_presets_control( 'Fancy_Heading', $this );
+
 		$this->register_headingtext_content_controls();
 		$this->register_effect_content_controls();
 		$this->register_general_content_controls();
@@ -1261,20 +1263,6 @@ class Fancy_Heading extends Common_Widget {
 			</div>
 			<# elementorFrontend.hooks.doAction( 'frontend/element_ready/uael-fancy-heading.default' ); #>
 		<?php
-	}
-
-	/**
-	 * Render Fancy Heading widget output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 0.0.1
-	 * @access protected
-	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-		$this->content_template();
 	}
 
 }

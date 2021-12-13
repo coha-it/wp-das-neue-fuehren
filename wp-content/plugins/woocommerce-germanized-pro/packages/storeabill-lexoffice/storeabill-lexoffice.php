@@ -5,7 +5,7 @@
  * Description: StoreaBill lexoffice integration
  * Author: vendidero
  * Author URI: https://vendidero.de
- * Version: 1.1.0
+ * Version: 1.1.6
  * Requires PHP: 5.6
  * License: GPLv3
  *
@@ -68,5 +68,5 @@ if ( is_readable( $autoloader ) ) {
 	return;
 }
 
-register_activation_hook( __FILE__, array( 'Vendidero\StoreaBill\Lexoffice\Package', 'install' ) );
-add_action( 'plugins_loaded', array( 'Vendidero\StoreaBill\Lexoffice\Package', 'init' ) );
+register_activation_hook( __FILE__, array( '\Vendidero\StoreaBill\Lexoffice\Package', 'install' ) );
+add_action( 'plugins_loaded', array( '\Vendidero\StoreaBill\Lexoffice\Package', 'init' ) );

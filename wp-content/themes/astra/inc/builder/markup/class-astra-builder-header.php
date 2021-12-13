@@ -68,7 +68,7 @@ if ( ! class_exists( 'Astra_Builder_Header' ) ) {
 				add_action( 'astra_mobile_below_header', array( $this, 'mobile_below_header' ) );
 				add_action( 'astra_render_mobile_header_column', array( $this, 'render_mobile_column' ), 10, 2 );
 				// Load Off-Canvas Markup on Footer.
-				add_action( 'wp_footer', array( $this, 'mobile_popup' ) );
+				add_action( 'astra_footer', array( $this, 'mobile_popup' ) );
 				add_action( 'astra_mobile_header_content', array( $this, 'render_mobile_column' ), 10, 2 );
 				add_action( 'astra_render_mobile_popup', array( $this, 'render_mobile_column' ), 10, 2 );
 
@@ -95,7 +95,7 @@ if ( ! class_exists( 'Astra_Builder_Header' ) ) {
 				add_action( 'astra_header_mobile_trigger', array( $this, 'header_mobile_trigger' ) );
 
 				// Load Cart Flyout Markup on Footer.
-				add_action( 'wp_footer', array( $this, 'mobile_cart_flyout' ) );
+				add_action( 'astra_footer', array( $this, 'mobile_cart_flyout' ) );
 				add_action( 'astra_header_menu_mobile', array( $this, 'header_mobile_menu_markup' ) );
 			}
 
@@ -197,9 +197,11 @@ if ( ! class_exists( 'Astra_Builder_Header' ) ) {
 
 		/**
 		 * Render site logo.
+		 *
+		 * @param  string $device   Device name.
 		 */
-		public static function site_identity() {
-			Astra_Builder_UI_Controller::render_site_identity();
+		public static function site_identity( $device = 'desktop' ) {
+			Astra_Builder_UI_Controller::render_site_identity( $device );
 		}
 
 		/**
@@ -249,7 +251,7 @@ if ( ! class_exists( 'Astra_Builder_Header' ) ) {
 		public function primary_header() {
 
 			$display = get_post_meta( get_the_ID(), 'ast-main-header-display', true );
-			$display = apply_filters( 'ast_main_header_display', $display );
+			$display = apply_filters( 'astra_main_header_display', $display );
 
 			if ( 'disabled' !== $display ) {
 				if ( astra_wp_version_compare( '5.4.99', '>=' ) ) {
@@ -394,9 +396,11 @@ if ( ! class_exists( 'Astra_Builder_Header' ) ) {
 
 		/**
 		 *  Call Mobile Menu Markup.
+		 *
+		 * @param string $device Checking where mobile-menu is dropped.
 		 */
-		public function header_mobile_menu_markup() {
-			Astra_Mobile_Menu_Component::menu_markup();
+		public function header_mobile_menu_markup( $device = '' ) {
+			Astra_Mobile_Menu_Component::menu_markup( $device );
 		}
 
 		/**

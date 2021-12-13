@@ -7,11 +7,11 @@
  */
 namespace Vendidero\StoreaBill\PDF;
 
-use Mpdf\Mpdf;
-use Mpdf\MpdfException;
-use Mpdf\Output\Destination;
-use Mpdf\Config\ConfigVariables;
-use Mpdf\Config\FontVariables;
+use Vendidero\StoreaBill\Vendor\Mpdf\Mpdf;
+use Vendidero\StoreaBill\Vendor\Mpdf\MpdfException;
+use Vendidero\StoreaBill\Vendor\Mpdf\Output\Destination;
+use Vendidero\StoreaBill\Vendor\Mpdf\Config\ConfigVariables;
+use Vendidero\StoreaBill\Vendor\Mpdf\Config\FontVariables;
 
 use Vendidero\StoreaBill\Document\DefaultTemplate;
 use Vendidero\StoreaBill\Exceptions\DocumentRenderException;
@@ -54,6 +54,9 @@ class MpdfRenderer implements PDF {
 		try {
 			$this->setup();
 		} catch ( \Exception $e ) {
+			$message = sprintf( 'mPDF error while setting up: %1$s (%2$s line %3$s)', $e->getMessage(), $e->getFile(), $e->getLine() );
+			Package::log( $message );
+
 			throw new DocumentRenderException( _x( 'Unable to setup mPDF.', 'storeabill-core', 'woocommerce-germanized-pro' ) );
 		}
 	}
@@ -89,6 +92,8 @@ class MpdfRenderer implements PDF {
 		if ( $this->pdf->debug ) {
 			$this->pdf->showImageErrors = true;
 		}
+
+		do_action( 'storeabill_setup_mpdf', $this->pdf, $default_args, $use_template, $this );
 	}
 
 	protected function get_font_variant_shortcode( $variant ) {

@@ -11,7 +11,7 @@ Latest Change: 1.11.28
 
 if (!defined('UPDRAFTPLUS_DIR')) die('No direct access allowed');
 
-$updraftplus_addon_morestorage = new UpdraftPlus_Addon_MoreStorage;
+new UpdraftPlus_Addon_MoreStorage;
 
 class UpdraftPlus_Addon_MoreStorage {
 

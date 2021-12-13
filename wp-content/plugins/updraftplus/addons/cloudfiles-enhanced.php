@@ -18,7 +18,7 @@ if (version_compare(phpversion(), '5.3.3', '<') || (defined('UPDRAFTPLUS_CLOUDFI
 
 use OpenCloud\Rackspace;
 
-$updraftplus_addon_cloudfilesenhanced = new UpdraftPlus_Addon_CloudFilesEnhanced;
+$updraftplus_addon_cloudfilesenhanced = new UpdraftPlus_Addon_CloudFilesEnhanced;// phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable -- Unused variable $updraftplus_addon_cloudfilesenhanced But it is used Globally in class-commands.php so ignoring
 
 class UpdraftPlus_Addon_CloudFilesEnhanced {
 	

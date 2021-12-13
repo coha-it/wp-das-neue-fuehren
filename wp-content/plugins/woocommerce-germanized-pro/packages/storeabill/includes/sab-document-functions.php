@@ -372,6 +372,10 @@ function sab_register_document_type( $type, $args = array() ) {
 				'title'       => _x( 'Net', 'storeabill-core', 'woocommerce-germanized-pro' ),
 				'desc'        => _x( 'Net total (Before discounts)', 'storeabill-core', 'woocommerce-germanized-pro' ),
 			),
+			'gross_tax_shares' => array(
+				'title' => _x( 'Gross %s %%', 'storeabill-core', 'woocommerce-germanized-pro' ),
+				'desc'  => _x( 'Gross total per tax rate', 'storeabill-core', 'woocommerce-germanized-pro' )
+			),
 		);
 
 		if ( empty( $args['total_types'] ) ) {
@@ -769,11 +773,22 @@ function sab_get_document_font_sizes() {
 }
 
 function sab_get_document_font_size( $slug ) {
+	$font_sizes = sab_get_document_font_sizes();
+
 	if ( is_numeric( $slug ) ) {
 		return $slug;
-	}
+	} elseif ( preg_match('~[0-9]+~', $slug ) ) {
+		/**
+		 * Support font size strings that contain units (e.g. px, mm, cm)
+		 */
+		$number = absint( preg_replace('/[^0-9]/', '', $slug ) );
 
-	$font_sizes = sab_get_document_font_sizes();
+		if ( empty( $number ) ) {
+			return $font_sizes['normal']['size'];
+		} else {
+			return $number;
+		}
+	}
 
 	if ( array_key_exists( $slug, $font_sizes ) ) {
 		return $font_sizes[ $slug ]['size'];

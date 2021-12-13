@@ -41,11 +41,55 @@ const settings = {
             "type": "string"
         },
         "customFontSize": {
-            "type": "number"
+            "type": "string"
         },
     },
     edit,
-    save
+    save,
+    deprecated: [
+        {
+            supports: {
+                html: false,
+                className: false
+            },
+            attributes: {
+                "content": {
+                    "type": 'string',
+                    "source": 'html',
+                    "selector": 'p',
+                    "default": _x( 'Tax-exempt export delivery.', 'storeabill-core', 'storeabill' )
+                },
+                "align": {
+                    "type": 'string',
+                    "default": 'left'
+                },
+                "textColor": {
+                    "type": "string"
+                },
+                "customTextColor": {
+                    "type": "string"
+                },
+                "fontSize": {
+                    "type": "string"
+                },
+                "customFontSize": {
+                    "type": "number"
+                },
+            },
+            isEligible( { customFontSize } ) {
+                return typeof customFontSize === 'number';
+            },
+            migrate( attributes ) {
+                return {
+                    ...attributes,
+                    customFontSize: attributes.customFontSize ? '' + attributes.customFontSize : undefined,
+                };
+            },
+            save( attributes ) {
+                return save( attributes );
+            }
+        },
+    ]
 };
 
 registerBlockType( 'storeabill/third-country-notice', settings );

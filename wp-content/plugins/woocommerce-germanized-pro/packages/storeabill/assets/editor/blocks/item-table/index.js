@@ -48,7 +48,7 @@ const settings = {
             "type": "string"
         },
         "headingCustomFontSize": {
-            "type": "number"
+            "type": "string"
         },
         "hasDenseLayout": {
             "type": "boolean",

@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
  */
 global $document;
 ?>
-<table class="sab-item-table <?php sab_print_html_classes( $classes ); ?>" autosize="1">
+<table class="sab-item-table <?php sab_print_html_classes( $classes ); ?>" autosize="1" style="<?php sab_print_styles( $styles ); ?>">
 	<thead>
 		<tr class="sab-item-table-row sab-item-table-row-header">
 			<?php foreach( $columns as $column ) : ?>

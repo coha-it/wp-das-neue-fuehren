@@ -8,7 +8,6 @@ import {
 	FontSizePicker,
 	InspectorControls,
 	withFontSizes,
-	__experimentalUseColors,
 	RichText,
 	BlockControls,
 	AlignmentToolbar,
@@ -17,6 +16,7 @@ import {
 import { PanelBody } from "@wordpress/components";
 import { compose } from "@wordpress/compose";
 import { FORMAT_TYPES, getPreview, getSetting } from '@storeabill/settings';
+import { getFontSizeStyle, convertFontSizeForPicker, useColors } from '@storeabill/utils';
 import { useRef } from "@wordpress/element";
 
 function DocumentTitleEdit( {
@@ -41,7 +41,7 @@ function DocumentTitleEdit( {
 	const {
 		TextColor,
 		InspectorControlsColorPanel,
-	} = __experimentalUseColors(
+	} = useColors(
 		[
 			{ name: 'textColor', property: 'color' },
 		],
@@ -61,7 +61,7 @@ function DocumentTitleEdit( {
 			<InspectorControls>
 				<PanelBody title={ _x( 'Typography', 'storeabill-core', 'storeabill' ) }>
 					<FontSizePicker
-						value={ fontSize.size }
+						value={ convertFontSizeForPicker( fontSize.size ) }
 						onChange={ setFontSize }
 					/>
 				</PanelBody>
@@ -78,9 +78,7 @@ function DocumentTitleEdit( {
 					}
 					allowedFormats={ FORMAT_TYPES }
 					style={ {
-						fontSize: fontSize.size
-							? fontSize.size + 'px'
-							: undefined
+						fontSize: getFontSizeStyle( fontSize )
 					} }
 				/>
 			</TextColor>

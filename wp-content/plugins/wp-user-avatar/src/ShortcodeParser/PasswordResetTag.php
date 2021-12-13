@@ -96,18 +96,16 @@ class PasswordResetTag extends FormProcessor
     {
         ob_start();
         ?>
-        <div class="pp-reset-password-form">
-            <h3><?= esc_html__('Enter your new password below', 'wp-user-avatar'); ?></h3>
-            <label for="password1"><?= esc_html__('New password', 'wp-user-avatar'); ?>
-                <span class="req">*</span></label>
-            [enter-password id="password1" required autocomplete="off"]
+<div class="pp-reset-password-form">
+    <h3><?= esc_html__('Enter your new password below', 'wp-user-avatar'); ?></h3>
+    <label for="password1"><?= esc_html__('New password', 'wp-user-avatar'); ?> <span class="req">*</span></label>
+    [enter-password id="password1" required autocomplete="off"]
 
-            <label for="password2"><?= esc_html__('Re-enter new password', 'wp-user-avatar') ?>
-                <span class="req">*</span></label>
-            [re-enter-password id="password2" required autocomplete="off"]
+    <label for="password2"><?= esc_html__('Re-enter new password', 'wp-user-avatar') ?> <span class="req">*</span></label>
+    [re-enter-password id="password2" required autocomplete="off"]
 
-            [password-reset-submit class="pp-reset-button pp-reset-button-block" value="<?= esc_html__('Save', 'wp-user-avatar'); ?>"]
-        </div>
+    [password-reset-submit class="pp-reset-button pp-reset-button-block" value="<?= esc_html__('Save', 'wp-user-avatar'); ?>"]
+</div>
         <?php
         return apply_filters('ppress_form_default_handler_form', ob_get_clean());
     }

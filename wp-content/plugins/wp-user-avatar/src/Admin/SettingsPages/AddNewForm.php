@@ -11,7 +11,7 @@ if ( ! defined('ABSPATH')) {
     exit;
 }
 
-class AddNewForm extends AbstractSettingsPage
+class AddNewForm
 {
     /**
      * Build the settings page structure. I.e tab, sidebar.
@@ -26,7 +26,6 @@ class AddNewForm extends AbstractSettingsPage
         if ($_GET['page'] == PPRESS_MEMBER_DIRECTORIES_SLUG) {
             $instance->page_header(__('Add Member Directory', 'wp-user-avatar'));
         }
-        $this->register_core_settings($instance, true);
         $instance->build(true);
     }
 
@@ -96,11 +95,12 @@ class AddNewForm extends AbstractSettingsPage
 
 
         if (in_array($_GET['page'], [PPRESS_MEMBER_DIRECTORIES_SLUG])) {
-
+            echo '<div class="pp-add-new-form-wrapper">';
             AjaxHandler::get_instance()->get_forms_by_builder_type(
                 FormRepository::MEMBERS_DIRECTORY_TYPE,
                 'dragDropBuilder'
             );
+            echo '</div>';
         }
     }
 

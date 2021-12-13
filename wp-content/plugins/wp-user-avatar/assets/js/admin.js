@@ -1,7 +1,5 @@
 (function ($) {
 
-    /** @todo add nonce to all ajax requests */
-
     var sb = {
         ajax_flag: false,
         ajax_queue: []

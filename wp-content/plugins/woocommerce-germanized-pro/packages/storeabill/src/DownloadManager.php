@@ -50,7 +50,7 @@ class DownloadManager {
 			self::download_error( _x( 'You are not allowed to view that file.', 'storeabill-core', 'woocommerce-germanized-pro' ) );
 		}
 
-		$download_method = isset( $_GET['force'] ) && wc_string_to_bool( $_GET['force'] ) ? 'force' : 'inline';
+		$download_method = isset( $_GET['force'] ) && sab_string_to_bool( $_GET['force'] ) ? 'force' : 'inline';
 		$file            = $bulk_handler->get_file();
 
 		if ( ! $file || ! file_exists( $file ) ) {
@@ -79,7 +79,7 @@ class DownloadManager {
 		}
 
 		$document        = sab_get_document( $document_id );
-		$download_method = isset( $_GET['force'] ) && wc_string_to_bool( $_GET['force'] ) ? 'force' : 'inline';
+		$download_method = isset( $_GET['force'] ) && sab_string_to_bool( $_GET['force'] ) ? 'force' : 'inline';
 
 		if ( ! $document ) {
 			self::download_error( _x( 'Invalid document.', 'storeabill-core', 'woocommerce-germanized-pro' ) );
@@ -412,7 +412,7 @@ class DownloadManager {
 	private static function check_server_config() {
 		wc_set_time_limit( 0 );
 		if ( function_exists( 'apache_setenv' ) ) {
-			@apache_setenv( 'no-gzip', 1 ); // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged, WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_apache_setenv
+			@apache_setenv( 'no-gzip', '1' ); // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged, WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_apache_setenv
 		}
 		@ini_set( 'zlib.output_compression', 'Off' ); // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged, WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_ini_set
 		@session_write_close(); // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged, WordPress.VIP.SessionFunctionsUsage.session_session_write_close

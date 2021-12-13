@@ -1,25 +1,25 @@
-(function($) {
+(function ($) {
     var id;
     wp.media.wpUserAvatar = {
 
-        get: function() {
+        get: function () {
             return wp.media.view.settings.post.wpUserAvatarId
         },
-        set: function(a) {
+        set: function (a) {
             var b = wp.media.view.settings;
             b.post.wpUserAvatarId = a;
             b.post.wpUserAvatarSrc = $('div.attachment-info').find('img').attr('src');
             if (b.post.wpUserAvatarId && b.post.wpUserAvatarSrc) {
                 $('#wp-user-avatar-is-dirty').val('true');
-                $('#wp-user-avatar'+id).val(b.post.wpUserAvatarId);
-                $('#wpua-images'+id+', #wpua-undo-button'+id).show();
-                $('#wpua-preview'+id).find('img').attr('src', b.post.wpUserAvatarSrc).removeAttr('height', "");
-                $('#wpua-remove-button'+id+', #wpua-thumbnail'+id).hide();
+                $('#wp-user-avatar' + id).val(b.post.wpUserAvatarId);
+                $('#wpua-images' + id + ', #wpua-undo-button' + id).show();
+                $('#wpua-preview' + id).find('img').attr('src', b.post.wpUserAvatarSrc).removeAttr('height', "");
+                $('#wpua-remove-button' + id + ', #wpua-thumbnail' + id).hide();
                 $('#wp_user_avatar_radio').trigger('click')
             }
             wp.media.wpUserAvatar.frame().close()
         },
-        frame: function() {
+        frame: function () {
             if (this._frame) {
                 return this._frame
             }
@@ -28,10 +28,10 @@
                     type: 'image'
                 },
                 multiple: false,
-                title: $('#wpua-add'+id).data('title')
+                title: $('#wpua-add' + id).data('title')
             });
-            this._frame.on('open', function() {
-                var a = $('#wp-user-avatar'+id).val();
+            this._frame.on('open', function () {
+                var a = $('#wp-user-avatar' + id).val();
                 if (a == "") {
                     $('div.media-router').find('a:first').trigger('click')
                 } else {
@@ -44,34 +44,34 @@
             this._frame.state('library').on('select', this.select);
             return this._frame
         },
-        select: function(a) {
+        select: function (a) {
             selection = this.get('selection').single();
             wp.media.wpUserAvatar.set(selection ? selection.id : -1)
         },
-        init: function() {
-            $('body').on('click', '#wpua-add', function(e) {
+        init: function () {
+            $('body').on('click', '#wpua-add', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                id='';
+                id = '';
                 wp.media.wpUserAvatar.frame().open()
             })
-            $('body').on('click', '#wpua-add-existing', function(e) {
+            $('body').on('click', '#wpua-add-existing', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                id='-existing';
+                id = '-existing';
                 wp.media.wpUserAvatar.frame().open()
             })
         }
     }
 })(jQuery);
-jQuery(function($) {
-    if (typeof(wp) != 'undefined') {
+jQuery(function ($) {
+    if (typeof (wp) != 'undefined') {
         wp.media.wpUserAvatar.init()
     }
     $('#your-profile').attr('enctype', 'multipart/form-data');
     var a = $('#wp-user-avatar').val();
     var b = $('#wpua-preview').find('img').attr('src');
-    $('body').on('click', '#wpua-remove', function(e) {
+    $('body').on('click', '#wpua-remove', function (e) {
         e.preventDefault();
         $('#wpua-original').remove();
         $('#wpua-remove-button, #wpua-thumbnail').hide();
@@ -82,7 +82,7 @@ jQuery(function($) {
         $('#wpua-original, #wpua-undo-button').show();
         $('#wp_user_avatar_radio').trigger('click')
     });
-    $('body').on('click', '#wpua-undo', function(e) {
+    $('body').on('click', '#wpua-undo', function (e) {
         e.preventDefault();
         $('#wpua-original').remove();
         $('#wpua-images').removeAttr('style');
@@ -93,15 +93,15 @@ jQuery(function($) {
         $('#wp_user_avatar_radio').trigger('click')
     })
 });
-jQuery(function($) {
-    if (typeof(wp) != 'undefined') {
+jQuery(function ($) {
+    if (typeof (wp) != 'undefined') {
         wp.media.wpUserAvatar.init()
     }
     $('#your-profile').attr('enctype', 'multipart/form-data');
     var a = $('#wp-user-avatar-existing').val();
     var b = $('#wpua-preview-existing').find('img').attr('src');
     $('#wpua-undo-button-existing').hide();
-    $('body').on('click', '#wpua-remove-existing', function(e) {
+    $('body').on('click', '#wpua-remove-existing', function (e) {
         e.preventDefault();
         $('#wpua-original-existing').remove();
         $('#wpua-remove-button-existing, #wpua-thumbnail-existing').hide();
@@ -113,7 +113,7 @@ jQuery(function($) {
         $('#wpua-original-existing, #wpua-undo-button-existing').show();
         $('#wp_user_avatar_radio').trigger('click')
     });
-    $('body').on('click', '#wpua-undo-existing', function(e) {
+    $('body').on('click', '#wpua-undo-existing', function (e) {
         e.preventDefault();
         $('#wpua-original-existing').remove();
         $('#wpua-images-existing').removeAttr('style');
@@ -122,5 +122,5 @@ jQuery(function($) {
         $('#wpua-preview-existing').find('img:first').attr('src', b).show();
         $('#wp-user-avatar-existing').val(a);
         $('#wp_user_avatar_radio').trigger('click')
-    })
+    });
 });

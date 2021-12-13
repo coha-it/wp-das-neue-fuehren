@@ -36,6 +36,39 @@ class ModifyRedirectDefaultLinks
         add_action('template_redirect', [$this, 'redirect_author_page']);
     }
 
+    public function is_third_party_2fa_active()
+    {
+        global $pagenow;
+
+        if ('wp-login.php' == $pagenow) {
+
+            if (class_exists('Jetpack') && \Jetpack::is_module_active('sso')) {
+                return true;
+            }
+
+            if (function_exists('wd_di') && class_exists('\WP_Defender\Model\Setting\Two_Fa')) {
+                try {
+                    if (wd_di()->get(\WP_Defender\Model\Setting\Two_Fa::class)->enabled) return true;
+                } catch (\Exception $e) {
+                }
+            }
+
+            if (defined('WORDFENCE_VERSION') || defined('WORDFENCE_LS_VERSION')) {
+                return true;
+            }
+
+            if (defined('WP_2FA_VERSION')) return true;
+
+            if (defined('SIMBA_TFA_PLUGIN_DIR')) return true;
+
+            if (class_exists('\SG_Security\Options_Service\Options_Service') && \SG_Security\Options_Service\Options_Service::is_enabled('sg2fa')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Modify the lost password url returned by wp_lostpassword_url() function.
      *
@@ -47,7 +80,7 @@ class ModifyRedirectDefaultLinks
     {
         $page_id = ppress_get_setting('set_lost_password_url');
 
-        if ( ! empty($page_id)) {
+        if ( ! empty($page_id) && 'publish' == get_post_status($page_id)) {
             $val = get_permalink($page_id);
         }
 
@@ -63,11 +96,9 @@ class ModifyRedirectDefaultLinks
 
         $page_id = ppress_get_setting('set_lost_password_url');
 
-        if (empty($page_id)) return;
+        if (empty($page_id) || 'publish' != get_post_status($page_id)) return;
 
-        $password_reset_url = get_permalink(absint($page_id));
-
-        wp_safe_redirect($password_reset_url);
+        wp_safe_redirect(get_permalink(absint($page_id)));
         exit;
     }
 
@@ -82,33 +113,40 @@ class ModifyRedirectDefaultLinks
      */
     public function set_login_url_func($url, $redirect = '', $force_reauth = false)
     {
-        $login_page_id = ppress_get_setting('set_login_url');
+        if ( ! $this->is_third_party_2fa_active()) {
+            $login_page_id = ppress_get_setting('set_login_url');
 
-        if ( ! empty($login_page_id)) {
+            if ( ! empty($login_page_id) && 'publish' == get_post_status($login_page_id)) {
 
-            $url = get_permalink($login_page_id);
+                $url = get_permalink($login_page_id);
 
-            if ( ! empty($redirect)) {
-                $url = add_query_arg('redirect_to', rawurlencode($redirect), $url);
-            }
+                if ( ! empty($redirect)) {
+                    $url = add_query_arg('redirect_to', rawurlencode(wp_validate_redirect($redirect)), $url);
+                }
 
-            if ($force_reauth) {
-                $url = add_query_arg('reauth', '1', $url);
+                if ($force_reauth) {
+                    $url = add_query_arg('reauth', '1', $url);
+                }
+
+                $url = esc_url_raw($url);
             }
         }
 
         return apply_filters('ppress_login_url', $url, $redirect, $force_reauth);
     }
 
-
     /**
      * Force redirect default login to page with login shortcode
      */
-    function redirect_login_page()
+    public function redirect_login_page()
     {
         if ( ! apply_filters('ppress_default_login_redirect_enabled', true)) return;
 
-        if (empty(ppress_get_setting('set_login_url'))) return;
+        if ($this->is_third_party_2fa_active()) return;
+
+        $login_page_id = ppress_get_setting('set_login_url');
+
+        if (empty($login_page_id) || ('publish' != get_post_status($login_page_id))) return;
 
         $login_url = ppress_login_url();
 
@@ -124,7 +162,7 @@ class ModifyRedirectDefaultLinks
             }
         }
 
-        wp_safe_redirect($login_url);
+        wp_safe_redirect(esc_url_raw($login_url));
         exit;
     }
 
@@ -133,11 +171,11 @@ class ModifyRedirectDefaultLinks
      *
      * @return string page url with registration shortcode.
      */
-    function register_url_func($val)
+    public function register_url_func($val)
     {
         $page_id = ppress_get_setting('set_registration_url');
 
-        if ( ! empty($page_id)) {
+        if ( ! empty($page_id) && 'publish' == get_post_status($page_id)) {
             $val = get_permalink($page_id);
         }
 
@@ -147,15 +185,17 @@ class ModifyRedirectDefaultLinks
     /**
      * force redirection of default registration to custom one
      */
-    function redirect_reg_page()
+    public function redirect_reg_page()
     {
         if ( ! apply_filters('ppress_default_registration_redirect_enabled', true)) return;
 
-        if (empty(ppress_get_setting('set_registration_url'))) return;
+        $page_id = ppress_get_setting('set_registration_url');
+
+        if (empty($page_id) || 'publish' != get_post_status($page_id)) return;
 
         $reg_url = ppress_registration_url();
 
-        wp_safe_redirect($reg_url);
+        wp_safe_redirect(esc_url_raw($reg_url));
         exit;
     }
 
@@ -192,8 +232,8 @@ class ModifyRedirectDefaultLinks
         }
 
         if ($set_redirect) {
-            $set_redirect = apply_filters('ppress_logout_redirect', esc_url_raw($set_redirect));
-            $logout_url   = add_query_arg('redirect_to', urlencode($set_redirect), $logout_url);
+            $set_redirect = apply_filters('ppress_logout_redirect', $set_redirect);
+            $logout_url   = esc_url_raw(add_query_arg('redirect_to', rawurlencode($set_redirect), $logout_url));
         }
 
         return $logout_url;
@@ -202,7 +242,7 @@ class ModifyRedirectDefaultLinks
     /**
      * Redirect user edit profile (/wp-admin/profile.php) to "custom edit profile" page.
      */
-    function redirect_default_edit_profile_to_custom()
+    public function redirect_default_edit_profile_to_custom()
     {
         if (ppress_settings_by_key('redirect_default_edit_profile_to_custom') == 'yes') {
 
@@ -210,23 +250,26 @@ class ModifyRedirectDefaultLinks
                 $page_id = ppress_settings_by_key('edit_user_profile_url');
 
                 if ( ! empty($page_id)) {
-                    $url = get_permalink($page_id);
+                    $url = esc_url_raw(get_permalink($page_id));
                 }
 
                 return $url;
+
             }, 9999999999);
 
             // Filter to disable edit profile redirect for administrator.
             $disable = apply_filters('ppress_disable_admin_edit_profile_redirect', false);
+
             if ($disable && current_user_can('delete_users')) return;
 
             if ( ! empty(ppress_get_setting('edit_user_profile_url'))) {
+
                 $edit_user_profile_url = ppress_edit_profile_url();
 
-                $page_viewed = esc_url($_SERVER['REQUEST_URI']);
+                $page_viewed = esc_url_raw($_SERVER['REQUEST_URI']);
 
                 if (isset($page_viewed) && strpos($page_viewed, 'wp-admin/profile.php') !== false) {
-                    wp_safe_redirect($edit_user_profile_url);
+                    wp_safe_redirect(esc_url_raw($edit_user_profile_url));
                     exit;
                 }
             }
@@ -236,7 +279,7 @@ class ModifyRedirectDefaultLinks
     public function author_link_func($url, $author_id)
     {
         if (ppress_settings_by_key('author_slug_to_profile') == 'on') {
-            $url = ppress_get_frontend_profile_url($author_id);
+            $url = esc_url_raw(ppress_get_frontend_profile_url($author_id));
         }
 
         return $url;
@@ -256,7 +299,7 @@ class ModifyRedirectDefaultLinks
                 $email = $comment->comment_author_email;
                 $user  = get_user_by('email', $email);
                 if (isset($user->user_login)) {
-                    $url = ppress_get_frontend_profile_url($user->user_login);
+                    $url = esc_url_raw(ppress_get_frontend_profile_url($user->user_login));
                 }
             }
         }
@@ -269,7 +312,7 @@ class ModifyRedirectDefaultLinks
      */
     public function redirect_logout_page()
     {
-        $page_viewed = basename(esc_url($_SERVER['REQUEST_URI']));
+        $page_viewed = basename(esc_url_raw($_SERVER['REQUEST_URI']));
 
         if ($page_viewed == "wp-login.php?loggedout=true" && $_SERVER['REQUEST_METHOD'] == 'GET') {
             wp_safe_redirect(home_url());
@@ -306,6 +349,7 @@ class ModifyRedirectDefaultLinks
     public function rewrite_bp_registration_url($page)
     {
         if (ppress_get_setting('redirect_bp_registration_page') == 'yes') {
+
             if (apply_filters('ppress_bp_registration_url', true)) {
                 $page = ppress_registration_url();
             }

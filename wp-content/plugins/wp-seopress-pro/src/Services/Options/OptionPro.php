@@ -7,8 +7,7 @@ defined('ABSPATH') or exit('Cheatin&#8217; uh?');
 use SEOPressPro\Services\Options\Schemas\LocalBusinessOptions;
 use SEOPressPro\Services\Options\Schemas\PublisherOptions;
 
-class OptionPro
-{
+class OptionPro {
     use LocalBusinessOptions;
     use PublisherOptions;
 

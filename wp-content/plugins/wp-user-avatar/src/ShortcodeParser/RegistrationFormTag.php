@@ -18,8 +18,8 @@ class RegistrationFormTag extends FormProcessor
         $atts = shortcode_atts(['id' => '', 'redirect' => '', 'no-login-redirect' => ''], $atts);
 
         $id                     = absint($atts['id']);
-        $redirect               = esc_url_raw($atts['redirect']);
-        $no_login_redirect      = esc_url_raw($atts['no-login-redirect']);
+        $redirect               = sanitize_text_field($atts['redirect']);
+        $no_login_redirect      = sanitize_text_field($atts['no-login-redirect']);
         $registration_structure = self::get_registration_structure($id, $redirect, $no_login_redirect);
 
         $registration_status = '';
@@ -91,14 +91,14 @@ class RegistrationFormTag extends FormProcessor
         $form_tag = "<form data-pp-form-submit=\"signup\" id='pp_registration_$id' method=\"post\" enctype=\"multipart/form-data\"" . apply_filters('ppress_registration_form_tag', '', $id) . ">";
 
         if ( ! empty($redirect)) {
-            $registration_structure .= "<input type='hidden' name='signup_redirect' value='$redirect'>";
+            $registration_structure .= "<input type='hidden' name='signup_redirect' value='" . esc_attr($redirect) . "'>";
         }
 
         if ( ! empty($no_login_redirect)) {
-            $registration_structure .= "<input type='hidden' name='signup_no_login_redirect' value='$no_login_redirect'>";
+            $registration_structure .= "<input type='hidden' name='signup_no_login_redirect' value='" . esc_attr($no_login_redirect) . "'>";
         }
 
-        $registration_structure .= '<input type="hidden" name="pp_current_url" value="' . ppress_get_current_url_query_string() . '">';
+        $registration_structure .= '<input type="hidden" name="pp_current_url" value="' . esc_attr(ppress_get_current_url_query_string()) . '">';
         $registration_structure .= "<input type='hidden' name='signup_form_id' value='$id'>";
         $registration_structure .= sprintf("<input type='hidden' name='signup_referrer_page' value='%s'>", ! empty($referrer_url) ? $referrer_url : '');
 

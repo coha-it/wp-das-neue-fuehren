@@ -8,7 +8,6 @@ import {
     FontSizePicker,
     InspectorControls,
     withFontSizes,
-    __experimentalUseColors,
     BlockControls,
     RichText,
 } from '@wordpress/block-editor';
@@ -17,7 +16,7 @@ import { getPreviewItem, FORMAT_TYPES, getItemMetaTypes, getItemMetaTypePreview 
 import { settings, arrowRight } from '@storeabill/icons';
 import { isEmpty } from 'lodash';
 
-import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview } from "@storeabill/utils";
+import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview, getFontSizeStyle, convertFontSizeForPicker, useColors } from "@storeabill/utils";
 
 import { PanelBody, ToggleControl, Toolbar, DropdownMenu, ToolbarGroup } from "@wordpress/components";
 import { compose } from "@wordpress/compose";
@@ -67,7 +66,7 @@ function ItemMetaEdit( {
     const {
         TextColor,
         InspectorControlsColorPanel
-    } = __experimentalUseColors(
+    } = useColors(
         [
             { name: 'textColor', property: 'color' },
         ],
@@ -98,7 +97,7 @@ function ItemMetaEdit( {
                         onChange={ () => setAttributes( { hideIfEmpty: ! hideIfEmpty } ) }
                     />
                     <FontSizePicker
-                        value={ fontSize.size }
+                        value={ convertFontSizeForPicker( fontSize.size ) }
                         onChange={ setFontSize }
                     />
                 </PanelBody>
@@ -115,9 +114,7 @@ function ItemMetaEdit( {
                     }
                     allowedFormats={ FORMAT_TYPES }
                     style={ {
-                        fontSize: fontSize.size
-                            ? fontSize.size + 'px'
-                            : undefined,
+                        fontSize: getFontSizeStyle( fontSize )
                     } }
                 />
             </TextColor>

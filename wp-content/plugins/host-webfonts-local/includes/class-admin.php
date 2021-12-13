@@ -1,4 +1,6 @@
 <?php
+defined('ABSPATH') || exit;
+
 /* * * * * * * * * * * * * * * * * * * * *
  *
  *  ██████╗ ███╗   ███╗ ██████╗ ███████╗
@@ -13,8 +15,6 @@
  * @copyright: (c) 2021 Daan van den Bergh
  * @url      : https://daan.dev
  * * * * * * * * * * * * * * * * * * * */
-
-defined('ABSPATH') || exit;
 
 class OMGF_Admin
 {
@@ -40,11 +40,7 @@ class OMGF_Admin
 			[
 				OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_OPTIMIZATION_MODE,
 				OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_DISPLAY_OPTION,
-				OMGF_Admin_Settings::OMGF_OPTIMIZE_SETTING_WOFF2_ONLY,
 				OMGF_Admin_Settings::OMGF_ADV_SETTING_CACHE_PATH,
-				OMGF_Admin_Settings::OMGF_ADV_SETTING_CACHE_URI,
-				OMGF_Admin_Settings::OMGF_ADV_SETTING_RELATIVE_URL,
-				OMGF_Admin_Settings::OMGF_ADV_SETTING_CDN_URL
 			]
 		);
 
@@ -55,9 +51,12 @@ class OMGF_Admin
 		$this->do_detection_settings();
 		$this->do_advanced_settings();
 		$this->do_help();
+		$this->maybe_do_after_update_notice();
 
-		add_filter('pre_update_option_omgf_optimized_fonts', [$this, 'decode_option'], 10, 3);
+		// This used to fix a bug, but now it breaks stuff. Leave it here for the time being.
+		// add_filter('pre_update_option_omgf_optimized_fonts', [$this, 'update_optimized_fonts'], 10, 2);
 		add_filter('pre_update_option_omgf_cache_keys', [$this, 'clean_up_cache'], 10, 3);
+		add_action('pre_update_option_omgf_cache_dir', [$this, 'validate_cache_dir'], 10, 2);
 		add_filter('pre_update_option', [$this, 'settings_changed'], 10, 3);
 	}
 
@@ -117,15 +116,38 @@ class OMGF_Admin
 	}
 
 	/**
+	 * Checks if an update notice should be displayed after updating.
+	 */
+	private function maybe_do_after_update_notice()
+	{
+		if (version_compare(OMGF_CURRENT_DB_VERSION, OMGF_DB_VERSION, '<')) {
+			OMGF_Admin_Notice::set_notice(
+				sprintf(
+					__('Thank you for updating OMGF to v%s! This version contains database changes. <a href="%s">Verify your settings</a> and make sure everything is as you left it or, <a href="%s">view the changelog</a> for details. ', $this->plugin_text_domain),
+					OMGF_DB_VERSION,
+					admin_url(OMGF_Admin_Settings::OMGF_OPTIONS_GENERAL_PAGE_OPTIMIZE_WEBFONTS),
+					admin_url(OMGF_Admin_Settings::OMGF_PLUGINS_INSTALL_CHANGELOG_SECTION)
+				),
+				'omgf-post-update',
+				false
+			);
+
+			update_option(OMGF_Admin_Settings::OMGF_CURRENT_DB_VERSION, OMGF_DB_VERSION);
+		}
+	}
+
+	/**
+	 * This fixes a bug where the admin screen wouldn't properly be updated after omgf_optimized_fonts 
+	 * was updated by the API.
+	 * 
 	 * @param $old_value
 	 * @param $value
-	 * @param $option_name
 	 *
-	 * @return mixed
+	 * @return bool|array
 	 */
-	public function decode_option($old_value, $value, $option_name)
+	public function update_optimized_fonts($value, $old_value)
 	{
-		return $value;
+		return $old_value;
 	}
 
 	/**
@@ -161,6 +183,42 @@ class OMGF_Admin
 	}
 
 	/**
+	 * Perform a few checks before saving the Cache Directory value to the database.
+	 * 
+	 * @param mixed $new_dir 
+	 * @param mixed $old_dir 
+	 * @return mixed 
+	 */
+	public function validate_cache_dir($new_dir, $old_dir)
+	{
+		$allowed_path = WP_CONTENT_DIR . $new_dir;
+		$mkdir        = true;
+
+		if (!file_exists($allowed_path)) {
+			/**
+			 * wp_mkdir_p() already does some simple checks for path traversal, but we check it again using realpath() later on anyway.
+			 */
+			$mkdir = wp_mkdir_p($allowed_path);
+		}
+
+		if (!$mkdir) {
+			OMGF_Admin_Notice::set_notice(sprintf(__('Something went wrong while trying to create OMGF\'s Cache Directory: %s. Setting wasn\'t updated.', $this->plugin_text_domain), $new_dir), 'omgf-create-cache-dir-failed', false, 'error');
+
+			return $old_dir;
+		}
+
+		$real_path = realpath($allowed_path);
+
+		if ($real_path != rtrim($allowed_path, '/')) {
+			OMGF_Admin_Notice::set_notice(__('OMGF\'s Cache Directory wasn\'t changed. Attempted path traversal.', $this->plugin_text_domain), 'omgf-attempted-path-traversal', false, 'error');
+
+			return $old_dir;
+		}
+
+		return $new_dir;
+	}
+
+	/**
 	 * Shows notice if $option_name is in $show_notice array.
 	 * 
 	 * @param $new_value
@@ -183,7 +241,15 @@ class OMGF_Admin
 				$wp_settings_errors = [];
 			}
 
-			add_settings_error('general', 'omgf_settings_changed', __('Settings changed. <a href="#" class="omgf-empty">Click here</a> to empty OMGF\'s cache.', $this->plugin_text_domain), 'success');
+			add_settings_error(
+				'general',
+				'omgf_settings_changed',
+				sprintf(
+					__('Settings changed. <a href="#" data-cache-section="/*" data-nonce="%s" class="omgf-empty">Click here</a> to empty OMGF\'s cache.', $this->plugin_text_domain),
+					wp_create_nonce(OMGF_Admin_Settings::OMGF_ADMIN_PAGE)
+				),
+				'success'
+			);
 		}
 
 		return $value;

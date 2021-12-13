@@ -614,7 +614,8 @@ abstract class AbstractMemberDirectoryTheme extends AbstractTheme
                                 $index2++;
 
                                 $filter_queries .= $wpdb->prepare(
-                                    "({$wpdb->usermeta}.meta_key = '$meta_key' AND {$wpdb->usermeta}.meta_value LIKE %s)",
+                                    "({$wpdb->usermeta}.meta_key = %s AND {$wpdb->usermeta}.meta_value LIKE %s)",
+                                    $meta_key,
                                     '%' . $wpdb->esc_like($value) . '%'
                                 );
 
@@ -626,7 +627,8 @@ abstract class AbstractMemberDirectoryTheme extends AbstractTheme
                         } else {
 
                             $filter_queries .= $wpdb->prepare(
-                                "({$wpdb->usermeta}.meta_key = '$meta_key' AND {$wpdb->usermeta}.meta_value = %s)",
+                                "({$wpdb->usermeta}.meta_key = %s AND {$wpdb->usermeta}.meta_value = %s)",
+                                $meta_key,
                                 $meta_value
                             );
                         }
@@ -789,20 +791,7 @@ abstract class AbstractMemberDirectoryTheme extends AbstractTheme
 
                                     $dateFormat = ! empty($custom_field['options']) ? $custom_field['options'] : 'Y-m-d';
 
-                                    $hasTime = FieldsShortcodeCallback::hasTime($dateFormat);
-                                    $time24  = false;
-
-                                    if ($hasTime && strpos($dateFormat, 'H') !== false) {
-                                        $time24 = true;
-                                    }
-
-                                    $config = apply_filters('ppress_frontend_flatpickr_date_config', [
-                                        'dateFormat'    => $dateFormat,
-                                        'enableTime'    => $hasTime,
-                                        'noCalendar'    => ! FieldsShortcodeCallback::hasDate($dateFormat),
-                                        'disableMobile' => true,
-                                        'time_24hr'     => $time24
-                                    ]);
+                                    $config = FieldsShortcodeCallback::date_picker_config($field_key, $dateFormat);
 
                                     printf(
                                         '<input type="text" name="%1$s" placeholder="%2$s" value="%4$s" class="ppressmd-form-field ppmd-date" data-config="%3$s">',
@@ -915,17 +904,17 @@ abstract class AbstractMemberDirectoryTheme extends AbstractTheme
 
     protected function get_results_text()
     {
-        return $this->get_meta('ppress_md_results_text');
+        return esc_html($this->get_meta('ppress_md_results_text'));
     }
 
     protected function get_single_result_text()
     {
-        return $this->get_meta('ppress_md_single_result_text');
+        return esc_html($this->get_meta('ppress_md_single_result_text'));
     }
 
     protected function get_no_result_text()
     {
-        return $this->get_meta('ppress_md_no_result_text');
+        return esc_html($this->get_meta('ppress_md_no_result_text'));
     }
 
     protected function get_default_result_number_per_page()

@@ -39,9 +39,11 @@ class Invoice extends Document {
 		'_currency',
 		'_prices_include_tax',
 		'_is_reverse_charge',
+		'_is_oss',
 		'_vat_id',
 		'_is_taxable',
 		'_round_tax_at_subtotal',
+		'_tax_display_mode',
 		'_total',
 		'_subtotal',
 		'_total_paid',
@@ -95,8 +97,9 @@ class Invoice extends Document {
 			case "prices_include_tax":
 			case "round_tax_at_subtotal":
 			case "is_reverse_charge":
+			case "is_oss":
 			case "is_taxable":
-				$value = wc_bool_to_string( $value );
+				$value = sab_bool_to_string( $value );
 				break;
 			case "payment_status":
 				$value = $this->get_payment_status( $document );

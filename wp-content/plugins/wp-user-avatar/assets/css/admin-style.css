@@ -409,7 +409,8 @@
 .ppview .pp-settings-wrap {
     display: flex;
     border: 1px solid #c8d7e1;
-    border-top: 0;
+    /*border-top: 0;*/
+    margin-top: 5px;
 }
 
 .ppview .pp-settings-wrap .dashicons {
@@ -1835,4 +1836,153 @@ textarea.wp-editor-area {
 .ppress-extensions-upsell-wrap .ppress-extensions-upsell-highlight {
     font-weight: bold;
     color: #007cba;
+}
+
+/* new admin pages header */
+.ppress-admin .ppress-admin-banner {
+    background-color: #326ee0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    top: 0;
+    width: 100%;
+    padding: 15px;
+}
+
+.ppress-admin .ppress-admin-wrap {
+    margin-bottom: 10px;
+}
+
+.ppress-admin .ppress-admin-banner.ppress-pro {
+    padding: 15px 15px 0;
+}
+
+.ppress-admin .ppress-admin-banner.ppress-pro.ppress-no-submenu {
+    padding-bottom: 15px;
+}
+
+.ppress-admin .wrap {
+    padding-left: 20px;
+    margin: 0 20px 0 2px;
+}
+
+.wp-admin.ppress-admin #wpcontent {
+    padding: 0;
+}
+
+.ppress-admin .ppress-admin-banner__logo {
+    padding: 0 0 15px;
+    display: block;
+}
+
+.ppress-admin .ppress-admin-banner__logo img {
+    width: 140px;
+    height: auto;
+    float: left;
+    margin-top: 20px;
+    padding-left: 15px;
+}
+
+.ppress-admin .ppress-admin-banner__helplinks {
+    float: right;
+    padding: 10px 20px 20px;
+}
+
+.ppress-admin .ppress-admin-banner__helplinks a {
+    color: rgba(255, 255, 255, 0.92);
+    text-decoration: none;
+}
+
+.ppress-admin .ppress-admin-banner__helplinks a.ppress-active {
+    background: #fff;
+    padding: 5px;
+    color: #326ee0;
+    border-radius: 4px;
+}
+
+.ppress-admin .ppress-admin-banner__helplinks > span {
+    padding-right: 15px;
+}
+
+.ppress-admin div#screen-meta-links {
+    position: absolute;
+    right: 0;
+    z-index: 9;
+}
+
+.ppress-admin .ppress-nav-tab-wrapper {
+    padding: 0;
+    margin: 10px 16px 0;
+    border-bottom: 0;
+}
+
+.ppress-admin .ppress-nav-tab-wrapper .ppress-nav-tab {
+    display: block;
+    font-weight: 500;
+    padding: 5px 12px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.92);
+    margin: 0;
+}
+
+.ppress-admin .ppress-nav-tab-wrapper .ppress-nav-tab.ppress-nav-active {
+    background-color: #fff;
+    color: #2d3559;
+    border-color: #fff;
+    border-radius: 4px 4px 0 0;
+}
+
+.ppress-admin-banner.ppress-not-pro {
+    padding-bottom: 0;
+}
+
+.ppress-admin .ppress-no-submenu .ppress-nav-tab-wrapper {
+    margin-top: 0;
+}
+
+.ppress-admin-banner .ppress-header-menus {
+    margin-top: 10px;
+}
+
+.ppress-admin .ppress-admin-wrap + .wrap h2 {
+    font-size: 21px;
+    font-weight: 500;
+}
+
+.ppress-admin .ppress-admin-wrap .subsubsub {
+    background: #fff;
+    font-size: 14px;
+    padding: 0 16px;
+    margin-top: 0;
+    float: none;
+    text-align: left;
+}
+
+.ppress-admin .ppress-admin-wrap .subsubsub a {
+    color: #1d2327;
+    display: block;
+    font-weight: 600;
+    padding: 8px 12px;
+}
+
+.ppress-admin .ppress-admin-wrap .subsubsub a.ppress-current {
+    color: #326ee0;
+}
+
+.ppress-admin.wp-core-ui .wrap a.ppress-link {
+    display: block;
+    margin-top: 10px;
+    font-size: 1em;
+
+}
+
+.ppress-admin.wp-core-ui .wrap a.ppress-link svg {
+    width: 1.2em;
+    margin: 0 .2em 0;
+    height: 1.4em;
+    vertical-align: middle;
+    fill: currentcolor;
 }

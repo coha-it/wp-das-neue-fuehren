@@ -1607,7 +1607,6 @@ abstract class Document extends Data implements Numberable, ExternalSyncable {
 		$items = $this->get_items();
 
 		foreach( $items as $item ) {
-
 			if ( $item->get_reference_id() === (int) $reference_id ) {
 				return $item;
 			}
@@ -1889,12 +1888,12 @@ abstract class Document extends Data implements Numberable, ExternalSyncable {
 		) );
 
 		return apply_filters( "{$this->get_hook_prefix()}formatted_number_placeholders", array_merge( array(
-			'{y}'      => $this->get_date_created()->format(  'y' ),
-			'{Y}'      => $this->get_date_created()->format(  'Y' ),
-			'{m}'      => $this->get_date_created()->format(  'm' ),
-			'{n}'      => $this->get_date_created()->format(  'n' ),
-			'{d}'      => $this->get_date_created()->format(  'd' ),
-			'{j}'      => $this->get_date_created()->format(  'j' ),
+			'{y}'      => $this->get_date_created()->date_i18n(  'y' ),
+			'{Y}'      => $this->get_date_created()->date_i18n(  'Y' ),
+			'{m}'      => $this->get_date_created()->date_i18n(  'm' ),
+			'{n}'      => $this->get_date_created()->date_i18n(  'n' ),
+			'{d}'      => $this->get_date_created()->date_i18n(  'd' ),
+			'{j}'      => $this->get_date_created()->date_i18n(  'j' ),
 			'{number}' => $args['number'],
 		), $this->get_additional_number_placeholders() ), $this, $args );
 	}

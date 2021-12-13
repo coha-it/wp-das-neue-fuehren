@@ -8,7 +8,7 @@
 	var id = window.location.hash.substring( 1 );
 	var pattern = new RegExp( "^[\\w\\-]+$" );
 	var sanitize_input = pattern.test( id );
-	
+
 	/**
 	 * Function for Before After Slider animation.
 	 *
@@ -49,39 +49,39 @@
 			} else {
 				gfSelectField.wrap( "<span class='uael-gf-select-custom'></span>" );
 			}
-		});		
+		});
 
-		
+
 		if( $scope.hasClass( 'uael-gf-ajax-yes' ) ){
 			//AJAX form submission
 			jQuery( document ).on( 'gform_confirmation_loaded', function( event, formId ){
     		// code to be trigger when confirmation page is loaded
 				form_title.hide();
 				form_desc.hide();
-			});			
+			});
 		} else {
 			//Hide the forms title and description after submit.
 			if( confirmation_div.length > 0 ){
 				form_title.hide();
 				form_desc.hide();
 			} else {
-				form_title.show();	
-				form_desc.show();		
+				form_title.show();
+				form_desc.show();
 			}
 		}
 
 		if( typeof gform !== 'undefined' ){
-			gform.addAction( 'gform_input_change', function( elem, formId, fieldId ) {
+			gform.addAction( 'gform_input_change', function( elem ) {
 			    if( $scope.find( '.gfield_radio .gchoice_button' ).length && ! $scope.hasClass( 'uael-gf-check-default-yes' ) && 'radio' == $scope.find( elem ).attr( 'type' ) ){
 			    	if( $scope.find( elem ).parent().hasClass( 'uael-radio-active') ){
-						$scope.find( elem ).parent().removeClass( 'uael-radio-active' );		    		
+						$scope.find( elem ).parent().removeClass( 'uael-radio-active' );
 			    	} else {
-						$scope.find( '.gchoice_button' ).removeClass( 'uael-radio-active' );	    		
-						$scope.find( elem ).parent().addClass( 'uael-radio-active' );		    		
+						$scope.find( '.gchoice_button' ).removeClass( 'uael-radio-active' );
+						$scope.find( elem ).parent().addClass( 'uael-radio-active' );
 			    	}
 			    }
-			}, 10, 3 );			
-		}		
+			}, 10, 3 );
+		}
 	}
 
 	/**
@@ -89,7 +89,7 @@
 	 *
 	 */
 	var WidgetUAELCafStylerHandler = function( $scope, $ ) {
-		
+
 		if ( 'undefined' == typeof $scope )
 			return;
 
@@ -107,12 +107,14 @@
 
 			$scope.find('input:radio').each(function() {
 
-				var radioField = $( this ).next().hasClass('uael-caf-radio-custom');
+				var $this = $( this );
+
+				var radioField = $this.next().hasClass('uael-caf-radio-custom');
 
 				if( radioField ) {
 					return;
 				} else {
-					$( this ).after( "<span class='uael-caf-radio-custom'></span>" );
+					$this.after( "<span class='uael-caf-radio-custom'></span>" );
 				}
 
 			});
@@ -148,12 +150,11 @@
 
 	}
 
-
 	/**
 	 * Function for Fancy Text animation.
 	 *
 	 */
-	var UAELFancyText = function() {
+	 var UAELFancyText = function() {
 
 		var id 					= $( this ).data( 'id' );
 		var $this 				= $( this ).find( '.uael-fancy-text-node' );
@@ -193,11 +194,11 @@
 					pause: pause,
 					mousePause: mousepause,
 			});
-		} else {	
-					
-			UAELEffects._animateHeadline( 
+		} else {
+
+			UAELEffects._animateHeadline(
 				$( nodeclass ).find( '.uael-slide-main_ul' ), $this
-			);		
+			);
 		}
 	}
 
@@ -209,8 +210,8 @@
 
 		if ( 'undefined' == typeof $scope ) {
 			return;
-		}	
-		
+		}
+
 		var id 				= $scope.data( 'id' );
 		var $this 			= $scope.find( '.uael-hotspot-container' );
 		var side			= $this.data( 'side' );
@@ -226,9 +227,7 @@
 		var repeat 			= $this.data( 'repeat' );
 		var overlay 		= $this.data( 'overlay' );
 
-		var length 			= $this.data( 'length' );		
-		var $tour_item 		= $scope.find( '.uael-hotspot-main-' + id );
-		var $item_num 		= $tour_item.data( 'uaeltour' );
+		var length 			= $this.data( 'length' );
 		var tour_interval 	= $this.data( 'tourinterval' );
 		var action_autoplay = $this.data( 'autoaction' );
 		var sid;
@@ -243,7 +242,7 @@
 			passtrigger = trigger;
 		}
 		clearInterval( hotspotInterval[ id ] );
-		
+
 		// Declare & pass values to Tooltipster js function.
 		function tooltipsterCall( selector, triggerValue ) {
 			$( selector ).tooltipster({
@@ -278,10 +277,11 @@
 		function sectionInterval() {
 
 			hotspotInterval[ id ] = setInterval( function() {
-				sid = $( '.uael-hotspot-main-' + id + '.open' ).data( 'uaeltour' );
+				var $open_hotspot_node = $( '.uael-hotspot-main-' + id + '.open' );
+				sid = $open_hotspot_node.data( 'uaeltour' );
 
 				if( ! hoverFlag ) {
-					$( '.uael-hotspot-main-' + id + '.open' ).trigger( 'click' );
+					$open_hotspot_node.trigger( 'click' );
 					if( 'yes' == repeat ) {
 						if ( ! elementorFrontend.isEditMode() ) {
 							if( sid == length ) {
@@ -306,8 +306,9 @@
 
 								if( ! (section.offset().top - halfWindowHeight < scrollTop ) && ( section.offset().top + section.height() - halfWindowHeight > scrollTop) ) {
 								} else {
-									$('.uael-hotspot-main-' + id + '.open').tooltipster( 'close' );
-									$('.uael-hotspot-main-' + id + '.open').removeClass( 'open' );
+									var hotspot_main = $( '.uael-hotspot-main-' + id + '.open' );
+									hotspot_main.tooltipster( 'close' );
+									hotspot_main.removeClass( 'open' );
 									clearInterval( hotspotInterval[ id ] );
 									buttonOverlay();
 									$( overlay_id ).show();
@@ -390,9 +391,9 @@
 			$( '.uael-tour-end-' + id ).off('click.endtour').on( 'click.endtour', function(e) {
 				clearInterval( hotspotInterval[ id ] );
 				e.preventDefault();
-				
-				$('.uael-hotspot-main-' + id + '.open').tooltipster( 'close' );
-				$('.uael-hotspot-main-' + id + '.open').removeClass( 'open' );
+				var hotspot_main = $( '.uael-hotspot-main-' + id + '.open' );
+				hotspot_main.tooltipster( 'close' );
+				hotspot_main.removeClass( 'open' );
 
 				if( 'auto' == action_autoplay && 'yes' == autoplay ) {
 					$( '.uael-hotspot-main-' + id ).css( "pointer-events", "none" );
@@ -404,11 +405,12 @@
 
 			// Add & remove open class for tooltip.
 			$( '.uael-hotspot-main-' + id ).off('click.triggertour').on('click.triggertour', function(e) {
-				if ( ! $(this).hasClass('open') ) {
-					$(this).tooltipster( 'open' );
-					$(this).addClass( 'open' );
+				var $this = $(this);
+				if ( ! $this.hasClass('open') ) {
+					$this.tooltipster( 'open' );
+					$this.addClass( 'open' );
 				    if( 'yes' == autoplay ) {
-						$(this).css( "pointer-events", "visible" );
+						$this.css( "pointer-events", "visible" );
 						$( '.uael-hotspot-main-' + id + '.open' ).on( 'mouseenter mouseleave', function(){
 							hoverFlag = true;
 						}, function(){
@@ -416,10 +418,10 @@
 						});
 					}
 				} else {
-					$(this).tooltipster( 'close' );
-					$(this).removeClass( 'open' );
+					$this.tooltipster( 'close' );
+					$this.removeClass( 'open' );
 					if( 'yes' == autoplay ) {
-						$(this).css( "pointer-events", "none" );
+						$this.css( "pointer-events", "none" );
 					}
 				}
 			});
@@ -444,12 +446,12 @@
 					if( 'yes' == autoplay ) {
 						var overlay_id 	= $scope.find( '.uael-hotspot-overlay' );
 						var button_id 	= $scope.find( '.uael-overlay-button' );
-						
+
 						if( ! isElEditMode ) {
 							$( button_id ).off().on( 'click', function(e) {
 								$( overlay_id ).hide();
 								tourPlay();
-							});	
+							});
 						}
 					}
 				} else if( 'auto' == action_autoplay && 'yes' == autoplay ) {
@@ -475,8 +477,7 @@
 		if( 'custom' == trigger ) {
 
 			var overlay_id 	= $scope.find( '.uael-hotspot-overlay' );
-			var button_id 	= $scope.find( '.uael-overlay-button' );
-			buttonOverlay();	
+			buttonOverlay();
 		} else {
 			clearInterval( hotspotInterval[ id ] );
 		}
@@ -491,28 +492,36 @@
 
 		if ( 'undefined' == typeof $scope ) {
 			return;
-		}	
-		
-		var id 				= $scope.data( 'id' );
-		var $this 			= $scope.find( '.uael-price-table-features-list' );
-		var side			= $this.data( 'side' );
-		var trigger			= $this.data( 'hotspottrigger' );
-		var arrow			= $this.data( 'arrow' );
-		var distance		= $this.data( 'distance' );
-		var delay 			= $this.data( 'delay' );
-		var animation		= $this.data( 'animation' );
-		var anim_duration 	= $this.data( 'animduration' );
-		var uaelclass		= 'uael-price-table-wrap-' + id;
-		var zindex			= $this.data( 'zindex' );
-		var length 			= $this.data( 'length' );		
-		var tooltip_maxwidth	= $this.data( 'tooltip-maxwidth' );
-		var tooltip_minwidth	= $this.data( 'tooltip-minwidth' );
-		var responsive = $this.data( 'tooltip-responsive' );
-		var enable_tooltip = $this.data( 'enable-tooltip' );
+		}
+
+		var id 				        = $scope.data( 'id' );
+		var $this 			        = $scope.find( '.uael-price-table-features-list' );
+		var side			        = $this.data( 'side' );
+		var trigger			        = $this.data( 'hotspottrigger' );
+		var arrow			        = $this.data( 'arrow' );
+		var distance		        = $this.data( 'distance' );
+		var delay 			        = $this.data( 'delay' );
+		var animation		        = $this.data( 'animation' );
+		var anim_duration 	        = $this.data( 'animduration' );
+		var uaelclass		        = 'uael-price-table-wrap-' + id;
+		var uaelclassStrikeTooltip	= 'uael-price-table-wrap-' + id;
+		var zindex			        = $this.data( 'zindex' );
+		var length 			        = $this.data( 'length' );
+		var tooltip_maxwidth	    = $this.data( 'tooltip-maxwidth' );
+		var tooltip_minwidth	    = $this.data( 'tooltip-minwidth' );
+		var responsive              = $this.data( 'tooltip-responsive' );
+		var enable_tooltip          = $this.data( 'enable-tooltip' );
+		var pricing_container       = $scope.find( '.uael-pricing-container' );
+		var strike_tooltip          = pricing_container.data( 'strike-tooltip' );
+		var strike_tooltip_position = pricing_container.data( 'strike-tooltip-position' );
+		var strike_tooltip_hide     = pricing_container.data( 'strike-tooltip-hide' );
 
 		uaelclass += ' uael-price-table-tooltip uael-features-tooltip-hide-' + responsive;
 		$this.addClass( 'uael-features-tooltip-hide-' + responsive );
-		
+
+		uaelclassStrikeTooltip += ' uael-strike-price-tooltip uael-strike-tooltip-hide-' + strike_tooltip_hide;
+		$this.addClass( 'uael-strike-tooltip-hide-' + strike_tooltip_hide );
+
 		// Declare & pass values to Tooltipster js function.
 		function tableTooltipsterCall( selector, triggerValue ) {
 			$( selector ).tooltipster({
@@ -536,14 +545,31 @@
 			// Execute Tooltipster function
 			tableTooltipsterCall( '.uael-price-table-content-' + id, trigger );
 		}
-	}
 
+		if ( 'yes' === strike_tooltip ) {
+			$( '.uael-strike-tooltip' ).tooltipster(
+				{
+					theme: ['tooltipster-noir', 'tooltipster-noir-customized'],
+					side : strike_tooltip_position,
+					trigger : 'hover',
+					arrow : true,
+					distance : 6,
+					delay : 300,
+					animation : 'fade',
+					zIndex : 99,
+					interactive : true,
+					animationDuration : 350,
+					uaelclass: uaelclass
+				}
+			);
+		}
+	}
 
 	/**
 	 * Before After Slider handler Function.
 	 *
 	 */
-	var WidgetUAELBASliderHandler = function( $scope, $ ) {
+	 var WidgetUAELBASliderHandler = function( $scope, $ ) {
 
 		if ( 'undefined' == typeof $scope )
 			return;
@@ -584,7 +610,7 @@
 	 * Fancy text handler Function.
 	 *
 	 */
-	var WidgetUAELFancyTextHandler = function( $scope, $ ) {
+	 var WidgetUAELFancyTextHandler = function( $scope, $ ) {
 
 		if ( 'undefined' == typeof $scope ) {
 			return;
@@ -607,7 +633,7 @@
 				}
 			);
 		}
-		
+
 	};
 
 	/**
@@ -630,11 +656,8 @@
 
 		var animate_border 		= $scope.find(".animate-border");
 		var timeline_icon  		= $scope.find(".uael-timeline-marker");
-		var uael_events  		= $scope.find(".uael-events");
-		var events_inner 		= $scope.find(".uael-timeline-widget");
 		var line_inner   		= $scope.find(".uael-timeline__line__inner");
 		var line_outer   		= $scope.find(".uael-timeline__line");
-		var $main_class			= $scope.find(".elementor-widget-uael-timeline");
 		var $icon_class 		= $scope.find(".uael-timeline-marker");
 		var $card_last 			= $scope.find(".uael-timeline-field:last-child");
 
@@ -672,11 +695,6 @@
 			$last_item = parent_top + timeline_end_icon.top;
 
 		}
-
-		var viewportHeight = document.documentElement.clientHeight;
-		var elementPos = $this.offset().top;
-
-		var photoViewportOffsetTop = elementPos - $(document).scrollTop();
 
 		var elementEnd = $last_item + 20;
 
@@ -815,7 +833,6 @@
 		window.addEventListener("resize", uaelTimelineFunc);
 		window.addEventListener("scroll", uaelTimelineFunc);
 
-
 		var post_selector = $scope.find( '.uael-days' );
 
 		var node_id = $scope.data( 'id' );
@@ -832,9 +849,9 @@
 						window.addEventListener("resize", uaelTimelineFunc);
 						window.addEventListener("scroll", uaelTimelineFunc);
 			        }
-				}); 
+				});
 			});
-	
+
 		}
 	};
 
@@ -849,8 +866,6 @@
 			return;
 		}
 
-		var $this           = $scope.find( '.uael-rbs-wrapper' );
-		var node_id 		= $scope.data( 'id' );
 		var rbs_section_1   = $scope.find( ".uael-rbs-section-1" );
 		var rbs_section_2   = $scope.find( ".uael-rbs-section-2" );
 		var main_btn        = $scope.find( ".uael-main-btn" );
@@ -877,15 +892,15 @@
 				break;
 		}
 		var rbs_switch      = $scope.find( current_class );
-		
+
 		if( '' !== id && sanitize_input ){
 			if ( id === 'content-1' || id === 'content-2' ) {
 				UAELContentToggle._openOnLink( $scope, rbs_switch );
-			}			
-		}		
-		
+			}
+		}
+
 		setTimeout( function(){
-			
+
 			if( rbs_switch.is( ':checked' ) ) {
 				rbs_section_1.hide();
 				rbs_section_2.show();
@@ -893,29 +908,29 @@
 				rbs_section_1.show();
 				rbs_section_2.hide();
 			}
-		}, 100);
+		}, 100 );
 
-		rbs_switch.on('click', function(e){
-	        rbs_section_1.toggle();
-	        rbs_section_2.toggle();
-	    });
+		rbs_switch.on( 'click', function(e){
+			rbs_section_1.toggle();
+			rbs_section_2.toggle();
+		});
 
 		/* Label 1 Click */
-		rbs_label_1.on('click', function(e){
+		rbs_label_1.on( 'click', function(e){
 			// Uncheck
-			rbs_switch.prop("checked", false);
+			rbs_switch.prop( "checked", false);
 			rbs_section_1.show();
 			rbs_section_2.hide();
 
-	    });
+		});
 
-	    /* Label 2 Click */
+		/* Label 2 Click */
 		rbs_label_2.on('click', function(e){
 			// Check
-			rbs_switch.prop("checked", true);
+			rbs_switch.prop( "checked", true);
 			rbs_section_1.hide();
 			rbs_section_2.show();
-	    });
+		});
 	};
 
 	UAELContentToggle = {
@@ -927,34 +942,32 @@
 		_openOnLink: function( $scope, rbs_switch ){
 
 			var node_id 		= $scope.data( 'id' );
-			var main_btn        = $scope.find( ".uael-main-btn" );
-			var switch_type     = main_btn.attr( 'data-switch-type' );
 			var node          	= '.elementor-element-' + node_id;
-			var node_toggle     = '#uael-toggle-init' + node;			
+			var node_toggle     = '#uael-toggle-init' + node;
 
 			$( 'html, body' ).animate( {
-		        scrollTop: $( '#uael-toggle-init' ).find( '.uael-rbs-wrapper' ).offset().top
-		    }, 500 );
+				scrollTop: $( '#uael-toggle-init' ).find( '.uael-rbs-wrapper' ).offset().top
+			}, 500 );
 
 			if( id === 'content-1' ) {
-				
-				$( node_toggle +' .uael-rbs-content-1' ).show();
-				$( node_toggle +' .uael-rbs-content-2' ).hide();
+
+				$( node_toggle + ' .uael-rbs-content-1' ).show();
+				$( node_toggle + ' .uael-rbs-content-2' ).hide();
 				rbs_switch.prop( "checked", false );
 			} else {
-				
-				$( node_toggle +' .uael-rbs-content-2' ).show();
-				$( node_toggle +' .uael-rbs-content-1' ).hide();
+
+				$( node_toggle + ' .uael-rbs-content-2' ).show();
+				$( node_toggle + ' .uael-rbs-content-1' ).hide();
 				rbs_switch.prop( "checked", true );
-			}			
-		},	
+			}
+		}
 	}
 
 	/**
 	 * Video Gallery handler Function.
 	 *
 	 */
-	var WidgetUAELVideoGalleryHandler = function( $scope, $ ) {
+	 var WidgetUAELVideoGalleryHandler = function( $scope, $ ) {
 
 		if ( 'undefined' == typeof $scope ) {
 			return;
@@ -1003,7 +1016,7 @@
 			if ( selector.find( '.uael-video__gallery-iframe' ).imagesLoaded( { background: true } ) )
 			{
 				selector.slick( slider_options );
-			} 
+			}
 		}
 
 		$( 'html' ).on( 'click', function() {
@@ -1032,8 +1045,6 @@
 				}
 			}
 
-			
-			
 			if ( filters.length > 0 ) {
 
 				var def_filter = filters.data( 'default' );
@@ -1094,7 +1105,7 @@
 				var str_vid_text = $scope.find( '.uael-filter__current' ).text();
 				str_vid_text = str_vid_text.substring( def_filter_length, str_vid_text.length );
 				$scope.find( '.uael-filters-dropdown-button' ).text( str_vid_text );
- 
+
 
 				selector.isotope( { filter: value } );
 			});
@@ -1115,9 +1126,9 @@
 	}
 
 	/*
-	 * Image Gallery handler Function.
-	 *
-	 */
+		* Image Gallery handler Function.
+		*
+		*/
 	var WidgetUAELImageGalleryHandler = function( $scope, $ ) {
 
 		if ( 'undefined' == typeof $scope ) {
@@ -1133,27 +1144,60 @@
 		var lightbox_actions 	= [];
 		var fancybox_node_id 	= 'uael-fancybox-gallery-' + $scope.data( 'id' );
 		var lightbox_loop 		= img_gallery.data( 'lightbox-gallery-loop' );
-	
+		var default_filter;
+
+		if ( $scope.find( '.uael-masonry-filters' ).data( 'default' ) ) {
+			default_filter = $scope.find( '.uael-masonry-filters' ).data( 'default' );
+		} else {
+			default_filter = $scope.find( '.uael-img-gallery-wrap' ).data( 'filter-default' )
+		}
+
 		if( img_gallery.length > 0 ) {
 			lightbox_actions = JSON.parse( img_gallery.attr('data-lightbox_actions') );
 		}
 
-		$scope.find( '[data-fancybox="uael-gallery"]' ).fancybox({
-			buttons: lightbox_actions,
-			animationEffect: "fade",
-			baseClass: fancybox_node_id,
-			loop: lightbox_loop,
-		});
+		var fancyboxInit = {
+			initializeLightbox: function ( imgNode ) {
+				$scope.find( imgNode + ' [data-fancybox="uael-gallery"]' ).fancybox({
+					buttons: lightbox_actions,
+					animationEffect: "fade",
+					baseClass: fancybox_node_id,
+					loop: lightbox_loop,
+				});
+			}
+		}
+
+		if ( undefined !== default_filter ) {
+			if ( '' === default_filter || 'All' === default_filter ) {
+				fancyboxInit.initializeLightbox( '.uael-grid-item' );
+			} else {
+				fancyboxInit.initializeLightbox( '.uael-grid-item.' + default_filter.substr( 1 ) );
+			}
+		}
+
+		$scope.on(
+			'click',
+			'.uael-masonry-filter',
+			function (){
+				var $this  = $( this );
+				var filter = $this.attr( 'data-filter' );
+				if ( '*' === filter ) {
+					fancyboxInit.initializeLightbox( '.uael-grid-item' );
+				} else {
+					fancyboxInit.initializeLightbox( '.uael-grid-item.' + filter.substr( 1 ) );
+				}
+			}
+		);
 
 		if ( $justified_selector.length > 0 ) {
 			$justified_selector.imagesLoaded( function() {
 			})
 			.done(function( instance ) {
 				$justified_selector.justifiedGallery({
-				    rowHeight : row_height,
-				    lastRow : lastrow,
-				    selector : 'div',
-				    waitThumbnailsLoad : true,
+					rowHeight : row_height,
+					lastRow : lastrow,
+					selector : 'div',
+					waitThumbnailsLoad : true,
 				});
 			});
 		}
@@ -1175,21 +1219,21 @@
 			var adaptiveImageHeight = function( e, obj ) {
 
 				var node = obj.$slider,
-                post_active = node.find('.slick-slide.slick-active'),
-                max_height = -1;
+				post_active = node.find('.slick-slide.slick-active'),
+				max_height = -1;
 
-	            post_active.each(function( i ) {
+				post_active.each(function( i ) {
 
-	                var $this = $( this ),
-	                    this_height = $this.innerHeight();
+					var $this = $( this ),
+						this_height = $this.innerHeight();
 
-	                if( max_height < this_height ) {
-	                    max_height = this_height;
-	                }
-	            });
+					if( max_height < this_height ) {
+						max_height = this_height;
+					}
+				});
 
-	            node.find('.slick-list.draggable').animate({ height: max_height }, { duration: 200, easing: 'linear' });
-	            max_height = -1;
+				node.find('.slick-list.draggable').animate({ height: max_height }, { duration: 200, easing: 'linear' });
+				max_height = -1;
 			};
 
 			var slider_options 	= JSON.parse( slider_selector.attr('data-image_carousel') );
@@ -1236,7 +1280,7 @@
 
 			var filters = $scope.find('.uael-masonry-filters');
 			var def_cat = '*';
-									
+
 			if( '' !== id && sanitize_input ) {
 				var select_filter = filters.find("[data-filter='" + '.' + id.toLowerCase() + "']");
 
@@ -1268,10 +1312,10 @@
 				})
 				.done(function( instance ) {
 					$justified_selector.justifiedGallery({
-					    filter: def_cat,
+						filter: def_cat,
 						rowHeight : row_height,
-					    lastRow : lastrow,
-					    selector : 'div',
+						lastRow : lastrow,
+						selector : 'div',
 					});
 				});
 			} else {
@@ -1319,11 +1363,11 @@
 				$scope.find( '.uael-filters-dropdown-button' ).text( str_img_text );
 
 				if ( $justified_selector.length > 0 ) {
-					$justified_selector.justifiedGallery({ 
+					$justified_selector.justifiedGallery({
 						filter: filterValue,
 						rowHeight : row_height,
-					    lastRow : lastrow,
-					    selector : 'div',
+						lastRow : lastrow,
+						selector : 'div',
 					});
 				} else {
 					$isotopeObj.isotope({ filter: filterValue });
@@ -1353,7 +1397,7 @@
 
 			var iframe 		= $( "<iframe/>" );
 			var vurl 		= selector.data( 'src' );
-			
+
 	        if ( 0 == selector.find( 'iframe' ).length ) {
 
 				iframe.attr( 'src', vurl );
@@ -1385,11 +1429,11 @@
 
         		var headline = $( this );
         		var speed    = $widget_data.data( 'speed' );
-      
+
       			setTimeout( function()
-	    			{ 
-	    				UAELEffects._hideWord ( headline.find( '.uael-active-heading' ), $widget_data ); 
-	      			}, 
+	    			{
+	    				UAELEffects._hideWord ( headline.find( '.uael-active-heading' ), $widget_data );
+	      			},
 
       			speed );
 	    	});
@@ -1407,8 +1451,8 @@
 				var pause_time = $widget_data.data( 'pause_time' );
 
 				$word.parents( '.uael-slide-main_ul' ).animate(
-					{ width : '0px' }, 
-					clip_speed, function(){	
+					{ width : '0px' },
+					clip_speed, function(){
 						setTimeout( function(){
 
 							UAELEffects._switchWord( $word, nextWord );
@@ -1422,11 +1466,11 @@
 				UAELEffects._switchWord( $word, nextWord );
 
 				setTimeout( function()
-				   	{ 
-						UAELEffects._hideWord( nextWord, $widget_data ) 
-				   	}, 
-				speed );				
-			}		
+				   	{
+						UAELEffects._hideWord( nextWord, $widget_data )
+				   	},
+				speed );
+			}
 		},
 
 		_takeNext: function( $word ) {
@@ -1448,15 +1492,15 @@
 				var clip_speed = $widget_data.data( 'clip_speed' );
 				var pause_time = $widget_data.data( 'pause_time' );
 
-				$word.parents( '.uael-slide-main_ul' ).animate( 
-					{ 'width' : $word.width() + 3 }, 
-					clip_speed, 
-					function(){ 
+				$word.parents( '.uael-slide-main_ul' ).animate(
+					{ 'width' : $word.width() + 3 },
+					clip_speed,
+					function(){
 						setTimeout( function()
-							{ 
-								UAELEffects._hideWord( $word, $widget_data ) 
-							}, 
-						pause_time ); 
+							{
+								UAELEffects._hideWord( $word, $widget_data )
+							},
+						pause_time );
 					}
 				);
 			}
@@ -1464,9 +1508,9 @@
 	}
 
 	/*
-	 * Video handler Function.
-	 *
-	 */
+	* Video handler Function.
+	*
+	*/
 	var WidgetUAELVideoHandler = function( $scope, $ ) {
 
 		if ( 'undefined' == typeof $scope ) {
@@ -1506,7 +1550,7 @@
 		if( 'yes' == outer_wrap.data( 'vsticky' ) ) {
 
 			if( typeof elementorFrontend.waypoint !== 'undefined' ) {
-				var uael_waypoint = elementorFrontend.waypoint( 
+				var uael_waypoint = elementorFrontend.waypoint(
 					outer_wrap,
 					function ( direction ) {
 						if ( 'down' === direction ) {
@@ -1519,7 +1563,7 @@
 						}
 					},
 					{ offset: viewport + '%', triggerOnce: false }
-				); 
+				);
 			}
 
 			var close_button = $scope.find( '.uael-video-sticky-close' );
@@ -1533,29 +1577,24 @@
 
 			window.addEventListener( "scroll", checkScroll );
 			$( window ).on( 'resize', function( e ) {
-	        	checkResize( uael_waypoint );
-	        } );
+				checkResize( uael_waypoint );
+			} );
 
 		}
 
 		function checkResize( uael_waypoint ) {
 			var currentDeviceMode = elementorFrontend.getCurrentDeviceMode();
 
-	  		if( '' !== sticky_desktop && currentDeviceMode == sticky_desktop ) {
+	  		if( ( '' !== sticky_desktop && currentDeviceMode == sticky_desktop ) || ( '' !== sticky_tablet && currentDeviceMode == sticky_tablet ) || ( '' !== sticky_mobile && currentDeviceMode == sticky_mobile ) ) {
   				disableSticky( uael_waypoint );
-	  		} else if( '' !== sticky_tablet && currentDeviceMode == sticky_tablet ) {
-	  			disableSticky( uael_waypoint );
-	  		} else if( '' !== sticky_mobile && currentDeviceMode == sticky_mobile ) {
-	  			disableSticky( uael_waypoint );
 	  		} else {
 	  			uael_waypoint[0].enable();
 	  		}
-	  		
 		}
 
 		function disableSticky( uael_waypoint ) {
 			uael_waypoint[0].disable();
-            outer_wrap.removeClass( 'uael-sticky-apply' );
+			outer_wrap.removeClass( 'uael-sticky-apply' );
 			outer_wrap.removeClass( 'uael-sticky-hide' );
 		}
 
@@ -1571,26 +1610,25 @@
 
 		$( document ).on( 'uael_after_sticky_applied', function( e, $scope ) {
 			var infobar = $scope.find( '.uael-video-sticky-infobar' );
-			
+
 			if( 0 !== infobar.length ) {
 				var infobar_height = infobar.outerHeight();
 
 				if( $scope.hasClass( 'uael-video-sticky-center_left' ) || $scope.hasClass( 'uael-video-sticky-center_right' ) ) {
-		        	infobar_height = Math.ceil( infobar_height / 2 );
-		        	inner_wrap.css( 'top', 'calc( 50% - ' + infobar_height + 'px )' );
+					infobar_height = Math.ceil( infobar_height / 2 );
+					inner_wrap.css( 'top', 'calc( 50% - ' + infobar_height + 'px )' );
 				}
-				
+
 				if( $scope.hasClass( 'uael-video-sticky-bottom_left' ) || $scope.hasClass( 'uael-video-sticky-bottom_right' ) ) {
 					if( '' !== sticky_margin_bottom ) {
-			        	infobar_height = Math.ceil( infobar_height );
-			        	var stick_bottom = infobar_height + sticky_margin_bottom;
-			        	inner_wrap.css( 'bottom', stick_bottom );
-			        }
+						infobar_height = Math.ceil( infobar_height );
+						var stick_bottom = infobar_height + sticky_margin_bottom;
+						inner_wrap.css( 'bottom', stick_bottom );
+					}
 				}
-		    }
+			}
 		});
 	};
-
 
 	/*
 	 * Login Form handler Function.
@@ -1608,7 +1646,7 @@
 		var form_wrapper = widget_wrapper.find( '.uael-form' );
 		var submit_button = $scope.find( '.uael-login-form-submit' );
 		var submit_text = submit_button.find( '.elementor-button-text' );
-		
+
 		var username = $scope.find( '.uael-login-form-username' );
 		var password = $scope.find( '.uael-login-form-password' );
 		var rememberme = $scope.find( '.uael-login-form-remember' );
@@ -1617,12 +1655,12 @@
 		var facebook_text = facebook_button.find('.uael-facebook-text');
 
 		var google_button = $scope.find( '.uaelGoogleContentWrapper' );
-		
+
 		var redirect_url =  $scope.find( '.uael-login-form-wrapper' ).data( 'redirect-url' );
 		var send_email = $scope.find( '.uael-login-form-social-wrapper' ).data( 'send-email' );
-		
+
 		var nonce = $scope.find('.uael-login-form-wrapper' ).data('nonce');
-		
+
 		var ajax_enable = submit_button.data( 'ajax-enable' );
 		var toggle_password = $scope.find('.toggle-password');
 
@@ -1651,7 +1689,6 @@
 		 */
 		submit_button.on( 'click', function() {
 
-			var $this = $( this );
 			var invalid_field = false;
 			var error_exists = $scope.find( '.uael-loginform-error' );
 
@@ -1738,7 +1775,7 @@
 					} else {
 						return false;
 					}
-				}				
+				}
 			}
 
 		});
@@ -1753,7 +1790,7 @@
 			var password_wrapper = $scope.find( '.uael-password-wrapper' );
 			var is_password_error = password_wrapper.next().hasClass( 'uael-register-field-message' );
 			var $is_error = form_field.next().hasClass( 'uael-register-field-message' );
-	
+
 				switch( field_type ) {
 					case 'password':
 						if( is_password_error ) {
@@ -1825,21 +1862,21 @@
 								form_wrapper.animate({
 										opacity: '0.45'
 								}, 500 ).addClass( 'uael-form-waiting' );
-				
+
 								if( ! facebook_text.hasClass( 'disabled' ) ) {
-										facebook_text.addClass( 'disabled' );
-										facebook_text.append( '<span class="uael-form-loader"></span>' );
+									facebook_text.addClass( 'disabled' );
+									facebook_text.append( '<span class="uael-form-loader"></span>' );
 								}
 							}
 						}, function ( data ) {
 							if( data.success === true ) {
 
-							form_wrapper.animate({
-								opacity: '1'
-							}, 100 ).removeClass( 'uael-form-waiting' );
-					
-							facebook_text.find( '.uael-form-loader' ).remove();
-							facebook_text.removeClass( 'disabled' );
+								form_wrapper.animate({
+									opacity: '1'
+								}, 100 ).removeClass( 'uael-form-waiting' );
+
+								facebook_text.find( '.uael-form-loader' ).remove();
+								facebook_text.removeClass( 'disabled' );
 
 								$scope.find( '.status' ).addClass( 'success' ).text( uael_login_form_script.logged_in_message + response.first_name + '!' );
 								if( undefined === redirect_url ) {
@@ -1874,7 +1911,7 @@
 				    if ( d.getElementById( id ) ) {
 				    	return;
 				    }
-				    js = d.createElement( s ); 
+				    js = d.createElement( s );
 				    js.id = id;
 				    js.src = "//connect.facebook.net/en_US/sdk.js";
 				    fjs.parentNode.insertBefore( js, fjs );
@@ -1896,14 +1933,11 @@
 						client_id: client_id,
 						cookiepolicy: 'single_host_origin',
 					});
-					
+
 					auth2.attachClickHandler( google_scope_id, {},
 
 						function( googleUser ) {
 
-							var profile = googleUser.getBasicProfile();
-							var name =  profile.getName();
-							var email = profile.getEmail();
 							var google_data = {
 								'send_email' : send_email,
 							};
@@ -1912,7 +1946,7 @@
 
 								var id_token = googleUser.getAuthResponse().id_token;
 								var google_text = google_button.find('.uael-google-text');
-								
+
 								$.ajax({
 									url: ajaxurl,
 									method: 'post',
@@ -1921,7 +1955,7 @@
 										nonce: nonce,
 										action: 'uael_login_form_google',
 										data: google_data,
-										id_token: id_token,	
+										id_token: id_token,
 									},
 									beforeSend: function () {
 										form_wrapper.animate({
@@ -1936,12 +1970,12 @@
 									success: function( data ) {
 										if( data.success === true ) {
 
-										form_wrapper.animate({
-											opacity: '1'
-										}, 100 ).removeClass( 'uael-form-waiting' );
-								
-										google_text.find( '.uael-form-loader' ).remove();
-										google_text.removeClass( 'disabled' );
+											form_wrapper.animate({
+												opacity: '1'
+											}, 100 ).removeClass( 'uael-form-waiting' );
+
+											google_text.find( '.uael-form-loader' ).remove();
+											google_text.removeClass( 'disabled' );
 
 											$scope.find( '.status' ).addClass( 'success' ).text( uael_login_form_script.logged_in_message + data.username + '!' );
 											if( undefined === redirect_url ) {
@@ -1978,7 +2012,7 @@
 				function(e){
 					e.preventDefault();
 					$this = $(this);
-					uael_accordion_activate_deactivate($this);	
+					uael_accordion_activate_deactivate($this);
 				}
 			);
 			function uael_accordion_activate_deactivate($this) {
@@ -1996,7 +2030,7 @@
 					else if( 'accordion' == faq_layout ){
 						if( $this.hasClass('uael-title-active') ){
 							$this.removeClass( 'uael-title-active');
-							$this.next('.uael-accordion-content').slideUp( 'normal','swing',						
+							$this.next('.uael-accordion-content').slideUp( 'normal','swing',
 							    function(){
 						    		$(this).prev().removeClass('uael-title-active');
 									$this.attr('aria-expanded', 'false');
@@ -2017,7 +2051,7 @@
 						}
 				    return false;
 					}
-				}					
+				}
 	}
 
 	/**
@@ -2032,7 +2066,72 @@
 		$scope.find('select:not([multiple])').each(function() {
 			var	gfSelectField = $( this );
 			gfSelectField.wrap( "<span class='uael-ff-select-custom'></span>" );
-		});		
+		});
+	}
+
+	/**
+	 * Welcome Music handler Function.
+	 */
+	var WidgetUAELWelcomeMusicHandler = function ($scope, $){
+		if ( 'undefined' == typeof $scope ) {
+			return;
+		}
+
+		var track          = $scope.find( '.uael-welcome-track' );
+		var musicContainer = $scope.find( '.uael-welcome-music-container' );
+		var autoplay       = ( track.length > 0 ) ? track.data( 'autoplay' ) : '';
+		var musicVolume    = musicContainer.data( 'volume' );
+		var audio          = ( track.length > 0 ) ? track[0] : '';
+		var playPauseBtn   = $scope.find( '#uael-play-pause' );
+		var play           = playPauseBtn.find( '.play' );
+		var pause          = playPauseBtn.find( '.pause' );
+
+		if ( autoplay ) {
+			var playPromise = audio.play();
+			if ( playPromise ) {
+				playPromise.catch( ( e ) => {
+					if ( e.name === 'NotAllowedError' || e.name === 'NotSupportedError' ) {
+						playPauseBtn.toggleClass( 'uael-pause' );
+						playPauseBtn.toggleClass( 'uael-play' );
+					}
+				}).then( () => {
+					playPauseBtn.toggleClass( 'uael-play' );
+					playPauseBtn.toggleClass( 'uael-pause' );
+				});
+			}
+		}
+
+		playPauseBtn.on(
+			'click',
+			function (){
+				var $this = $( this );
+				if ( $this.hasClass( 'uael-play' ) ) {
+					audio.play();
+					$this.toggleClass( 'uael-play' );
+					$this.toggleClass( 'uael-pause' );
+
+				} else {
+					audio.pause();
+					$this.toggleClass( 'uael-pause' );
+					$this.toggleClass( 'uael-play' );
+				}
+			}
+		);
+
+		$( '.uael-welcome-track' ).on(
+			'ended',
+			function() {
+				playPauseBtn.toggleClass( 'uael-pause' );
+				play.css( 'display', 'block' );
+				playPauseBtn.toggleClass( 'uael-play' );
+				pause.css( 'display', 'none' );
+			}
+		);
+
+		if ( ! isNaN( musicVolume ) && '' !== musicVolume && undefined !== musicVolume && '' !== audio ) {
+			audio.volume = parseFloat( musicVolume / 100 );
+		}
+
 	}
 
 	$( window ).on( 'elementor/frontend/init', function () {
@@ -2074,6 +2173,8 @@
 		elementorFrontend.hooks.addAction( 'frontend/element_ready/uael-ff-styler.default', WidgetUAELFFStylerHandler );
 
 		elementorFrontend.hooks.addAction( 'frontend/element_ready/uael-price-table.default', WidgetUAELPriceTableHandler );
+
+		elementorFrontend.hooks.addAction( 'frontend/element_ready/uael-welcome-music.default', WidgetUAELWelcomeMusicHandler );
 
 		if( isElEditMode ) {
 

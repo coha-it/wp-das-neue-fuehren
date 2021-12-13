@@ -246,10 +246,7 @@ class UpdraftPlus_Addons_RemoteStorage_googlecloud extends UpdraftPlus_RemoteSto
 			return $this->catch_upload_engine_exceptions($e, $handle, $try_again, $basename, $from);
 		}
 
-		// The final value of $status will be the data from the API for the object
-		// that has been uploaded.
-		$result = false;// phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		if (false != $status) $result = $status;
+		// N.B. $status is not used in our current code from this point
 
 		fclose($handle);
 		$this->client->setDefer(false);
@@ -263,7 +260,7 @@ class UpdraftPlus_Addons_RemoteStorage_googlecloud extends UpdraftPlus_RemoteSto
 	 * This function catches exceptions that can rise from uploading files to Google Cloud, it will log the exception, clean up and try the upload again.
 	 *
 	 * @param Exception $e         - the Google exception we caught
-	 * @param Object    $handle    - a file handler object that needs closing
+	 * @param Resource  $handle    - a file handler object that needs closing
 	 * @param Boolean   $try_again - indicates if we should try again
 	 * @param String    $basename  - the file basename
 	 * @param String    $from      - the file path

@@ -3,6 +3,8 @@
 namespace ProfilePress\Core\ShortcodeParser\Builder;
 
 use ProfilePress\Core\Classes\ExtensionManager as EM;
+use ProfilePress\Core\Classes\PROFILEPRESS_sql;
+use ProfilePress\Core\Classes\UserAvatar;
 
 class FrontendProfileBuilder
 {
@@ -35,14 +37,12 @@ class FrontendProfileBuilder
         add_shortcode('profile-bio', array($this, 'profile_bio'));
 
         add_shortcode('profile-cpf', array($this, 'profile_custom_profile_field'));
-
         add_shortcode('profile-file', array($this, 'profile_user_uploaded_file'));
 
         add_shortcode('profile-cover-image-url', array($this, 'cover_image_url'));
 
         add_shortcode('profile-avatar-url', array($this, 'user_avatar_url'));
-        // backward compat
-        add_shortcode('user-avatar-url', array($this, 'user_avatar_url'));
+        add_shortcode('user-avatar-url', array($this, 'user_avatar_url')); // backward compat
 
         add_shortcode('profile-hide-empty-data', array($this, 'hide_empty_data'));
 
@@ -77,111 +77,117 @@ class FrontendProfileBuilder
         return get_author_posts_url(self::$user_data->ID);
     }
 
-    public function author_post_list($attributes)
+    public static function author_posts_query($user_id, $attributes)
     {
-        $attributes = shortcode_atts(array('limit' => 10), $attributes);
+        $attributes = shortcode_atts(array('limit' => 10, 'offset' => 0), $attributes);
 
-        $user_id = self::$user_data->ID;
-        $limit   = absint($attributes['limit']);
+        $limit  = absint($attributes['limit']);
+        $offset = absint($attributes['offset']);
 
-        $cache_key = "pp_profile_post_list_{$user_id}_{$limit}";
-        $output    = get_transient($cache_key);
-
-        if ($output === false) {
-
-            $posts = get_posts(array(
+        $posts = get_posts(
+            apply_filters('ppress_frontend_profile_author_post_list_args', [
                 'author'         => $user_id,
                 'posts_per_page' => $limit,
-                'offset'         => 0
-            ));
+                'offset'         => $offset
+            ], $user_id, $attributes)
+        );
 
-            $output = '';
+        $output = '';
 
-            if ( ! empty($posts)) {
+        if ( ! empty($posts)) {
 
-                $output .= "<ul class='pp-user-post-list'>";
-                /** @var \WP_Post $post */
-                foreach ($posts as $post) {
-                    $output .= sprintf('<li class="pp-user-post-item"><a href="%s"><h3 class="pp-post-item-head">%s</h3></a></li>', get_permalink($post->ID), $post->post_title);
-                }
-
-                $output .= "</ul>";
-
-                set_transient($cache_key, $output, HOUR_IN_SECONDS);
-            } else {
-
-                $note = esc_html__('This user has not created any post.', 'wp-user-avatar');
-
-                if (self::$user_data->ID == get_current_user_id()) {
-                    $note = esc_html__('You have not created any post.', 'wp-user-avatar');
-                }
-
-                $output .= sprintf('<div class="pp-user-comment-no-item"><span>%s</span></div>', $note);
+            $output .= "<ul class='pp-user-post-list'>";
+            /** @var \WP_Post $post */
+            foreach ($posts as $post) {
+                $output .= sprintf('<li class="pp-user-post-item"><a href="%s"><h3 class="pp-post-item-head">%s</h3></a></li>', get_permalink($post->ID), $post->post_title);
             }
+
+            $output .= "</ul>";
+
+        } else {
+
+            $note = esc_html__('This user has not created any post.', 'wp-user-avatar');
+
+            if (self::$user_data->ID == get_current_user_id()) {
+                $note = esc_html__('You have not created any post.', 'wp-user-avatar');
+            }
+
+            $output .= sprintf('<div class="pp-user-comment-no-item"><span>%s</span></div>', $note);
         }
 
-        return $output;
+        return [
+            'structure'        => $output,
+            'total_post_count' => is_array($posts) ? count($posts) : 0
+        ];
+    }
+
+    public function author_post_list($attributes)
+    {
+        $result = self::author_posts_query(self::$user_data->ID, $attributes);
+
+        return $result['structure'];
+    }
+
+    public static function author_comment_query($user_id, $attributes)
+    {
+        $attributes = shortcode_atts(array('limit' => 10, 'offset' => 0), $attributes);
+
+        $limit  = absint($attributes['limit']);
+        $offset = absint($attributes['offset']);
+
+        $comments = get_comments([
+            'number'      => $limit,
+            'user_id'     => $user_id,
+            'post_status' => ['publish'],
+            'status'      => 'approve',
+            'offset'      => $offset
+        ]);
+
+        $output = '';
+
+        if ( ! empty($comments)) {
+
+            $output .= '<div class="pp-user-comment-list">';
+            /** @var \WP_Comment $comment */
+            foreach ($comments as $comment) {
+                $output .= '<div class="pp-user-comment-item">';
+                $output .= '<div class="pp-user-comment-item-link">';
+                $output .= sprintf(
+                    '<a href="%s">%s</a>',
+                    esc_url(get_comment_link($comment->comment_ID)),
+                    get_comment_excerpt($comment->comment_ID)
+                );
+                $output .= '</div>';
+                $output .= '<div class="pp-user-comment-item-meta">';
+                $output .= sprintf('On <a href="%s">%s</a>', get_permalink($comment->comment_post_ID), get_the_title($comment->comment_post_ID));
+                $output .= '</div>';
+                $output .= '</div>';
+            }
+
+            $output .= "</div>";
+
+        } else {
+
+            $note = esc_html__('This user has not made any comment.', 'wp-user-avatar');
+
+            if (self::$user_data->ID == get_current_user_id()) {
+                $note = esc_html__('You have not made any comment.', 'wp-user-avatar');
+            }
+
+            $output .= sprintf('<div class="pp-user-comment-no-item"><span>%s</span></div>', $note);
+        }
+
+        return [
+            'structure'     => $output,
+            'comment_count' => is_array($comments) ? count($comments) : 0
+        ];
     }
 
     public function author_comment_list($attributes)
     {
-        $attributes = shortcode_atts(array('limit' => 10), $attributes);
+        $result = self::author_comment_query(self::$user_data->ID, $attributes);
 
-        $user_id = self::$user_data->ID;
-
-        $limit = absint($attributes['limit']);
-
-        $cache_key = "pp_profile_comments_list_{$user_id}_{$limit}";
-
-        $output = get_transient($cache_key);
-
-        if ($output === false) {
-
-            $comments = get_comments([
-                'number'      => $limit,
-                'user_id'     => $user_id,
-                'post_status' => ['publish'],
-                'status'      => 'approve'
-            ]);
-
-            $output = '';
-
-            if ( ! empty($comments)) {
-
-                $output .= '<div class="pp-user-comment-list">';
-                /** @var \WP_Comment $comment */
-                foreach ($comments as $comment) {
-                    $output .= '<div class="pp-user-comment-item">';
-                    $output .= '<div class="pp-user-comment-item-link">';
-                    $output .= sprintf(
-                        '<a href="%s">%s</a>',
-                        esc_url(get_comment_link($comment->comment_ID)),
-                        get_comment_excerpt($comment->comment_ID)
-                    );
-                    $output .= '</div>';
-                    $output .= '<div class="pp-user-comment-item-meta">';
-                    $output .= sprintf('On <a href="%s">%s</a>', get_permalink($comment->comment_post_ID), get_the_title($comment->comment_post_ID));
-                    $output .= '</div>';
-                    $output .= '</div>';
-                }
-
-                $output .= "</div>";
-
-                set_transient($cache_key, $output, HOUR_IN_SECONDS);
-
-            } else {
-
-                $note = esc_html__('This user has not made any comment.', 'wp-user-avatar');
-
-                if (self::$user_data->ID == get_current_user_id()) {
-                    $note = esc_html__('You have not made any comment.', 'wp-user-avatar');
-                }
-
-                $output .= sprintf('<div class="pp-user-comment-no-item"><span>%s</span></div>', $note);
-            }
-        }
-
-        return $output;
+        return $result['structure'];
     }
 
     /**
@@ -214,27 +220,17 @@ class FrontendProfileBuilder
     /**
      * Return user avatar image url
      *
-     * @param array $atts shortcode attributes
-     *
      * @return string image url
      */
-    public function user_avatar_url($atts)
+    public function user_avatar_url()
     {
-        $atts = shortcode_atts(
-            array(
-                'size' => '400',
-                'url'  => '',
-            ),
-            $atts
-        );
-
         $user_id = self::$user_data->ID;
 
-        return apply_filters('ppress_profile_avatar_url', get_avatar_url($user_id, ['size' => $atts['size']]), self::$user_data);
+        return apply_filters('ppress_profile_avatar_url', get_avatar_url($user_id, ['ppress-full' => true]), self::$user_data);
     }
 
     /**
-     * Return user cover image url
+     * Return user cover photo url
      *
      * @return string image url
      */
@@ -349,6 +345,12 @@ class FrontendProfileBuilder
 
         if (empty($key)) return esc_html__('Field key is missing', 'wp-user-avatar');
 
+        $type = PROFILEPRESS_sql::get_field_type($key);
+
+        if ('file' == $type) {
+            return $this->profile_user_uploaded_file($atts);
+        }
+
         $data = self::$user_data->{$key};
 
         if (is_array($data)) {
@@ -443,6 +445,9 @@ class FrontendProfileBuilder
                 break;
             case 'last_name':
                 $key = 'last_name';
+                break;
+            case 'bio':
+                $key = 'description';
                 break;
         }
 

@@ -33,6 +33,9 @@ class Service extends JsonSchemaValue implements GetJsonData {
                 'value'   => '_seopress_pro_rich_snippets_service_name',
                 'default' => '%%post_title%%',
             ],
+            'id' => [
+                'default' => '%%schema_article_canonical%%',
+            ],
             'serviceType'                  => '_seopress_pro_rich_snippets_service_type',
             'description'                  => [
                 'value'   => '_seopress_pro_rich_snippets_service_description',
@@ -63,7 +66,7 @@ class Service extends JsonSchemaValue implements GetJsonData {
         foreach ($keys as $key => $item) {
             if (is_string($item)) {
                 $variables[$key] = isset($schemaManual[$item]) ? $schemaManual[$item] : '';
-            } elseif (is_array($item)) {
+            } elseif (is_array($item) && isset($item['value'])) {
                 $variables[$key] = isset($schemaManual[$item['value']]) && ! empty($schemaManual[$item['value']]) ? $schemaManual[$item['value']] : $item['default'];
             }
         }

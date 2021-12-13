@@ -16,6 +16,7 @@ use Elementor\Group_Control_Text_Shadow;
 use Elementor\Group_Control_Background;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Icons_Manager;
 use Elementor\Repeater;
 
 // UltimateElementor Classes.
@@ -102,7 +103,6 @@ class Price_Table extends Common_Widget {
 	 * @access protected
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-
 		$this->register_controls();
 	}
 
@@ -113,6 +113,8 @@ class Price_Table extends Common_Widget {
 	 * @access protected
 	 */
 	protected function register_controls() {
+
+		$this->register_presets_control( 'Price_Table', $this );
 
 		$this->register_general_controls();
 		$this->register_heading_controls();
@@ -202,9 +204,10 @@ class Price_Table extends Common_Widget {
 		$this->add_control(
 			'heading_icon',
 			array(
-				'label'       => __( 'Icon', 'uael' ),
-				'type'        => Controls_Manager::ICONS,
-				'render_type' => 'template',
+				'label'          => __( 'Icon', 'uael' ),
+				'type'           => Controls_Manager::ICONS,
+				'render_type'    => 'template',
+				'style_transfer' => true,
 			)
 		);
 		$this->add_control(
@@ -220,6 +223,18 @@ class Price_Table extends Common_Widget {
 		);
 
 		$this->add_control(
+			'show_sub_heading',
+			array(
+				'label'        => __( 'Show Description', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'uael' ),
+				'label_off'    => __( 'No', 'uael' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+			)
+		);
+
+		$this->add_control(
 			'sub_heading',
 			array(
 				'label'     => __( 'Description', 'uael' ),
@@ -230,6 +245,7 @@ class Price_Table extends Common_Widget {
 				'default'   => __( 'Free trial 30 days.', 'uael' ),
 				'condition' => array(
 					'pricetable_style!' => '2',
+					'show_sub_heading'  => 'yes',
 				),
 			)
 		);
@@ -321,6 +337,145 @@ class Price_Table extends Common_Widget {
 				'condition' => array(
 					'sale' => 'yes',
 				),
+			)
+		);
+
+		$this->add_control(
+			'original_price_position',
+			array(
+				'label'                => __( 'Position', 'uael' ),
+				'type'                 => Controls_Manager::CHOOSE,
+				'label_block'          => false,
+				'options'              => array(
+					'left'  => array(
+						'title' => __( 'Left', 'uael' ),
+						'icon'  => 'eicon-h-align-left',
+					),
+					'top'   => array(
+						'title' => __( 'Top', 'uael' ),
+						'icon'  => 'eicon-v-align-top',
+					),
+					'right' => array(
+						'title' => __( 'Right', 'uael' ),
+						'icon'  => 'eicon-h-align-right',
+					),
+				),
+				'toggle'               => false,
+				'selectors_dictionary' => array(
+					'left'  => '0',
+					'right' => '5',
+				),
+				'default'              => 'left',
+				'selectors'            => array(
+					'{{WRAPPER}} .uael-price-table-original-price' => 'order: {{VALUE}}',
+				),
+				'condition'            => array(
+					'sale'            => 'yes',
+					'original_price!' => '',
+				),
+				'prefix_class'         => 'uael-price-box__original-price-position-',
+				'render_type'          => 'template',
+			)
+		);
+
+		$this->add_control(
+			'original_price_tooltip',
+			array(
+				'label'        => __( 'Enable Tooltip for Original Price', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Show', 'uael' ),
+				'label_off'    => __( 'Hide', 'uael' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'condition'    => array(
+					'sale'                    => 'yes',
+					'original_price!'         => '',
+					'original_price_position' => 'top',
+				),
+				'render_type'  => 'template',
+			)
+		);
+
+		$this->add_control(
+			'original_price_tooltip_icon',
+			array(
+				'label'       => __( 'Tooltip Icon', 'uael' ),
+				'type'        => Controls_Manager::ICONS,
+				'condition'   => array(
+					'sale'                    => 'yes',
+					'original_price!'         => '',
+					'original_price_position' => 'top',
+					'original_price_tooltip'  => 'yes',
+				),
+				'render_type' => 'template',
+			)
+		);
+
+		$this->add_control(
+			'original_price_tooltip_position',
+			array(
+				'label'       => __( 'Tooltip Position', 'uael' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'top',
+				'options'     => array(
+					'top'    => __( 'Top', 'uael' ),
+					'bottom' => __( 'Bottom', 'uael' ),
+					'left'   => __( 'Left', 'uael' ),
+					'right'  => __( 'Right', 'uael' ),
+				),
+				'condition'   => array(
+					'sale'                                => 'yes',
+					'original_price!'                     => '',
+					'original_price_position'             => 'top',
+					'original_price_tooltip'              => 'yes',
+					'original_price_tooltip_icon[value]!' => '',
+				),
+				'render_type' => 'template',
+			)
+		);
+
+		$this->add_control(
+			'original_price_tooltip_content',
+			array(
+				'label'       => __( 'Tooltip Content', 'uael' ),
+				'type'        => Controls_Manager::TEXTAREA,
+				'rows'        => 2,
+				'default'     => __( 'This is a tooltip', 'uael' ),
+				'placeholder' => __( 'Type your description here', 'uael' ),
+				'dynamic'     => array(
+					'active' => true,
+				),
+				'condition'   => array(
+					'sale'                                => 'yes',
+					'original_price!'                     => '',
+					'original_price_position'             => 'top',
+					'original_price_tooltip'              => 'yes',
+					'original_price_tooltip_icon[value]!' => '',
+				),
+			)
+		);
+
+		$this->add_control(
+			'original_price_tooltip_hide',
+			array(
+				'label'        => __( 'Hide Tooltip On', 'uael' ),
+				'description'  => __( 'Choose on what breakpoint the tooltip will be hidden.', 'uael' ),
+				'type'         => Controls_Manager::SELECT,
+				'default'      => 'none',
+				'options'      => array(
+					'none'   => __( 'None', 'uael' ),
+					'tablet' => __( 'Tablet & Mobile', 'uael' ),
+					'mobile' => __( 'Mobile', 'uael' ),
+				),
+				'condition'    => array(
+					'sale'                                => 'yes',
+					'original_price!'                     => '',
+					'original_price_position'             => 'top',
+					'original_price_tooltip'              => 'yes',
+					'original_price_tooltip_icon[value]!' => '',
+				),
+				'prefix_class' => 'uael-strike-price-tooltip-hide-',
+				'render_type'  => 'template',
 			)
 		);
 
@@ -543,9 +698,6 @@ class Price_Table extends Common_Widget {
 			array(
 				'label'      => __( 'Icon Color', 'uael' ),
 				'type'       => Controls_Manager::COLOR,
-				'global'     => array(
-					'default' => Global_Colors::COLOR_ACCENT,
-				),
 				'conditions' => array(
 					'relation' => 'and',
 					'terms'    => array(
@@ -979,13 +1131,28 @@ class Price_Table extends Common_Widget {
 		);
 
 		$this->add_control(
+			'show_footer_additional_info',
+			array(
+				'label'        => __( 'Show Disclaimer Text', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'uael' ),
+				'label_off'    => __( 'No', 'uael' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+			)
+		);
+
+		$this->add_control(
 			'footer_additional_info',
 			array(
-				'label'   => __( 'Disclaimer Text', 'uael' ),
-				'type'    => Controls_Manager::TEXTAREA,
-				'rows'    => 2,
-				'dynamic' => array(
+				'label'     => __( 'Disclaimer Text', 'uael' ),
+				'type'      => Controls_Manager::TEXTAREA,
+				'rows'      => 2,
+				'dynamic'   => array(
 					'active' => true,
+				),
+				'condition' => array(
+					'show_footer_additional_info' => 'yes',
 				),
 			)
 		);
@@ -1311,6 +1478,15 @@ class Price_Table extends Common_Widget {
 
 		$this->end_controls_tabs();
 
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'     => 'header_border',
+				'label'    => __( 'Border', 'uael' ),
+				'selector' => '{{WRAPPER}} .uael-price-table-header',
+			)
+		);
+
 		$this->add_control(
 			'heading_style',
 			array(
@@ -1369,6 +1545,7 @@ class Price_Table extends Common_Widget {
 				'separator' => 'before',
 				'condition' => array(
 					'pricetable_style!' => '2',
+					'show_sub_heading'  => 'yes',
 				),
 			)
 		);
@@ -1389,6 +1566,7 @@ class Price_Table extends Common_Widget {
 				),
 				'condition' => array(
 					'pricetable_style!' => '2',
+					'show_sub_heading'  => 'yes',
 				),
 				'default'   => 'p',
 			)
@@ -1403,6 +1581,7 @@ class Price_Table extends Common_Widget {
 				),
 				'condition' => array(
 					'pricetable_style!' => '2',
+					'show_sub_heading'  => 'yes',
 				),
 				'selectors' => array(
 					'{{WRAPPER}} .uael-price-table-subheading' => 'color: {{VALUE}}',
@@ -1419,6 +1598,7 @@ class Price_Table extends Common_Widget {
 				),
 				'condition' => array(
 					'pricetable_style!' => '2',
+					'show_sub_heading'  => 'yes',
 				),
 			)
 		);
@@ -1777,6 +1957,19 @@ class Price_Table extends Common_Widget {
 		);
 
 		$this->add_control(
+			'fractional_part_position_note',
+			array(
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => __( 'Note: When Currency Format is Raised and Duration Position is Beside, Vertical Positioning will not work.', 'uael' ),
+				'content_classes' => 'uael-editor-doc',
+				'condition'       => array(
+					'currency_format'   => '',
+					'duration_position' => 'beside',
+				),
+			)
+		);
+
+		$this->add_control(
 			'heading_original_price_style',
 			array(
 				'label'     => __( 'Original Price', 'uael' ),
@@ -1803,6 +1996,25 @@ class Price_Table extends Common_Widget {
 				'condition' => array(
 					'sale'            => 'yes',
 					'original_price!' => '',
+				),
+			)
+		);
+
+		$this->add_control(
+			'original_price_tooltip_color',
+			array(
+				'label'     => __( 'Tooltip Icon Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'global'    => array(
+					'default' => Global_Colors::COLOR_SECONDARY,
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .uael-price-table .uael-strike-tooltip' => 'color: {{VALUE}};',
+				),
+				'condition' => array(
+					'sale'                   => 'yes',
+					'original_price!'        => '',
+					'original_price_tooltip' => 'yes',
 				),
 			)
 		);
@@ -1852,8 +2064,41 @@ class Price_Table extends Common_Widget {
 					'{{WRAPPER}} .uael-price-table-original-price' => 'align-self: {{VALUE}}',
 				),
 				'condition'            => array(
-					'sale'            => 'yes',
-					'original_price!' => '',
+					'sale'                     => 'yes',
+					'original_price!'          => '',
+					'original_price_position!' => array( 'top', 'bottom' ),
+				),
+			)
+		);
+
+		$this->add_control(
+			'original_price_tooltip_bottom_spacing',
+			array(
+				'label'      => __( 'Bottom Spacing', 'uael' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%', 'em' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => 0,
+						'max'  => 100,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min' => 0,
+						'max' => 100,
+					),
+					'em' => array(
+						'min' => 0,
+						'max' => 10,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-pricing-container > .uael-price-table-original-price' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+				),
+				'condition'  => array(
+					'sale'                    => 'yes',
+					'original_price!'         => '',
+					'original_price_position' => 'top',
 				),
 			)
 		);
@@ -1887,6 +2132,20 @@ class Price_Table extends Common_Widget {
 			)
 		);
 
+		$this->add_control(
+			'duration_bg_color',
+			array(
+				'label'     => __( 'Background Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-price-table-duration' => 'background-color: {{VALUE}}',
+				),
+				'condition' => array(
+					'duration!' => '',
+				),
+			)
+		);
+
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
@@ -1896,6 +2155,48 @@ class Price_Table extends Common_Widget {
 					'default' => Global_Typography::TYPOGRAPHY_SECONDARY,
 				),
 				'condition' => array(
+					'duration!' => '',
+				),
+			)
+		);
+
+		$this->add_control(
+			'duration_top_spacing',
+			array(
+				'label'      => __( 'Top Spacing', 'uael' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => 0,
+						'max'  => 100,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min' => 0,
+						'max' => 100,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-pricing-duration' => 'margin-top: {{SIZE}}{{UNIT}};',
+				),
+				'condition'  => array(
+					'duration!'         => '',
+					'duration_position' => 'below',
+				),
+			)
+		);
+
+		$this->add_control(
+			'duration_padding',
+			array(
+				'label'      => __( 'Padding', 'uael' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%', 'em' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-price-table-duration' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'condition'  => array(
 					'duration!' => '',
 				),
 			)
@@ -2121,6 +2422,38 @@ class Price_Table extends Common_Widget {
 			)
 		);
 
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'     => 'content_border',
+				'label'    => __( 'Border', 'uael' ),
+				'selector' => '{{WRAPPER}} .uael-price-table-price-wrap',
+			)
+		);
+
+		$this->add_control(
+			'content_bottom_spacing',
+			array(
+				'label'      => __( 'Bottom Spacing', 'uael' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => 0,
+						'max'  => 100,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min' => 0,
+						'max' => 100,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-price-table-price-wrap' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+
 		$this->add_control(
 			'features_list_style_fields',
 			array(
@@ -2148,6 +2481,27 @@ class Price_Table extends Common_Widget {
 				'selectors' => array(
 					'{{WRAPPER}} .uael-price-table-features-list i,
 					{{WRAPPER}} .uael-price-table-features-list svg' => 'margin-right: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'features_icon_size',
+			array(
+				'label'     => __( 'Icon Size', 'uael' ),
+				'type'      => Controls_Manager::SLIDER,
+				'default'   => array(
+					'size' => '',
+					'unit' => 'px',
+				),
+				'range'     => array(
+					'px' => array(
+						'min' => 0,
+						'max' => 100,
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .uael-price-table .uael-price-table-features-list i' => 'font-size: {{SIZE}}{{UNIT}};',
 				),
 			)
 		);
@@ -2786,11 +3140,12 @@ class Price_Table extends Common_Widget {
 					'default'     => 'none',
 					'label_block' => false,
 					'options'     => array(
-						'none'   => __( 'None', 'uael' ),
-						'solid'  => __( 'Solid', 'uael' ),
-						'double' => __( 'Double', 'uael' ),
-						'dotted' => __( 'Dotted', 'uael' ),
-						'dashed' => __( 'Dashed', 'uael' ),
+						'default' => __( 'Default', 'uael' ),
+						'none'    => __( 'None', 'uael' ),
+						'solid'   => __( 'Solid', 'uael' ),
+						'double'  => __( 'Double', 'uael' ),
+						'dotted'  => __( 'Dotted', 'uael' ),
+						'dashed'  => __( 'Dashed', 'uael' ),
 					),
 					'condition'   => array(
 						'price_cta_type' => 'button',
@@ -2816,7 +3171,7 @@ class Price_Table extends Common_Widget {
 					),
 					'condition'  => array(
 						'price_cta_type' => 'button',
-						'button_border!' => 'none',
+						'button_border!' => array( 'none', 'default' ),
 					),
 					'selectors'  => array(
 						'{{WRAPPER}} .uael-price-table .elementor-button' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -2831,7 +3186,7 @@ class Price_Table extends Common_Widget {
 					'type'      => Controls_Manager::COLOR,
 					'condition' => array(
 						'price_cta_type' => 'button',
-						'button_border!' => 'none',
+						'button_border!' => array( 'none', 'default' ),
 					),
 					'default'   => '',
 					'selectors' => array(
@@ -2916,7 +3271,7 @@ class Price_Table extends Common_Widget {
 				),
 				'condition' => array(
 					'price_cta_type' => 'button',
-					'button_border!' => 'none',
+					'button_border!' => array( 'none', 'default' ),
 				),
 			)
 		);
@@ -2955,7 +3310,8 @@ class Price_Table extends Common_Widget {
 				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before',
 				'condition' => array(
-					'footer_additional_info!' => '',
+					'footer_additional_info!'     => '',
+					'show_footer_additional_info' => 'yes',
 				),
 			)
 		);
@@ -2971,7 +3327,8 @@ class Price_Table extends Common_Widget {
 					'{{WRAPPER}} .uael-price-table-disclaimer' => 'color: {{VALUE}}',
 				),
 				'condition' => array(
-					'footer_additional_info!' => '',
+					'footer_additional_info!'     => '',
+					'show_footer_additional_info' => 'yes',
 				),
 			)
 		);
@@ -2984,7 +3341,8 @@ class Price_Table extends Common_Widget {
 					'default' => Global_Typography::TYPOGRAPHY_TEXT,
 				),
 				'condition' => array(
-					'footer_additional_info!' => '',
+					'footer_additional_info!'     => '',
+					'show_footer_additional_info' => 'yes',
 				),
 			)
 		);
@@ -3006,7 +3364,8 @@ class Price_Table extends Common_Widget {
 					'{{WRAPPER}} .uael-price-table-disclaimer' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}',
 				),
 				'condition'  => array(
-					'footer_additional_info!' => '',
+					'footer_additional_info!'     => '',
+					'show_footer_additional_info' => 'yes',
 				),
 			)
 		);
@@ -3282,24 +3641,15 @@ class Price_Table extends Common_Widget {
 	 */
 	public function render_button( $settings ) {
 		if ( 'link' === $settings['price_cta_type'] ) {
-			$_nofollow = ( 'on' === $settings['link']['nofollow'] ) ? 'nofollow' : '';
-			$_target   = ( 'on' === $settings['link']['is_external'] ) ? '_blank' : '';
-			$_link     = ( isset( $settings['link']['url'] ) ) ? $settings['link']['url'] : '';
 
 			if ( ! empty( $settings['link']['url'] ) ) {
-				$this->add_render_attribute( 'cta_link', 'href', $settings['link']['url'] );
 				$this->add_render_attribute( 'cta_link', 'class', 'uael-pricebox-cta-link' );
 
-				if ( $settings['link']['is_external'] ) {
-					$this->add_render_attribute( 'cta_link', 'target', '_blank' );
-				}
-				if ( $settings['link']['nofollow'] ) {
-					$this->add_render_attribute( 'cta_link', 'rel', 'nofollow' );
-				}
+				$this->add_link_attributes( 'cta_link', $settings['link'] );
 			}
 
 			?>
-			<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'cta_link' ) ); ?>>
+			<a <?php echo $this->get_render_attribute_string( 'cta_link' ); ?>> <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<?php if ( 'left' === $settings['cta_icon_position'] ) { ?>
 					<?php $this->render_button_icon( $settings, 'before' ); ?>
 				<?php } ?>
@@ -3318,15 +3668,10 @@ class Price_Table extends Common_Widget {
 		} elseif ( 'button' === $settings['price_cta_type'] ) {
 			$this->add_render_attribute( 'wrapper', 'class', 'uael-button-wrapper elementor-button-wrapper' );
 			if ( ! empty( $settings['link']['url'] ) ) {
-				$this->add_render_attribute( 'button', 'href', $settings['link']['url'] );
+
 				$this->add_render_attribute( 'button', 'class', 'elementor-button-link' );
 
-				if ( $settings['link']['is_external'] ) {
-					$this->add_render_attribute( 'button', 'target', '_blank' );
-				}
-				if ( $settings['link']['nofollow'] ) {
-					$this->add_render_attribute( 'button', 'rel', 'nofollow' );
-				}
+				$this->add_link_attributes( 'button', $settings['link'] );
 			}
 			$this->add_render_attribute( 'button', 'class', ' elementor-button' );
 			if ( ! empty( $settings['button_size'] ) ) {
@@ -3445,7 +3790,7 @@ class Price_Table extends Common_Widget {
 	 */
 	public function render_subheading_text( $settings ) {
 
-		if ( ! empty( $settings['sub_heading'] ) || ! empty( $settings['sub_heading_style2'] ) ) :
+		if ( ( 'yes' === $settings['show_sub_heading'] && ! empty( $settings['sub_heading'] ) ) || ! empty( $settings['sub_heading_style2'] ) ) :
 			?>
 			<div class="uael-price-subheading-text">
 				<?php
@@ -3487,7 +3832,7 @@ class Price_Table extends Common_Widget {
 				<?php
 			endif;
 		} else {
-			if ( $settings['heading'] || $settings['sub_heading'] ) :
+			if ( $settings['heading'] || ( 'yes' === $settings['show_sub_heading'] && $settings['sub_heading'] ) ) :
 				?>
 				<div class="uael-price-table-header">
 					<div class="uael-pricing-heading-wrap">
@@ -3510,6 +3855,7 @@ class Price_Table extends Common_Widget {
 	 */
 	public function render_price( $settings ) {
 		$symbols = '';
+		$node_id = $this->get_id();
 
 		if ( ! empty( $settings['currency_symbol'] ) ) {
 			if ( 'custom' !== $settings['currency_symbol'] ) {
@@ -3529,12 +3875,43 @@ class Price_Table extends Common_Widget {
 
 		$duration_position = $settings['duration_position'];
 		$duration_element  = '<span class="uael-price-table-duration uael-price-typo-excluded elementor-inline-editing" data-elementor-setting-key="duration" data-elementor-inline-editing-toolbar="basic">' . wp_kses_post( $settings['duration'] ) . '</span>';
+
+		$this->add_render_attribute(
+			'strike_tooltip_data_attr',
+			array(
+				'data-strike-tooltip'          => $settings['original_price_tooltip'],
+				'data-strike-tooltip-position' => apply_filters( 'uael_pricebox_original_price_tooltip_position', $settings['original_price_tooltip_position'] ),
+				'data-strike-tooltip-hide'     => $settings['original_price_tooltip_hide'],
+			)
+		);
 		?>
 		<div class="uael-price-table-price-wrap">
 			<div class="uael-price-table-pricing">
-				<div class="uael-pricing-container">
+				<div class="uael-pricing-container" <?php echo wp_kses_post( $this->get_render_attribute_string( 'strike_tooltip_data_attr' ) ); ?>>
+					<?php if ( 'top' === $settings['original_price_position'] && 'yes' === $settings['sale'] && ! empty( $settings['original_price'] ) ) : ?>
+						<span class="uael-price-table-original-price uael-price-typo-excluded"><?php echo esc_attr( $symbol ) . wp_kses_post( $settings['original_price'] ); ?></span>
+					<?php endif; ?>
+					<?php if ( 'yes' === $settings['original_price_tooltip'] && 'top' === $settings['original_price_position'] && 'yes' === $settings['sale'] && ! empty( $settings['original_price'] ) ) : ?>
+					<span>
+						<?php
+						Icons_Manager::render_icon(
+							$settings['original_price_tooltip_icon'],
+							array(
+								'aria-hidden'          => 'true',
+								'data-tooltip-content' => '#uael-strike-tooltip-content-' . $node_id,
+								'class'                => 'uael-strike-tooltip',
+							)
+						);
+						?>
+						<div class="uael-strike-tooltip-template">
+							<span id="uael-strike-tooltip-content-<?php echo esc_attr( $node_id ); ?>">
+							<?php echo wp_kses_post( $settings['original_price_tooltip_content'] ); ?>
+						</span>
+						</div>
+					</span>
+					<?php endif; ?>
 					<div class="uael-pricing-value">
-						<?php if ( 'yes' === $settings['sale'] && ! empty( $settings['original_price'] ) ) : ?>
+						<?php if ( 'top' !== $settings['original_price_position'] && 'yes' === $settings['sale'] && ! empty( $settings['original_price'] ) ) : ?>
 							<span class="uael-price-table-original-price uael-price-typo-excluded"><?php echo esc_attr( $symbol ) . wp_kses_post( $settings['original_price'] ); ?></span>
 						<?php endif; ?>
 
@@ -3658,11 +4035,11 @@ class Price_Table extends Common_Widget {
 							)
 						);
 						?>
-						<span class="uael-tooltip-container">							
+						<span class="uael-tooltip-container">
 							<span <?php echo wp_kses_post( $this->get_render_attribute_string( $tooltip_data ) ); ?>><?php echo wp_kses_post( $item['tooltip_content'] ); ?>
 							</span>
 						</span>
-					<?php } ?>	
+					<?php } ?>
 				<?php endforeach; ?>
 			</ul>
 			<?php
@@ -3677,7 +4054,7 @@ class Price_Table extends Common_Widget {
 	 * @param object $settings for settings.
 	 */
 	public function render_cta( $settings ) {
-		if ( 'none' !== $settings['price_cta_type'] || ! empty( $settings['footer_additional_info'] ) ) :
+		if ( 'none' !== $settings['price_cta_type'] || ( 'yes' === $settings['show_footer_additional_info'] && ! empty( $settings['footer_additional_info'] ) ) ) :
 			if ( ! empty( $settings['cta_text'] ) || ! empty( $settings['footer_additional_info'] ) || ! empty( $settings['cta_icon'] ) || ! empty( $settings['new_cta_icon'] ) ) :
 				?>
 				<div class="uael-price-table-cta">
@@ -3685,7 +4062,7 @@ class Price_Table extends Common_Widget {
 							<?php $this->render_button( $settings ); ?>
 					<?php endif; ?>
 
-					<?php if ( ! empty( $settings['footer_additional_info'] ) ) : ?>
+					<?php if ( 'yes' === $settings['show_footer_additional_info'] && ! empty( $settings['footer_additional_info'] ) ) : ?>
 						<div class="uael-price-table-disclaimer elementor-inline-editing" data-elementor-setting-key="footer_additional_info" data-elementor-inline-editing-toolbar="basic"><?php echo wp_kses_post( $settings['footer_additional_info'] ); ?></div>
 					<?php endif; ?>
 				</div>
@@ -3808,7 +4185,7 @@ class Price_Table extends Common_Widget {
 		#>
 		<#
 		function render_heading_icon() {
-			if ( '' != settings.heading_icon.value && settings.heading_icon.value ) {	
+			if ( '' != settings.heading_icon.value && settings.heading_icon.value ) {
 				var headingIconsHTML = elementor.helpers.renderIcon( view, settings.heading_icon, { 'aria-hidden': true }, 'i' , 'object' );
 
 				#>
@@ -3820,7 +4197,7 @@ class Price_Table extends Common_Widget {
 		}
 
 		function render_heading_tag( sizetag ) {
-			if ( typeof elementor.helpers.validateHTMLTag === "function" ) { 
+			if ( typeof elementor.helpers.validateHTMLTag === "function" ) {
 				sizetag = elementor.helpers.validateHTMLTag( sizetag );
 			} else if( UAEWidgetsData.allowed_tags ) {
 				sizetag = UAEWidgetsData.allowed_tags.includes( sizetag.toLowerCase() ) ? sizetag : 'div';
@@ -3842,17 +4219,17 @@ class Price_Table extends Common_Widget {
 			}
 		}
 		function render_subheading_text() {
-			if ( '' != settings.sub_heading || '2' == settings.pricetable_style && '' != settings.sub_heading_style2 ) {
+			if ( ( 'yes' == settings.show_sub_heading && '' != settings.sub_heading ) || ( '2' == settings.pricetable_style && '' != settings.sub_heading_style2 ) ) {
 			#>
 				<div class="uael-price-subheading-text">
 
-					<# if ( '2' == settings.pricetable_style ) { 
+					<# if ( '2' == settings.pricetable_style ) {
 						var subHeadingSizeTag2 = render_heading_tag( settings.sub_heading_tag_style2 );
 						#>
 						<{{ subHeadingSizeTag2 }} class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading_style2" data-elementor-inline-editing-toolbar="basic">
 							{{{ settings.sub_heading_style2 }}}
 						</{{ subHeadingSizeTag2 }}>
-					<# } else { 
+					<# } else {
 						var subHeadingSizeTag = render_heading_tag( settings.sub_heading_tag );
 						#>
 						<{{ subHeadingSizeTag }} class="uael-price-table-subheading elementor-inline-editing" data-elementor-setting-key="sub_heading" data-elementor-inline-editing-toolbar="basic">
@@ -3877,7 +4254,7 @@ class Price_Table extends Common_Widget {
 					<#
 				}
 			} else {
-				if ( settings.heading || settings.sub_heading ) {
+				if ( settings.heading || ( 'yes' == settings.show_sub_heading && settings.sub_heading ) ) {
 					#>
 					<div class="uael-price-table-header">
 						<div class="uael-pricing-heading-wrap">
@@ -3929,12 +4306,36 @@ class Price_Table extends Common_Widget {
 				fraction = price[1];
 
 			var durationText = '<span class="uael-price-table-duration uael-price-typo-excluded elementor-inline-editing" data-elementor-setting-key="duration" data-elementor-inline-editing-toolbar="basic">' + settings.duration + '</span>';
+
+			view.addRenderAttribute(
+				'strike_tooltip_data_attr',
+				{
+					'data-strike-tooltip'          : settings.original_price_tooltip,
+					'data-strike-tooltip-position' : settings.original_price_tooltip_position,
+					'data-strike-tooltip-hide'     : settings.original_price_tooltip_hide,
+				}
+			);
+
 			#>
 			<div class="uael-price-table-price-wrap">
 				<div class="uael-price-table-pricing">
-					<div class="uael-pricing-container">
+					<div class="uael-pricing-container" {{{ view.getRenderAttributeString( 'strike_tooltip_data_attr' ) }}}>
+						<# if( 'top' === settings.original_price_position && settings.sale && settings.original_price) { #>
+							<div class="uael-price-table-original-price uael-price-typo-excluded">{{{ symbol + settings.original_price }}}</div>
+						<# } #>
+						<# if ( 'yes' === settings.original_price_tooltip && 'top' === settings.original_price_position && settings.sale && settings.original_price ) { #>
+							<span>
+								<# var strikeTooltipIconHTML = elementor.helpers.renderIcon( view, settings.original_price_tooltip_icon, { 'aria-hidden': true, 'data-tooltip-content': '#uael-strike-tooltip-content-' + view.$el.data('id') + '', 'class': 'uael-strike-tooltip' }, 'i' , 'object' ); #>
+								{{{ strikeTooltipIconHTML.value }}}
+								<div class="uael-strike-tooltip-template">
+									<span id="uael-strike-tooltip-content-{{view.$el.data('id')}}">
+									{{{ settings.original_price_tooltip_content }}}
+								</span>
+								</div>
+							</span>
+						<# } #>
 						<div class="uael-pricing-value">
-							<# if ( settings.sale && settings.original_price ) { #>
+							<# if ( 'top' !== settings.original_price_position && settings.sale && settings.original_price ) { #>
 								<div class="uael-price-table-original-price uael-price-typo-excluded">{{{ symbol + settings.original_price }}}</div>
 							<# } #>
 
@@ -3973,19 +4374,19 @@ class Price_Table extends Common_Widget {
 
 		function render_features() {
 			var iconsHTML = {};
-			var param = data_attributes(); 
+			var param = data_attributes();
 			var node_id = view.$el.data('id');
 
 			if ( settings.features_list ) { #>
 				<ul class="uael-price-table-features-list" {{{ param }}}>
-					<# _.each( settings.features_list, function( item, index ) { 
+					<# _.each( settings.features_list, function( item, index ) {
 						var node_class = ( '' != item.tooltip_content ) ? 'uael-price-table-feature-content uael-price-table-content-' +  node_id : 'uael-price-table-feature-content';
 					#>
 						<li class="elementor-repeater-item-{{ item._id }}">
 							<div class="{{ node_class}} " data-tooltip-content="#uael-tooltip-content-{{ item._id }}">
 								<?php if ( UAEL_Helper::is_elementor_updated() ) { ?>
 									<# if ( item.item_icon || item.new_item_icon ) { #>
-										<# 
+										<#
 										iconsHTML[ index ] = elementor.helpers.renderIcon( view, item.new_item_icon, { 'aria-hidden': true }, 'i' , 'object' );
 										migrated = elementor.helpers.isIconMigrated( item, 'new_item_icon' ); #>
 
@@ -4007,7 +4408,7 @@ class Price_Table extends Common_Widget {
 							</div>
 						</li>
 						<# if ( 'yes' == settings.features_tooltip_data && '' != item.tooltip_content ) { #>
-							<span class="uael-tooltip-container">					
+							<span class="uael-tooltip-container">
 								<span class="uael-features-text" id="uael-tooltip-content-{{ item._id }}">{{{ item.tooltip_content }}}</span>
 							</span>
 							<# } #>
@@ -4019,10 +4420,10 @@ class Price_Table extends Common_Widget {
 		function render_cta_icon( position ) {
 			view.addRenderAttribute( 'button_icon', 'class', 'uael-cta-link-icon uael-cta-link-icon-' + position ); #>
 			<?php if ( UAEL_Helper::is_elementor_updated() ) { ?>
-				<# if ( settings.cta_icon || settings.new_cta_icon ) {  #>  
-				<# 
+				<# if ( settings.cta_icon || settings.new_cta_icon ) {  #>
+				<#
 				var cta_iconHTML = elementor.helpers.renderIcon( view, settings.new_cta_icon, { 'aria-hidden': true }, 'i' , 'object' );
-				var cta_migrated = elementor.helpers.isIconMigrated( settings, 'new_cta_icon' ); 
+				var cta_migrated = elementor.helpers.isIconMigrated( settings, 'new_cta_icon' );
 				#>
 					<span {{{ view.getRenderAttributeString( 'button_icon' ) }}}>
 						<# if ( cta_iconHTML && cta_iconHTML.rendered && ( ! settings.cta_icon || cta_migrated ) ) {
@@ -4041,8 +4442,8 @@ class Price_Table extends Common_Widget {
 		<# }
 
 		function render_cta() {
-			if ( 'none' != settings.price_cta_type || '' != settings.footer_additional_info ) {
-				if ( settings.cta_text || settings.cta_icon || settings.new_cta_icon || settings.footer_additional_info ) { #>
+			if ( 'none' != settings.price_cta_type || ( 'yes' == settings.show_footer_additional_info && '' != settings.footer_additional_info ) ) {
+				if ( settings.cta_text || settings.cta_icon || settings.new_cta_icon || ( 'yes' == settings.show_footer_additional_info && settings.footer_additional_info ) ) { #>
 					<div class="uael-price-table-cta">
 						<#
 						if( 'none' != settings.price_cta_type ) {
@@ -4056,7 +4457,7 @@ class Price_Table extends Common_Widget {
 								<a {{{ view.getRenderAttributeString( 'cta_link' ) }}}>
 									<#
 									if ( 'left' == settings.cta_icon_position ) {
-									#>  
+									#>
 										<# render_cta_icon( 'before' ); #>
 									<# } #>
 									<#
@@ -4118,7 +4519,7 @@ class Price_Table extends Common_Widget {
 								</div>
 							<# } #>
 						<# } #>
-						<# if ( settings.footer_additional_info ) { #>
+						<# if ( 'yes' == settings.show_footer_additional_info && settings.footer_additional_info ) { #>
 							<div class="uael-price-table-disclaimer elementor-inline-editing" data-elementor-setting-key="footer_additional_info" data-elementor-inline-editing-toolbar="basic">{{{ settings.footer_additional_info }}}</div>
 						<# } #>
 					</div>
@@ -4209,20 +4610,6 @@ class Price_Table extends Common_Widget {
 
 		#>
 		<?php
-	}
-
-	/**
-	 * Render Price Table widget output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 0.0.1
-	 * @access protected
-	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-		$this->content_template();
 	}
 }
 

@@ -165,22 +165,34 @@ class Woo_Checkout extends Common_Widget {
 		$this->add_control(
 			'enable_back_to_cart_btn',
 			array(
-				'label'        => __( 'Enable Cart Button', 'uael' ),
+				'label'        => __( 'Cart Link', 'uael' ),
 				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => __( 'Yes', 'uael' ),
-				'label_off'    => __( 'No', 'uael' ),
+				'label_on'     => __( 'Show', 'uael' ),
+				'label_off'    => __( 'Hide', 'uael' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
 			)
 		);
 
 		$this->add_control(
+			'enable_shop_link',
+			array(
+				'label'        => esc_html__( 'Shop Link', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Show', 'uael' ),
+				'label_off'    => __( 'Hide', 'uael' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+			)
+		);
+
+		$this->add_control(
 			'additional_info_box',
 			array(
-				'label'        => __( 'Show Additional Information Box', 'uael' ),
+				'label'        => __( 'Additional Information Box', 'uael' ),
 				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => __( 'Yes', 'uael' ),
-				'label_off'    => __( 'No', 'uael' ),
+				'label_on'     => __( 'Show', 'uael' ),
+				'label_off'    => __( 'Hide', 'uael' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
 			)
@@ -263,6 +275,24 @@ class Woo_Checkout extends Common_Widget {
 				),
 				'condition' => array(
 					'enable_back_to_cart_btn' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'shop_link_text',
+			array(
+				'label'     => __( 'Shop Link Text', 'uael' ),
+				'type'      => Controls_Manager::TEXT,
+				'dynamic'   => array(
+					'active' => true,
+				),
+				'default'   => __( 'Continue Shopping?', 'uael' ),
+				'dynamic'   => array(
+					'active' => true,
+				),
+				'condition' => array(
+					'enable_shop_link' => 'yes',
 				),
 			)
 		);
@@ -957,6 +987,18 @@ class Woo_Checkout extends Common_Widget {
 			)
 		);
 
+		$this->add_control(
+			'active_border_color',
+			array(
+				'label'     => __( 'Border Active Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '',
+				'selectors' => array(
+					'{{WRAPPER}} .uael-woo-checkout form .input-text:focus, {{WRAPPER}} .uael-woo-checkout form select:focus, {{WRAPPER}} .uael-woo-checkout form .woocommerce-input-wrapper .select2-selection--single:focus' => 'border-color: {{VALUE}};',
+				),
+			)
+		);
+
 		$this->add_responsive_control(
 			'inputs_border_radius',
 			array(
@@ -1282,6 +1324,84 @@ class Woo_Checkout extends Common_Widget {
 		);
 
 		$this->add_control(
+			'multistep_style',
+			array(
+				'label'     => __( 'Progress Bar Style', 'uael' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'default',
+				'options'   => array(
+					'default' => __( 'Default', 'uael' ),
+					'icons'   => __( 'Tabs with Icon', 'uael' ),
+					'dot'     => __( 'Dot Indicator', 'uael' ),
+					'counter' => __( 'Steps Counter', 'uael' ),
+				),
+				'condition' => array(
+					'layout' => '3',
+				),
+			)
+		);
+
+		$this->add_control(
+			'login_step_icon',
+			array(
+				'label'     => __( 'Login Step Icon', 'uael' ),
+				'type'      => Controls_Manager::ICONS,
+				'default'   => array(
+					'value'   => 'fas fa-user-lock',
+					'library' => 'solid',
+				),
+				'condition' => array(
+					'multistep_style' => 'icons',
+				),
+			)
+		);
+
+		$this->add_control(
+			'billing_step_icon',
+			array(
+				'label'     => __( 'Billing Step Icon', 'uael' ),
+				'type'      => Controls_Manager::ICONS,
+				'default'   => array(
+					'value'   => 'fas fa-file-invoice',
+					'library' => 'solid',
+				),
+				'condition' => array(
+					'multistep_style' => 'icons',
+				),
+			)
+		);
+
+		$this->add_control(
+			'shipping_step_icon',
+			array(
+				'label'     => __( 'Shipping Step Icon', 'uael' ),
+				'type'      => Controls_Manager::ICONS,
+				'default'   => array(
+					'value'   => 'fas fa-location-arrow',
+					'library' => 'solid',
+				),
+				'condition' => array(
+					'multistep_style' => 'icons',
+				),
+			)
+		);
+
+		$this->add_control(
+			'payment_step_icon',
+			array(
+				'label'     => __( 'Payment Step Icon', 'uael' ),
+				'type'      => Controls_Manager::ICONS,
+				'default'   => array(
+					'value'   => 'fas fa-rupee-sign',
+					'library' => 'solid',
+				),
+				'condition' => array(
+					'multistep_style' => 'icons',
+				),
+			)
+		);
+
+		$this->add_control(
 			'tab_alignment',
 			array(
 				'label'     => __( 'Tab Alignment', 'uael' ),
@@ -1302,7 +1422,8 @@ class Woo_Checkout extends Common_Widget {
 					),
 				),
 				'condition' => array(
-					'layout' => '3',
+					'layout'          => '3',
+					'multistep_style' => array( 'default', 'icons' ),
 				),
 			)
 		);
@@ -1336,6 +1457,60 @@ class Woo_Checkout extends Common_Widget {
 		);
 
 		$this->add_control(
+			'section_multistep_icon_color_active',
+			array(
+				'label'     => __( 'Icon Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'global'    => array(
+					'default' => Global_Colors::COLOR_SECONDARY,
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-icon li.uael-tab.uael-tab-after a > span' => 'color: {{VALUE}};',
+				),
+				'condition' => array(
+					'layout'          => '3',
+					'multistep_style' => 'icons',
+				),
+			)
+		);
+
+		$this->add_control(
+			'section_multistep_counter_color_active',
+			array(
+				'label'     => __( 'Counter Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#ffffff',
+				'selectors' => array(
+					'{{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-dot li.uael-tab.uael-tab-after > *:before,
+					{{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-counter li.uael-tab.uael-tab-after > *:before' => 'color: {{VALUE}};',
+				),
+				'condition' => array(
+					'layout'          => '3',
+					'multistep_style' => 'counter',
+				),
+			)
+		);
+
+		$this->add_control(
+			'section_multistep_dot_color_active',
+			array(
+				'label'     => __( 'Indicator Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'global'    => array(
+					'default' => Global_Colors::COLOR_SECONDARY,
+				),
+				'selectors' => array(
+					'.uael-woocommerce-checkout {{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-dot li.uael-tab.uael-tab-after > *:before,
+					.uael-woocommerce-checkout {{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-counter li.uael-tab.uael-tab-after > *:before' => 'background-color: {{VALUE}};',
+				),
+				'condition' => array(
+					'layout'          => '3',
+					'multistep_style' => array( 'dot', 'counter' ),
+				),
+			)
+		);
+
+		$this->add_control(
 			'section_multistep_tabs_bg_color_active',
 			array(
 				'label'     => __( 'Background Color', 'uael' ),
@@ -1349,7 +1524,8 @@ class Woo_Checkout extends Common_Widget {
 					'.rtl {{WRAPPER}} .uael-woo-checkout ul.uael-tabs li.uael-tab.uael-tab-after a.active:after' => 'border-right-color: {{VALUE}};',
 				),
 				'condition' => array(
-					'layout' => '3',
+					'layout'          => '3',
+					'multistep_style' => array( 'default', 'icons' ),
 				),
 			)
 		);
@@ -1381,6 +1557,54 @@ class Woo_Checkout extends Common_Widget {
 		);
 
 		$this->add_control(
+			'section_multistep_icon_color_inactive',
+			array(
+				'label'     => __( 'Icon Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-woo-checkout ul.uael-tabs li.uael-tab a > span' => 'color: {{VALUE}};',
+				),
+				'condition' => array(
+					'layout'          => '3',
+					'multistep_style' => 'icons',
+				),
+			)
+		);
+
+		$this->add_control(
+			'section_multistep_counter_color_inactive',
+			array(
+				'label'     => __( 'Counter Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-dot li.uael-tab > *:before,
+					{{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-counter li.uael-tab > *:before' => 'color: {{VALUE}};',
+				),
+				'condition' => array(
+					'layout'          => '3',
+					'multistep_style' => 'counter',
+				),
+			)
+		);
+
+		$this->add_control(
+			'section_multistep_dot_color_inactive',
+			array(
+				'label'     => __( 'Indicator Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#d5d5d5',
+				'selectors' => array(
+					'{{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-dot li:not(.uael-tab-after) > *:before,
+					{{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-counter li:not(.uael-tab-after) > *:before' => 'background-color: {{VALUE}};',
+				),
+				'condition' => array(
+					'layout'          => '3',
+					'multistep_style' => array( 'dot', 'counter' ),
+				),
+			)
+		);
+
+		$this->add_control(
 			'section_multistep_tabs_bg_color_inactive',
 			array(
 				'label'     => __( 'Background Color', 'uael' ),
@@ -1388,9 +1612,11 @@ class Woo_Checkout extends Common_Widget {
 				'selectors' => array(
 					'{{WRAPPER}} .uael-woo-checkout ul.uael-tabs li.uael-tab a:not(.active)' => 'background-color: {{VALUE}};',
 					'{{WRAPPER}} .uael-woo-checkout ul.uael-tabs li.uael-tab a:not(.active):after' => 'border-left-color: {{VALUE}};',
+					'.rtl {{WRAPPER}} .uael-woo-checkout ul.uael-tabs li.uael-tab a:not(.active):after' => 'border-right-color: {{VALUE}};',
 				),
 				'condition' => array(
-					'layout' => '3',
+					'layout'          => '3',
+					'multistep_style' => array( 'default', 'icons' ),
 				),
 			)
 		);
@@ -1398,6 +1624,24 @@ class Woo_Checkout extends Common_Widget {
 		$this->end_controls_tab();
 
 		$this->end_controls_tabs();
+
+		$this->add_control(
+			'section_multistep_line_color',
+			array(
+				'label'     => __( 'Line Color', 'uael' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#d5d5d5',
+				'selectors' => array(
+					'{{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-dot li:not(:last-child)::after,
+					{{WRAPPER}} .uael-woo-checkout ul.uael-tabs.uael-step-counter li:not(:last-child)::after' => 'background: {{VALUE}};',
+				),
+				'condition' => array(
+					'layout'          => '3',
+					'multistep_style' => array( 'dot', 'counter' ),
+				),
+				'separator' => 'before',
+			)
+		);
 
 		$this->add_responsive_control(
 			'section_tabs_padding',
@@ -1409,7 +1653,8 @@ class Woo_Checkout extends Common_Widget {
 					'{{WRAPPER}} .uael-woo-checkout .uael_multistep_container .uael-tabs' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 				'condition'  => array(
-					'layout' => '3',
+					'layout'          => '3',
+					'multistep_style' => array( 'default', 'icons' ),
 				),
 			)
 		);
@@ -1494,11 +1739,23 @@ class Woo_Checkout extends Common_Widget {
 		$this->add_control(
 			'order_review_cart_link',
 			array(
-				'label'     => __( 'Cart Link', 'uael' ),
-				'type'      => Controls_Manager::HEADING,
-				'separator' => 'before',
-				'condition' => array(
-					'enable_back_to_cart_btn' => 'yes',
+				'label'      => __( 'Cart/Shop Link', 'uael' ),
+				'type'       => Controls_Manager::HEADING,
+				'separator'  => 'before',
+				'conditions' => array(
+					'relation' => 'or',
+					'terms'    => array(
+						array(
+							'name'     => 'enable_back_to_cart_btn',
+							'operator' => '==',
+							'value'    => 'yes',
+						),
+						array(
+							'name'     => 'enable_shop_link',
+							'operator' => '==',
+							'value'    => 'yes',
+						),
+					),
 				),
 			)
 		);
@@ -1506,16 +1763,28 @@ class Woo_Checkout extends Common_Widget {
 		$this->add_control(
 			'order_review_cart_link_color_normal',
 			array(
-				'label'     => __( 'Color', 'uael' ),
-				'type'      => Controls_Manager::COLOR,
-				'global'    => array(
+				'label'      => __( 'Color', 'uael' ),
+				'type'       => Controls_Manager::COLOR,
+				'global'     => array(
 					'default' => Global_Colors::COLOR_ACCENT,
 				),
-				'selectors' => array(
-					'{{WRAPPER}} .uael-woo-checkout .uael-woo-checkout-order-review .uael-order-review-table-footer .back-to-shop .back-to-shop-link' => 'color: {{VALUE}};',
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-woo-checkout .uael-woo-checkout-order-review .uael-order-review-table-footer .back-to-shop .back-to-shop-link, {{WRAPPER}} .uael-woo-checkout .uael-woo-checkout-order-review .uael-order-review-table-footer .uae-shop-link .uae-back-to-shop-link' => 'color: {{VALUE}};',
 				),
-				'condition' => array(
-					'enable_back_to_cart_btn' => 'yes',
+				'conditions' => array(
+					'relation' => 'or',
+					'terms'    => array(
+						array(
+							'name'     => 'enable_back_to_cart_btn',
+							'operator' => '==',
+							'value'    => 'yes',
+						),
+						array(
+							'name'     => 'enable_shop_link',
+							'operator' => '==',
+							'value'    => 'yes',
+						),
+					),
 				),
 			)
 		);
@@ -1523,16 +1792,28 @@ class Woo_Checkout extends Common_Widget {
 		$this->add_control(
 			'order_review_cart_link_color_hover',
 			array(
-				'label'     => __( 'Hover Color', 'uael' ),
-				'type'      => Controls_Manager::COLOR,
-				'global'    => array(
+				'label'      => __( 'Hover Color', 'uael' ),
+				'type'       => Controls_Manager::COLOR,
+				'global'     => array(
 					'default' => Global_Colors::COLOR_ACCENT,
 				),
-				'selectors' => array(
-					'{{WRAPPER}} .uael-woo-checkout .uael-woo-checkout-order-review .uael-order-review-table-footer .back-to-shop .back-to-shop-link:hover' => 'color: {{VALUE}};',
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-woo-checkout .uael-woo-checkout-order-review .uael-order-review-table-footer .back-to-shop .back-to-shop-link:hover,{{WRAPPER}} .uael-woo-checkout .uael-woo-checkout-order-review .uael-order-review-table-footer .uae-shop-link .uae-back-to-shop-link:hover' => 'color: {{VALUE}};',
 				),
-				'condition' => array(
-					'enable_back_to_cart_btn' => 'yes',
+				'conditions' => array(
+					'relation' => 'or',
+					'terms'    => array(
+						array(
+							'name'     => 'enable_back_to_cart_btn',
+							'operator' => '==',
+							'value'    => 'yes',
+						),
+						array(
+							'name'     => 'enable_shop_link',
+							'operator' => '==',
+							'value'    => 'yes',
+						),
+					),
 				),
 			)
 		);

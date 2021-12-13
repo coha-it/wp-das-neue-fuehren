@@ -37,12 +37,12 @@ class WC_GZDP_Install {
 	public static function setup_redirect() {
         if ( get_option( '_wc_gzdp_setup_wizard_redirect' ) ) {
 
-	        // Bail if activating from network, or bulk, or within an iFrame
-	        if ( is_network_admin() || isset( $_GET['activate-multi'] ) || defined( 'IFRAME_REQUEST' ) ) {
+	        // Bail if activating from network, or bulk, or within an iFrame, or AJAX (e.g. plugins screen)
+	        if ( is_network_admin() || isset( $_GET['activate-multi'] ) || defined( 'IFRAME_REQUEST' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 		        return;
 	        }
 
-	        if ( ( isset( $_GET['action'] ) && 'upgrade-plugin' == $_GET['action'] ) && ( isset( $_GET['plugin'] ) && strstr( $_GET['plugin'], 'woocommerce-germanized-pro.php' ) ) ) {
+	        if ( ( isset( $_REQUEST['action'] ) && 'upgrade-plugin' == $_REQUEST['action'] ) && ( isset( $_REQUEST['plugin'] ) && strstr( $_REQUEST['plugin'], 'woocommerce-germanized-pro.php' ) ) ) {
 		        return;
 	        }
 
@@ -169,12 +169,19 @@ class WC_GZDP_Install {
 			$memory_limit = '128M';
 		}
 
-		if ( ! $memory_limit || -1 === intval( $memory_limit ) ) {
+		if ( ! $memory_limit || -1 === $memory_limit ) {
 			// Unlimited, set to 32GB.
 			$memory_limit = '32000M';
 		}
 
-		return intval( $memory_limit ) * 1024 * 1024;
+		$memory_limit = trim( $memory_limit );
+
+		switch ( substr( $memory_limit, -1 ) ) {
+			case 'M': case 'm': return intval( $memory_limit ) * 1048576;
+			case 'K': case 'k': return intval( $memory_limit ) * 1024;
+			case 'G': case 'g': return intval( $memory_limit ) * 1073741824;
+			default: return intval( $memory_limit ) * 1048576;
+		}
 	}
 
 	public static function legacy_invoice_import_notice() {

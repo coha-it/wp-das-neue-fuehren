@@ -22,7 +22,7 @@ function seopress_watcher_post_trash($post_id)
 	if(wp_is_post_revision($post_id)){
 		return;
 	}
-	
+
 	$status = get_post_status($post_id);
 	if($status !== "publish"){
 		return;
@@ -41,7 +41,7 @@ function seopress_watcher_post_trash($post_id)
 		}
 	}
 	/* translators: %s: post permalink */
-	$message = 
+	$message =
 	sprintf(
 		__('<p>We have detected that you have deleted a post (<code>%s</code>).</p>', 'wp-seopress-pro'),
 		$url
@@ -57,9 +57,6 @@ function seopress_watcher_post_trash($post_id)
 	]);
 
 }
-
-
-
 add_action( 'post_updated', 'seopress_watcher_slug_change', 12, 3 );
 
 /**
@@ -101,7 +98,7 @@ function seopress_watcher_slug_change( $post_id, $post, $post_before ){
 	if($url_post === $url_post_before){
 		$authorize = false;
 	}
-	
+
 	// Prevent {status} to publish
 	if($url_post !== $url_post_before && $post_before->post_status !== "publish" && $post->post_status === "publish"){
 		$authorize = false;
@@ -115,7 +112,7 @@ function seopress_watcher_slug_change( $post_id, $post, $post_before ){
 
 	if( !in_array(get_post_status($post->ID), $post_status_authorized, true ) || !in_array(get_post_status($post->ID), $post_status_authorized, true )  ){
 		$authorize = false;
-	}	
+	}
 
 
 	$authorize = apply_filters('seopress_watcher_slug_change_can_create_notification', $authorize, $post_id, $post, $post_before);

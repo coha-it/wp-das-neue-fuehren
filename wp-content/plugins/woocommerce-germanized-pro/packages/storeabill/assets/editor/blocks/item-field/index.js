@@ -38,7 +38,7 @@ const settings = {
             "type": "string"
         },
         "customFontSize": {
-            "type": "number"
+            "type": "string"
         },
         "backgroundColor": {
             "type": "string"
@@ -47,7 +47,53 @@ const settings = {
             "type": "string",
         },
     },
-    edit
+    edit,
+    deprecated: [
+        {
+            attributes: {
+                "placeholder": {
+                    "type": "string",
+                    "default": "",
+                },
+                "customBorderColor" : {
+                    "type": "string",
+                },
+                "borderColor": {
+                    "type": "string"
+                },
+                "customTextColor" : {
+                    "type": "string",
+                },
+                "textColor": {
+                    "type": "string"
+                },
+                "fontSize": {
+                    "type": "string"
+                },
+                "customFontSize": {
+                    "type": "number"
+                },
+                "backgroundColor": {
+                    "type": "string"
+                },
+                "customBackgroundColor": {
+                    "type": "string",
+                },
+            },
+            isEligible( { customFontSize } ) {
+                return typeof customFontSize === 'number';
+            },
+            migrate( attributes ) {
+                return {
+                    ...attributes,
+                    customFontSize: attributes.customFontSize ? '' + attributes.customFontSize : undefined,
+                };
+            },
+            save( attributes ) {
+                return null;
+            }
+        },
+    ]
 };
 
 registerBlockType( 'storeabill/item-field', settings );

@@ -3,9 +3,9 @@ Contributors: pomegranate
 Donate link: https://wpovernight.com/downloads/woocommerce-pdf-invoices-packing-slips-bundle/
 Tags: woocommerce, pdf, invoices, packing slips, print, delivery notes, invoice, packing slip, export, email, bulk, automatic
 Requires at least: 3.5
-Tested up to: 5.7
+Tested up to: 5.8
 Requires PHP: 7.1
-Stable tag: 2.9.0
+Stable tag: 2.11.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,7 +66,7 @@ In the search field type "WooCommerce PDF Invoices & Packing Slips" and click Se
 
 = Where can I find the documentation? =
 
-[WooCommerce PDF Invoices & Packing Slips documentation](https://docs.wpovernight.com/woocommerce-pdf-invoices-packing-slips/)
+[WooCommerce PDF Invoices & Packing Slips documentation](https://docs.wpovernight.com/topic/woocommerce-pdf-invoices-packing-slips/)
 
 = It's not working! =
 
@@ -101,6 +101,65 @@ There's a setting on the Status tab of the settings page that allows you to togg
 6. Set shop name, address, header logo, etc.
 
 == Changelog ==
+
+= 2.11.1 =
+* Fix: Errors were incorrectly logged after installation when no invoices had been created yet
+* Fix: Button styles in order backend
+
+= 2.11.0 =
+* New: Use year-based number stores for future and past years to handle yearly resets more reliably
+* Fix: PHP iconv fallback for custom PHP builds without this function
+
+= 2.10.6 =
+* Fix: PHP7.1 compatibility
+
+= 2.10.5 =
+* Security: Apply escaping to translated strings
+
+= 2.10.4 =
+* Fix: Billing phone not displaying in Packing Slip when billing address was enabled
+* Fix: Support for special characters on sites without the PHP MB-string module
+* Fix: Don't alter order object when logging document creation for refunds to order notes
+
+= 2.10.3 =
+* Fix: Secondary address always showed, regardless of setting
+
+= 2.10.2 =
+* New: Print shipping phone number when available (and enabled in the settings)
+* New: Show inline warning on the settings page when the logo is bigger than 600dpi
+* Fix: Prevent fatal error when trying to log notes to refund orders
+* Fix: MailPoet email compatibility notice
+* Translations: Updated translation template (POT)
+* Translations: Removed bundled translations for language packs available on wordpress.org
+* Marked tested up to WooCommerce 5.9
+
+= 2.10.1 =
+* Fix: prevent fatal errors if template functions cannot be loaded
+
+= 2.10.0 =
+* New: Use minified JS & CSS files to reduce load time on live sites (enabling `SCRIPT_DEBUG` will load full versions)
+* New: Selected template setting is now stored as a reference ID rather than a fixed path ([#209](https://github.com/wpovernight/woocommerce-pdf-invoices-packing-slips/pull/209))
+* Fix: Fallback to first available translation for settings when migrating from multilingual to single language setup
+* Fix: Undefined variable notice when using [wcpdf_download_invoice] on non-order pages
+* Fix: Updated documentation links
+* Marked tested up to WooCommerce 5.7
+
+= 2.9.3 =
+* Fix: JavaScript errors on My Account page with empty link tags
+* Fix: Long URLs in notes area breaking layout
+
+= 2.9.2 =
+* Tweak: Added new 'item-' prefix to item row class ID
+* New: filter to set sort order for bulk documents (`wpo_wcpdf_bulk_document_sort_order`)
+* Marked tested up to WooCommerce 5.6
+
+= 2.9.1 =
+* New: Log manual invoice creation (with logging enabled)
+* New: Filters to override body class and content (`wpo_wcpdf_body_class` & `wpo_wcpdf_html_content`)
+* New: Document methods to get (and override) the number and date titles
+* Fix: Open PDF on My Account page in a new browser tab/window (following settings)
+* Translations: Update template (POT) and current translation projects
+* Marked tested up to WooCommerce 5.5 and WordPress 5.8
 
 = 2.9.0 =
 * New: Setting to log document generation time & context to order notes

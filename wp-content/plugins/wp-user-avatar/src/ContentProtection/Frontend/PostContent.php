@@ -125,9 +125,46 @@ class PostContent
             }
         }
 
-        $the_excerpt = wpautop($the_excerpt);
+        $the_excerpt = wpautop($this->close_tags($the_excerpt));
 
         return apply_filters('ppress_content_protection_excerpt', $the_excerpt, $post, $length, $tags);
+    }
+
+    /**
+     * See https://stackoverflow.com/a/3810341/2648410
+     *
+     * @param $content
+     *
+     * @return false|mixed|string
+     */
+    public function close_tags($content)
+    {
+        if (class_exists('\DOMDocument')) {
+            $doc    = new \DOMDocument();
+            $result = $doc->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+            /** @see https://stackoverflow.com/a/20675396/2648410 */
+            if ($result) utf8_decode($doc->saveHTML($doc->documentElement));
+        } else {
+            /** @see https://stackoverflow.com/a/3810341/2648410 */
+            preg_match_all('#<(?!meta|img|br|hr|input\b)\b([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $content, $result);
+            $openedtags = $result[1];
+            preg_match_all('#</([a-z]+)>#iU', $content, $result);
+            $closedtags = $result[1];
+            $len_opened = count($openedtags);
+            if (count($closedtags) == $len_opened) {
+                return $content;
+            }
+            $openedtags = array_reverse($openedtags);
+            for ($i = 0; $i < $len_opened; $i++) {
+                if ( ! in_array($openedtags[$i], $closedtags)) {
+                    $content .= '</' . $openedtags[$i] . '>';
+                } else {
+                    unset($closedtags[array_search($openedtags[$i], $closedtags)]);
+                }
+            }
+        }
+
+        return $content;
     }
 
     public static function get_instance()

@@ -11,7 +11,7 @@ class ImageUploader
 
     /**
      * @param $image
-     * @param string $image_id used to identify in the code if image is an avatar or cover image.
+     * @param string $image_id used to identify in the code if image is an avatar or cover photo.
      * @param mixed|void $path
      *
      * @return string|string[]|WP_Error|null
@@ -38,7 +38,7 @@ class ImageUploader
             $size = 1000;
 
             if ($image_id == self::COVER_IMAGE) {
-                $field_name = esc_html__('Cover Image', 'wp-user-avatar');
+                $field_name = esc_html__('Cover Photo', 'wp-user-avatar');
                 /** WP User Avatar Adapter STARTS */
                 global $wpua_cover_upload_size_limit;
                 $size = (int)floor($wpua_cover_upload_size_limit / 1024);
@@ -113,7 +113,7 @@ class ImageUploader
             }
 
             // preserve file from temporary directory
-            $success = move_uploaded_file($image["tmp_name"], $image_upload_dir . $file_name);
+            $success = @move_uploaded_file($image["tmp_name"], $image_upload_dir . $file_name);
 
             if ( ! $success) {
                 return new WP_Error ('save_error', esc_html__('Unable to save file, please try again.', 'wp-user-avatar'));

@@ -814,6 +814,6 @@ if (is_multisite()) {
 		}
 	}
 	
-	$updraftplus_addon_multisite = new UpdraftPlusAddOn_MultiSite;
+	new UpdraftPlusAddOn_MultiSite;
 
 }

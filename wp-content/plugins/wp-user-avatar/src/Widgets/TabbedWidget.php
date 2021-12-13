@@ -28,8 +28,8 @@ class TabbedWidget extends \WP_Widget
     {
         if (isset($_POST['tabbed_login_submit'])) {
             $this->widget_status = @TabbedWidgetDependency::login(
-                trim($_POST['tabbed-login-name']),
-                $_POST['tabbed-login-password']
+                trim(wp_unslash($_POST['tabbed-login-name'])), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+                $_POST['tabbed-login-password'] // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
             );
         }
 
@@ -39,9 +39,9 @@ class TabbedWidget extends \WP_Widget
 
         if (isset($_POST['tabbed_reg_submit'])) {
             $this->widget_status = @TabbedWidgetDependency::registration(
-                $_POST['tabbed-reg-username'],
-                $_POST['tabbed-reg-password'],
-                $_POST['tabbed-reg-email']
+                wp_unslash($_POST['tabbed-reg-username']), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+                $_POST['tabbed-reg-password'], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+                wp_unslash($_POST['tabbed-reg-email']) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
             );
         }
     }
@@ -133,10 +133,10 @@ class TabbedWidget extends \WP_Widget
                                 }
                                 ?>
                                 <input type="hidden" name="is-pp-tab-widget" value="true">
-                                <input type="text" name="tabbed-login-name" value="<?php echo(isset($_POST['tabbed-login-name']) ? $_POST['tabbed-login-name'] : ''); ?>" placeholder="<?php echo $login_placeholder; ?>" required/>
+                                <input type="text" name="tabbed-login-name" value="<?php echo esc_attr(ppress_var($_POST, 'tabbed-login-name', '')); ?>" placeholder="<?php echo $login_placeholder; ?>" required/>
                             </li>
                             <li>
-                                <input name="tabbed-login-password" value="<?php echo(isset($_POST['tabbed-login-password']) ? $_POST['tabbed-login-password'] : ''); ?>" type="password" placeholder="Password" required/>
+                                <input name="tabbed-login-password" value="<?php echo esc_attr(ppress_var($_POST, 'tabbed-login-password', '')); ?>" type="password" placeholder="<?php echo esc_html__('Password', 'wp-user-avatar'); ?>" required/>
                             </li>
                             <li>
                                 <input data-pp-submit-label="<?= $login_btn_label ?>" data-pp-processing-label="<?= $processing_label ?>" name="tabbed_login_submit" type="submit" value="<?= $login_btn_label ?>" class="tb-button"/>
@@ -153,13 +153,13 @@ class TabbedWidget extends \WP_Widget
                             <ul class="tab-widget" style="list-style: none">
                                 <li>
                                     <input type="hidden" name="is-pp-tab-widget" value="true">
-                                    <input type="text" name="tabbed-reg-username" placeholder="Username" value="<?php echo(isset($_POST['tabbed-reg-username']) ? $_POST['tabbed-reg-username'] : ''); ?>" required/>
+                                    <input type="text" name="tabbed-reg-username" placeholder="<?php echo esc_html__('Username', 'wp-user-avatar'); ?>" value="<?php echo esc_attr(ppress_var($_POST, 'tabbed-reg-username', '')); ?>" required/>
                                 </li>
                                 <li>
-                                    <input type="email" name="tabbed-reg-email" placeholder="Email" value="<?php echo(isset($_POST['tabbed-reg-email']) ? $_POST['tabbed-reg-email'] : ''); ?>" required/>
+                                    <input type="email" name="tabbed-reg-email" placeholder="<?php echo esc_html__('Email', 'wp-user-avatar'); ?>" value="<?php echo esc_attr(ppress_var($_POST, 'tabbed-reg-email', '')); ?>" required/>
                                 </li>
                                 <li>
-                                    <input type="password" name="tabbed-reg-password" placeholder="Password" value="<?php echo(isset($_POST['tabbed-reg-password']) ? $_POST['tabbed-reg-password'] : ''); ?>" required/>
+                                    <input type="password" name="tabbed-reg-password" placeholder="<?php echo esc_html__('Password', 'wp-user-avatar'); ?>" value="<?php echo esc_attr(ppress_var($_POST, 'tabbed-reg-password', '')); ?>" required/>
                                 </li>
                                 <li>
                                     <input data-pp-submit-label="<?= $signup_btn_label ?>" data-pp-processing-label="<?= $processing_label ?>" name="tabbed_reg_submit" type="submit" value="<?= $signup_btn_label ?>" class="tb-button"/>
@@ -178,7 +178,7 @@ class TabbedWidget extends \WP_Widget
                         <form data-pp-form-submit="passwordreset" method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>">
                             <ul class="tab-widget" style="list-style: none">
                                 <li>
-                                    <input name="tabbed-user-login" value="<?php echo(isset($_POST['tabbed-user-login']) ? $_POST['tabbed-user-login'] : ''); ?>" type="text" placeholder="Username or E-mail:" required/>
+                                    <input name="tabbed-user-login" value="<?php echo esc_attr(ppress_var($_POST, 'tabbed-user-login', '')); ?>" type="text" placeholder="<?php echo esc_html__('Username or E-mail:', 'wp-user-avatar'); ?>" required/>
                                     <input type="hidden" name="is-pp-tab-widget" value="true">
                                 </li>
                                 <li>

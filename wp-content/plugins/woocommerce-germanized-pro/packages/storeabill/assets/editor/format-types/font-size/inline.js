@@ -108,7 +108,7 @@ const InlineFontSizePicker = ( { name, value, onChange, stopAddingFontSize } ) =
 			<div className="sab-font-size-wrapper">
 				<div className="individual-font-size">
 					<TextControl
-						value={ activeFontSize }
+						value={ activeFontSize ? activeFontSize : '' }
 						type="text"
 						onChange={ onFontSizeChange }
 						label={ _x( 'Individual size', 'storeabill-core', 'storeabill' ) }
@@ -141,7 +141,6 @@ const InlineFontSizeUI = ( {
 	return (
 		<FontSizePopoverAtLink
 			value={ value }
-			isActive={ isActive }
 			addingFontSize={ addingFontSize }
 			onClose={ stopAddingFontSize }
 			className="components-inline-font-size-popover"

@@ -343,7 +343,7 @@ class EditUserProfile
             } elseif (is_array($value)) {
                 $escaped_post_data[$key] = array_map('sanitize_text_field', $value);
             } else {
-                $escaped_post_data[$key] = sanitize_text_field($value);
+                $escaped_post_data[$key] = sanitize_textarea_field($value);
             }
         }
 
@@ -382,17 +382,17 @@ class EditUserProfile
     {
         self::remove_avatar_core();
 
-        wp_safe_redirect(esc_url(add_query_arg('edit', 'true')));
+        wp_safe_redirect(esc_url_raw(add_query_arg('edit', 'true')));
         exit;
     }
 
     /**
-     * Remove user cover image and redirect. Triggered when JS is disabled.
+     * Remove user cover photo and redirect. Triggered when JS is disabled.
      */
     public static function remove_user_cover_image()
     {
         self::remove_cover_image();
-        wp_safe_redirect(esc_url(add_query_arg('edit', 'true')));
+        wp_safe_redirect(esc_url_raw(add_query_arg('edit', 'true')));
         exit;
     }
 
@@ -453,7 +453,7 @@ class EditUserProfile
     }
 
     /**
-     * Core function that removes/delete the user's cover image
+     * Core function that removes/delete the user's cover photo
      */
     public static function remove_cover_image()
     {

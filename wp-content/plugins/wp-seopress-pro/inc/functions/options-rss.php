@@ -104,7 +104,7 @@ function seopress_rss_after_html_option() {
 
 function seopress_rss_html_display($content) {
     $content_before = null;
-    $content_after  = null;
+    $content_after = null;
 
     if (is_feed()) {
         global $post;
@@ -115,6 +115,9 @@ function seopress_rss_html_display($content) {
             '%%post_permalink%%',
             '%%post_title%%',
         ];
+
+        $seopress_rss_template_variables_array = apply_filters( 'seopress_rss_dyn_vars', $seopress_rss_template_variables_array );
+
         $seopress_rss_template_replace_array = [
             get_bloginfo('name'),
             get_bloginfo('description'),
@@ -123,21 +126,22 @@ function seopress_rss_html_display($content) {
             get_the_title(),
         ];
 
+        $seopress_rss_template_replace_array = apply_filters( 'seopress_rss_dyn_vars_value', $seopress_rss_template_replace_array );
+
         if ('' != seopress_rss_before_html_option()) {
             $seopress_rss_before_html_option = str_replace($seopress_rss_template_variables_array, $seopress_rss_template_replace_array, seopress_rss_before_html_option());
-            $content_before                  = $seopress_rss_before_html_option;
+            $content_before = $seopress_rss_before_html_option;
         }
         if ('' != seopress_rss_after_html_option()) {
             $seopress_rss_after_html_option = str_replace($seopress_rss_template_variables_array, $seopress_rss_template_replace_array, seopress_rss_after_html_option());
-            $content_after                  = $seopress_rss_after_html_option;
+            $content_after = $seopress_rss_after_html_option;
         }
     }
 
     return $content_before . $content . $content_after;
 }
 
-if (1 === get_option('rss_use_excerpt')) {
-    add_filter('the_excerpt_rss', 'seopress_rss_html_display');
-} else {
-    add_filter('the_content', 'seopress_rss_html_display');
-}
+//RSS <description></description>
+add_filter('the_excerpt_rss', 'seopress_rss_html_display');
+//RSS <content:encoded></content:encoded>
+add_filter('the_content_feed', 'seopress_rss_html_display');

@@ -388,6 +388,14 @@ class SEOPRESS_CSV_Importer extends SEOPRESS_Importer {
 
         $handle = fopen($this->file, 'r');
 
+        if ('comma' === $this->params['delimiter']) {
+            $this->params['delimiter'] = ',';
+        } elseif ('semicolon' === $this->params['delimiter']) {
+            $this->params['delimiter'] = ';';
+        } else {
+            wp_die(__('Invalid separator'));
+        }
+
         if (false !== $handle) {
             $this->raw_keys = version_compare(PHP_VERSION, '5.3', '>=') ? array_map('trim', fgetcsv($handle, 0, $this->params['delimiter'], $this->params['enclosure'], $this->params['escape'])) : array_map('trim', fgetcsv($handle, 0, $this->params['delimiter'], $this->params['enclosure']));
 

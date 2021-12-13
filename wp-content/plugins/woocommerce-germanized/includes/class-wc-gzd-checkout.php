@@ -70,6 +70,8 @@ class WC_GZD_Checkout {
 		 */
 		add_filter( 'woocommerce_cart_totals_get_fees_from_cart_taxes', array( $this, 'adjust_fee_taxes' ), 100, 3 );
 		add_filter( 'woocommerce_package_rates', array( $this, 'adjust_shipping_taxes' ), 100, 2 );
+		add_filter( 'woocommerce_shipping_method_add_rate_args', array( $this, 'maybe_remove_default_shipping_taxes' ), 500, 2 );
+		add_filter( 'oss_shipping_costs_include_taxes', array( $this, 'shipping_costs_include_taxes' ), 10 );
 		add_filter( 'woocommerce_cart_tax_totals', array( $this, 'fix_cart_shipping_tax_rounding' ), 100, 2 );
 
 		if ( 'yes' === get_option( 'woocommerce_gzd_differential_taxation_disallow_mixed_carts' ) ) {
@@ -78,7 +80,7 @@ class WC_GZD_Checkout {
 
 		// Free Shipping auto select
 		if ( 'yes' === get_option( 'woocommerce_gzd_display_checkout_free_shipping_select' ) ) {
-			add_filter( 'woocommerce_package_rates', array( $this, 'free_shipping_auto_select' ) );
+			add_filter( 'woocommerce_package_rates', array( $this, 'free_shipping_auto_select' ), 300 );
 			add_action( 'woocommerce_before_calculate_totals', array( $this, 'set_free_shipping_filter' ) );
 		}
 
@@ -127,7 +129,7 @@ class WC_GZD_Checkout {
 				$countries = array();
 
 				if ( 'always' === get_option( 'woocommerce_gzd_checkout_validate_street_number' ) ) {
-					$countries = WC()->countries->get_allowed_countries();
+					$countries = array_keys( WC()->countries->get_allowed_countries() );
 				} elseif( 'base_only' === get_option( 'woocommerce_gzd_checkout_validate_street_number' ) ) {
 					$countries = array( WC()->countries->get_base_country() );
 				} elseif( 'eu_only' === get_option( 'woocommerce_gzd_checkout_validate_street_number' ) ) {
@@ -145,7 +147,7 @@ class WC_GZD_Checkout {
 				}
 
 				if ( ! apply_filters( 'woocommerce_gzd_checkout_is_valid_street_number', $is_valid, $data ) ) {
-					$errors->add( $key, apply_filters( 'woocommerce_gzd_checkout_invalid_street_number_error_message', __( 'Please check the street field and make sure to provide a valid street number.', 'woocommerce-germanized' ), $data ), array( 'id' => $key ) );
+					$errors->add( $key . '_validation', apply_filters( 'woocommerce_gzd_checkout_invalid_street_number_error_message', __( 'Please check the street field and make sure to provide a valid street number.', 'woocommerce-germanized' ), $data ), array( 'id' => $key ) );
 				}
 			}
 		}
@@ -732,19 +734,52 @@ class WC_GZD_Checkout {
 	}
 
 	/**
+	 * @param $args
+	 * @param WC_Shipping_Method $method
+	 *
+	 * @return mixed
+	 */
+	public function maybe_remove_default_shipping_taxes( $args, $method ) {
+		/**
+		 * Prevent shipping methods from individually calculating taxes (e.g. as per custom incl/excl tax settings)
+		 * as Germanized handles tax calculation globally for all shipping methods.
+		 */
+		if ( wc_gzd_enable_additional_costs_split_tax_calculation() ) {
+			if ( ! empty( $args['taxes'] ) && apply_filters( 'woocommerce_gzd_disable_custom_shipping_method_tax_calculation', true, $method ) ) {
+				$args['cost']  = $args['cost'] + array_sum( $args['taxes'] );
+				$args['taxes'] = '';
+			}
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Tell the OSS package that shipping costs include tax for improved compatibility.
+	 *
+	 * @return bool
+	 */
+	public function shipping_costs_include_taxes() {
+		return wc_gzd_additional_costs_include_tax();
+	}
+
+	/**
 	 * @param WC_Shipping_Rate[] $rates
 	 * @param $package
 	 *
 	 * @return mixed
 	 */
 	public function adjust_shipping_taxes( $rates, $package ) {
-
 		if ( ! wc_gzd_enable_additional_costs_split_tax_calculation() ) {
 			foreach( $rates as $key => $rate ) {
+				$meta_data = $rates[ $key ]->get_meta_data();
+
 				/**
-				 * Reset split tax data
+				 * Reset meta data in case it exists
 				 */
-				$rates[ $key ]->add_meta_data( '_split_taxes', array() );
+				if ( array_key_exists( '_split_taxes', $meta_data ) ) {
+					$rates[ $key ]->add_meta_data( '_split_taxes', array() );
+				}
 			}
 
 			return $rates;
@@ -984,7 +1019,7 @@ class WC_GZD_Checkout {
 		if ( isset( $args['title'] ) ) {
 
 			if ( ! empty( $args['title'] ) ) {
-				$title = is_numeric( $args['title'] ) ? wc_gzd_get_customer_title( $args['title'] ) : $args['title'];
+				$title = wc_gzd_get_customer_title( $args['title'] );
 
 				/**
 				 * Ugly hack to force accusative in addresses

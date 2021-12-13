@@ -77,9 +77,9 @@ class WP_User_Avatar_Shortcode
                 $link_class = 'custom';
             }
             // Open in new window
-            $target_link = ! empty($target) ? ' target="' . $target . '"' : "";
+            $target_link = ! empty($target) ? ' target="' . esc_attr($target) . '"' : "";
             // Wrap the avatar inside the link
-            $html = '<a href="' . $link . '" class="wp-user-avatar-link wp-user-avatar-' . $link_class . '"' . $target_link . '>' . get_wp_user_avatar($id_or_email, $get_size) . '</a>';
+            $html = '<a href="' . esc_url($link) . '" class="wp-user-avatar-link wp-user-avatar-' . $link_class . '"' . $target_link . '>' . get_wp_user_avatar($id_or_email, $get_size) . '</a>';
         } else {
             $html = get_wp_user_avatar($id_or_email, $get_size);
         }

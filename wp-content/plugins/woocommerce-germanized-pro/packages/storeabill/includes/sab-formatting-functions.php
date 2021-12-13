@@ -82,12 +82,31 @@ function sab_generate_block_classes( $attributes, $html_classes = '' ) {
 	$classes = array( 'sab-block' );
 
 	foreach( $attributes as $attribute => $value ) {
+		/**
+		 * Make sure to support customFontSize or customBorderColor by replacing custom prefix.
+		 */
+		if ( substr( $attribute, 0, 6 ) === 'custom' && ! empty( $value ) ) {
+			// Remove the original value
+			unset( $attributes[ $attribute ] );
 
+			$attribute = lcfirst( substr( $attribute, 6 ) );
+
+			/**
+			 * Prefer custom attributes over their non-customs e.g. borderColor
+			 */
+			if ( isset( $attributes[ $attribute ] ) ) {
+				unset( $attributes[ $attribute ] );
+			}
+
+			$attributes[ $attribute ] = $value;
+		}
+	}
+
+	foreach( $attributes as $attribute => $value ) {
 		if ( array_key_exists( $attribute, $wrapper_mappings ) ) {
 			$mapping = $wrapper_mappings[ $attribute ];
 
 			if ( ! empty( $value ) ) {
-
 				if ( ! is_array( $value ) ) {
 					$value = array( $value );
 				}
@@ -173,7 +192,8 @@ function sab_generate_block_styles( $attributes, $attribute_mappings = array(), 
 		),
 		'customFontSize'        => array(
 			'attribute'         => 'font-size',
-			'replacement'       => '{value}px'
+			'replacement'       => '{value}px',
+			'callback'          => 'sab_get_document_font_size',
 		),
 		'fontSize'              => array(
 			'attribute'         => 'font-size',
@@ -469,4 +489,51 @@ function sab_remove_placeholder_tax_rate( $str ) {
 	$str = trim( str_replace( array( '%s', '%', '{rate}', '{formatted_rate}' ), '', $str ) );
 
 	return $str;
+}
+
+function sab_timezone_offset() {
+	return wc_timezone_offset();
+}
+
+function sab_timezone_string() {
+	return wc_timezone_string();
+}
+
+/**
+ * Returns the current date time as GMT including local timezone offsets.
+ * sab_string_to_datetime() expects strings to be in local timezone - use current_time for that.
+ *
+ * @return WC_DateTime
+ * @throws Exception
+ */
+function sab_get_current_datetime() {
+	return sab_string_to_datetime( current_time( 'mysql' ) );
+}
+
+function sab_normalize_postcode( $postcode ) {
+	return wc_normalize_postcode( $postcode );
+}
+
+function sab_strtoupper( $string ) {
+	return wc_strtoupper( $string );
+}
+
+/**
+ * Converts a string (e.g. 'yes' or 'no') to a bool.
+ *
+ * @param string|bool $string String to convert. If a bool is passed it will be returned as-is.
+ * @return bool
+ */
+function sab_string_to_bool( $string ) {
+	return wc_string_to_bool( $string );
+}
+
+/**
+ * Converts a bool to a 'yes' or 'no'.
+ *
+ * @param bool|string $bool Bool to convert. If a string is passed it will first be converted to a bool.
+ * @return string
+ */
+function sab_bool_to_string( $bool ) {
+	return wc_bool_to_string( $bool );
 }

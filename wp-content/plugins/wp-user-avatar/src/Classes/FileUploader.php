@@ -18,11 +18,14 @@ class FileUploader
 
         if (empty($_FILES)) return $result;
 
-        // remove registration and edit profile avatar and cover image from files uploaded to be processed.
+        // remove registration and edit profile avatar and cover photo from files uploaded to be processed.
         $skip = ['wpua-file', 'reg_avatar', 'eup_avatar', 'reg_cover_image', 'eup_cover_image'];
 
+        $valid_custom_usermeta = array_keys(ppress_custom_fields_key_value_pair(true));
+
         foreach ($_FILES as $field_key => $uploaded_file_array) {
-            if ( ! in_array($field_key, $skip) && ! empty($uploaded_file_array)) {
+
+            if ( ! in_array($field_key, $skip) && in_array($field_key, $valid_custom_usermeta) && ! empty($uploaded_file_array['name'])) {
                 $result[$field_key] = self::process($uploaded_file_array, $field_key);
             }
         }
@@ -120,7 +123,7 @@ class FileUploader
         }
 
         // preserve file from temporary directory
-        $success = move_uploaded_file($file["tmp_name"], $file_upload_dir . $file_name);
+        $success = @move_uploaded_file($file["tmp_name"], $file_upload_dir . $file_name);
 
         if ( ! $success) {
             return new WP_Error ('save_error',

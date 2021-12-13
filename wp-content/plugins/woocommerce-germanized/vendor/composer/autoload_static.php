@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6788353277f7f02e5382abf35bbcc23d
+class ComposerStaticInit9784a2d0e6a2b6237a8ce95fca74d8cc
 {
     public static $files = array (
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
@@ -178,6 +178,7 @@ class ComposerStaticInit6788353277f7f02e5382abf35bbcc23d
         'Composer\\Installers\\OsclassInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/OsclassInstaller.php',
         'Composer\\Installers\\OxidInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/OxidInstaller.php',
         'Composer\\Installers\\PPIInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/PPIInstaller.php',
+        'Composer\\Installers\\PantheonInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/PantheonInstaller.php',
         'Composer\\Installers\\PhiftyInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/PhiftyInstaller.php',
         'Composer\\Installers\\PhpBBInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/PhpBBInstaller.php',
         'Composer\\Installers\\PimcoreInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/PimcoreInstaller.php',
@@ -366,6 +367,7 @@ class ComposerStaticInit6788353277f7f02e5382abf35bbcc23d
         'Vendidero\\Germanized\\Shipments\\Packing\\OrderItem' => __DIR__ . '/../..' . '/packages/woocommerce-germanized-shipments/src/Packing/OrderItem.php',
         'Vendidero\\Germanized\\Shipments\\Packing\\PackagingBox' => __DIR__ . '/../..' . '/packages/woocommerce-germanized-shipments/src/Packing/PackagingBox.php',
         'Vendidero\\Germanized\\Shipments\\Packing\\ShipmentItem' => __DIR__ . '/../..' . '/packages/woocommerce-germanized-shipments/src/Packing/ShipmentItem.php',
+        'Vendidero\\Germanized\\Shipments\\Product' => __DIR__ . '/../..' . '/packages/woocommerce-germanized-shipments/src/Product.php',
         'Vendidero\\Germanized\\Shipments\\ReturnReason' => __DIR__ . '/../..' . '/packages/woocommerce-germanized-shipments/src/ReturnReason.php',
         'Vendidero\\Germanized\\Shipments\\ReturnShipment' => __DIR__ . '/../..' . '/packages/woocommerce-germanized-shipments/src/ReturnShipment.php',
         'Vendidero\\Germanized\\Shipments\\Shipment' => __DIR__ . '/../..' . '/packages/woocommerce-germanized-shipments/src/Shipment.php',
@@ -387,6 +389,7 @@ class ComposerStaticInit6788353277f7f02e5382abf35bbcc23d
         'Vendidero\\OneStopShop\\AdminNote' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/AdminNote.php',
         'Vendidero\\OneStopShop\\AsyncReportGenerator' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/AsyncReportGenerator.php',
         'Vendidero\\OneStopShop\\CSVExporter' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/CSVExporter.php',
+        'Vendidero\\OneStopShop\\CSVExporterBOP' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/CSVExporterBOP.php',
         'Vendidero\\OneStopShop\\DeliveryThresholdEmailNotification' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/DeliveryThresholdEmailNotification.php',
         'Vendidero\\OneStopShop\\DeliveryThresholdWarning' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/DeliveryThresholdWarning.php',
         'Vendidero\\OneStopShop\\Install' => __DIR__ . '/../..' . '/packages/one-stop-shop-woocommerce/src/Install.php',
@@ -481,9 +484,9 @@ class ComposerStaticInit6788353277f7f02e5382abf35bbcc23d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6788353277f7f02e5382abf35bbcc23d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6788353277f7f02e5382abf35bbcc23d::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit6788353277f7f02e5382abf35bbcc23d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit9784a2d0e6a2b6237a8ce95fca74d8cc::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit9784a2d0e6a2b6237a8ce95fca74d8cc::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit9784a2d0e6a2b6237a8ce95fca74d8cc::$classMap;
 
         }, null, ClassLoader::class);
     }

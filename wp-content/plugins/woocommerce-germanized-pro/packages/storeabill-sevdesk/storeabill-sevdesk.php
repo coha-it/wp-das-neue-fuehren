@@ -5,7 +5,7 @@
  * Description: StoreaBill sevDesk integration
  * Author: vendidero
  * Author URI: https://vendidero.de
- * Version: 1.0.11
+ * Version: 1.1.2
  * Requires PHP: 5.6
  * License: GPLv3
  *
@@ -68,5 +68,5 @@ if ( is_readable( $autoloader ) ) {
 	return;
 }
 
-register_activation_hook( __FILE__, array( 'Vendidero\StoreaBill\sevDesk\Package', 'install' ) );
-add_action( 'plugins_loaded', array( 'Vendidero\StoreaBill\sevDesk\Package', 'init' ) );
+register_activation_hook( __FILE__, array( '\Vendidero\StoreaBill\sevDesk\Package', 'install' ) );
+add_action( 'plugins_loaded', array( '\Vendidero\StoreaBill\sevDesk\Package', 'init' ) );

@@ -11,7 +11,7 @@ Latest Change: 1.14.3
 
 if (!defined('UPDRAFTPLUS_DIR')) die('No direct access allowed');
 
-$updraftplus_addons_morefiles = new UpdraftPlus_Addons_MoreFiles;
+new UpdraftPlus_Addons_MoreFiles;
 
 class UpdraftPlus_Addons_MoreFiles {
 

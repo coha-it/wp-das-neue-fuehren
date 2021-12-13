@@ -23,7 +23,7 @@ $current_user = get_user_by('id', get_current_user_id());
     <p>
         <?php
         printf(
-            __('From your account dashboard you can view your <a href="%1$s">change your password</a> and <a href="%2$s">edit your account details</a>.', 'wp-user-avatar'),
+            __('From your account dashboard you can <a href="%1$s">change your password</a> and <a href="%2$s">edit your account details</a>.', 'wp-user-avatar'),
             esc_url(MyAccountTag::get_endpoint_url('change-password')),
             esc_url(MyAccountTag::get_endpoint_url('edit-profile'))
         );

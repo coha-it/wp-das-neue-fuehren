@@ -25,7 +25,7 @@ class CancellationPreview extends Cancellation implements Previewable {
 		$this->parent = new SimplePreview( $args );
 
 		$this->set_is_editor_preview( $args['is_editor_preview'] );
-		$this->set_date_created( sab_string_to_datetime( 'now' ) );
+		$this->set_date_created( time() );
 		$this->set_prices_include_tax( true );
 		$this->set_number( 1 );
 		$this->set_formatted_number( $this->format_number( $this->get_number() ) );

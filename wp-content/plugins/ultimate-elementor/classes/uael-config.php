@@ -57,7 +57,7 @@ class UAEL_Config {
 				$options_url
 			);
 			self::$widget_list = array(
-				'Advanced_Heading'  => array(
+				'Advanced_Heading'    => array(
 					'slug'      => 'uael-advanced-heading',
 					'title'     => __( 'Advanced Heading', 'uael' ),
 					'keywords'  => array( 'uael', 'heading', 'advanced' ),
@@ -65,8 +65,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/advanced-heading/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '6',
 				),
-				'BaSlider'          => array(
+				'BaSlider'            => array(
 					'slug'      => 'uael-ba-slider',
 					'title'     => __( 'Before After Slider', 'uael' ),
 					'keywords'  => array( 'uael', 'slider', 'before', 'after' ),
@@ -75,7 +76,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/before-after-slider/?utm_source=uael-pro-dashboard&utm_medium=uael-editor-screen&utm_campaign=uael-pro-plugin',
 				),
-				'Business_Hours'    => array(
+				'Business_Hours'      => array(
 					'slug'      => 'uael-business-hours',
 					'title'     => __( 'Business Hours', 'uael' ),
 					'keywords'  => array( 'uael', 'business', 'hours', 'schedule' ),
@@ -83,8 +84,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/business-hours/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '5',
 				),
-				'CfStyler'          => array(
+				'CfStyler'            => array(
 					'slug'      => 'uael-cf7-styler',
 					'title'     => __( 'Contact Form 7 Styler', 'uael' ),
 					'keywords'  => array( 'uael', 'form', 'cf7', 'contact', 'styler' ),
@@ -93,7 +95,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/contact-form-7-styler/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'ContentToggle'     => array(
+				'ContentToggle'       => array(
 					'slug'      => 'uael-content-toggle',
 					'title'     => __( 'Content Toggle', 'uael' ),
 					'keywords'  => array( 'uael', 'toggle', 'content', 'show', 'hide' ),
@@ -102,7 +104,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/content-toggle/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Dual_Heading'      => array(
+				'Dual_Heading'        => array(
 					'slug'      => 'uael-dual-color-heading',
 					'title'     => __( 'Dual Color Heading', 'uael' ),
 					'keywords'  => array( 'uael', 'dual', 'heading', 'color' ),
@@ -110,8 +112,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/dual-color-heading/?utm_source=uael-pro-dashboard&utm_medium=uael-editor-screen&utm_campaign=uael-pro-plugin',
+					'preset'    => '5',
 				),
-				'Fancy_Heading'     => array(
+				'Fancy_Heading'       => array(
 					'slug'      => 'uael-fancy-heading',
 					'title'     => __( 'Fancy Heading', 'uael' ),
 					'keywords'  => array( 'uael', 'fancy', 'heading', 'ticking', 'animate' ),
@@ -119,8 +122,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/fancy-heading/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '5',
 				),
-				'GoogleMap'         => array(
+				'GoogleMap'           => array(
 					'slug'         => 'uael-google-map',
 					'title'        => __( 'Google Map', 'uael' ),
 					'keywords'     => array( 'uael', 'google', 'map', 'location', 'address' ),
@@ -131,7 +135,7 @@ class UAEL_Config {
 					'setting_text' => __( 'Settings', 'uael' ),
 					'doc_url'      => UAEL_DOMAIN . 'docs-category/widgets/google-maps/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'GfStyler'          => array(
+				'GfStyler'            => array(
 					'slug'      => 'uael-gf-styler',
 					'title'     => __( 'Gravity Form Styler', 'uael' ),
 					'keywords'  => array( 'uael', 'form', 'gravity', 'gf', 'styler' ),
@@ -140,7 +144,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/gravity-form-styler/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Image_Gallery'     => array(
+				'Image_Gallery'       => array(
 					'slug'      => 'uael-image-gallery',
 					'title'     => __( 'Image Gallery', 'uael' ),
 					'keywords'  => array( 'uael', 'image', 'gallery', 'carousel', 'slider', 'layout' ),
@@ -149,7 +153,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/image-gallery/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Retina_Image'      => array(
+				'Retina_Image'        => array(
 					'slug'      => 'uael-retina-image',
 					'title'     => __( 'Retina Image', 'uael' ),
 					'keywords'  => array( 'uael', 'retina', 'image', '2ximage' ),
@@ -159,7 +163,7 @@ class UAEL_Config {
 
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/retina-image/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Infobox'           => array(
+				'Infobox'             => array(
 					'slug'      => 'uael-infobox',
 					'title'     => __( 'Info Box', 'uael' ),
 					'keywords'  => array( 'uael', 'info', 'box', 'bar' ),
@@ -167,8 +171,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/info-box/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '5',
 				),
-				'Modal_Popup'       => array(
+				'Modal_Popup'         => array(
 					'slug'      => 'uael-modal-popup',
 					'title'     => __( 'Modal Popup', 'uael' ),
 					'keywords'  => array( 'uael', 'modal', 'popup', 'lighbox' ),
@@ -177,7 +182,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/modal-popup/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Buttons'           => array(
+				'Buttons'             => array(
 					'slug'      => 'uael-buttons',
 					'title'     => __( 'Multi Buttons', 'uael' ),
 					'keywords'  => array( 'uael', 'buttons', 'multi', 'call to action', 'cta' ),
@@ -185,8 +190,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/multi-buttons/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '3',
 				),
-				'Price_Table'       => array(
+				'Price_Table'         => array(
 					'slug'      => 'uael-price-table',
 					'title'     => __( 'Price Box', 'uael' ),
 					'keywords'  => array( 'uael', 'price', 'table', 'box', 'pricing' ),
@@ -194,8 +200,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/price-box/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '5',
 				),
-				'Price_List'        => array(
+				'Price_List'          => array(
 					'slug'      => 'uael-price-list',
 					'title'     => __( 'Price List', 'uael' ),
 					'keywords'  => array( 'uael', 'price', 'list', 'pricing' ),
@@ -203,8 +210,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/price-list/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '5',
 				),
-				'Table'             => array(
+				'Table'               => array(
 					'slug'      => 'uael-table',
 					'title'     => __( 'Table', 'uael' ),
 					'keywords'  => array( 'uael', 'table', 'sort', 'search' ),
@@ -213,7 +221,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/table/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Table_of_Contents' => array(
+				'Table_of_Contents'   => array(
 					'slug'      => 'uael-table-of-contents',
 					'title'     => __( 'Table of Contents', 'uael' ),
 					'keywords'  => array( 'uael', 'table of contents', 'content', 'list', 'toc', 'index' ),
@@ -222,7 +230,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/table-of-contents/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Woo_Add_To_Cart'   => array(
+				'Woo_Add_To_Cart'     => array(
 					'slug'      => 'uael-woo-add-to-cart',
 					'title'     => __( 'Woo - Add To Cart', 'uael' ),
 					'keywords'  => array( 'uael', 'woo', 'cart', 'add to cart', 'products' ),
@@ -231,7 +239,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/woo-add-to-cart/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Woo_Categories'    => array(
+				'Woo_Categories'      => array(
 					'slug'      => 'uael-woo-categories',
 					'title'     => __( 'Woo - Categories', 'uael' ),
 					'keywords'  => array( 'uael', 'woo', 'categories', 'taxomonies', 'products' ),
@@ -240,7 +248,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/woo-categories/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Woo_Products'      => array(
+				'Woo_Products'        => array(
 					'slug'      => 'uael-woo-products',
 					'title'     => __( 'Woo - Products', 'uael' ),
 					'keywords'  => array( 'uael', 'woo', 'products' ),
@@ -249,7 +257,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/woo-products/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Hotspot'           => array(
+				'Hotspot'             => array(
 					'slug'      => 'uael-hotspot',
 					'title'     => __( 'Hotspot', 'uael' ),
 					'keywords'  => array( 'uael', 'hotspot', 'tour' ),
@@ -258,7 +266,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/hotspot/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Posts'             => array(
+				'Posts'               => array(
 					'slug'         => 'uael-posts',
 					'title'        => __( 'Posts', 'uael' ),
 					'keywords'     => array( 'uael', 'post', 'grid', 'masonry', 'carousel', 'content grid', 'content' ),
@@ -269,7 +277,7 @@ class UAEL_Config {
 					'setting_text' => __( 'Settings', 'uael' ),
 					'doc_url'      => UAEL_DOMAIN . 'docs-category/widgets/posts/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Timeline'          => array(
+				'Timeline'            => array(
 					'slug'      => 'uael-timeline',
 					'title'     => __( 'Timeline', 'uael' ),
 					'keywords'  => array( 'uael', 'timeline', 'history', 'scroll', 'post', 'content timeline' ),
@@ -277,8 +285,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/timeline/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '5',
 				),
-				'Video_Gallery'     => array(
+				'Video_Gallery'       => array(
 					'slug'      => 'uael-video-gallery',
 					'title'     => __( 'Video Gallery', 'uael' ),
 					'keywords'  => array( 'uael', 'video', 'youtube', 'wistia', 'gallery', 'vimeo' ),
@@ -287,7 +296,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/video-gallery/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Video'             => array(
+				'Video'               => array(
 					'slug'      => 'uael-video',
 					'title'     => __( 'Video', 'uael' ),
 					'keywords'  => array( 'uael', 'video', 'youtube', 'vimeo', 'wistia', 'sticky', 'drag', 'float', 'subscribe' ),
@@ -296,7 +305,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/video/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'WpfStyler'         => array(
+				'WpfStyler'           => array(
 					'slug'      => 'uael-wpf-styler',
 					'title'     => __( 'WPForms Styler', 'uael' ),
 					'keywords'  => array( 'uael', 'form', 'wp', 'wpform', 'styler' ),
@@ -305,7 +314,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/wpforms-styler/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Countdown'         => array(
+				'Countdown'           => array(
 					'slug'      => 'uael-countdown',
 					'title'     => __( 'Countdown Timer', 'uael' ),
 					'keywords'  => array( 'uael', 'count', 'timer', 'countdown' ),
@@ -313,8 +322,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/countdown-timer/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '6',
 				),
-				'Business_Reviews'  => array(
+				'Business_Reviews'    => array(
 					'slug'         => 'uael-business-reviews',
 					'keywords'     => array( 'uael', 'reviews', 'wp reviews', 'business', 'wp business', 'google', 'rating', 'social', 'yelp' ),
 					'title'        => __( 'Business Reviews', 'uael' ),
@@ -325,7 +335,7 @@ class UAEL_Config {
 					'setting_url'  => $integration_url,
 					'setting_text' => __( 'Settings', 'uael' ),
 				),
-				'Offcanvas'         => array(
+				'Offcanvas'           => array(
 					'slug'      => 'uael-offcanvas',
 					'title'     => __( 'Off - Canvas', 'uael' ),
 					'keywords'  => array( 'uael', 'off', 'offcanvas', 'off-canvas', 'canvas', 'template', 'floating' ),
@@ -334,7 +344,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/off-canvas/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Marketing_Button'  => array(
+				'Marketing_Button'    => array(
 					'slug'      => 'uael-marketing-button',
 					'title'     => __( 'Marketing Button', 'uael' ),
 					'keywords'  => array( 'uael', 'button', 'marketing', 'call to action', 'cta' ),
@@ -342,8 +352,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/marketing-button/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '5',
 				),
-				'Team_Member'       => array(
+				'Team_Member'         => array(
 					'slug'      => 'uael-team-member',
 					'title'     => __( 'Team Member', 'uael' ),
 					'keywords'  => array( 'uael', 'team', 'member' ),
@@ -351,8 +362,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/team-member/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '5',
 				),
-				'Particles'         => array(
+				'Particles'           => array(
 					'slug'      => 'uael-particles',
 					'title'     => __( 'Particle Backgrounds', 'uael' ),
 					'keywords'  => array(),
@@ -361,7 +373,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/particles-background-extension/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'RegistrationForm'  => array(
+				'RegistrationForm'    => array(
 					'slug'         => 'uael-registration-form',
 					'title'        => __( 'User Registration Form', 'uael' ),
 					'keywords'     => array( 'uael', 'form', 'register', 'registration', 'user' ),
@@ -371,8 +383,9 @@ class UAEL_Config {
 					'setting_url'  => $integration_url,
 					'setting_text' => __( 'Settings', 'uael' ),
 					'doc_url'      => UAEL_DOMAIN . 'docs-category/widgets/user-registration-form/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'       => '5',
 				),
-				'Nav_Menu'          => array(
+				'Nav_Menu'            => array(
 					'slug'      => 'uael-nav-menu',
 					'title'     => __( 'Navigation Menu', 'uael' ),
 					'keywords'  => array( 'uael', 'menu', 'nav', 'navigation', 'mega' ),
@@ -381,7 +394,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/navigation-menu/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'LoginForm'         => array(
+				'LoginForm'           => array(
 					'slug'         => 'uael-login-form',
 					'title'        => __( 'Login Form', 'uael' ),
 					'keywords'     => array( 'uael', 'form', 'login', 'facebook', 'google', 'user', 'fblogin' ),
@@ -391,8 +404,9 @@ class UAEL_Config {
 					'setting_text' => __( 'Settings', 'uael' ),
 					'setting_url'  => $integration_url,
 					'doc_url'      => UAEL_DOMAIN . 'docs-category/widgets/login-form/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'       => '5',
 				),
-				'HowTo'             => array(
+				'HowTo'               => array(
 					'slug'      => 'uael-how-to',
 					'title'     => __( 'How-to Schema', 'uael' ),
 					'keywords'  => array( 'uael', 'how-to', 'howto', 'schema', 'steps', 'supply', 'tools', 'steps', 'cost' ),
@@ -401,7 +415,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/how-to-schema/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'FAQ'               => array(
+				'FAQ'                 => array(
 					'slug'      => 'uael-faq',
 					'title'     => __( 'FAQ Schema', 'uael' ),
 					'keywords'  => array( 'uael', 'faq', 'schema', 'question', 'answer', 'accordion', 'toggle' ),
@@ -409,8 +423,9 @@ class UAEL_Config {
 					'title_url' => '#',
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/faq/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'    => '5',
 				),
-				'FfStyler'          => array(
+				'FfStyler'            => array(
 					'slug'      => 'uael-ff-styler',
 					'title'     => __( 'WP Fluent Forms Styler', 'uael' ),
 					'keywords'  => array( 'uael', 'fluent', 'forms', 'wp' ),
@@ -419,7 +434,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/wp-fluent-forms-styler/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Cross_Domain'      => array(
+				'Cross_Domain'        => array(
 					'slug'      => 'uael-cross-domain-copy-paste',
 					'title'     => __( 'Cross-Site Copy Paste', 'uael' ),
 					'keywords'  => array(),
@@ -428,7 +443,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/features/cross-site-copy-paste/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'Woo_Mini_Cart'     => array(
+				'Woo_Mini_Cart'       => array(
 					'slug'      => 'uael-mini-cart',
 					'title'     => __( 'Woo - Mini Cart', 'uael' ),
 					'keywords'  => array( 'woo', 'woocommerce', 'cart', 'mini', 'minicart' ),
@@ -437,7 +452,7 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/woo-mini-cart/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'SocialShare'       => array(
+				'SocialShare'         => array(
 					'slug'         => 'uael-social-share',
 					'title'        => __( 'Social Share', 'uael' ),
 					'keywords'     => array( 'uael', 'sharing', 'social', 'icon', 'button', 'like' ),
@@ -447,8 +462,9 @@ class UAEL_Config {
 					'setting_text' => __( 'Settings', 'uael' ),
 					'setting_url'  => admin_url( 'options-general.php?page=' . UAEL_SLUG . '&action=integration' ),
 					'doc_url'      => UAEL_DOMAIN . 'docs-category/widgets/social-share/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'preset'       => '5',
 				),
-				'Woo_Checkout'      => array(
+				'Woo_Checkout'        => array(
 					'slug'      => 'uael-woo-checkout',
 					'title'     => __( 'Woo - Checkout', 'uael' ),
 					'keywords'  => array( 'uael', 'woo', 'checkout', 'page', 'check' ),
@@ -457,14 +473,52 @@ class UAEL_Config {
 					'default'   => true,
 					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/woo-checkout/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
-				'DisplayConditions' => array(
-					'slug'      => 'uael-display-conditions',
-					'title'     => __( 'Display Conditions', 'uael' ),
+				'DisplayConditions'   => array(
+					'slug'         => 'uael-display-conditions',
+					'title'        => __( 'Display Conditions', 'uael' ),
+					'keywords'     => array(),
+					'icon'         => '',
+					'title_url'    => '#',
+					'default'      => true,
+					'setting_text' => __( 'Settings', 'uael' ),
+					'setting_url'  => $integration_url,
+					'doc_url'      => UAEL_DOMAIN . 'docs-category/widgets/display-conditions/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+				),
+				'Presets'             => array(
+					'slug'      => 'uael-presets',
+					'title'     => __( 'Presets', 'uael' ),
 					'keywords'  => array(),
 					'icon'      => '',
 					'title_url' => '#',
 					'default'   => true,
-					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/display-conditions/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/',
+				),
+				'Welcome_Music'       => array(
+					'slug'      => 'uael-welcome-music',
+					'title'     => __( 'Welcome Music', 'uael' ),
+					'keywords'  => array( 'uael', 'christmas', 'music', 'background', 'audio', 'welcome' ),
+					'icon'      => 'uael-icon-welcome-music',
+					'title_url' => '#',
+					'default'   => false,
+					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/welcome-music/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+				),
+				'PartyPropzExtension' => array(
+					'slug'      => 'uael-party-propz-extension',
+					'title'     => __( 'Party Propz', 'uael' ),
+					'keywords'  => array(),
+					'icon'      => '',
+					'title_url' => '#',
+					'default'   => false,
+					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/party-propz-extensions/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
+				),
+				'SectionDivider'      => array(
+					'slug'      => 'uael-section-divider',
+					'title'     => __( 'Shape Divider', 'uael' ),
+					'keywords'  => array(),
+					'icon'      => '',
+					'title_url' => '#',
+					'default'   => false,
+					'doc_url'   => UAEL_DOMAIN . 'docs-category/widgets/uae-shape-dividers/?utm_source=uael-pro-dashboard&utm_medium=uael-menu-page&utm_campaign=uael-pro-plugin',
 				),
 			);
 		}

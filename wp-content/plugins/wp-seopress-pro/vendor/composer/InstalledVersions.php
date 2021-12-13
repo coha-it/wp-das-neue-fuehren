@@ -24,51 +24,51 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => '4.7.x-dev',
-    'version' => '4.7.9999999.9999999-dev',
+    'pretty_version' => '5.2.x-dev',
+    'version' => '5.2.9999999.9999999-dev',
     'aliases' => 
     array (
     ),
-    'reference' => 'c34fd0905440aeffcfb93aa7915fde5f215bc6ec',
+    'reference' => '4362bc0e2180c38ff02fb6bbfff6a30fbe6ceb73',
     'name' => 'wp-seopress/wp-seopress',
   ),
   'versions' => 
   array (
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v5.2.1',
-      'version' => '5.2.1.0',
+      'pretty_version' => 'v5.4.0',
+      'version' => '5.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f42c9110abe98dd6cfe9053c49bc86acc70b2d23',
+      'reference' => 'd2113d9b2e0e349796e72d2a63cf9319100382d2',
     ),
     'google/apiclient' => 
     array (
-      'pretty_version' => 'v2.9.1',
-      'version' => '2.9.1.0',
+      'pretty_version' => 'v2.11.0',
+      'version' => '2.11.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2fb6e702aca5d68203fa737f89f6f774022494c6',
+      'reference' => '7db9eb40c8ba887e81c0fe84f2888a967396cdfb',
     ),
     'google/apiclient-services' => 
     array (
-      'pretty_version' => 'v0.175.0',
-      'version' => '0.175.0.0',
+      'pretty_version' => 'v0.218.0',
+      'version' => '0.218.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '316cbf9b02c575a140d8cbeca48a3ca0070fcd5a',
+      'reference' => 'ea990973edf24d959c9e9f550182a53672d5a4bc',
     ),
     'google/auth' => 
     array (
-      'pretty_version' => 'v1.15.1',
-      'version' => '1.15.1.0',
+      'pretty_version' => 'v1.18.0',
+      'version' => '1.18.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '4e0c9367719df9703e96f5ad613041b87742471c',
+      'reference' => '21dd478e77b0634ed9e3a68613f74ed250ca9347',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -81,30 +81,30 @@ private static $installed = array (
     ),
     'guzzlehttp/promises' => 
     array (
-      'pretty_version' => '1.4.1',
-      'version' => '1.4.1.0',
+      'pretty_version' => '1.5.1',
+      'version' => '1.5.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8e7d04f1f6450fef59366c399cfad4b9383aa30d',
+      'reference' => 'fe752aedc9fd8fcca3fe7ad05d419d32998a06da',
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '1.8.2',
-      'version' => '1.8.2.0',
+      'pretty_version' => '1.8.3',
+      'version' => '1.8.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'dc960a912984efb74d0a90222870c72c87f10c91',
+      'reference' => '1afdd860a2566ed3c2b0b4a3de6e23434a79ec85',
     ),
     'monolog/monolog' => 
     array (
-      'pretty_version' => '1.26.0',
-      'version' => '1.26.0.0',
+      'pretty_version' => '1.26.1',
+      'version' => '1.26.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2209ddd84e7ef1256b7af205d0717fb62cfc9c33',
+      'reference' => 'c6b00f05152ae2c9b04a448f99c7590beb6042f5',
     ),
     'paragonie/constant_time_encoding' => 
     array (
@@ -126,12 +126,12 @@ private static $installed = array (
     ),
     'phpseclib/phpseclib' => 
     array (
-      'pretty_version' => '3.0.8',
-      'version' => '3.0.8.0',
+      'pretty_version' => '3.0.11',
+      'version' => '3.0.11.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd9615a6fb970d9933866ca8b4036ec3407b020b6',
+      'reference' => '6e794226a35159eb06f355efe59a0075a16551dd',
     ),
     'psr/cache' => 
     array (
@@ -221,12 +221,12 @@ private static $installed = array (
     ),
     'wp-seopress/wp-seopress' => 
     array (
-      'pretty_version' => '4.7.x-dev',
-      'version' => '4.7.9999999.9999999-dev',
+      'pretty_version' => '5.2.x-dev',
+      'version' => '5.2.9999999.9999999-dev',
       'aliases' => 
       array (
       ),
-      'reference' => 'c34fd0905440aeffcfb93aa7915fde5f215bc6ec',
+      'reference' => '4362bc0e2180c38ff02fb6bbfff6a30fbe6ceb73',
     ),
   ),
 );

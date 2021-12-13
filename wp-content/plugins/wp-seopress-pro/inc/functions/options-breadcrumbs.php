@@ -44,6 +44,19 @@ function seopress_breadcrumbs_i18n_home_option() {
     }
 }
 
+//i18n Author
+function seopress_breadcrumbs_i18n_author_option() {
+    $seopress_breadcrumbs_i18n_author_option = get_option('seopress_pro_option_name');
+    if ( ! empty($seopress_breadcrumbs_i18n_author_option)) {
+        foreach ($seopress_breadcrumbs_i18n_author_option as $key => $seopress_breadcrumbs_i18n_author_value) {
+            $options[$key] = $seopress_breadcrumbs_i18n_author_value;
+        }
+        if (isset($seopress_breadcrumbs_i18n_author_option['seopress_breadcrumbs_i18n_author'])) {
+            return $seopress_breadcrumbs_i18n_author_option['seopress_breadcrumbs_i18n_author'];
+        }
+    }
+}
+
 //i18n 404 error
 function seopress_breadcrumbs_i18n_404_option() {
     $seopress_breadcrumbs_i18n_404_option = get_option('seopress_pro_option_name');
@@ -79,6 +92,32 @@ function seopress_breadcrumbs_i18n_no_results_option() {
         }
         if (isset($seopress_breadcrumbs_i18n_no_results_option['seopress_breadcrumbs_i18n_no_results'])) {
             return $seopress_breadcrumbs_i18n_no_results_option['seopress_breadcrumbs_i18n_no_results'];
+        }
+    }
+}
+
+//i18n Attachments
+function seopress_breadcrumbs_i18n_attachments_option() {
+    $seopress_breadcrumbs_i18n_attachments_option = get_option('seopress_pro_option_name');
+    if ( ! empty($seopress_breadcrumbs_i18n_attachments_option)) {
+        foreach ($seopress_breadcrumbs_i18n_attachments_option as $key => $seopress_breadcrumbs_i18n_attachments_value) {
+            $options[$key] = $seopress_breadcrumbs_i18n_attachments_value;
+        }
+        if (isset($seopress_breadcrumbs_i18n_attachments_option['seopress_breadcrumbs_i18n_attachments'])) {
+            return $seopress_breadcrumbs_i18n_attachments_option['seopress_breadcrumbs_i18n_attachments'];
+        }
+    }
+}
+
+//i18n Paged
+function seopress_breadcrumbs_i18n_paged_option() {
+    $seopress_breadcrumbs_i18n_paged_option = get_option('seopress_pro_option_name');
+    if ( ! empty($seopress_breadcrumbs_i18n_paged_option)) {
+        foreach ($seopress_breadcrumbs_i18n_paged_option as $key => $seopress_breadcrumbs_i18n_paged_value) {
+            $options[$key] = $seopress_breadcrumbs_i18n_paged_value;
+        }
+        if (isset($seopress_breadcrumbs_i18n_paged_option['seopress_breadcrumbs_i18n_paged'])) {
+            return $seopress_breadcrumbs_i18n_paged_option['seopress_breadcrumbs_i18n_paged'];
         }
     }
 }
@@ -124,7 +163,7 @@ function seopress_breadcrumbs_separator_disable_option() {
 
 //Display Term archive link
 function seopress_breadcrumbs_term_link($post, $crumbs, $options) {
-    $cpt      = get_post_type($post);
+    $cpt = get_post_type($post);
     $taxonomy = isset($options['seopress_breadcrumbs_tax'][$cpt]['tax']) ? $options['seopress_breadcrumbs_tax'][$cpt]['tax'] : null;
 
     if ('none' != $taxonomy && null != $taxonomy) {//IF TAXONOMY SET FROM BREADCRUMBS OPTION
@@ -132,9 +171,9 @@ function seopress_breadcrumbs_term_link($post, $crumbs, $options) {
             $_seopress_robots_primary_cat = get_post_meta($post->ID, '_seopress_robots_primary_cat', true);
 
             if (isset($_seopress_robots_primary_cat) && '' != $_seopress_robots_primary_cat && 'none' != $_seopress_robots_primary_cat) {
-                $tax    = get_term($_seopress_robots_primary_cat, $taxonomy);
+                $tax = get_term($_seopress_robots_primary_cat, $taxonomy);
                 if ( ! is_wp_error($tax) && $tax && isset($tax->term_id)) {
-                    $terms  = wp_get_post_terms($post->ID, $taxonomy, ['orderby' => 'parent', 'order' => 'DESC', 'child_of' => $tax->term_id]);
+                    $terms = wp_get_post_terms($post->ID, $taxonomy, ['orderby' => 'parent', 'order' => 'DESC', 'child_of' => $tax->term_id]);
                     $parent = current($terms);
 
                     if (false !== $parent) {
@@ -221,6 +260,12 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
         } else {
             $i18n_home = __('Home', 'wp-seopress-pro');
         }
+        //Author
+        if ('' != seopress_breadcrumbs_i18n_author_option()) {
+            $i18n_author = seopress_breadcrumbs_i18n_author_option();
+        } else {
+            $i18n_author = __('Author: ', 'wp-seopress-pro');
+        }
         //404 error
         if ('' != seopress_breadcrumbs_i18n_404_option()) {
             $i18n_404 = seopress_breadcrumbs_i18n_404_option();
@@ -239,12 +284,24 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
         } else {
             $i18n_no_results = __('No results', 'wp-seopress-pro');
         }
+        //Attachments
+        if ('' != seopress_breadcrumbs_i18n_attachments_option()) {
+            $i18n_attachments = seopress_breadcrumbs_i18n_attachments_option();
+        } else {
+            $i18n_attachments = __('Attachments', 'wp-seopress-pro');
+        }
+        //Paged
+        if ('' != seopress_breadcrumbs_i18n_paged_option()) {
+            $i18n_paged = seopress_breadcrumbs_i18n_paged_option();
+        } else {
+            $i18n_paged = __('Page ', 'wp-seopress-pro');
+        }
 
         //Globals
         global $post, $wp_query;
 
         //Init
-        $crumbs  = [];
+        $crumbs = [];
         $options = get_option('seopress_pro_option_name');
 
         //Home prefix
@@ -270,7 +327,7 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
         //Attachment
         if (is_attachment()) {
             $crumbs[] = [
-                0 => __('Attachments', 'wp-seopress-pro'),
+                0 => $i18n_attachments,
             ];
         }
 
@@ -278,7 +335,7 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
         if (is_single() && ( ! is_home() && ! is_front_page())) {
             if (is_singular('tribe_events')) { //Events calendar
                 $queried_object = get_queried_object();
-                $post_type      = get_post_type_object('tribe_events');
+                $post_type = get_post_type_object('tribe_events');
 
                 $crumbs[] = [
                     0 => $post_type->labels->name,
@@ -327,8 +384,8 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
                     if ($post->post_parent) { //If post has parent pages
                         $parent_id = $post->post_parent;
                         while ($parent_id) {
-                            $page          = get_post($parent_id);
-                            $parent_id     = $page->post_parent;
+                            $page = get_post($parent_id);
+                            $parent_id = $page->post_parent;
                             if ('' != get_post_meta($page->ID, '_seopress_robots_breadcrumbs', true)) {
                                 $parent_crumbs[] = [wp_strip_all_tags(get_post_meta($page->ID, '_seopress_robots_breadcrumbs', true)), get_permalink($page->ID)];
                             } else {
@@ -417,8 +474,8 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
             if ($post->post_parent) { //If post has parent pages
                 $parent_id = $post->post_parent;
                 while ($parent_id) {
-                    $page          = get_post($parent_id);
-                    $parent_id     = $page->post_parent;
+                    $page = get_post($parent_id);
+                    $parent_id = $page->post_parent;
                     if ('' != get_post_meta($page->ID, '_seopress_robots_breadcrumbs', true)) {
                         $parent_crumbs[] = [wp_strip_all_tags(get_post_meta($page->ID, '_seopress_robots_breadcrumbs', true)), get_permalink($page->ID)];
                     } else {
@@ -514,6 +571,22 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
 
         //Date Archives
         if (is_date()) {
+            //Blog parent page
+            if ('1' != seopress_breadcrumbs_remove_blog_page_option()) {
+                if ('page' == get_option('show_on_front') && '0' != $page_id) {
+                    if ('' != get_post_meta($page_id, '_seopress_robots_breadcrumbs', true)) {
+                        $crumbs[] = [
+                            0 => wp_strip_all_tags(get_post_meta($page_id, '_seopress_robots_breadcrumbs', true)),
+                            1 => get_the_permalink($page_id),
+                        ];
+                    } else {
+                        $crumbs[] = [
+                            0 => wp_strip_all_tags(get_the_title($page_id)),
+                            1 => get_the_permalink($page_id),
+                        ];
+                    }
+                }
+            }
             if (is_year() || is_month()) {
                 $crumbs[] = [
                     0 => get_the_time('Y'),
@@ -535,7 +608,7 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
             $author_name = get_userdata($author);
 
             $crumbs[] = [
-                0 => __('Author: ', 'wp-seopress-pro') . $author_name->display_name,
+                0 => $i18n_author . $author_name->display_name,
                 1 => get_author_posts_url($author_name->ID),
             ];
         }
@@ -543,7 +616,7 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
         //Taxonomies (including Post Tag and Post Category)
         if (is_tax() || is_tag() || is_category()) {
             $current_term = $GLOBALS['wp_query']->get_queried_object();
-            $taxonomy     = get_taxonomy($current_term->taxonomy);
+            $taxonomy = get_taxonomy($current_term->taxonomy);
 
             $cpt = isset($options['seopress_breadcrumbs_cpt'][$taxonomy->name]['cpt']) ? $options['seopress_breadcrumbs_cpt'][$taxonomy->name]['cpt'] : null;
             $cpt = get_post_type_object($cpt);
@@ -634,7 +707,7 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
             $current_page = (get_query_var('paged')) ? get_query_var('paged') : 1;
 
             $crumbs[] = [
-                0 => __('Page ', 'wp-seopress-pro') . $current_page,
+                0 => $i18n_paged . $current_page,
                 1 => $current_url,
             ];
         }
@@ -658,7 +731,7 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
             }
 
             //Schema.org itemListElement
-            $crumbs   = apply_filters('seopress_pro_breadcrumbs_crumbs', $crumbs);
+            $crumbs = apply_filters('seopress_pro_breadcrumbs_crumbs', $crumbs);
             $last_key = array_keys($crumbs);
             $last_key = array_pop($last_key);
 
@@ -711,9 +784,9 @@ if ('1' == seopress_breadcrumbs_enable_option() || '1' == seopress_breadcrumbs_j
 
                 foreach ($crumbs as $key => $crumb) {
                     $sp_breadcrumbs_json['itemListElement'][$key] = [
-                        '@type'    => 'ListItem',
+                        '@type' => 'ListItem',
                         'position' => $key + 1,
-                        'name'     => $crumb[0],
+                        'name' => $crumb[0],
                     ];
 
                     //Check if URL is available

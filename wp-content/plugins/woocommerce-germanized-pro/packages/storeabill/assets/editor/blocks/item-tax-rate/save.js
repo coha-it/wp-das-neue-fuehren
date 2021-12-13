@@ -7,6 +7,7 @@ import {
     getFontSizeClass,
     RichText,
 } from '@wordpress/block-editor';
+import { getFontSizeStyle } from "@storeabill/utils";
 
 export default function save( { attributes } ) {
 
@@ -29,7 +30,7 @@ export default function save( { attributes } ) {
 
     const styles = {
         color: textClass ? undefined : customTextColor,
-        fontSize: fontSizeClass ? undefined : customFontSize,
+        fontSize: fontSizeClass ? undefined : getFontSizeStyle( customFontSize ),
     };
 
     return (

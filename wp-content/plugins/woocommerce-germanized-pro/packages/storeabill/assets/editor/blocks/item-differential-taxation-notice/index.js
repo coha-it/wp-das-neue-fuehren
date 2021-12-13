@@ -27,7 +27,7 @@ const settings = {
             "type": "string"
         },
         "customFontSize": {
-            "type": "number"
+            "type": "string"
         },
         "content": {
             "type": 'string',
@@ -37,7 +37,46 @@ const settings = {
         },
     },
     edit,
-    save
+    save,
+    deprecated: [
+        {
+            supports: {
+                html: false,
+            },
+            attributes: {
+                "textColor": {
+                    "type": "string"
+                },
+                "customTextColor": {
+                    "type": "string"
+                },
+                "fontSize": {
+                    "type": "string"
+                },
+                "customFontSize": {
+                    "type": "number"
+                },
+                "content": {
+                    "type": 'string',
+                    "source": 'html',
+                    "selector": 'p.sab-block-item-content',
+                    "default": _x( 'Subject to differential taxation under §25a UStG.', 'storeabill-core', 'storeabill' )
+                },
+            },
+            isEligible( { customFontSize } ) {
+                return typeof customFontSize === 'number';
+            },
+            migrate( attributes ) {
+                return {
+                    ...attributes,
+                    customFontSize: attributes.customFontSize ? '' + attributes.customFontSize : undefined,
+                };
+            },
+            save( attributes ) {
+                return save( attributes );
+            }
+        },
+    ]
 };
 
 registerBlockType( 'storeabill/item-differential-taxation-notice', settings );

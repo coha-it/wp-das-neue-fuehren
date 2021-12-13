@@ -14,6 +14,10 @@
   }
 }
 
+mark {
+  background-color: transparent;
+}
+
 .sab-document-main {
   .components-base-control .components-base-control__help {
     font-size: 11px;
@@ -37,6 +41,7 @@
   }
 }
 
+.editor-styles-wrapper.block-editor-writing-flow,
 .edit-post-visual-editor.editor-styles-wrapper,
 .edit-post-visual-editor > .editor-styles-wrapper,
 .edit-post-visual-editor__content-area > div:not([class]),
@@ -137,7 +142,6 @@ div:not(.block-editor-inner-blocks) > .block-editor-block-list__layout:not(.wp-b
   > .wp-block[data-type="storeabill/header"] {
     order: -1;
     margin-top: 0;
-    margin-bottom: -$global-block-margin;
   }
 
   > .wp-block[data-type="storeabill/footer"] {

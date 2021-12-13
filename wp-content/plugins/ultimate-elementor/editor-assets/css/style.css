@@ -1,47 +1,83 @@
 @font-face {
 	font-family: 'uael';
-	src:  url('../fonts/uael.eot?ejqak3');
-	src:  url('../fonts/uael.eot?ejqak3#iefix') format('embedded-opentype'),
-		url('../fonts/uael.ttf?ejqak3') format('truetype'),
-		url('../fonts/uael.woff?ejqak3') format('woff'),
-		url('../fonts/uael.svg?ejqak3#uael') format('svg');
+	src:  url('../fonts/uael.eot?iwggsu');
+	src:  url('../fonts/uael.eot?iwggsu#iefix') format('embedded-opentype'),
+	url('../fonts/uael.ttf?iwggsu') format('truetype'),
+	url('../fonts/uael.woff?iwggsu') format('woff'),
+	url('../fonts/uael.svg?iwggsu#uael') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
 
 [class^="uael-icon-"], [class*=" uael-icon-"] {
-	/* use !important to prevent issues with browser extensions that change fonts */
-	font-family: 'uael' !important;
-	speak: none;
-	font-style: normal;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'uael' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
 
-	/* Better Font Rendering =========== */
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+.elementor-control-type-uael-presets-select .elementor-control-content select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: 12px;
+    font-family: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    text-transform: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    -ms-flex-preferred-size: 100%;
+    flex-basis: 100%;
+    padding-left: 5px;
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+/* Style to custom select control */
+
+.elementor-control-type-uael-presets-select .elementor-control-input-wrapper:after {
+    font-family: eicons;
+    content: '\e8ad';
+    font-size: 12px;
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    right: 5px;
+    pointer-events: none;
+}
+
+/* Style CSS ends */
+
+.elementor-control-type-uael-presets-select .elementor-control-input-wrapper,
 .elementor-element {
     position: relative;
 }
 
 .elementor-element [class*="uael-icon-"]:after {
-	content: "UAE";
-	position: absolute;
-	top: 0;
-	right: 0;
-	z-index: 1;
-	color: #a4afb7;
-	background: transparent;
-	font-size: 10px;
-	font-family: Roboto,Arial,Helvetica,Verdana,sans-serif;
-	padding: 0.2em 0.5em;
-	border-width: 0 0 1px 1px;
-	border-color: #e0e0e0;
-	border-style: solid;
+  content: "UAE";
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  color: #a4afb7;
+  background: transparent;
+  font-size: 10px;
+  font-family: Roboto,Arial,Helvetica,Verdana,sans-serif;
+  padding: 0.2em 0.5em;
+  border-width: 0 0 1px 1px;
+  border-color: #e0e0e0;
+  border-style: solid;
 }
 
 .uael-icon-woo-checkout-1:before {
@@ -66,7 +102,7 @@
   content: "\e917";
 }
 .uael-icon-social-share:before {
-  content: "\e918";
+  content: "\e900";
 }
 .uael-icon-gravity-form-styler:before {
   content: "\e919";
@@ -173,7 +209,9 @@
 .uael-icon-fluent-form-styler:before {
   content: "\e93b";
 }
-
+.uael-icon-welcome-music:before {
+	content: "\e901";
+}
 .uael-editor-doc {
   font-size: 11px;
   font-style: italic;

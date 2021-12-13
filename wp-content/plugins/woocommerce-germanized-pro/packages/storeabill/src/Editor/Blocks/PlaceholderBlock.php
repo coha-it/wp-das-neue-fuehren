@@ -66,7 +66,7 @@ class PlaceholderBlock extends DynamicBlock {
 
 	public function get_attributes() {
 		return array(
-			'textSize'  => $this->get_schema_number( sab_get_document_default_font_size() ),
+			'textSize'  => $this->get_schema_string( sab_get_document_default_font_size() ),
 			'fontSize'  => $this->get_schema_string(),
 			'align'     => $this->get_schema_align(),
 			'blockName' => $this->get_schema_string( $this->get_name() ),

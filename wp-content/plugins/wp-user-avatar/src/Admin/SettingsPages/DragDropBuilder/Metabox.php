@@ -65,7 +65,7 @@ class Metabox
         $placeholder = isset($options['placeholder']) ? $options['placeholder'] : '';
         printf(
             '<input type="text" class="short" name="%1$s" id="%1$s" value="%3$s" placeholder="%2$s">',
-            esc_attr($name), esc_attr($placeholder), $this->saved_values_bucket($name)
+            esc_attr($name), esc_attr($placeholder), esc_attr($this->saved_values_bucket($name))
         );
     }
 
@@ -74,7 +74,7 @@ class Metabox
         $placeholder = isset($options['placeholder']) ? $options['placeholder'] : '';
         printf(
             '<input type="number" class="short" name="%1$s" id="%1$s" value="%3$s" placeholder="%2$s">',
-            esc_attr($name), esc_attr($placeholder), $this->saved_values_bucket($name)
+            esc_attr($name), esc_attr($placeholder), esc_attr($this->saved_values_bucket($name))
         );
     }
 
@@ -84,7 +84,7 @@ class Metabox
 
         printf(
             '<input type="text" class="short pp-color-field" name="%1$s" id="%1$s" value="%3$s" placeholder="%2$s" data-default-color="%4$s">',
-            esc_attr($name), esc_attr($placeholder), $this->saved_values_bucket($name), $this->default_values()[$name]
+            esc_attr($name), esc_attr($placeholder), esc_attr($this->saved_values_bucket($name)), esc_attr(ppress_var($this->default_values(), $name))
         );
     }
 
@@ -94,7 +94,7 @@ class Metabox
         echo '<div class="pp_upload_field_container">';
         printf(
             '<input type="text" class="pp_upload_field short large-text" name="%1$s" id="%1$s" value="%3$s" placeholder="%2$s">',
-            esc_attr($name), esc_attr($placeholder), $this->saved_values_bucket($name)
+            esc_attr($name), esc_attr($placeholder), esc_attr($this->saved_values_bucket($name))
         );
         printf('<span class="pp_upload_file"><a href="#" class="pp_upload_button">%s</a></span>', esc_html__('Upload Image', 'wp-user-avatar'));
         echo '</div>';
@@ -105,7 +105,7 @@ class Metabox
         $placeholder = isset($options['placeholder']) ? $options['placeholder'] : '';
         printf(
             '<textarea class="short" name="%1$s" id="%1$s" placeholder="%2$s">%3$s</textarea>',
-            esc_attr($name), esc_attr($placeholder), $this->saved_values_bucket($name)
+            esc_attr($name), esc_attr($placeholder), esc_textarea($this->saved_values_bucket($name))
         );
     }
 
@@ -146,7 +146,7 @@ class Metabox
 
     public function custom($name, $options)
     {
-        echo isset($options['content']) ? $options['content'] : '';
+        echo isset($options['content']) ? wp_kses_post($options['content']) : '';
     }
 
     private function select2_selected($id, $name)
@@ -274,12 +274,13 @@ class Metabox
         ?>
         <div class="postbox-container" id="settings">
             <div id="pp-form-builder-metabox" class="postbox">
-                <div class="postbox-header"><h2 class="hndle is-non-sortable"><span><?= $metabox_title ?></span></h2>
+                <div class="postbox-header"><h2 class="hndle is-non-sortable">
+                        <span><?= esc_html($metabox_title) ?></span></h2>
                 </div>
                 <div class="inside">
                     <div class="panel-wrap pp-form-builder-mb-data">
                         <ul class="pp-form-builder-mb-data_tabs pp-tabs">
-                            <?php foreach ($tabs as $key => $value) : ?>
+                            <?php foreach ($tabs as $key => $value) : $key = esc_attr($key); ?>
                                 <?php if (empty($tab_settings[$key])) continue; ?>
                                 <li class="<?= $key ?>_options <?= $key ?>_tab">
                                     <a href="#<?= $key ?>_data"><span><?= $value ?></span></a>
@@ -288,15 +289,15 @@ class Metabox
                         </ul>
 
                         <?php foreach ($tab_settings as $key => $fields) {
-                            echo '<div id="' . $key . '_data" class="panel pp-form-builder_options_panel hidden">';
+                            echo '<div id="' . esc_attr($key) . '_data" class="panel pp-form-builder_options_panel hidden">';
 
                             foreach ($fields as $options) {
                                 $field_id = $options['id'];
 
                                 echo sprintf('<div class="form-field %s_wrap">', $field_id);
-                                echo "<label for=\"$field_id\">" . $options['label'] . '</label>';
+                                echo "<label for=\"$field_id\">" . wp_kses_post($options['label']) . '</label>';
                                 if ( ! empty($options['description'])) {
-                                    printf('<span class="pp-form-builder-help-tip" title="%s"></span>', $options['description']);
+                                    printf('<span class="pp-form-builder-help-tip" title="%s"></span>', esc_attr($options['description']));
                                 }
                                 echo '<div class="pp-field-row-content">';
                                 $this->{$options['type']}($field_id, $options);

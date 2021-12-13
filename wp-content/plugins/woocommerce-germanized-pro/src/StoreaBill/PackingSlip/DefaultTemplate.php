@@ -72,7 +72,7 @@ class DefaultTemplate extends Template {
 		<div style="height:28px" aria-hidden="true" class="wp-block-spacer"></div>
 		<!-- /wp:spacer -->
 
-		<!-- wp:storeabill/document-title {"customFontSize":25} -->
+		<!-- wp:storeabill/document-title {"customFontSize":"25"} -->
 		<p class="has-text-align-left" style="font-size:25px"><strong><?php echo apply_filters( self::get_hook_prefix() . 'document_title', strtoupper( __( 'Packing Slip', 'woocommerce-germanized-pro' ) ) ); ?></strong></p>
 		<!-- /wp:storeabill/document-title -->
 

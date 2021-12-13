@@ -8,18 +8,15 @@ use ProfilePress\Custom_Settings_Page_Api;
  *
  *
  */
-class WP_User_Avatar_Admin extends AbstractSettingsPage
+class WP_User_Avatar_Admin
 {
-    /**
-     * Constructor
-     */
     public function __construct()
     {
         // Settings saved to wp_options
         add_action('admin_init', array($this, 'wpua_options'));
         // Admin menu settings
-        add_filter('ppress_settings_page_tabs', [$this, 'menu_tab']);
-        add_filter('ppress_general_settings_admin_page_short_circuit', [$this, 'settings_page_callback']);
+        add_filter('ppress_settings_page_submenus_tabs', [$this, 'menu_tab']);
+        add_action('ppress_admin_settings_submenu_page_general_wp-user-avatar', [$this, 'settings_page_callback']);
         add_filter('ppress_general_settings_admin_page_title', [$this, 'change_page_title']);
 
         add_action('admin_init', array($this, 'wpua_register_settings'));
@@ -54,9 +51,10 @@ class WP_User_Avatar_Admin extends AbstractSettingsPage
      */
     public function menu_tab($tabs)
     {
-        $tabs[35] = [
-            'url'   => add_query_arg('view', 'wp-user-avatar', PPRESS_SETTINGS_SETTING_PAGE),
-            'label' => esc_html__('Profile & Cover Photo', 'wp-user-avatar')
+        $tabs[10] = [
+            'parent' => 'general',
+            'id'     => 'wp-user-avatar',
+            'label'  => esc_html__('Profile & Cover Photo', 'wp-user-avatar')
         ];
 
         return $tabs;
@@ -64,7 +62,7 @@ class WP_User_Avatar_Admin extends AbstractSettingsPage
 
     public function change_page_title($title)
     {
-        if (isset($_GET['view']) && $_GET['view'] == 'wp-user-avatar') {
+        if (isset($_GET['section']) && $_GET['section'] == 'wp-user-avatar') {
             $title = esc_html__('Profile & Cover Photo', 'wp-user-avatar');
         }
 
@@ -81,7 +79,7 @@ class WP_User_Avatar_Admin extends AbstractSettingsPage
             ],
             [
                 'section_title' => esc_html__('Check out MailOptin', 'wp-user-avatar'),
-                'content'       => $this->mailoptin_ad_block(),
+                'content'       => AbstractSettingsPage::mailoptin_ad_block(),
             ]
         ];
 
@@ -105,39 +103,30 @@ class WP_User_Avatar_Admin extends AbstractSettingsPage
         $content .= '</p>';
 
         $content .= '<p>';
-        /** @todo add doc link here */
-        $content .= '<strong><a href="#" target="_blank">' . esc_html__('Learn more', 'wp-user-avatar') . '</a></strong>';
+        $content .= '<strong><a href="https://profilepress.net/article/avatar-shortcode/?utm_source=wp_dashboard&utm_medium=ppress-settings-page&utm_campaign=profile-cover-photo" target="_blank">' . esc_html__('Learn more', 'wp-user-avatar') . '</a></strong>';
         $content .= '</p>';
 
         return $content;
     }
 
-    public function settings_page_callback($page)
+    public function settings_page_callback()
     {
-        if (isset($_GET['view']) && $_GET['view'] == 'wp-user-avatar') {
+        add_filter('wp_cspa_main_content_area', function () {
+            ob_start();
+            require_once(WPUA_INC . 'wpua-options-page.php');
 
-            add_filter('wp_cspa_main_content_area', function () {
-                ob_start();
-                require_once(WPUA_INC . 'wpua-options-page.php');
+            return ob_get_clean();
+        });
 
-                return ob_get_clean();
-            });
+        add_action('wp_cspa_form_tag', function () {
+            echo sprintf('action="%s"', admin_url('options.php'));
+        });
 
-            add_action('wp_cspa_form_tag', function () {
-                echo sprintf('action="%s"', admin_url('options.php'));
-            });
-
-            $instance = Custom_Settings_Page_Api::instance();
-            $instance->option_name('ppress_wp_user_avatar_options');
-            $instance->page_header(esc_html__('Profile Picture', 'wp-user-avatar'));
-            $this->register_core_settings($instance);
-            $instance->tab($this->settings_tab_args());
-            $instance->build();
-
-            return true;
-        }
-
-        return $page;
+        $instance = Custom_Settings_Page_Api::instance();
+        $instance->option_name('ppress_wp_user_avatar_options');
+        $instance->page_header(esc_html__('Profile & Cover Photo', 'wp-user-avatar'));
+        $instance->sidebar(self::sidebar_args());
+        $instance->build();
     }
 
 
@@ -147,7 +136,7 @@ class WP_User_Avatar_Admin extends AbstractSettingsPage
      */
     public function wpua_is_menu_page()
     {
-        return isset($_GET['page'], $_GET['view']) && $_GET['view'] == 'wp-user-avatar' ? true : false;
+        return isset($_GET['page'], $_GET['section']) && $_GET['section'] == 'wp-user-avatar' ? true : false;
     }
 
     /**

@@ -77,24 +77,31 @@ function wc_gzd_cart_product_differential_taxation_mark( $title, $cart_item, $ca
 	return $title;
 }
 
-function wc_gzd_cart_contains_differential_taxed_product() {
+function wc_gzd_cart_contains_differential_taxed_product( $cart_data = null ) {
 
 	// Might gets called from Shopmarks before init - return false to prevent cart errors
 	if ( ! did_action( 'before_woocommerce_init' ) || doing_action( 'before_woocommerce_init' ) ) {
 		return false;
 	}
 
-	$cart                           = WC()->cart;
+	if ( ! $cart_data && WC()->cart ) {
+	    $cart_data = WC()->cart->get_cart();
+    }
+
 	$contains_differentail_taxation = false;
 
-	if ( ! $cart ) {
+	if ( ! $cart_data ) {
 	    return false;
     }
 
-	foreach ( $cart->get_cart() as $cart_item_key => $values ) {
-		$_product = $values['data'];
+	foreach ( $cart_data as $values ) {
+	    if ( is_a( $values, 'WC_Order_Item_Product' ) ) {
+	        $_product = $values->get_product();
+        } elseif ( is_array( $values ) && isset( $values['data'] ) ) {
+		    $_product = $values['data'];
+        }
 
-		if ( wc_gzd_get_product( $_product )->is_differential_taxed() ) {
+		if ( $_product && wc_gzd_get_product( $_product )->is_differential_taxed() ) {
 			$contains_differentail_taxation = true;
 			break;
 		}
@@ -120,6 +127,10 @@ function wc_gzd_cart_product_item_desc( $title, $cart_item, $cart_item_key = '' 
 		$cart_item_key = $cart_item;
 		$title         = "";
 		$echo          = true;
+	} elseif( is_numeric( $title ) && wc_gzd_is_checkout_action() && is_a( $cart_item, 'WC_Order_Item_Product' ) ) {
+		$echo          = true;
+		$cart_item_key = $title;
+		$title         = '';
 	}
 
 	if ( is_a( $cart_item, 'WC_Order_Item_Product' ) ) {
@@ -193,6 +204,27 @@ function wc_gzd_cart_product_attributes( $title, $cart_item, $cart_item_key = ''
 	return $title;
 }
 
+function wc_gzd_is_checkout_action() {
+    $current_filter = current_filter();
+
+    if ( $current_filter ) {
+        $filters = array_merge( \Vendidero\Germanized\Shopmarks::get_filters( 'cart' ), \Vendidero\Germanized\Shopmarks::get_filters( 'checkout' ), \Vendidero\Germanized\Shopmarks::get_filters( 'order' ) );
+        $actions = array();
+
+        foreach( $filters as $filter_name => $filter ) {
+            if ( $filter['is_action'] ) {
+                $actions[] = $filter_name;
+            }
+        }
+
+        if ( in_array( $current_filter, $actions ) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 /**
  * Appends delivery time live data (while checkout) or order meta to product name
  *
@@ -210,18 +242,22 @@ function wc_gzd_cart_product_delivery_time( $title, $cart_item, $cart_item_key =
 		$cart_item_key = $cart_item;
 		$title         = "";
 		$echo          = true;
+	} elseif( is_numeric( $title ) && wc_gzd_is_checkout_action() && is_a( $cart_item, 'WC_Order_Item_Product' ) ) {
+		$echo          = true;
+		$cart_item_key = $title;
+		$title         = '';
 	}
 
 	if ( is_a( $cart_item, 'WC_Order_Item_Product' ) ) {
 		if ( $gzd_item = wc_gzd_get_order_item( $cart_item ) ) {
 			$delivery_time = $gzd_item->get_delivery_time();
-		} elseif( ( $product = $cart_item->get_product() ) && wc_gzd_get_product( $product )->get_delivery_time_term() ) {
+		} elseif( ( $product = $cart_item->get_product() ) && wc_gzd_get_product( $product )->get_delivery_time() ) {
 			$delivery_time = wc_gzd_get_product( $product )->get_delivery_time_html();
 		}
 	} elseif ( isset( $cart_item['data'] ) ) {
 		$product = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
 
-		if ( is_a( $product, 'WC_Product' ) && wc_gzd_get_product( $product )->get_delivery_time_term() ) {
+		if ( is_a( $product, 'WC_Product' ) && wc_gzd_get_product( $product )->get_delivery_time() ) {
 			$delivery_time = wc_gzd_get_product( $product )->get_delivery_time_html();
 		}
 
@@ -257,6 +293,10 @@ function wc_gzd_cart_product_unit_price( $price, $cart_item, $cart_item_key = ''
 		$cart_item_key = $cart_item;
 		$price         = "";
 		$echo          = true;
+	} elseif( is_numeric( $price ) && wc_gzd_is_checkout_action() && is_a( $cart_item, 'WC_Order_Item_Product' ) ) {
+		$echo          = true;
+		$cart_item_key = $price;
+		$price         = '';
 	}
 
 	$tax_display = get_option( 'woocommerce_tax_display_cart' );
@@ -305,7 +345,11 @@ function wc_gzd_cart_product_units( $title, $cart_item, $cart_item_key = '' ) {
 		$cart_item_key = $cart_item;
 		$title         = "";
 		$echo          = true;
-	}
+	} elseif( is_numeric( $title ) && wc_gzd_is_checkout_action() && is_a( $cart_item, 'WC_Order_Item_Product' ) ) {
+	    $echo          = true;
+	    $cart_item_key = $title;
+	    $title         = '';
+    }
 
 	if ( is_a( $cart_item, 'WC_Order_Item_Product' ) ) {
 		if ( $gzd_item = wc_gzd_get_order_item( $cart_item ) ) {
@@ -538,7 +582,6 @@ function wc_gzd_get_cart_tax_share( $type = 'shipping', $cart_contents = array()
 	// Get tax classes and tax amounts
 	if ( ! empty( $cart ) ) {
 		foreach ( $cart as $key => $item ) {
-
 			if ( is_a( $item, 'WC_Order_Item' ) ) {
 				$class      = $item->get_tax_class();
 				$line_total = $item->get_total();
@@ -552,11 +595,14 @@ function wc_gzd_get_cart_tax_share( $type = 'shipping', $cart_contents = array()
 				        break;
                     }
                 }
+
+				$tax_rate = apply_filters( 'woocommerce_gzd_tax_share_order_item_tax_rate', $tax_rate, $item, $type );
 			} elseif ( isset( $item['data'] ) ) {
 				$_product   = apply_filters( 'woocommerce_cart_item_product', $item['data'], $item, $key );
 				$class      = $_product->get_tax_class();
 				$line_total = $item['line_total'];
 				$tax_rate   = key( $item['line_tax_data']['total'] );
+				$tax_rate   = apply_filters( 'woocommerce_gzd_tax_share_cart_item_tax_rate', $tax_rate, $item, $type );
 			}
 
 			if ( wc_gzd_item_is_tax_share_exempt( $item, $type, $key ) ) {

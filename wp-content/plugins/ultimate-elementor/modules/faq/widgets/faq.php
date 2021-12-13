@@ -118,6 +118,7 @@ class FAQ extends Common_Widget {
 	 * @access protected
 	 */
 	protected function register_controls() {
+		$this->register_presets_control( 'FAQ', $this );
 		// content tab.
 		$this->register_content();
 		$this->register_layout();
@@ -254,11 +255,15 @@ class FAQ extends Common_Widget {
 						'fields'      => $repeater->get_controls(),
 						'default'     => array(
 							array(
-								'question' => __( 'What is FAQ?', 'uael' ),
+								'question' => __( 'Impedit egestas aliquet?', 'uael' ),
 								'answer'   => __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.', 'uael' ),
 							),
 							array(
-								'question' => __( 'What is FAQ?', 'uael' ),
+								'question' => __( 'Sapien class quo temporibus?', 'uael' ),
+								'answer'   => __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.', 'uael' ),
+							),
+							array(
+								'question' => __( 'Elementum voluptate sodales?', 'uael' ),
 								'answer'   => __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.', 'uael' ),
 							),
 						),
@@ -317,21 +322,23 @@ class FAQ extends Common_Widget {
 						'value'   => 'fas fa-angle-right',
 						'library' => 'fa-solid',
 					),
+					'style_transfer'   => true,
 				)
 			);
 
 			$this->add_control(
 				'selected_active_icon',
 				array(
-					'label'     => __( 'Active Icon', 'uael' ),
-					'type'      => Controls_Manager::ICONS,
-					'default'   => array(
+					'label'          => __( 'Active Icon', 'uael' ),
+					'type'           => Controls_Manager::ICONS,
+					'default'        => array(
 						'value'   => 'fas fa-angle-up',
 						'library' => 'fa-solid',
 					),
-					'condition' => array(
+					'condition'      => array(
 						'selected_icon[value]!' => '',
 					),
+					'style_transfer' => true,
 				)
 			);
 
@@ -456,6 +463,7 @@ class FAQ extends Common_Widget {
 					'condition'       => array(
 						'faq_layout' => 'grid',
 					),
+					'render_type'     => 'template',
 				)
 			);
 
@@ -774,7 +782,7 @@ class FAQ extends Common_Widget {
 						'double' => __( 'Double', 'uael' ),
 					),
 					'selectors'   => array(
-						'{{WRAPPER}} .uael-faq-container .uael-faq-accordion .uael-accordion-content' => 'border-style: {{VALUE}};',
+						'{{WRAPPER}} .uael-faq-container .uael-faq-accordion .uael-accordion-content' => 'border-top-style: {{VALUE}};',
 					),
 					'condition'   => array(
 						'enable_seperator' => 'yes',

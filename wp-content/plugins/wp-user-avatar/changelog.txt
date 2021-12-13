@@ -1,4 +1,91 @@
-﻿= 3.1.8 =
+﻿== Changelog ==
+
+= 3.2.4 =
+* Fixed bug where user role selection on registration wasn't working.
+* Fixed responsiveness issue in Gerbera member directory theme.
+
+= 3.2.3 =
+* Fixed bug where custom content protection message wasn't properly formatted.
+* Escaped html attributes in html response returned on ajax form request.
+* Removed display-name as title for user profile in member directory.
+
+= 3.2.2 =
+* Added a new admin page header.
+* Add redirect_to query parameter when Global Access redirects to a login page.
+
+= 3.2.1 =
+* Fixed issue with avatar sizes.
+* Fix: PHP DOMDocument loadHTML not encoding UTF-8 correctly.
+* Fixed: Index column size too large.
+
+= 3.2.0 =
+* Added cover photo uploader to WP edit profile page.
+* Added pagination to profile posts.
+* Added pagination to profile comments.
+* Added "previous_page" support for redirecting to previous page using "redirect" form attribute.
+* Renamed cover image to cover photo.
+* Ensure avatar url returns the full image url.
+* Added filter to override get_avatar size.
+* Fixed bug where double member directory embed resulted in same result in both.
+* Fixed form builder metabox label not correctly displaying.
+* Ensure missing closing tags are closed in content protection.
+* Made website url in profile display clickable.
+
+= 3.1.19 =
+* Fixed bug where html in builder settings modal wasn't parsed.
+* Added filter to disable session.
+* Further disable screen options where not needed.
+
+= 3.1.18 =
+* Added wp_redirect interceptor to prevent 301 redirect during Ajax login.
+* Added filter for frontend user profile post listing.
+* Added notice to switch to seo friendly permalink structure.
+* Fixed bug where media uploader wasn't working in rare cases.
+* Disable screen options where not needed.
+* Remove wp_login action trigger from autologin because it can break ajax signup form.
+* Enhancement: Only set alt in user avatar if it exists.
+
+= 3.1.17 =
+* Added wp_login trigger after login.
+* Fixed issue where deleted login page causes wp-admin to 404.
+* Fixed: Undefined property: stdClass::$url.
+
+= 3.1.16 =
+* Added compatibility with a lot of 2fa plugins.
+
+= 3.1.15 =
+* Fixed bug with with My Account page not correctly rendering.
+
+= 3.1.14 =
+* Minimum PHP version now 5.6.0.
+
+= 3.1.13 =
+* Added checks to ensure pages exist before setting/redirecting to them.
+* Fixed user profile responsiveness.
+* Fixes PHP Fatal error: Uncaught Error: Class "DOMDocument" not found.
+
+= 3.1.12 =
+* Fixed issue where logout redirect wasn’t working.
+* Fixed issue where line breaks weren't maintained.
+* Fixed bug where redirect after login was to an invalid url.
+
+= 3.1.11 =
+* Fixed missing sql unescaping in member directory search.
+* Validate redirect_to urls to prevent redirect to another site.
+* XSS fix by escaping variables in tab widget.
+
+= 3.1.10 =
+* Fixed issue where bulk delete wasn't working in some cases.
+* Scoped wp_list actions to manage_options capability.
+* Fixed typos in admin setting and My Account pages.
+* Fixed broken member directory admin page design.
+* Improved sanitization and escaping of data.
+* Added file upload field support to profile-cpf shortcode.
+* Added missing bio support to profile-hide-empty-data shortcode.
+* Fixed bug where profile-slug + slash in a post slug redirected to homepage.
+* Fixed bug where custom processing labels wasn’t working for password reset forms.
+
+= 3.1.8 =
 * Fixed issue with global site access not correctly working.
 * Added success color to registration form notice.
 * Fixed bug admin bar control wasn't working.

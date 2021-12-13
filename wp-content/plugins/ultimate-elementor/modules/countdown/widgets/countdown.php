@@ -10,6 +10,7 @@ namespace UltimateElementor\Modules\Countdown\Widgets;
 // Elementor Classes.
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Box_Shadow;
 use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
 use Elementor\Utils;
@@ -121,6 +122,8 @@ class Countdown extends Common_Widget {
 	 * @access protected
 	 */
 	protected function register_controls() {
+
+		$this->register_presets_control( 'Countdown', $this );
 
 		// Content Tab.
 		$this->register_countdown_general_controls();
@@ -368,6 +371,8 @@ class Countdown extends Common_Widget {
 				'label_off'    => __( 'Hide', 'uael' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
+				'prefix_class' => 'uael-countdown-show-seconds-',
+				'render_type'  => 'template',
 			)
 		);
 
@@ -401,7 +406,7 @@ class Countdown extends Common_Widget {
 		$this->start_controls_section(
 			'countdown_expire_actions',
 			array(
-				'label'      => __( 'Action after expire', 'uael' ),
+				'label'      => __( 'Action After Expiry', 'uael' ),
 				'conditions' => array(
 					'relation' => 'or',
 					'terms'    => array(
@@ -592,6 +597,100 @@ class Countdown extends Common_Widget {
 			)
 		);
 
+		$this->add_control(
+			'countdown_label_pos',
+			array(
+				'label'          => __( 'Label Position', 'uael' ),
+				'type'           => Controls_Manager::CHOOSE,
+				'label_block'    => false,
+				'options'        => array(
+					'top'    => array(
+						'title' => __( 'Top', 'uael' ),
+						'icon'  => 'eicon-v-align-top',
+					),
+					'inline' => array(
+						'title' => __( 'Right', 'uael' ),
+						'icon'  => 'eicon-h-align-right',
+					),
+					'block'  => array(
+						'title' => __( 'Bottom', 'uael' ),
+						'icon'  => 'eicon-v-align-bottom',
+					),
+				),
+				'toggle'         => false,
+				'default'        => 'block',
+				'prefix_class'   => 'uael-countdown-label-',
+				'style_transfer' => true,
+				'condition'      => array(
+					'countdown_style!' => 'circle',
+				),
+			)
+		);
+
+		$this->add_control(
+			'label_space',
+			array(
+				'label'          => __( 'Label Spacing', 'uael' ),
+				'type'           => Controls_Manager::POPOVER_TOGGLE,
+				'condition'      => array(
+					'countdown_label_pos' => 'inline',
+				),
+				'style_transfer' => true,
+			)
+		);
+		$this->start_popover();
+		$this->add_control(
+			'label_space_top',
+			array(
+				'label'          => __( 'Top', 'uael' ),
+				'type'           => Controls_Manager::SLIDER,
+				'size_units'     => array( 'px' ),
+				'range'          => array(
+					'px' => array(
+						'min' => -100,
+						'max' => 100,
+					),
+				),
+				'default'        => array(
+					'size' => 5,
+					'unit' => 'px',
+				),
+				'selectors'      => array(
+					'{{WRAPPER}}.uael-countdown-label-inline .uael-item-label' => 'top: {{SIZE || 0}}{{UNIT}};',
+				),
+				'condition'      => array(
+					'countdown_label_pos' => 'inline',
+				),
+				'style_transfer' => true,
+			)
+		);
+
+		$this->add_control(
+			'label_space_left',
+			array(
+				'label'          => __( 'Left', 'uael' ),
+				'type'           => Controls_Manager::SLIDER,
+				'size_units'     => array( 'px' ),
+				'range'          => array(
+					'px' => array(
+						'min' => -100,
+						'max' => 100,
+					),
+				),
+				'default'        => array(
+					'size' => 10,
+					'unit' => 'px',
+				),
+				'selectors'      => array(
+					'{{WRAPPER}}.uael-countdown-label-inline .uael-item-label' => 'left: {{SIZE || 0}}{{UNIT}};',
+				),
+				'condition'      => array(
+					'countdown_label_pos' => 'inline',
+				),
+				'style_transfer' => true,
+			)
+		);
+		$this->end_popover(); // End Prover.
 		$this->end_controls_section();
 	}
 
@@ -645,36 +744,6 @@ class Countdown extends Common_Widget {
 					'left'   => '10',
 					'right'  => '10',
 					'unit'   => 'px',
-				),
-			)
-		);
-
-		$this->add_control(
-			'countdown_label_pos',
-			array(
-				'label'        => __( 'Label Position', 'uael' ),
-				'type'         => Controls_Manager::SELECT,
-				'default'      => 'block',
-				'options'      => array(
-					'block'  => __( 'Block', 'uael' ),
-					'inline' => __( 'Inline', 'uael' ),
-				),
-				'prefix_class' => 'uael-countdown-label-',
-				'condition'    => array(
-					'countdown_style!' => 'circle',
-				),
-			)
-		);
-
-		$this->add_control(
-			'inline_label_note',
-			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => __( 'Note: Adjust Container Width to display inline layout properly.', 'uael' ),
-				'content_classes' => 'elementor-panel-alert elementor-panel-alert-warning',
-				'condition'       => array(
-					'countdown_label_pos' => 'inline',
-					'countdown_style!'    => 'circle',
 				),
 			)
 		);
@@ -746,7 +815,7 @@ class Countdown extends Common_Widget {
 		$this->start_controls_section(
 			'countdown_timer_style',
 			array(
-				'label' => __( 'Countdown items', 'uael' ),
+				'label' => __( 'Countdown Items', 'uael' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 			)
 		);
@@ -768,12 +837,12 @@ class Countdown extends Common_Widget {
 				),
 				'size_units' => array( 'px' ),
 				'selectors'  => array(
-					'{{WRAPPER}} .uael-countdown-items-wrapper' => 'max-width: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}}.uael-countdown-label-block .uael-countdown-items-wrapper,{{WRAPPER}}.uael-countdown-label-top .uael-countdown-items-wrapper' => 'max-width: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .uael-countdown-show-message .uael-countdown-items-wrapper' => 'max-width:100%;',
 					'{{WRAPPER}} .uael-preview-message .uael-countdown-items-wrapper' => 'max-width:100%;',
-					'{{WRAPPER}} .uael-countdown-item' => 'width:{{SIZE}}{{UNIT}};',
-					'{{WRAPPER}} .uael-item-label'     => 'width:{{SIZE}}{{UNIT}};',
-					'{{WRAPPER}} .uael-item'           => 'height:{{SIZE}}{{UNIT}};',
+					'{{WRAPPER}}.uael-countdown-label-block .uael-countdown-item, {{WRAPPER}}.uael-countdown-label-top .uael-countdown-item' => 'width:{{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .uael-item-label' => 'width:{{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .uael-item'       => 'height:{{SIZE}}{{UNIT}};',
 					'{{WRAPPER}}.uael-countdown-shape-none .uael-item' => 'height:calc({{SIZE}}{{UNIT}}*1.3);',
 					'{{WRAPPER}}.uael-countdown-shape-none .uael-countdown-item' => 'width:{{SIZE}}{{UNIT}};',
 					'{{WRAPPER}}.uael-countdown-shape-none .uael-item-label' => 'width:{{SIZE}}{{UNIT}};',
@@ -823,7 +892,7 @@ class Countdown extends Common_Widget {
 		$this->add_responsive_control(
 			'distance_betn_countdown_items',
 			array(
-				'label'      => __( 'Spacing between items', 'uael' ),
+				'label'      => __( 'Spacing Between Items', 'uael' ),
 				'type'       => Controls_Manager::SLIDER,
 				'size_units' => array( 'px', '%' ),
 				'default'    => array(
@@ -853,7 +922,7 @@ class Countdown extends Common_Widget {
 		$this->add_responsive_control(
 			'distance_betn_items_and_labels',
 			array(
-				'label'      => __( 'Spacing between digits and labels', 'uael' ),
+				'label'      => __( 'Spacing Between Digits and Labels', 'uael' ),
 				'type'       => Controls_Manager::SLIDER,
 				'size_units' => array( 'px', '%' ),
 				'default'    => array(
@@ -871,9 +940,9 @@ class Countdown extends Common_Widget {
 					),
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .uael-countdown-wrapper .uael-countdown-item' => 'margin-bottom:{{SIZE}}{{UNIT}};',
-					'{{WRAPPER}}.uael-countdown-label-block .uael-countdown-wrapper .uael-countdown-item' => 'margin-bottom:{{SIZE}}{{UNIT}}; margin-right:0px;',
-					'{{WRAPPER}}.uael-countdown-label-inline .uael-countdown-wrapper .uael-countdown-item' => 'margin-right:{{SIZE}}{{UNIT}}; margin-bottom:0px;',
+					'{{WRAPPER}}.uael-countdown-label-block .uael-countdown-wrapper .uael-countdown-item' => 'margin-bottom:{{SIZE}}{{UNIT}}; margin-right:0px; margin-top: 0px;',
+					'{{WRAPPER}}.uael-countdown-label-inline .uael-countdown-wrapper .uael-countdown-item' => 'margin-right:{{SIZE}}{{UNIT}}; margin-bottom:0px; margin-top: 0px;',
+					'{{WRAPPER}}.uael-countdown-label-top .uael-countdown-wrapper .uael-countdown-item' => 'margin-top:{{SIZE}}{{UNIT}}; margin-bottom:0px; margin-right:0px;',
 				),
 				'condition'  => array(
 					'display_timer_labels' => array( 'default', 'custom' ),
@@ -962,6 +1031,15 @@ class Countdown extends Common_Widget {
 					'items_border_style!' => 'none',
 					'countdown_style!'    => 'none',
 				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			array(
+				'name'     => 'box_box_shadow',
+				'label'    => __( 'Box Shadow', 'uael' ),
+				'selector' => '{{WRAPPER}} .uael-item',
 			)
 		);
 

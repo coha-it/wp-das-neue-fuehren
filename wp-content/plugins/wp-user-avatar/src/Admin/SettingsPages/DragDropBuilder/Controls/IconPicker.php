@@ -11,7 +11,7 @@ class IconPicker
     {
         $this->args = wp_parse_args(
             $args,
-            ['value' => sprintf('{{data.%s}}', $args['name'])]
+            ['value' => sprintf('{{data.%s}}', esc_attr($args['name']))]
         );
     }
 
@@ -20,7 +20,7 @@ class IconPicker
         printf('<label for="%s" class="pp-label">%s</label>', $this->args['name'], $this->args['label']);
 
         if (isset($this->args['description'])) {
-            printf('<div class="pp-form-control-description">%s</div>', $this->args['description']);
+            printf('<div class="pp-form-control-description">%s</div>', wp_kses_post($this->args['description']));
         }
 
         echo '<div class="pp-form-control-icon-picker-wrap">';
@@ -28,7 +28,7 @@ class IconPicker
         printf(
             '<input style="display: none" class="pp-form-control" type="hidden" id="%1$s" name="%1$s" value="%2$s">',
             $this->args['name'],
-            @$this->args['value']
+            ppress_var($this->args, 'value', '')
         );
 
         echo '<div class="pp-form-control pp-form-control-icon-picker">';

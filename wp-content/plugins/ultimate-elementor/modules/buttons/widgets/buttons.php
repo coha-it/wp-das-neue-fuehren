@@ -112,6 +112,8 @@ class Buttons extends Common_Widget {
 	 */
 	protected function register_controls() {
 
+		$this->register_presets_control( 'Buttons', $this );
+
 		// Content Tab.
 		$this->register_buttons_content_controls();
 
@@ -315,9 +317,6 @@ class Buttons extends Common_Widget {
 						array(
 							'label'     => __( 'Background Color', 'uael' ),
 							'type'      => Controls_Manager::COLOR,
-							'global'    => array(
-								'default' => Global_Colors::COLOR_ACCENT,
-							),
 							'selectors' => array(
 								'{{WRAPPER}} {{CURRENT_ITEM}} .elementor-button' => 'background-color: {{VALUE}};',
 							),
@@ -370,9 +369,6 @@ class Buttons extends Common_Widget {
 						array(
 							'label'     => __( 'Background Color', 'uael' ),
 							'type'      => Controls_Manager::COLOR,
-							'global'    => array(
-								'default' => Global_Colors::COLOR_ACCENT,
-							),
 							'selectors' => array(
 								'{{WRAPPER}} {{CURRENT_ITEM}} .elementor-button:hover' => 'background-color: {{VALUE}};',
 							),
@@ -384,9 +380,6 @@ class Buttons extends Common_Widget {
 						array(
 							'label'     => __( 'Border Hover Color', 'uael' ),
 							'type'      => Controls_Manager::COLOR,
-							'global'    => array(
-								'default' => Global_Colors::COLOR_ACCENT,
-							),
 							'selectors' => array(
 								'{{WRAPPER}} {{CURRENT_ITEM}} .elementor-button:hover' => 'border-color: {{VALUE}};',
 							),
@@ -418,10 +411,10 @@ class Buttons extends Common_Widget {
 					'title_field' => '{{{ text }}}',
 					'default'     => array(
 						array(
-							'text' => __( 'Click Me #1', 'uael' ),
+							'text' => __( 'Enroll Today', 'uael' ),
 						),
 						array(
-							'text' => __( 'Click Me #2', 'uael' ),
+							'text' => __( 'Learn More', 'uael' ),
 						),
 					),
 				)
@@ -658,7 +651,6 @@ class Buttons extends Common_Widget {
 						array(
 							'label'     => __( 'Border Hover Color', 'uael' ),
 							'type'      => Controls_Manager::COLOR,
-							'default'   => '',
 							'selectors' => array(
 								'{{WRAPPER}} a.elementor-button:hover' => 'border-color: {{VALUE}};',
 							),
@@ -864,7 +856,9 @@ class Buttons extends Common_Widget {
 					}
 
 					if ( ! empty( $button['link']['url'] ) ) {
+
 						$this->add_link_attributes( 'button_' . $i, $button['link'] );
+
 						$this->add_render_attribute( 'button_' . $i, 'class', 'elementor-button-link' );
 					}
 
@@ -960,20 +954,6 @@ class Buttons extends Common_Widget {
 			</div>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Render button widgets output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 0.0.1
-	 * @access protected
-	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-		$this->content_template();
 	}
 
 }

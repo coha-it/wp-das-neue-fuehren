@@ -1,3 +1,141 @@
+Version 1.35.1 - Tuesday, 16th November 2021
+- Improvement: Display Conditions - Added Geo-location support.
+- Improvement: Display Conditions - Added ACF field support.
+- Improvement: Posts - Added WPML support for `'All' Tab Label` field in Filterable tabs
+- Improvement: Price Box - Position option for original price.
+- Improvement: Price Box - Tooltip option for original price.
+- Improvement: Price Box - Bottom spacing for original price.
+- Improvement: Price Box - Border style to heading box.
+- Improvement: Price Box - Background color, Padding and Top Spacing options for duration field.
+- Improvement: Price Box - Size option for features list icon.
+- Improvement: Price Box - Border style and bottom spacing for content.
+- Improvement: Table - Sticky option for heading row.
+- Improvement: Video Gallery - Added Video Schema Support.
+- Improvement: Woo - Category - Option to hide category product count.
+- Improvement: Woo - Category - Option to make category title and product count block below image.
+- Improvement: Woo - Category - Display inline category title and product count.
+- Improvement: Woo - Category - Added HTML tag support to a category title.
+- Fix: Excluding deactivated widgets css logic not working properly on network site.
+- Fix: Table - Table content cell text color not working.
+
+Version 1.35.0 - Monday, 11th October 2021
+- New: Introducing Party Propz extension for sections, columns, and widgets.
+- New: Introducing Welcome Music widget to add background music to the page.
+- Improvement: Added Christmas & Halloween shape dividers to Elementor Shape Divider.
+- Improvement: Modal Popup - Added option to set cookies on close popup action.
+- Improvement: Particle Backgrounds - Added Christmas effect.
+- Improvement: Particle Backgrounds - Added Halloween effect.
+- Improvement: Particle Backgrounds - Added Snowflakes effect.
+- Improvement: Table – Added responsive support.
+- Fix: Login Form - Removed custom field label wrapper when content is empty.
+- Fix: Posts - Fixed columns issue if advanced custom breakpoint setting is active.
+- Fix: Woo - Products - Fixed columns issue if advanced custom breakpoint setting is active.
+
+Version 1.34.1 - Thursday, 23rd September 2021
+- Fix: Display Conditions - Active PHP session issue in WP Site Health Screen.
+
+Version 1.34.0 - Wednesday, 22nd September 2021
+- New: Countdown Timer - Added preset designs.
+- New: Fancy Heading - Added preset designs.
+- New: Marketing Button - Added preset designs.
+- New: Social Share - Added preset designs.
+- New: Timeline - Added preset designs.
+- New: User Registration Form - Added preset designs.
+- Improvement: Display Conditions - Added new/returning visitor type option based on cookies.
+- Improvement: Display Conditions - Added advanced date support.
+- Improvement: Navigation Menu - Added an option to convert the last menu item into the CTA button.
+- Improvement: Table - Added CSS ID & CSS Class options for table cells.
+- Improvement: User Registration Form - Added icon support to form fields.
+- Improvement: Woo - Checkout - Added 'uael_multistep_checkout_hide_shipping_step' filter to exclude the shipping step from multi-step form.
+- Improvement: Woo - Checkout - Added new progress bar styles to multi-step form.
+- Fix: Gravity Forms Styler - Added an option "Support to Gravity Forms CSS Ready Classes" to fix the fields spacing issue.
+- Fix: Info Box - CTA icon not displaying in the editor.
+- Fix: Marketing Button - Hover animation options are not adequately visible.
+- Fix: Marketing Button - Button content alignment issue when icon alignment is set to right.
+- Fix: Price Box - Margin right applied to the Features section.
+- Fix: User Registration Form - Changed Phone field type to "tel" to fix the Theme CSS not applying issue.
+- Fix: Video - Lightbox is not working with the Vimeo video type.
+- Fix: Woo - Products - Fixed console error when the responsive value of the "Product to show" option is empty.
+- Fix: Woo - Products - Fixed grid layout column issue.
+
+Version 1.33.2 - Tuesday, 17th August 2021
+- Improvement: Elementor 3.4 compatibility.
+- Improvement: Optimized CSS & JS in the plugin for improving Core Web Vitals.
+- Improvement: Google Map - Added option for position of map controls.
+- Fix: Modal Popup - Fixed jQuery '.resize()' event shorthand is deprecated.
+- Fix: Modal Popup - Undefined play icon notice when content type Vimeo selected.
+- Fix: Gravity Forms Styler - Description style not applying to the Post Fields description.
+- Fix: WP Forms Styler - Input size not applying to the Textarea field.
+- Fix: Social Share - Social items not adding on a new line.
+- Fix: Woo - Products - Fixed grid layout column issue on Product archive template with Astra theme.
+- Fix: Contact Form 7 Styler - Console error when selecting the form from widget settings.
+
+Version 1.33.1 - Thursday, 5th August 2021
+- Improvement: Added WPML translation support for all widgets through wpml-config.xml file.
+- Improvement: Display Conditions - Added request parameter support.
+- Improvement: Google Map - Added 'uael_map_options' filter to pass responsive zoom options.
+- Improvement: Navigation Menu - Added label support to the menu icon.
+- Improvement: Navigation Menu - Added 'SiteNavigationElement' schema support.
+- Improvement: Video - Added video schema support.
+- Improvement: Woo - Checkout - Added active border color support to the input fields.
+- Improvement: Woo - Checkout - Added shop link support.
+- Fix: Gravity Forms Styler - Form description bottom spacing not working with Gravity Forms version 2.5 and above.
+- Fix: Image Gallery - Lightbox images not traversing according to the selected filterable tab.
+- Fix: Posts - Fixed filterable tabs opening on Tab key instead of Enter key.
+- Fix: Posts - Image ratio not working properly if equal height option is ON with carousel layout.
+- Fix: Social Share - Social icons alignment not working.
+- Fix: Woo - Products - Grid layout breaks on Kadence theme.
+- Fix: Woo - Categories - Grid and carousel layout breaks on Kadence theme.
+- Fix: Woo - Checkout - One and Two-column layout issue with Hello Elementor theme due to an additional column.
+
+Version 1.33.0 - Wednesday, 21st July 2021
+- New: Advanced Heading - Added preset designs.
+- New: Business Hours - Added preset designs.
+- New: Dual Color Heading - Added preset designs.
+- New: FAQ Schema - Added preset designs.
+- New: Info Box - Added preset designs.
+- New: Login Form - Added preset designs.
+- New: Multi Buttons - Added preset designs.
+- New: Price Box - Added preset designs.
+- New: Price List - Added preset designs.
+- New: Team Member - Added preset designs.
+- Improvement: Advanced Heading - Added show/hide option for Description, Sub-heading & Background Text.
+- Improvement: Countdown Timer - Added box-shadow option for items.
+- Improvement: Countdown Timer - Added 'Top' label position option and related spacing controls.
+- Improvement: Dual Color Heading - Added show/hide option for Background Text.
+- Improvement: Image Gallery - Added infinite gallery navigation ( loop ) option for lightbox.
+- Improvement: Info Box - Added "default" border-style option for button to support global styles.
+- Improvement: Login Form - Added icon support to the 'Login' button.
+- Improvement: Login Form - Added icon support to Username and Password fields.
+- Improvement: Login Form - Added option to make 'Remember me' and 'Login' buttons inline.
+- Improvement: Login Form - Added show/hide option for Placeholder Text.
+- Improvement: Login Form - Added top spacing option for the login button.
+- Improvement: Login Form - Changed the default font size of input fields to 14px.
+- Improvement: Login Form - Changed the size of remember me checkbox to 14px.
+- Improvement: Price Box - Added "default" border-style option for button to support global styles.
+- Improvement: Price Box - Added show/hide option for Disclaimer Text.
+- Improvement: Price List - Added image shape option.
+- Improvement: Price List - Added "None" option for Image Position to provide image hiding.
+- Improvement: Team Member - Added show/hide option for Designation & Description Text.
+- Improvement: Team Member - Added Content Padding option.
+- Improvement: Team Member - Added Icon Background Size option for Social Icons.
+- Improvement: Team Member - Added Image Height option.
+- Improvement: Timeline - Added border option for cards.
+- Improvement: Timeline - Added icon border and icon border radius option.
+- Improvement: Timeline - Added option to show/hide card arrows.
+- Improvement: Timeline - Renamed "Arrow Alignment" option label as "Connector Icon Alignment".
+- Fix: Login Form - Fixed Login button alignment issue in RTL view.
+- Fix: Timeline - Fixed card arrow color not resetting after card background color is reset.
+
+Version 1.32.2 - Friday, 16th July 2021
+- Improvement: Elementor 3.3 compatibility.
+- Improvement: Info Box - Added support to custom link attributes.
+- Improvement: WordPress 5.8 compatibility.
+- Fix: FAQ Schema - Separator border applying to the whole box.
+- Fix: Navigation Menu - Fixed console error due to same page anchor links.
+- Fix: Navigation Menu - Warning: in_array() expects parameter 2 to be array from menu-walker.
+- Fix: Posts - Imagesloaded library not working due to jQuery loading issue.
+
 Version 1.32.1 - Tuesday, 15th June 2021
 - Improvement: Display Conditions - Changed Post/Page selection control with custom query control to reduce the load time.
 - Fix: Navigation Menu - In Custom menu type sub-menu item getting added as a parent menu item due to tag conflict.

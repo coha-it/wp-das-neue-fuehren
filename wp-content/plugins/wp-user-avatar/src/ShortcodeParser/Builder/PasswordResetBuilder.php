@@ -57,7 +57,7 @@ class PasswordResetBuilder
         return apply_filters('ppress_password_reset_username_field', $html, $atts);
     }
 
-    protected function get_processing_label()
+    protected function get_processing_label($atts)
     {
         $form_type = FormRepository::PASSWORD_RESET_TYPE;
         $form_id   = isset($GLOBALS['pp_password_reset_form_id']) ? $GLOBALS['pp_password_reset_form_id'] : 0;
@@ -84,11 +84,12 @@ class PasswordResetBuilder
 
         $atts = shortcode_atts(
             array(
-                'class' => '',
-                'id'    => '',
-                'value' => '',
-                'title' => '',
-                'name'  => 'password_reset_submit',
+                'class'            => '',
+                'id'               => '',
+                'value'            => '',
+                'title'            => '',
+                'processing_label' => '',
+                'name'             => 'password_reset_submit',
             ),
             $atts
         );
@@ -108,7 +109,7 @@ class PasswordResetBuilder
             '<input data-pp-submit-label="%2$s" data-pp-processing-label="%3$s" type="submit" value="%2$s" %1$s>',
             "$name $title $class $id $other_atts_html",
             $value,
-            $this->get_processing_label()
+            $this->get_processing_label($atts)
         );
 
         return apply_filters('ppress_password_reset_submit_field', $html, $atts);
@@ -319,10 +320,11 @@ class PasswordResetBuilder
 
         $atts = shortcode_atts(
             array(
-                'class' => '',
-                'id'    => '',
-                'title' => '',
-                'name'  => 'reset_password',
+                'class'            => '',
+                'id'               => '',
+                'title'            => '',
+                'processing_label' => '',
+                'name'             => 'reset_password',
             ),
             $atts
         );
@@ -342,7 +344,7 @@ class PasswordResetBuilder
             '<input data-pp-submit-label="%2$s" data-pp-processing-label="%3$s" type="submit" value="%2$s" %1$s>',
             "$name $title $class $id $other_atts_html",
             $value,
-            $this->get_processing_label()
+            $this->get_processing_label($atts)
         );
 
         return apply_filters('ppress_password_reset_handler_submit_field', $html, $atts);

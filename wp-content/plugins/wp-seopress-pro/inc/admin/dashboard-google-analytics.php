@@ -50,7 +50,7 @@ if ('1' == seopress_get_toggle_option('google-analytics') && '1' !== seopress_go
         add_action('wp_dashboard_setup', 'seopress_ga_dashboard_widget');
 
         function seopress_ga_dashboard_widget() {
-            $return_false ='';
+            $return_false = '';
             $return_false = apply_filters('seopress_ga_dashboard_widget', $return_false);
 
             if (has_filter('seopress_ga_dashboard_widget') && false == $return_false) {
@@ -74,13 +74,13 @@ if ('1' == seopress_get_toggle_option('google-analytics') && '1' !== seopress_go
                         $i = 0;
 
                         $gaData = array_shift($seopress_results_google_analytics_cache[$ga_dimensions]);
-                        $users  = array_shift($seopress_results_google_analytics_cache[$ga_dimensions]);
+                        $users = array_shift($seopress_results_google_analytics_cache[$ga_dimensions]);
 
                         foreach ($gaData as $key => $value) {
                             if ( ! array_key_exists($key, $users)) {
                                 continue;
                             }
-                            echo sprintf('<li>%s <span>%s</span></li>', $value, $users[$key]);
+                            printf('<li>%s <span>%s</span></li>', $value, $users[$key]);
                             if (10 == ++$i) {
                                 break;
                             }
@@ -215,13 +215,17 @@ if ('1' == seopress_get_toggle_option('google-analytics') && '1' !== seopress_go
                 //Events
                 echo '<div class="wrap-single-stat col-6">';
                 echo '<span class="label-stat"><span class="dashicons dashicons-chart-bar"></span>' . __('Total events', 'wp-seopress-pro') . '</span>';
-                echo '<span id="seopress-ga-totalEvents" class="value-stat">' . $seopress_results_google_analytics_cache['totalEvents'] . '</span>';
+                if (isset($seopress_results_google_analytics_cache['totalEvents']) && null !== $seopress_results_google_analytics_cache['totalEvents']) {
+                    echo '<span id="seopress-ga-totalEvents" class="value-stat">' . array_sum($seopress_results_google_analytics_cache['totalEvents']) . '</span>';
+                }
                 echo '</div>';
 
                 //Total unique events
                 echo '<div class="wrap-single-stat col-6">';
                 echo '<span class="label-stat"><span class="dashicons dashicons-chart-bar"></span>' . __('Total unique events', 'wp-seopress-pro') . '</span>';
-                echo '<span id="seopress-ga-uniqueEvents" class="value-stat">' . $seopress_results_google_analytics_cache['uniqueEvents'] . '</span>';
+                if (isset($seopress_results_google_analytics_cache['uniqueEvents']) && null !== $seopress_results_google_analytics_cache['uniqueEvents']) {
+                    echo '<span id="seopress-ga-uniqueEvents" class="value-stat">' . array_sum($seopress_results_google_analytics_cache['uniqueEvents']) . '</span>';
+                }
                 echo '</div>';
 
                 //Event category
@@ -236,14 +240,20 @@ if ('1' == seopress_get_toggle_option('google-analytics') && '1' !== seopress_go
 
                 echo '</div>';
             } else { ?>
-                <p><?php _e('You need to login to Google Analytics.', 'wp-seopress-pro'); ?></p>
-                <p><?php _e('Make sure you have enabled these 2 APIs from <strong>Google Cloud Console</strong>:', 'wp-seopress-pro'); ?></p>
-                <ul>
-                    <li><span class="dashicons dashicons-minus"></span><strong><?php _e('Google Analytics API', 'wp-seopress-pro'); ?></strong></li>
-                    <li><span class="dashicons dashicons-minus"></span><strong><?php _e('Google Analytics Reporting API', 'wp-seopress-pro'); ?></strong></li>
-                </ul>
-                <p><a class="button" href="<?php echo admin_url('admin.php?page=seopress-google-analytics#tab=tab_seopress_google_analytics_dashboard'); ?>"><?php _e('Authenticate', 'wp-seopress-pro'); ?></a></p>
-            <?php }
+<p><?php _e('You need to login to Google Analytics.', 'wp-seopress-pro'); ?>
+</p>
+<p><?php _e('Make sure you have enabled these 2 APIs from <strong>Google Cloud Console</strong>:', 'wp-seopress-pro'); ?>
+</p>
+<ul>
+    <li><span class="dashicons dashicons-minus"></span><strong>Google Analytics API</strong>
+    </li>
+    <li><span class="dashicons dashicons-minus"></span><strong>Google Analytics Reporting API</strong>
+    </li>
+</ul>
+<p><a class="btn btnPrimary"
+        href="<?php echo admin_url('admin.php?page=seopress-google-analytics#tab=tab_seopress_google_analytics_dashboard'); ?>"><?php _e('Authenticate', 'wp-seopress-pro'); ?></a>
+</p>
+<?php }
         }
         function seopress_ga_dashboard_widget_handle() {
             // get saved data
@@ -256,7 +266,7 @@ if ('1' == seopress_get_toggle_option('google-analytics') && '1' !== seopress_go
                 check_admin_referer('seopress_ga_dashboard_widget_options');
 
                 $widget_options['period'] = $_POST['seopress_ga_dashboard_widget_options']['period'];
-                $widget_options['type']   = $_POST['seopress_ga_dashboard_widget_options']['type'];
+                $widget_options['type'] = $_POST['seopress_ga_dashboard_widget_options']['type'];
                 // save update
                 update_option('seopress_ga_dashboard_widget_options', $widget_options);
                 delete_transient('seopress_results_google_analytics');
@@ -269,89 +279,61 @@ if ('1' == seopress_get_toggle_option('google-analytics') && '1' !== seopress_go
                 $widget_options['period'] = '30daysAgo';
             }
 
-            echo '<p><strong>' . __('Period', 'wp-seopress-pro') . '</strong></p>';
+            $select = [
+                'today' => __('Today', 'wp-seopress-pro'),
+                'yesterday' => __('Yesterday', 'wp-seopress-pro'),
+                '7daysAgo' => __('7 days ago', 'wp-seopress-pro'),
+                '30daysAgo' => __('30 days ago', 'wp-seopress-pro'),
+                '90daysAgo' => __('90 days ago', 'wp-seopress-pro'),
+                '180daysAgo' => __('180 days ago', 'wp-seopress-pro'),
+                '360daysAgo' => __('360 days ago', 'wp-seopress-pro'),
+            ]; ?>
 
-            echo '<p><select id="period" name="seopress_ga_dashboard_widget_options[period]">';
-            echo ' <option ';
-            if ('today' == $widget_options['period']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="today">' . __('Today', 'wp-seopress-pro') . '</option>';
-            echo ' <option ';
-            if ('yesterday' == $widget_options['period']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="yesterday">' . __('Yesterday', 'wp-seopress-pro') . '</option>';
-            echo ' <option ';
-            if ('7daysAgo' == $widget_options['period']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="7daysAgo">' . __('7 days ago', 'wp-seopress-pro') . '</option>';
-            echo '<option ';
-            if ('30daysAgo' == $widget_options['period']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="30daysAgo">' . __('30 days ago', 'wp-seopress-pro') . '</option>';
-            echo '<option ';
-            if ('90daysAgo' == $widget_options['period']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="90daysAgo">' . __('90 days ago', 'wp-seopress-pro') . '</option>';
-            echo '<option ';
-            if ('180daysAgo' == $widget_options['period']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="180daysAgo">' . __('180 days ago', 'wp-seopress-pro') . '</option>';
-            echo '<option ';
-            if ('360daysAgo' == $widget_options['period']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="360daysAgo">' . __('360 days ago', 'wp-seopress-pro') . '</option>';
-            echo '</select></p>';
+<p><strong><?php _e('Period', 'wp-seopress-pro'); ?></strong>
+</p>
 
+<p>
+    <select id="period" name="seopress_ga_dashboard_widget_options[period]">
+        <?php foreach ($select as $key => $value) { ?>
+        <option value="<?php ?>" <?php if ($widget_options['period'] === $key) {
+                echo 'selected="selected"';
+            } ?>>
+            <?php echo $value; ?>
+        </option>
+        <?php } ?>
+    </select>
+</p>
+
+<?php
             if ( ! isset($widget_options['type'])) {
                 $widget_options['type'] = 'ga_sessions';
             }
 
-            echo '<p><strong>' . __('Stats', 'wp-seopress-pro') . '</strong></p>';
+            $select = [
+                'ga_sessions' => __('Sessions', 'wp-seopress-pro'),
+                'ga_users' => __('Users', 'wp-seopress-pro'),
+                'ga_pageviews' => __('Page views', 'wp-seopress-pro'),
+                'ga_pageviewsPerSession' => __('Page views per session', 'wp-seopress-pro'),
+                'ga_avgSessionDuration' => __('Average session duration', 'wp-seopress-pro'),
+                'ga_bounceRate' => __('Bounce rate', 'wp-seopress-pro'),
+                'ga_percentNewSessions' => __('New Sessions', 'wp-seopress-pro'),
+            ]; ?>
 
-            echo '<p><select id="type" name="seopress_ga_dashboard_widget_options[type]">';
-            echo ' <option ';
-            if ('ga_sessions' == $widget_options['type']) {
+<p><strong><?php _e('Stats', 'wp-seopress-pro'); ?></strong>
+</p>
+
+<p>
+    <select id="type" name="seopress_ga_dashboard_widget_options[type]">
+        <?php foreach ($select as $key => $value) { ?>
+        <option value="<?php ?>" <?php if ($widget_options['type'] === $key) {
                 echo 'selected="selected"';
-            }
-            echo ' value="ga_sessions">' . __('Sessions', 'wp-seopress-pro') . '</option>';
-            echo ' <option ';
-            if ('ga_users' == $widget_options['type']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="ga_users">' . __('Users', 'wp-seopress-pro') . '</option>';
-            echo ' <option ';
-            if ('ga_pageviews' == $widget_options['type']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="ga_pageviews">' . __('Page views', 'wp-seopress-pro') . '</option>';
-            echo '<option ';
-            if ('ga_pageviewsPerSession' == $widget_options['type']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="ga_pageviewsPerSession">' . __('Page views per session', 'wp-seopress-pro') . '</option>';
-            echo '<option ';
-            if ('ga_avgSessionDuration' == $widget_options['type']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="ga_avgSessionDuration">' . __('Average session duration', 'wp-seopress-pro') . '</option>';
-            echo '<option ';
-            if ('ga_bounceRate' == $widget_options['type']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="ga_bounceRate">' . __('Bounce rate', 'wp-seopress-pro') . '</option>';
-            echo '<option ';
-            if ('ga_percentNewSessions' == $widget_options['type']) {
-                echo 'selected="selected"';
-            }
-            echo ' value="ga_percentNewSessions">' . __('New Sessions', 'wp-seopress-pro') . '</option>';
-            echo '</select></p>';
+            } ?>>
+            <?php echo $value; ?>
+        </option>
+        <?php } ?>
+    </select>
+</p>
+<?php
         }
     }
 }

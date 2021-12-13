@@ -22,12 +22,19 @@ namespace BorlabsCookie\Cookie\Frontend;
 
 use BorlabsCookie\Cookie\Config;
 use BorlabsCookie\Cookie\Multilanguage;
-use BorlabsCookie\Cookie\Frontend\JavaScript;
 
 class ContentBlocker
 {
     private static $instance;
 
+    public static function getInstance()
+    {
+        if (null === self::$instance) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
+    }
     private $cacheFolder = '';
     private $contentBlocker = [];
     private $currentBlockedContent = '';
@@ -44,18 +51,9 @@ class ContentBlocker
             'vimeo' => 'Vimeo',
             'youtube' => 'YouTube',
         ];
-    private $hosts = [];
     private $hostWhitelist = [];
+    private $hosts = [];
     private $siteHost = '';
-
-    public static function getInstance()
-    {
-        if (null === self::$instance) {
-            self::$instance = new self;
-        }
-
-        return self::$instance;
-    }
 
     /**
      * __construct function.
@@ -76,6 +74,274 @@ class ContentBlocker
     public function __wakeup()
     {
         trigger_error('Unserialize is forbidden.', E_USER_ERROR);
+    }
+
+    /**
+     * detectIframes function.
+     *
+     * @access public
+     *
+     * @param  mixed  $content
+     * @param  mixed  $postId  (default: null)
+     * @param  mixed  $field  (default: null)
+     *
+     * @return void
+     */
+    public function detectIframes($content, $postId = null, $field = null)
+    {
+        if (function_exists('is_feed') && is_feed()) {
+            if (Config::getInstance()->get('removeIframesInFeeds') == true) {
+                $content = preg_replace('/(\<p\>)?(<iframe.*?(?=<\/iframe>)<\/iframe>){1}(\<\/p\>)?/is', '', $content);
+            }
+        } else {
+            $content = preg_replace_callback(
+                '/(\<p\>)?(<iframe.*?(?=<\/iframe>)<\/iframe>){1}(\<\/p\>)?/is',
+                [$this, 'handleIframe'],
+                $content
+            );
+        }
+
+        return $content;
+    }
+
+    /**
+     * getCacheFolder function.
+     *
+     * @access public
+     * @return void
+     */
+    public function getCacheFolder()
+    {
+        return $this->cacheFolder;
+    }
+
+    /**
+     * getContentBlockerData function.
+     *
+     * @access public
+     *
+     * @param  mixed  $contentBlockerId
+     *
+     * @return void
+     */
+    public function getContentBlockerData($contentBlockerId)
+    {
+        if (! empty($this->contentBlocker[$contentBlockerId])) {
+            return $this->contentBlocker[$contentBlockerId];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * getCurrentBlockedContent function.
+     *
+     * @access public
+     * @return void
+     */
+    public function getCurrentBlockedContent()
+    {
+        return $this->currentBlockedContent;
+    }
+
+    /**
+     * setCurrentBlockedContent function.
+     *
+     * @access public
+     *
+     * @param  mixed  $content
+     *
+     * @return void
+     */
+    public function setCurrentBlockedContent($content)
+    {
+        $this->currentBlockedContent = $content;
+
+        return true;
+    }
+
+    /**
+     * getCurrentTitle function.
+     *
+     * @access public
+     * @return void
+     */
+    public function getCurrentTitle()
+    {
+        return $this->currentTitle;
+    }
+
+    /**
+     * getCurrentURL function.
+     *
+     * @access public
+     * @return void
+     */
+    public function getCurrentURL()
+    {
+        return $this->currentURL;
+    }
+
+    /**
+     * handleContentBlocking function.
+     *
+     * @access public
+     *
+     * @param  mixed  $content
+     * @param  string  $url  (default: '')
+     * @param  string  $contentBlockerId  (default: '')
+     * @param  string  $title  (default: '')
+     * @param  mixed  $atts  (default: [])
+     *
+     * @return void
+     */
+    public function handleContentBlocking($content, $url = '', $contentBlockerId = '', $title = '', $atts = [])
+    {
+        // Check if host is on the whitelist
+        if (empty($url) || $this->isHostWhitelisted($url) !== true) {
+            if (function_exists('is_feed') && is_feed() && Config::getInstance()->get('removeIframesInFeeds') == true) {
+                $content = '';
+            } else {
+                // Set currentContent for third party filter that needs the content unmodified
+                $this->currentBlockedContent = $content;
+                $this->currentURL = ! empty($url) ? $url : '';
+                $this->currentTitle = $title;
+
+                $currentURLData = parse_url($this->currentURL);
+
+                $detectedContentBlockerId = null;
+
+                // When $contentBlockerId is set - overwrites the by URL detected content blocker
+                if (! empty($contentBlockerId) && ! empty($this->contentBlocker[$contentBlockerId])) {
+                    $detectedContentBlockerId = $contentBlockerId;
+                } else {
+                    // Detect Content Blocker by Host
+                    if (! empty($this->hosts) && ! empty($this->currentURL)) {
+                        $levenshtein = 0;
+                        $currentHost = $currentURLData['host'] . (isset($currentURLData['path'])
+                                ? $currentURLData['path'] : '');
+
+                        foreach ($this->hosts as $host => $contentBlocker) {
+                            if (strpos($currentHost, $host) !== false) {
+                                if (
+                                    (empty($levenshtein) && empty($detectedContentBlockerId))
+                                    || levenshtein(
+                                        $currentHost,
+                                        $host
+                                    ) < $levenshtein
+                                ) {
+                                    $levenshtein = levenshtein($currentHost, $host);
+                                    $detectedContentBlockerId = $contentBlocker;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Fallback but only if Fallback was not disabled
+                if (empty($detectedContentBlockerId) && ! empty($this->contentBlocker['default'])) {
+                    $detectedContentBlockerId = 'default';
+                }
+
+                // Do not block oEmbed of own blog
+                if (! empty($this->currentURL) && strpos($currentURLData['host'], $this->siteHost) !== false) {
+                    $detectedContentBlockerId = null;
+                }
+
+                if (! empty($detectedContentBlockerId)) {
+                    if (has_filter('borlabsCookie/contentBlocker/modify/content/' . $detectedContentBlockerId)) {
+                        $content = apply_filters(
+                            'borlabsCookie/contentBlocker/modify/content/' . $detectedContentBlockerId,
+                            $content,
+                            $atts
+                        );
+                    } elseif (has_filter('borlabsCookie/bct/modify_content/' . $detectedContentBlockerId)) {
+                        // Backwards compatibility
+                        $content = apply_filters(
+                            'borlabsCookie/bct/modify_content/' . $detectedContentBlockerId,
+                            $detectedContentBlockerId,
+                            $content
+                        );
+                    } else {
+                        $content = ContentBlocker\Custom::getInstance()->modify(
+                            $content,
+                            $detectedContentBlockerId,
+                            $atts
+                        );
+                    }
+
+                    if (Config::getInstance()->get('cookieBoxIntegration') === 'javascript') {
+                        $blockedContent = '<script type="text/template">' . base64_encode(
+                                $this->getCurrentBlockedContent()
+                            ) . '</script>';
+                    } else {
+                        $blockedContent = base64_encode($this->getCurrentBlockedContent());
+                    }
+
+                    $content = '<div class="BorlabsCookie">' . $content
+                        . '<div class="borlabs-hide" data-borlabs-cookie-type="content-blocker" data-borlabs-cookie-id="'
+                        . $detectedContentBlockerId . '">' . $blockedContent . '</div></div>';
+                }
+            }
+
+            // Remove whitespace to avoid WordPress' automatic br- & p-tags
+            $content = preg_replace('/[\s]+/mu', ' ', $content);
+        }
+
+        return $content;
+    }
+
+    /**
+     * handleIframe function.
+     *
+     * @access public
+     *
+     * @param  mixed  $tags
+     *
+     * @return void
+     */
+    public function handleIframe($tags)
+    {
+        $content = $tags[0];
+
+        if (strpos($tags[0], 'data-borlabs-cookie-iframe-spared') === false) {
+            // Detect host
+            $srcMatch = [];
+
+            // Test and replace data-src
+            if (preg_match('/data-src=("|\')([^"\']{1,})(\1)/i', $tags[2])) {
+                if (strpos($tags[2], ' src') === false) {
+                    $tags[2] = str_replace('data-src', 'src', $tags[2]);
+                    $tags[0] = str_replace('data-src', 'src', $tags[0]);
+                }
+            }
+
+            preg_match('/src=("|\')([^"\']{1,})(\1)/i', $tags[2], $srcMatch);
+
+            // Skip iframes without src attribute of where src is about:blank
+            if (! empty($srcMatch[2]) && $srcMatch[2] !== 'about:blank') {
+                $content = $this->handleContentBlocking($tags[0], $srcMatch[2]);
+            }
+        }
+
+        return $content;
+    }
+
+    /**
+     * handleOembed function.
+     *
+     * @access public
+     *
+     * @param  mixed  $html
+     * @param  mixed  $url
+     * @param  mixed  $atts
+     * @param  mixed  $postId
+     *
+     * @return void
+     */
+    public function handleOembed($html, $url, $atts, $postId)
+    {
+        return $this->handleContentBlocking($html, $url);
     }
 
     /**
@@ -201,84 +467,6 @@ class ContentBlocker
     }
 
     /**
-     * getCacheFolder function.
-     *
-     * @access public
-     * @return void
-     */
-    public function getCacheFolder()
-    {
-        return $this->cacheFolder;
-    }
-
-    /**
-     * getCurrentBlockedContent function.
-     *
-     * @access public
-     * @return void
-     */
-    public function getCurrentBlockedContent()
-    {
-        return $this->currentBlockedContent;
-    }
-
-    /**
-     * setCurrentBlockedContent function.
-     *
-     * @access public
-     *
-     * @param  mixed  $content
-     *
-     * @return void
-     */
-    public function setCurrentBlockedContent($content)
-    {
-        $this->currentBlockedContent = $content;
-
-        return true;
-    }
-
-    /**
-     * getCurrentTitle function.
-     *
-     * @access public
-     * @return void
-     */
-    public function getCurrentTitle()
-    {
-        return $this->currentTitle;
-    }
-
-    /**
-     * getCurrentURL function.
-     *
-     * @access public
-     * @return void
-     */
-    public function getCurrentURL()
-    {
-        return $this->currentURL;
-    }
-
-    /**
-     * getContentBlockerData function.
-     *
-     * @access public
-     *
-     * @param  mixed  $contentBlockerId
-     *
-     * @return void
-     */
-    public function getContentBlockerData($contentBlockerId)
-    {
-        if (! empty($this->contentBlocker[$contentBlockerId])) {
-            return $this->contentBlocker[$contentBlockerId];
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * isHostWhitelisted function.
      *
      * @access public
@@ -300,195 +488,5 @@ class ContentBlocker
         }
 
         return $status;
-    }
-
-    /**
-     * detectIframes function.
-     *
-     * @access public
-     *
-     * @param  mixed  $content
-     * @param  mixed  $postId  (default: null)
-     * @param  mixed  $field  (default: null)
-     *
-     * @return void
-     */
-    public function detectIframes($content, $postId = null, $field = null)
-    {
-        if (function_exists('is_feed') && is_feed()) {
-            if (Config::getInstance()->get('removeIframesInFeeds') == true) {
-                $content = preg_replace('/(\<p\>)?(<iframe.+?(?=<\/iframe>)<\/iframe>){1}(\<\/p\>)?/i', '', $content);
-            }
-        } else {
-            $content = preg_replace_callback(
-                '/(\<p\>)?(<iframe.+?(?=<\/iframe>)<\/iframe>){1}(\<\/p\>)?/i',
-                [$this, 'handleIframe'],
-                $content
-            );
-        }
-
-        return $content;
-    }
-
-    /**
-     * handleIframe function.
-     *
-     * @access public
-     *
-     * @param  mixed  $tags
-     *
-     * @return void
-     */
-    public function handleIframe($tags)
-    {
-        $content = $tags[0];
-
-        if (strpos($tags[0], 'data-borlabs-cookie-iframe-spared') === false) {
-            // Detect host
-            $srcMatch = [];
-
-            // Test and replace data-src
-            if (preg_match('/data-src=("|\')([^"\']{1,})(\1)/i', $tags[2])) {
-                if (strpos($tags[2], ' src') === false) {
-                    $tags[2] = str_replace('data-src', 'src', $tags[2]);
-                    $tags[0] = str_replace('data-src', 'src', $tags[0]);
-                }
-            }
-
-            preg_match('/src=("|\')([^"\']{1,})(\1)/i', $tags[2], $srcMatch);
-
-            // Skip iframes without src attribute of where src is about:blank
-            if (! empty($srcMatch[2]) && $srcMatch[2] !== 'about:blank') {
-                $content = $this->handleContentBlocking($tags[0], $srcMatch[2]);
-            }
-        }
-
-        return $content;
-    }
-
-    /**
-     * handleOembed function.
-     *
-     * @access public
-     *
-     * @param  mixed  $html
-     * @param  mixed  $url
-     * @param  mixed  $atts
-     * @param  mixed  $postId
-     *
-     * @return void
-     */
-    public function handleOembed($html, $url, $atts, $postId)
-    {
-        return $this->handleContentBlocking($html, $url);
-    }
-
-    /**
-     * handleContentBlocking function.
-     *
-     * @access public
-     *
-     * @param  mixed  $content
-     * @param  string  $url  (default: '')
-     * @param  string  $contentBlockerId  (default: '')
-     * @param  string  $title  (default: '')
-     * @param  mixed  $atts  (default: [])
-     *
-     * @return void
-     */
-    public function handleContentBlocking($content, $url = '', $contentBlockerId = '', $title = '', $atts = [])
-    {
-        // Check if host is on the whitelist
-        if (empty($url) || $this->isHostWhitelisted($url) !== true) {
-            if (function_exists('is_feed') && is_feed() && Config::getInstance()->get('removeIframesInFeeds') == true) {
-                $content = '';
-            } else {
-                // Set currentContent for third party filter that needs the content unmodified
-                $this->currentBlockedContent = $content;
-                $this->currentURL = ! empty($url) ? $url : '';
-                $this->currentTitle = $title;
-
-                $currentURLData = parse_url($this->currentURL);
-
-                $detectedContentBlockerId = null;
-
-                // When $contentBlockerId is set - overwrites the by URL detected content blocker
-                if (! empty($contentBlockerId) && ! empty($this->contentBlocker[$contentBlockerId])) {
-                    $detectedContentBlockerId = $contentBlockerId;
-                } else {
-                    // Detect Content Blocker by Host
-                    if (! empty($this->hosts) && ! empty($this->currentURL)) {
-                        $levenshtein = 0;
-                        $currentHost = $currentURLData['host'] . (isset($currentURLData['path'])
-                                ? $currentURLData['path'] : '');
-
-                        foreach ($this->hosts as $host => $contentBlocker) {
-                            if (strpos($currentHost, $host) !== false) {
-                                if (
-                                    (empty($levenshtein) && empty($detectedContentBlockerId))
-                                    || levenshtein(
-                                        $currentHost,
-                                        $host
-                                    ) < $levenshtein
-                                ) {
-                                    $levenshtein = levenshtein($currentHost, $host);
-                                    $detectedContentBlockerId = $contentBlocker;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Fallback but only if Fallback was not disabled
-                if (empty($detectedContentBlockerId) && ! empty($this->contentBlocker['default'])) {
-                    $detectedContentBlockerId = 'default';
-                }
-
-                // Do not block oEmbed of own blog
-                if (! empty($this->currentURL) && strpos($currentURLData['host'], $this->siteHost) !== false) {
-                    $detectedContentBlockerId = null;
-                }
-
-                if (! empty($detectedContentBlockerId)) {
-                    if (has_filter('borlabsCookie/contentBlocker/modify/content/' . $detectedContentBlockerId)) {
-                        $content = apply_filters(
-                            'borlabsCookie/contentBlocker/modify/content/' . $detectedContentBlockerId,
-                            $content,
-                            $atts
-                        );
-                    } elseif (has_filter('borlabsCookie/bct/modify_content/' . $detectedContentBlockerId)) {
-                        // Backwards compatibility
-                        $content = apply_filters(
-                            'borlabsCookie/bct/modify_content/' . $detectedContentBlockerId,
-                            $detectedContentBlockerId,
-                            $content
-                        );
-                    } else {
-                        $content = ContentBlocker\Custom::getInstance()->modify(
-                            $content,
-                            $detectedContentBlockerId,
-                            $atts
-                        );
-                    }
-
-                    if (Config::getInstance()->get('cookieBoxIntegration') === 'javascript') {
-                        $blockedContent = '<script type="text/template">' . base64_encode(
-                                $this->getCurrentBlockedContent()
-                            ) . '</script>';
-                    } else {
-                        $blockedContent = base64_encode($this->getCurrentBlockedContent());
-                    }
-
-                    $content = '<div class="BorlabsCookie">' . $content
-                        . '<div class="borlabs-hide" data-borlabs-cookie-type="content-blocker" data-borlabs-cookie-id="'
-                        . $detectedContentBlockerId . '">' . $blockedContent . '</div></div>';
-                }
-            }
-
-            // Remove whitespace to avoid WordPress' automatic br- & p-tags
-            $content = preg_replace('/[\s]+/mu', ' ', $content);
-        }
-
-        return $content;
     }
 }

@@ -87,7 +87,6 @@ if ( ! class_exists( 'Price_List' ) ) {
 		 * @access protected
 		 */
 		protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-
 			$this->register_controls();
 		}
 
@@ -98,6 +97,8 @@ if ( ! class_exists( 'Price_List' ) ) {
 		 * @access protected
 		 */
 		protected function register_controls() {
+
+			$this->register_presets_control( 'Price_List', $this );
 
 			// Content Tab.
 			$this->render_list_item_control();
@@ -226,19 +227,19 @@ if ( ! class_exists( 'Price_List' ) ) {
 						'default'     => array(
 							array(
 								'title'            => __( 'First Item', 'uael' ),
-								'item_description' => __( 'I am item content. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'uael' ),
+								'item_description' => __( 'I am item content. Click edit button to change this text.', 'uael' ),
 								'price'            => '$20',
 								'link'             => array( 'url' => '#' ),
 							),
 							array(
 								'title'            => __( 'Second Item', 'uael' ),
-								'item_description' => __( 'I am item content. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'uael' ),
+								'item_description' => __( 'I am item content. Click edit button to change this text.', 'uael' ),
 								'price'            => '$9',
 								'link'             => array( 'url' => '#' ),
 							),
 							array(
 								'title'            => __( 'Third Item', 'uael' ),
-								'item_description' => __( 'I am item content. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'uael' ),
+								'item_description' => __( 'I am item content. Click edit button to change this text.', 'uael' ),
 								'price'            => '$32',
 								'link'             => array( 'url' => '#' ),
 							),
@@ -274,6 +275,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 							'above' => __( 'Top', 'uael' ),
 							'left'  => __( 'Left', 'uael' ),
 							'right' => __( 'Right', 'uael' ),
+							'none'  => __( 'None', 'uael' ),
 						),
 						'default' => 'left',
 					)
@@ -290,7 +292,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 						),
 						'default'   => 'right',
 						'condition' => array(
-							'image_position' => array( 'left', 'right' ),
+							'image_position' => array( 'left', 'right', 'none' ),
 						),
 					)
 				);
@@ -312,10 +314,10 @@ if ( ! class_exists( 'Price_List' ) ) {
 							'{{WRAPPER}} .uael-price-list-separator' => 'border-bottom-style: {{VALUE}};',
 						),
 						'condition'   => array(
-							'image_position' => array( 'left', 'right' ),
+							'image_position' => array( 'left', 'right', 'none' ),
 							'price_position' => 'right',
 						),
-						'label_block' => true,
+						'label_block' => false,
 					)
 				);
 
@@ -660,7 +662,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 						'type'      => Controls_Manager::HEADING,
 						'separator' => 'before',
 						'condition' => array(
-							'image_position' => array( 'left', 'right' ),
+							'image_position' => array( 'left', 'right', 'none' ),
 							'price_position' => 'right',
 						),
 					)
@@ -678,7 +680,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 						),
 						'condition' => array(
 							'connector_style!' => 'none',
-							'image_position'   => array( 'left', 'right' ),
+							'image_position'   => array( 'left', 'right', 'none' ),
 							'price_position'   => 'right',
 						),
 						'selectors' => array(
@@ -703,7 +705,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 						),
 						'condition' => array(
 							'connector_style!' => 'none',
-							'image_position'   => array( 'left', 'right' ),
+							'image_position'   => array( 'left', 'right', 'none' ),
 							'price_position'   => 'right',
 						),
 					)
@@ -719,7 +721,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 						),
 						'condition' => array(
 							'connector_style!' => 'none',
-							'image_position'   => array( 'left', 'right' ),
+							'image_position'   => array( 'left', 'right', 'none' ),
 							'price_position'   => 'right',
 						),
 					)
@@ -739,8 +741,28 @@ if ( ! class_exists( 'Price_List' ) ) {
 			$this->start_controls_section(
 				'section_image_style',
 				array(
-					'label' => __( 'Image Area', 'uael' ),
-					'tab'   => Controls_Manager::TAB_STYLE,
+					'label'     => __( 'Image Area', 'uael' ),
+					'tab'       => Controls_Manager::TAB_STYLE,
+					'condition' => array(
+						'image_position!' => 'none',
+					),
+				)
+			);
+
+			$this->add_control(
+				'image_shape',
+				array(
+					'label'        => __( 'Shape', 'uael' ),
+					'type'         => Controls_Manager::SELECT,
+					'default'      => 'square',
+					'options'      => array(
+						'default' => __( 'Default', 'uael' ),
+						'rounded' => __( 'Rounded', 'uael' ),
+						'circle'  => __( 'Circle', 'uael' ),
+						'custom'  => __( 'Custom', 'uael' ),
+					),
+					'prefix_class' => 'uael-price-list-shape-',
+					'default'      => 'custom',
 				)
 			);
 
@@ -785,6 +807,9 @@ if ( ! class_exists( 'Price_List' ) ) {
 						'size_units' => array( 'px', '%' ),
 						'selectors'  => array(
 							'{{WRAPPER}} .uael-price-list-image img' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+						),
+						'condition'  => array(
+							'image_shape' => 'custom',
 						),
 					)
 				);
@@ -861,6 +886,9 @@ if ( ! class_exists( 'Price_List' ) ) {
 						'default'    => array(
 							'size' => 0,
 							'unit' => 'px',
+						),
+						'condition'  => array(
+							'image_position!' => 'none',
 						),
 					)
 				);
@@ -1074,13 +1102,6 @@ if ( ! class_exists( 'Price_List' ) ) {
 			if ( $url ) {
 				$unique_link_id = 'item-link-' . $item_id;
 
-				$this->add_render_attribute(
-					$unique_link_id,
-					array(
-						'href' => $url,
-					)
-				);
-
 				if ( '' === $settings['link_complete_box'] || 'no' === $settings['link_complete_box'] ) {
 					$this->add_render_attribute(
 						$unique_link_id,
@@ -1097,9 +1118,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 					);
 				}
 
-				if ( $item['link']['is_external'] ) {
-					$this->add_render_attribute( $unique_link_id, 'target', '_blank' );
-				}
+				$this->add_link_attributes( $unique_link_id, $item['link'] );
 
 				return '<a ' . $this->get_render_attribute_string( $unique_link_id ) . '>';
 			} else {
@@ -1254,7 +1273,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 							price_item_cls = 'has-discount';
 						}
 
-						if ( item.image && item.image.id ) {
+						if ( 'none' !== settings.image_position && item.image && item.image.id ) {
 
 							var image = {
 								id: item.image.id,
@@ -1276,7 +1295,7 @@ if ( ! class_exists( 'Price_List' ) ) {
 								</div>
 							<# } #>
 
-						<# } else {
+						<# } else if ( 'none' !== settings.image_position ) {
 
 							var image_url = item.image.url;
 
@@ -1359,20 +1378,6 @@ if ( ! class_exists( 'Price_List' ) ) {
 				<# } #>
 			</div>
 			<?php
-		}
-
-		/**
-		 * Render Price List widget output in the editor.
-		 *
-		 * Written as a Backbone JavaScript template and used to generate the live preview.
-		 *
-		 * Remove this after Elementor v3.3.0
-		 *
-		 * @since 0.0.1
-		 * @access protected
-		 */
-		protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-			$this->content_template();
 		}
 	}
 }

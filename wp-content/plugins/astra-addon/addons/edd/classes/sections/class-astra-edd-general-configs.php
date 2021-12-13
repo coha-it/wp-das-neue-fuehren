@@ -24,7 +24,9 @@ if ( ! class_exists( 'Astra_Edd_General_Configs' ) ) {
 	/**
 	 * Register Easy Digital Downloads General Layout Configurations.
 	 */
-	class Astra_Edd_General_Configs extends Astra_Customizer_Config_Base {
+	// @codingStandardsIgnoreStart
+	class Astra_Edd_General_Configs extends Astra_Customizer_Config_Base { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
+		// @codingStandardsIgnoreEnd
 
 		/**
 		 * Register Easy Digital Downloads General Layout Configurations.
@@ -62,6 +64,29 @@ if ( ! class_exists( 'Astra_Edd_General_Configs' ) ) {
 						'basket'  => __( 'Basket', 'astra-addon' ),
 					),
 					'context'  => astra_addon_builder_helper()->general_tab,
+				),
+
+				/**
+				 * Option: Cart Count color
+				 */
+				array(
+					'name'              => ASTRA_THEME_SETTINGS . '[edd-header-cart-product-count-color]',
+					'default'           => astra_get_option( 'edd-header-cart-product-count-color' ),
+					'type'              => 'control',
+					'control'           => 'ast-color',
+					'sanitize_callback' => array( 'Astra_Customizer_Sanitizes', 'sanitize_alpha_color' ),
+					'transport'         => 'postMessage',
+					'title'             => __( 'Count Color', 'astra-addon' ),
+					'context'           => array(
+						Astra_Builder_Helper::$design_tab_config,
+						array(
+							'setting'  => ASTRA_THEME_SETTINGS . '[edd-header-cart-icon]',
+							'operator' => '!=',
+							'value'    => 'default',
+						),
+					),
+					'section'           => $_section,
+					'priority'          => 45,
 				),
 
 				/**

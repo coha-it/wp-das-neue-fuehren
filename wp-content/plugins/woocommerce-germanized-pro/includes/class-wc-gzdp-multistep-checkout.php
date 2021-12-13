@@ -309,7 +309,8 @@ class WC_GZDP_Multistep_Checkout {
             'payone-woocommerce-3/payone-woocommerce-3.php',
 			'mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php',
 			'woo-stripe-payment/stripe-payments.php',
-			'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php'
+			'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php',
+			'woocommerce-payments/woocommerce-payments.php'
         );
 
 		$enable_payment_compatibility_script = false;
@@ -329,7 +330,9 @@ class WC_GZDP_Multistep_Checkout {
 					'mollie_wc_gateway_creditcard',
 					'payone',
 					'stripe_cc',
-					'stripe'
+					'stripe',
+					'stripe_sepa',
+					'woocommerce_payments'
 				) ),
 				'force_enable' => has_filter( 'woocommerce_gzdp_multistep_checkout_enable_payment_compatibility_mode' ) ? true : false
 			) );
@@ -656,7 +659,7 @@ class WC_GZDP_Multistep_Checkout {
 				'title' 	=> __( 'First step', 'woocommerce-germanized-pro' ),
 				'desc' 		=> __( 'Insert a privacy policy notice right before the first step submit button.', 'woocommerce-germanized-pro' ),
 				'id' 		=> 'woocommerce_gzdp_checkout_privacy_policy_first_step',
-				'default'	=> 'yes',
+				'default'	=> 'no',
 				'type' 		=> 'gzd_toggle',
 			),
 

@@ -125,11 +125,9 @@ class Automation {
 		add_action( 'woocommerce_order_status_changed', function( $order_id, $from, $to ) {
 			if ( $order = Helper::get_order( $order_id ) ) {
 				$payment_method = $order->get_payment_method();
-				$statuses       = self::get_invoice_payment_method_statuses( $payment_method );
+				$statuses       = empty( $payment_method ) ? array() : array_map( array( 'Vendidero\StoreaBill\WooCommerce\Helper', 'clean_order_status' ), self::get_invoice_payment_method_statuses( $payment_method ) );
 
 				foreach( $statuses as $status ) {
-					$status = Helper::clean_order_status( $status );
-
 					if ( $to === $status ) {
 						self::sync_invoices( $order_id );
 						return;
@@ -144,7 +142,7 @@ class Automation {
 		add_action( 'woocommerce_checkout_order_processed', function( $order_id ) {
 			if ( $order = Helper::get_order( $order_id ) ) {
 				$payment_method = $order->get_payment_method();
-				$statuses       = array_map( array( 'Vendidero\StoreaBill\WooCommerce\Helper', 'clean_order_status' ), self::get_invoice_payment_method_statuses( $payment_method ) );
+				$statuses       = empty( $payment_method ) ? array() : array_map( array( 'Vendidero\StoreaBill\WooCommerce\Helper', 'clean_order_status' ), self::get_invoice_payment_method_statuses( $payment_method ) );
 				$status         = Helper::clean_order_status( $order->get_status() );
 
 				if ( empty( $statuses ) || in_array( $status, $statuses ) ) {
@@ -161,21 +159,34 @@ class Automation {
 
 		$statuses = array_map( array( '\Vendidero\StoreaBill\WooCommerce\Helper', 'clean_order_status' ), self::get_invoice_order_statuses() );
 
-		$new_order_callback = function( $order_id ) use ( $statuses ) {
+		$new_order_callback = function( $order ) use ( $statuses ) {
 			$sync = false;
 
-			if ( $order = Helper::get_order( $order_id ) ) {
-				if ( in_array( $order->get_status(), $statuses ) ) {
+			if ( $sab_order = Helper::get_order( $order ) ) {
+				if ( in_array( $sab_order->get_status(), $statuses ) ) {
 					$sync = true;
 				}
 			}
 
 			if ( $sync ) {
-				self::sync_invoices( $order_id );
+				self::sync_invoices( $order );
 			}
 		};
 
-		add_action( 'woocommerce_new_order', $new_order_callback, 20 );
+		/**
+		 * The issue with the woocommerce_new_order hook is that this hook is getting executed before order items
+		 * has been stored. This will lead to items not being available.
+		 *
+		 * Workaround: Hook into the woocommerce_after_order_object_save instead after an order has been created.
+		 * Make sure to prevent multiple checks per request.
+		 */
+		add_action( 'woocommerce_new_order', function( $order_id ) use ( $new_order_callback ) {
+			add_action( 'woocommerce_after_order_object_save', function( $order ) use ( $order_id, $new_order_callback ) {
+				if ( $order_id === $order->get_id() ) {
+					$new_order_callback( $order );
+				}
+			}, 150 );
+		} );
 
 		foreach( $statuses as $order_status ) {
 			add_action( "woocommerce_order_status_{$order_status}", $callback, 20 );
@@ -203,7 +214,14 @@ class Automation {
 			}
 		};
 
-		add_action( 'woocommerce_new_order', $new_order_callback, 20 );
+		add_action( 'woocommerce_new_order', function( $order_id ) use ( $new_order_callback ) {
+			add_action( 'woocommerce_after_order_object_save', function( $order ) use ( $order_id, $new_order_callback ) {
+				if ( $order_id === $order->get_id() ) {
+					$new_order_callback( $order );
+				}
+			}, 150 );
+		} );
+
 		add_action( 'woocommerce_payment_complete', $callback, 20 );
 
 		foreach( $statuses as $status ) {
@@ -237,11 +255,11 @@ class Automation {
 			'allow_defer' => sab_allow_deferring( 'auto' ),
 		) );
 
-		if ( is_numeric( $order ) ) {
+		if ( is_numeric( $order ) || is_a( $order, 'WC_Order' ) ) {
 			$order = Helper::get_order( $order );
 		}
 
-		if ( ! $order ) {
+		if ( ! $order || ! is_a( $order, '\Vendidero\Storeabill\WooCommerce\Order' ) ) {
 			return false;
 		}
 

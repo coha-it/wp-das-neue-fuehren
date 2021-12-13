@@ -13,6 +13,7 @@ use Elementor\Repeater;
 use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Border;
 use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Group_Control_Image_Size;
 use UltimateElementor\Base\Common_Widget;
@@ -136,6 +137,9 @@ class Timeline extends Common_Widget {
 	 * @access protected
 	 */
 	protected function register_controls() {
+
+		$this->register_presets_control( 'Timeline', $this );
+
 		// Content Tab.
 		$this->register_general_content_controls();
 		$this->register_timeline_content_controls();
@@ -1076,21 +1080,6 @@ class Timeline extends Common_Widget {
 						'timeline_single_heading' => __( 'My Heading 2', 'uael' ),
 						'timeline_single_content' => __( 'I am timeline card content. You can change me anytime. Click here to edit this text.', 'uael' ),
 					),
-					array(
-						'timeline_single_date'    => __( 'January 1, 2016', 'uael' ),
-						'timeline_single_heading' => __( 'My Heading 3', 'uael' ),
-						'timeline_single_content' => __( 'I am timeline card content. You can change me anytime. Click here to edit this text.', 'uael' ),
-					),
-					array(
-						'timeline_single_date'    => __( 'January 1, 2017', 'uael' ),
-						'timeline_single_heading' => __( 'My Heading 4', 'uael' ),
-						'timeline_single_content' => __( 'I am timeline card content. You can change me anytime. Click here to edit this text.', 'uael' ),
-					),
-					array(
-						'timeline_single_date'    => __( 'January 1, 2018', 'uael' ),
-						'timeline_single_heading' => __( 'My Heading 5', 'uael' ),
-						'timeline_single_content' => __( 'I am timeline card content. You can change me anytime. Click here to edit this text.', 'uael' ),
-					),
 				),
 			)
 		);
@@ -1203,11 +1192,23 @@ class Timeline extends Common_Widget {
 				)
 			);
 
+		$this->add_control(
+			'show_card_arrow',
+			array(
+				'label'        => __( 'Show Card Arrow', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'uael' ),
+				'label_off'    => __( 'No', 'uael' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+			)
+		);
+
 			// Vertical divider arrow, date postion.
 			$this->add_control(
 				'timeline_arrow_position',
 				array(
-					'label'        => __( 'Arrow Alignment', 'uael' ),
+					'label'        => __( 'Connector Icon Alignment', 'uael' ),
 					'type'         => Controls_Manager::CHOOSE,
 					'options'      => array(
 						'top'    => array(
@@ -1231,6 +1232,7 @@ class Timeline extends Common_Widget {
 			);
 
 		// Timeline spacing ends here.
+
 		$this->end_controls_section();
 	}
 
@@ -1587,6 +1589,15 @@ class Timeline extends Common_Widget {
 				)
 			);
 
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'     => 'timeline_cards_border',
+				'label'    => __( 'Border', 'uael' ),
+				'selector' => '{{WRAPPER}} .uael-events-inner-new',
+			)
+		);
+
 			// Card border radius.
 			$this->add_responsive_control(
 				'timeline_cards_border_radius',
@@ -1843,6 +1854,7 @@ class Timeline extends Common_Widget {
 						'value'   => 'fa fa-calendar',
 						'library' => 'fa-solid',
 					),
+					'style_transfer'   => true,
 				)
 			);
 		} else {
@@ -1850,9 +1862,10 @@ class Timeline extends Common_Widget {
 			$this->add_control(
 				'timeline_all_icon',
 				array(
-					'label'   => __( 'Connector Icon', 'uael' ),
-					'type'    => Controls_Manager::ICON,
-					'default' => 'fa fa-calendar',
+					'label'          => __( 'Connector Icon', 'uael' ),
+					'type'           => Controls_Manager::ICON,
+					'default'        => 'fa fa-calendar',
+					'style_transfer' => true,
 				)
 			);
 		}
@@ -1923,7 +1936,7 @@ class Timeline extends Common_Widget {
 				'size_units' => array( 'px', 'em' ),
 				'range'      => array(
 					'px' => array(
-						'min' => 20,
+						'min' => 0,
 						'max' => 100,
 					),
 					'em' => array(
@@ -1956,6 +1969,28 @@ class Timeline extends Common_Widget {
 
 					'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline__line' => 'right: calc( {{SIZE}}{{UNIT}} / 2 ); left: auto;',
 					'(mobile).rtl {{WRAPPER}}.uael-timeline--center.uael-timeline-responsive-mobile .uael-timeline-res-right .uael-timeline__line' => 'left: calc( {{SIZE}}{{UNIT}} / 2 ); right: auto;',
+				),
+			)
+		);
+
+		// Icon border.
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'     => 'timeline_all_icon_border',
+				'selector' => '{{WRAPPER}} .uael-timeline-marker',
+			)
+		);
+
+		// Icon border radius.
+		$this->add_responsive_control(
+			'timeline_all_icon_border_radius',
+			array(
+				'label'      => __( 'Icon Rounded Corners', 'uael' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-timeline-marker' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 			)
 		);

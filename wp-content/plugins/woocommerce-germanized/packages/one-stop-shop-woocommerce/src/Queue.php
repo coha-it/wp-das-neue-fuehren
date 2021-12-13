@@ -16,6 +16,19 @@ class Queue {
 		$args     = self::get_timeframe( $type, $date, $end_date );
 		$interval = $args['start']->diff( $args['end'] );
 
+		/**
+		 * Except observers, all new queries treat refunds separately
+		 */
+		if ( 'observer' !== $type ) {
+			$args['order_types'] = array(
+				'shop_order',
+				'shop_order_refund'
+			);
+		}
+
+		// Add version
+		$args['version'] = Package::get_version();
+
 		$generator  = new AsyncReportGenerator( $type, $args );
 		$queue_args = $generator->get_args();
 		$queue      = self::get_queue();
@@ -41,7 +54,8 @@ class Queue {
 				$running[] = $generator->get_id();
 			}
 
-			update_option( 'oss_woocommerce_reports_running', $running );
+			update_option( 'oss_woocommerce_reports_running', $running, false );
+			self::clear_cache();
 
 			return $generator->get_id();
 		}
@@ -49,11 +63,18 @@ class Queue {
 		return false;
 	}
 
+	public static function clear_cache() {
+		wp_cache_delete( 'oss_woocommerce_reports_running', 'options' );
+	}
+
 	public static function get_queue_details( $report_id ) {
 		$details = array(
 			'next_date'   => null,
 			'link'        => admin_url( 'admin.php?page=wc-status&tab=action-scheduler&s=' . esc_attr( $report_id ) .'&status=pending' ),
 			'order_count' => 0,
+			'has_action'  => false,
+			'is_finished' => false,
+			'action'      => false
 		);
 
 		if ( $queue = self::get_queue() ) {
@@ -93,6 +114,9 @@ class Queue {
 				$processed = isset( $args['args']['orders_processed'] ) ? (int) $args['args']['orders_processed'] : 0;
 
 				$details['order_count'] = absint( $processed );
+				$details['has_action']  = true;
+				$details['action']      = $action;
+				$details['is_finished'] = $action->is_finished();
 			}
 		}
 
@@ -104,7 +128,9 @@ class Queue {
 	}
 
 	public static function use_date_paid() {
-		return apply_filters( 'oss_woocommerce_report_use_date_paid', true );
+		$use_date_paid = 'date_paid' === get_option( 'oss_report_date_type', 'date_paid' );
+
+		return apply_filters( 'oss_woocommerce_report_use_date_paid', $use_date_paid );
 	}
 
 	public static function get_order_statuses() {
@@ -114,27 +140,94 @@ class Queue {
 		return apply_filters( 'oss_woocommerce_valid_order_statuses', $statuses );
 	}
 
-	public static function get_order_query_args( $args, $date_field = 'date_created' ) {
-		/**
-		 * Add one day to the end date to capture timestamps (including time data) in between
-		 */
-		if ( 'date_paid' === $date_field ) {
-			$args['start'] = strtotime( $args['start'] );
-			$args['end']   = strtotime( $args['end'] ) + DAY_IN_SECONDS;
-		}
+	public static function build_query( $args ) {
+		global $wpdb;
 
-		$query_args = array(
-			'limit'           => $args['limit'],
-			'orderby'         => 'date',
-			'order'           => 'ASC',
-			$date_field       => $args['start'] . '...' . $args['end'],
-			'offset'          => $args['offset'],
-			'taxable_country' => Package::get_non_base_eu_countries( true ),
-			'type'            => array( 'shop_order' ),
-			'status'          => $args['status']
+		$joins = array(
+			"LEFT JOIN {$wpdb->postmeta} AS mt1 ON {$wpdb->posts}.ID = mt1.post_id AND (mt1.meta_key = '_shipping_country' OR mt1.meta_key = '_billing_country')",
 		);
 
-		return $query_args;
+		$taxable_countries_in = self::generate_in_query_sql( Package::get_non_base_eu_countries( true ) );
+		$post_status_in       = self::generate_in_query_sql( $args['status'] );
+		$post_type_in         = self::generate_in_query_sql( isset( $args['order_types'] ) ? (array) $args['order_types'] : array( 'shop_order' ) );
+		$where_country_sql    = "mt1.meta_value IN {$taxable_countries_in}";
+
+		if ( in_array( 'shop_order_refund', $args['order_types'] ) ) {
+			$joins[] = "LEFT JOIN {$wpdb->postmeta} AS mt1_parent ON {$wpdb->posts}.post_parent = mt1_parent.post_id AND (mt1_parent.meta_key = '_shipping_country' OR mt1_parent.meta_key = '_billing_country')";
+			$where_country_sql = "( {$wpdb->posts}.post_parent > 0 AND (mt1_parent.meta_value IN {$taxable_countries_in}) ) OR ( mt1.meta_value IN {$taxable_countries_in} )";
+		}
+
+		$where_date_sql = $wpdb->prepare( "{$wpdb->posts}.post_date >= '%s' AND {$wpdb->posts}.post_date <= '%s'", $args['start'], $args['end'] );
+
+		if ( 'date_paid' === $args['date_field'] ) {
+			/**
+			 * Add one day to the end date to capture timestamps (including time data) in between
+			 */
+			$end_adjusted = strtotime( $args['end'] ) + DAY_IN_SECONDS;
+
+			/**
+			 * Use a max end date to limit potential query results in case date_paid meta field is used.
+			 * This way we will only register payments made max 2 month after the order created date.
+			 */
+			$max_end = new \WC_DateTime( $args['end'] );
+			$max_end->modify( '+2 months' );
+
+			$joins[] = "LEFT JOIN {$wpdb->postmeta} AS mt3 ON ( {$wpdb->posts}.ID = mt3.post_id AND mt3.meta_key = '_date_paid' )";
+
+			$where_date_sql = $wpdb->prepare(
+				"( {$wpdb->posts}.post_date >= '%s' AND {$wpdb->posts}.post_date <= '%s' ) AND NOT mt3.post_id IS NULL AND (
+			  		mt3.meta_key = '_date_paid' AND mt3.meta_value >= '%d' AND mt3.meta_value <= '%d'
+			  	) OR {$wpdb->posts}.post_parent > 0 AND (
+			  	    {$wpdb->posts}.post_date >= '%s' AND {$wpdb->posts}.post_date <= '%s'
+			  	)",
+				$args['start'],
+				$max_end->format( 'Y-m-d' ),
+				strtotime( $args['start'] ),
+				$end_adjusted,
+				$args['start'],
+				$args['end']
+			);
+		}
+
+		$join_sql = implode( " ", $joins );
+
+		$sql = $wpdb->prepare( "
+			SELECT {$wpdb->posts}.* FROM {$wpdb->posts}  
+			$join_sql
+			WHERE 1=1 
+				AND ( {$wpdb->posts}.post_type IN {$post_type_in} ) AND ( {$wpdb->posts}.post_status IN {$post_status_in} ) AND ( {$where_date_sql} )
+				AND ( {$where_country_sql} )
+			GROUP BY {$wpdb->posts}.ID 
+			ORDER BY {$wpdb->posts}.post_date ASC 
+			LIMIT %d, %d",
+			$args['offset'],
+			$args['limit']
+		);
+
+		return $sql;
+	}
+
+	private static function generate_in_query_sql( $values ) {
+		global $wpdb;
+
+		$in_query = array();
+
+		foreach( $values as $value ) {
+			$in_query[] = $wpdb->prepare( "'%s'", $value );
+		}
+
+		return "(" . implode( ',', $in_query ) . ")";
+	}
+
+	public static function query( $args ) {
+		global $wpdb;
+
+		$query = self::build_query( $args );
+
+		Package::extended_log( sprintf( 'Building new query: %s', wc_print_r( $args, true ) ) );
+		Package::extended_log( $query );
+
+		return $wpdb->get_results( $query );
 	}
 
 	public static function cancel( $id ) {
@@ -145,10 +238,10 @@ class Queue {
 
 		if ( self::is_running( $id ) ) {
 			$running = array_diff( $running, array( $id ) );
-
 			Package::log( sprintf( 'Cancelled %s', Package::get_report_title( $id ) ) );
 
-			update_option( 'oss_woocommerce_reports_running', $running );
+			update_option( 'oss_woocommerce_reports_running', $running, false );
+			self::clear_cache();
 			$generator->delete();
 		}
 
@@ -173,6 +266,13 @@ class Queue {
 	}
 
 	public static function next( $type, $args ) {
+		/**
+		 * Older versions didn't include refunds as separate orders
+		 */
+		if ( ! isset( $args['order_types'] ) ) {
+			$args['order_types'] = array( 'shop_order' );
+		}
+
 		$generator = new AsyncReportGenerator( $type, $args );
 		$result    = $generator->next();
 		$is_empty  = false;
@@ -186,7 +286,11 @@ class Queue {
 			$new_args = $generator->get_args();
 
 			// Increase offset
-			$new_args['offset'] = $new_args['offset'] + $new_args['limit'];
+			$new_args['offset'] = (int) $new_args['offset'] + (int) $new_args['limit'];
+
+			$queue->cancel_all( 'oss_woocommerce_' . $generator->get_id() );
+
+			Package::extended_log( sprintf( 'Starting new queue: %s', wc_print_r( $new_args, true ) ) );
 
 			$queue->schedule_single(
 				time() + 10,
@@ -220,13 +324,7 @@ class Queue {
 
 		Package::log( sprintf( 'Completed %1$s. Status: %2$s', $report->get_title(), $status ) );
 
-		$running = self::get_reports_running();
-
-		if ( in_array( $generator->get_id(), $running ) ) {
-			$running = array_diff( $running, array( $generator->get_id() ) );
-		}
-
-		update_option( 'oss_woocommerce_reports_running', $running );
+		self::maybe_stop_report( $report->get_id() );
 
 		if ( 'observer' === $report->get_type() ) {
 			self::update_observer( $report );
@@ -261,11 +359,12 @@ class Queue {
 		$report->delete();
 
 		$observer_report->set_date_requested( $report->get_date_requested() );
+
 		// Use the last report date as new end date
 		$observer_report->set_date_end( $report->get_date_end() );
 		$observer_report->save();
 
-		update_option( 'oss_woocommerce_observer_report_' . $year, $observer_report->get_id() );
+		update_option( 'oss_woocommerce_observer_report_' . $year, $observer_report->get_id(), false );
 
 		do_action( 'oss_woocommerce_updated_observer', $observer_report );
 	}
@@ -274,10 +373,38 @@ class Queue {
 	 * @return false|Report
 	 */
 	public static function get_running_observer() {
+		$report = false;
+
 		foreach( self::get_reports_running() as $id ) {
+			/**
+			 * Make sure to return the last running observer in case more of one observer exists
+			 * in running queue.
+			 */
 			if ( strstr( $id, 'observer_' ) ) {
-				return Package::get_report( $id );
+				$report = Package::get_report( $id );
 			}
+		}
+
+		return $report;
+	}
+
+	public static function maybe_stop_report( $report_id ) {
+		$reports_running = self::get_reports_running();
+
+		if ( in_array( $report_id, $reports_running ) ) {
+			$reports_running = array_diff( $reports_running, array( $report_id ) );
+			update_option( 'oss_woocommerce_reports_running', $reports_running, false );
+
+			if ( $queue = self::get_queue() ) {
+				$queue->cancel_all( 'oss_woocommerce_' . $report_id );
+			}
+
+			/**
+			 * Force non-cached running option
+			 */
+			wp_cache_delete( 'oss_woocommerce_reports_running', 'options' );
+
+			return true;
 		}
 
 		return false;

@@ -4,18 +4,19 @@ namespace ProfilePress\Core\Admin\SettingsPages;
 
 use ProfilePress\Custom_Settings_Page_Api;
 
-class ToolsSettingsPage extends AbstractSettingsPage
+class ToolsSettingsPage
 {
     public function __construct()
     {
         add_action('admin_init', [$this, 'clear_error_log']);
 
-        add_filter('ppress_general_settings_admin_page_title', function ($title) {
-            if (isset($_GET['view']) && $_GET['view'] == 'tools') {
-                $title = esc_html__('Tools', 'wp-user-avatar');
-            }
+        add_action('ppress_admin_settings_submenu_page_general_tools', [$this, 'admin_page']);
 
-            return $title;
+        add_action('ppress_register_menu_page_general_tools', function () {
+
+            add_filter('ppress_general_settings_admin_page_title', function () {
+                return esc_html__('Tools', 'wp-user-avatar');
+            });
         });
     }
 
@@ -26,14 +27,14 @@ class ToolsSettingsPage extends AbstractSettingsPage
         if ( ! in_array($_GET['ppress-delete-log'], ['social-login', 'debug'])) return;
 
         ppress_clear_error_log($_GET['ppress-delete-log']);
-        wp_safe_redirect(add_query_arg('view', 'tools', PPRESS_SETTINGS_SETTING_PAGE));
+        wp_safe_redirect(esc_url_raw(add_query_arg('section', 'tools', PPRESS_SETTINGS_SETTING_PAGE)));
         exit;
     }
 
     public function admin_page()
     {
-        $debug_log_content           = ppress_get_error_log();
-        $delete_debug_log_url        = esc_url_raw(add_query_arg(['ppress-delete-log' => 'debug', '_wpnonce' => ppress_create_nonce()]));
+        $debug_log_content    = ppress_get_error_log();
+        $delete_debug_log_url = esc_url_raw(add_query_arg(['ppress-delete-log' => 'debug', '_wpnonce' => ppress_create_nonce()]));
 
         $settings = [
             'logs' => apply_filters('ppress_error_log_settings', [
@@ -58,8 +59,6 @@ class ToolsSettingsPage extends AbstractSettingsPage
         ];
 
         $instance = Custom_Settings_Page_Api::instance($settings, 'ppress_tools', esc_html__('Tools', 'wp-user-avatar'));
-        $this->register_core_settings($instance, true);
-        $instance->tab($this->settings_tab_args());
         $instance->build_sidebar_tab_style();
     }
 

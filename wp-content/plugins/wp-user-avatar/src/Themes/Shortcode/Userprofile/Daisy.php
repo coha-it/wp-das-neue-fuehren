@@ -18,7 +18,7 @@ class Daisy implements ThemeInterface
 <div class="daisy-container">
     <div class="daisy-small-col-4">
         <div class="daisy-profile-image">
-            <img src="[profile-avatar-url size=200]"/>
+            <img src="[profile-avatar-url]"/>
         </div>
 
         <div class="daisy-user-details">

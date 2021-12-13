@@ -151,7 +151,7 @@ class ProviderSettings {
 			$breadcrumb[] = array(
 				'class' => 'section',
 				'href'  => ! empty( $current_section ) ? $provider->get_edit_link() : '',
-				'title' => $provider->get_id() <= 0 ? self::get_breadcrumb_label( _x( 'New', 'shipments-shipping-provider', 'woocommerce-germanized' ), $current_section ) : self::get_breadcrumb_label( $provider->get_title(), $current_section ),
+				'title' => ( $provider->get_id() <= 0 && '' === $provider->get_title() ) ? self::get_breadcrumb_label( _x( 'New', 'shipments-shipping-provider', 'woocommerce-germanized' ), $current_section ) : self::get_breadcrumb_label( $provider->get_title(), $current_section ),
 			);
 		}
 
@@ -239,6 +239,7 @@ class ProviderSettings {
 	protected static function provider_screen() {
 		$helper    = Helper::instance();
 		$providers = $helper->get_shipping_providers();
+		$providers = apply_filters( 'woocommerce_gzd_shipment_admin_provider_list', $providers );
 
 		include_once Package::get_path() . '/includes/admin/views/html-settings-provider-list.php';
 	}

@@ -96,6 +96,7 @@ class Dual_Heading extends Common_Widget {
 	 * @access protected
 	 */
 	protected function register_controls() {
+		$this->register_presets_control( 'Dual_Heading', $this );
 
 		$this->register_heading_content_controls();
 		$this->register_general_content_controls();
@@ -127,7 +128,7 @@ class Dual_Heading extends Common_Widget {
 				'dynamic'  => array(
 					'active' => true,
 				),
-				'default'  => __( 'I love', 'uael' ),
+				'default'  => __( 'Be Focused.', 'uael' ),
 			)
 		);
 		$this->add_control(
@@ -139,7 +140,7 @@ class Dual_Heading extends Common_Widget {
 				'dynamic'  => array(
 					'active' => true,
 				),
-				'default'  => __( 'this website', 'uael' ),
+				'default'  => __( 'Be Determined.', 'uael' ),
 			)
 		);
 		$this->add_control(
@@ -153,15 +154,31 @@ class Dual_Heading extends Common_Widget {
 				'selector' => '{{WRAPPER}} .uael-dual-heading-text',
 			)
 		);
+
+		$this->add_control(
+			'show_bg_text',
+			array(
+				'label'        => __( 'Background Text', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'default'      => 'yes',
+				'label_off'    => __( 'No', 'uael' ),
+				'label_on'     => __( 'Yes', 'uael' ),
+				'return_value' => 'yes',
+			)
+		);
+
 		$this->add_control(
 			'bg_text',
 			array(
 
-				'label'    => __( 'Background Text', 'uael' ),
-				'type'     => Controls_Manager::TEXT,
-				'selector' => '{{WRAPPER}} .uael-heading-text',
-				'dynamic'  => array(
+				'label'     => __( 'Background Text', 'uael' ),
+				'type'      => Controls_Manager::TEXT,
+				'selector'  => '{{WRAPPER}} .uael-heading-text',
+				'dynamic'   => array(
 					'active' => true,
+				),
+				'condition' => array(
+					'show_bg_text' => 'yes',
 				),
 			)
 		);
@@ -221,9 +238,9 @@ class Dual_Heading extends Common_Widget {
 		$this->add_responsive_control(
 			'dual_color_alignment',
 			array(
-				'label'     => __( 'Alignment', 'uael' ),
-				'type'      => Controls_Manager::CHOOSE,
-				'options'   => array(
+				'label'        => __( 'Alignment', 'uael' ),
+				'type'         => Controls_Manager::CHOOSE,
+				'options'      => array(
 					'left'   => array(
 						'title' => __( 'Left', 'uael' ),
 						'icon'  => 'fa fa-align-left',
@@ -237,8 +254,9 @@ class Dual_Heading extends Common_Widget {
 						'icon'  => 'fa fa-align-right',
 					),
 				),
-				'default'   => 'left',
-				'selectors' => array(
+				'default'      => 'left',
+				'prefix_class' => 'uael%s-dual-heading-align-',
+				'selectors'    => array(
 					'{{WRAPPER}} .uael-dual-color-heading' => 'text-align: {{VALUE}};',
 				),
 			)
@@ -635,7 +653,8 @@ class Dual_Heading extends Common_Widget {
 				'label'     => __( 'Background Text', 'uael' ),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => array(
-					'bg_text!' => '',
+					'bg_text!'     => '',
+					'show_bg_text' => 'yes',
 				),
 			)
 		);
@@ -790,20 +809,14 @@ class Dual_Heading extends Common_Widget {
 		<?php
 		$link = '';
 		if ( ! empty( $settings['heading_link']['url'] ) ) {
-			$this->add_render_attribute( 'url', 'href', $settings['heading_link']['url'] );
 
-			if ( $settings['heading_link']['is_external'] ) {
-				$this->add_render_attribute( 'url', 'target', '_blank' );
-			}
+			$this->add_link_attributes( 'url', $settings['heading_link'] );
 
-			if ( ! empty( $settings['heading_link']['nofollow'] ) ) {
-				$this->add_render_attribute( 'url', 'rel', 'nofollow' );
-			}
 			$link = $this->get_render_attribute_string( 'url' );
 		}
 
 		$this->add_render_attribute( 'uael-dual-heading', 'class', 'uael-module-content uael-dual-color-heading' );
-		if ( ! empty( $settings['bg_text'] ) ) {
+		if ( 'yes' === $settings['show_bg_text'] && ! empty( $settings['bg_text'] ) ) {
 			$this->add_render_attribute( 'uael-dual-heading', 'data-bg_text', $settings['bg_text'] );
 		}
 
@@ -828,7 +841,7 @@ class Dual_Heading extends Common_Widget {
 		<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'uael-dual-heading' ) ); ?>>
 			<<?php echo esc_attr( $dual_html_tag ); ?>>
 				<?php if ( ! empty( $settings['heading_link']['url'] ) ) { ?>
-					<a <?php echo wp_kses_post( $link ); ?> >
+					<a <?php echo $link; ?> > <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<?php } ?>
 						<?php
 						// Ignore the PHPCS warning about constant declaration.
@@ -843,7 +856,7 @@ class Dual_Heading extends Common_Widget {
 		</div>
 		<?php
 		$html = ob_get_clean();
-		echo wp_kses_post( $html );
+		echo $html; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -858,7 +871,7 @@ class Dual_Heading extends Common_Widget {
 		?>
 		<#
 			view.addRenderAttribute( 'uael-dual-heading', 'class', 'uael-module-content uael-dual-color-heading' );
-			if ( '' != settings.bg_text ) {
+			if ( 'yes' == settings.show_bg_text && '' != settings.bg_text ) {
 				view.addRenderAttribute( 'uael-dual-heading', 'data-bg_text', settings.bg_text );
 			}
 
@@ -902,18 +915,5 @@ class Dual_Heading extends Common_Widget {
 		<?php
 	}
 
-	/**
-	 * Render Dual Color Heading widget output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 0.0.1
-	 * @access protected
-	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-		$this->content_template();
-	}
 }
 

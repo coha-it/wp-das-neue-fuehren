@@ -57,7 +57,6 @@ class TabbedWidgetDependency
      * @param string $username
      * @param string $password
      * @param string $email
-     * @param string $auto_login_after_reg
      *
      * @return \WP_Error|string
      */

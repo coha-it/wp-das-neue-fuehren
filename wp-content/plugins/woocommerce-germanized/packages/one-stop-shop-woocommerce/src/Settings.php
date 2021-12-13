@@ -63,8 +63,42 @@ class Settings {
 				'html'     => self::get_oss_switch_html(),
 			),
 
-			array( 'type' => 'sectionend', 'id' => 'oss_options' ),
+			array(
+				'title'    => _x( 'Report Order Date', 'oss', 'woocommerce-germanized' ),
+				'desc'     => '<p class="oss-woocommerce-additional-desc wc-gzd-additional-desc">' . _x( 'Select the relevant order date to be used to determine whether to include an order in a report.', 'oss', 'woocommerce-germanized' ) . '</p>',
+				'id'       => 'oss_report_date_type',
+				'type'     => 'select',
+				'default'  => 'date_paid',
+                'options'  => array(
+                    'date_paid'    => _x( 'Date paid', 'oss', 'woocommerce-germanized' ),
+                    'date_created' => _x( 'Date created', 'oss', 'woocommerce-germanized' )
+                ),
+			),
         ) );
+
+		if ( Package::oss_procedure_is_enabled() && wc_prices_include_tax() ) {
+			$settings = array_merge( $settings, array(
+				array(
+					'title'    => _x( 'Fixed gross prices', 'oss', 'woocommerce-germanized' ),
+					'desc'     => _x( 'Apply the same gross price regardless of the tax rate for EU countries.', 'oss', 'woocommerce-germanized' ) . '<p class="oss-woocommerce-additional-desc wc-gzd-additional-desc">' . _x( 'This option will make sure that your customers pay the same price no matter the tax rate (based on the country chosen) to be applied.', 'oss', 'woocommerce-germanized' ) . '</p>',
+					'id'       => 'oss_fixed_gross_prices',
+					'type'     => Package::is_integration() ? 'gzd_toggle' : 'checkbox',
+					'default'  => 'yes',
+				),
+				array(
+					'title'    => _x( 'Third countries', 'oss', 'woocommerce-germanized' ),
+					'desc'     => _x( 'Apply the same gross price for third countries too.', 'oss', 'woocommerce-germanized' ),
+					'id'       => 'oss_fixed_gross_prices_for_third_countries',
+					'type'     => Package::is_integration() ? 'gzd_toggle' : 'checkbox',
+					'default'  => 'no',
+					'custom_attributes' => array(
+						'data-show_if_oss_fixed_gross_prices' => '',
+					),
+				),
+			) );
+        }
+
+		$settings = array_merge( $settings, array( array( 'type' => 'sectionend', 'id' => 'oss_options' ) ) );
 
 		return $settings;
 	}
@@ -78,7 +112,8 @@ class Settings {
 		?>
 		<p>
 			<a class="button button-secondary" onclick="return confirm('<?php echo esc_html( _x( 'Are you sure? Please backup your tax rates before proceeding.', 'oss', 'woocommerce-germanized' ) ); ?>');" href="<?php echo self::get_oss_switch_link(); ?>"><?php echo ( Package::oss_procedure_is_enabled() ? _x( 'End OSS participation', 'oss', 'woocommerce-germanized' ) : _x( 'Start OSS participation', 'oss', 'woocommerce-germanized' ) ); ?></a>
-			<a class="oss-settings-learn-more" href="https://vendidero.github.io/one-stop-shop-woocommerce/tax-adjustments"><?php _ex( 'learn more', 'oss', 'woocommerce-germanized' ); ?></a>
+            <a class="oss-settings-refresh-tax-rates" onclick="return confirm('<?php echo esc_html( _x( 'Are you sure? Please backup your tax rates before proceeding.', 'oss', 'woocommerce-germanized' ) ); ?>');" href="<?php echo wp_nonce_url( admin_url( 'admin.php?page=wc-status&tab=tools&action=refresh_oss_tax_rates' ), 'debug_action' ); ?> "><?php _ex( 'refresh VAT rates', 'oss', 'woocommerce-germanized' ); ?></a>
+            <a class="oss-settings-learn-more" href="https://vendidero.github.io/one-stop-shop-woocommerce/tax-adjustments"><?php _ex( 'learn more', 'oss', 'woocommerce-germanized' ); ?></a>
 		</p>
 			<p class="oss-woocommerce-additional-desc wc-gzd-additional-desc"><?php _ex( 'Use this option to automatically adjust tax-related options in WooCommerce. Warning: This option will delete your current tax rates and add new tax rates based on your OSS participation status.', 'oss', 'woocommerce-germanized' ); ?></p>
 		<?php
@@ -131,7 +166,7 @@ class Settings {
 
 		ob_start();
 		?>
-			<p class="oss-observer-details"><span class="oss-observer-total <?php echo esc_attr( $total_class ); ?>"><?php echo wc_price( $observer_report->get_net_total() ); ?></span> <?php _ex( 'of', 'oss-amounts', 'woocommerce-germanized' ); ?> <span class="oss-observer-delivery-threshold"><?php echo wc_price( Package::get_delivery_threshold() ); ?></span> <a class="oss-settings-learn-more" href="<?php echo esc_url( $observer_report->get_url() ); ?>"><?php _ex( 'see details', 'oss', 'woocommerce-germanized' ); ?></a></p>
+			<p class="oss-observer-details"><span class="oss-observer-total <?php echo esc_attr( $total_class ); ?>"><?php echo wc_price( $observer_report->get_net_total() ); ?></span> <?php _ex( 'of', 'oss-amounts', 'woocommerce-germanized' ); ?> <span class="oss-observer-delivery-threshold"><?php echo wc_price( Package::get_delivery_threshold() ); ?></span> <span class="oss-observer-date-end"><?php printf( _x( 'As of: %s', 'oss', 'woocommerce-germanized' ), wc_format_datetime( $observer_report->get_date_end() ) ); ?></span> <a class="oss-settings-learn-more" href="<?php echo esc_url( $observer_report->get_url() ); ?>"><?php _ex( 'see details', 'oss', 'woocommerce-germanized' ); ?></a></p>
             <p class="oss-woocommerce-additional-desc wc-gzd-additional-desc"><?php printf( _x( 'This value indicates your current net total amount applicable for the One Stop Shop procedure delivery threshold of the current year. You should take action in case the delivery threshold is or is close to being exceeded. <a href="%s">Find out more</a> about the calculation.', 'oss', 'woocommerce-germanized' ), 'https://vendidero.github.io/one-stop-shop-woocommerce/report-calculation' ); ?></p>
 		<?php
 

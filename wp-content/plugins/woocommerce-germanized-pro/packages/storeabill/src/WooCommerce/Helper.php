@@ -188,7 +188,7 @@ class Helper {
 	 * @return mixed
 	 */
 	public static function attach_invoice_to_mail( $attachments, $email_id, $object, $email = false ) {
-		if ( 'customer_invoice' === $email_id ) {
+		if ( apply_filters( 'storeabill_woo_attach_invoice_to_email', ( 'customer_invoice' === $email_id ), $email_id, $object, $email ) ) {
 			if ( is_a( $object, 'WC_Order' ) ) {
 				if ( $order = self::get_order( $object ) ) {
 					$invoices = $order->get_finalized_invoices();
@@ -343,7 +343,16 @@ class Helper {
 	}
 
 	public static function validate_order( $order ) {
-		if ( $sab_order = self::get_order( $order ) ) {
+	    /*
+	     * Make sure validation works on clean order data, e.g. fresh instance from DB.
+	     *
+	     * Some plugins like Woo Subscriptions add order items through functions like wc_add_order_item which does not
+	     * register the order item via the $order->add_item() method. That may lead to items missing while using the current $order instance
+	     * through the order save hook which ultimately leads to items being cancelled from a valid invoice.
+	     */
+	    $order_id = ! is_numeric( $order ) ? $order->get_id() : $order;
+
+		if ( $sab_order = self::get_order( $order_id ) ) {
 			$sab_order->validate();
 		}
 	}

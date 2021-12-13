@@ -5,7 +5,7 @@
  * Description: The Germanized Shipments integration, installed as a feature plugin for development and testing purposes.
  * Author: vendidero
  * Author URI: https://vendidero.de
- * Version: 1.5.6
+ * Version: 1.6.4
  * Requires PHP: 5.6
  * License: GPLv3
  *
@@ -68,5 +68,5 @@ if ( is_readable( $autoloader ) ) {
     return;
 }
 
-register_activation_hook( __FILE__, array( 'Vendidero\Germanized\Shipments\Package', 'install' ) );
-add_action( 'plugins_loaded', array( 'Vendidero\Germanized\Shipments\Package', 'init' ) );
+register_activation_hook( __FILE__, array( '\Vendidero\Germanized\Shipments\Package', 'install' ) );
+add_action( 'plugins_loaded', array( '\Vendidero\Germanized\Shipments\Package', 'init' ) );

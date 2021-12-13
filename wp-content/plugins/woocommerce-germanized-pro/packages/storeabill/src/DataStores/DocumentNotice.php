@@ -49,7 +49,7 @@ class DocumentNotice extends WC_Data_Store_WP implements WC_Object_Data_Store_In
 	public function create( &$notice ) {
 		global $wpdb;
 
-		$notice->set_date_created( current_time( 'timestamp', true ) );
+		$notice->set_date_created( time() );
 
 		$wpdb->insert(
 			$wpdb->storeabill_document_notices, array(

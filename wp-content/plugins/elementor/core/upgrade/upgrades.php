@@ -3,8 +3,6 @@ namespace Elementor\Core\Upgrade;
 
 use Elementor\Core\Breakpoints\Manager as Breakpoints_Manager;
 use Elementor\Core\Experiments\Manager as Experiments_Manager;
-use Elementor\Core\Kits\Documents\Tabs\Settings_Layout;
-use Elementor\Core\Responsive\Responsive;
 use Elementor\Core\Settings\Manager as SettingsManager;
 use Elementor\Core\Settings\Page\Manager as SettingsPageManager;
 use Elementor\Icons_Manager;
@@ -25,6 +23,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class Upgrades {
+
+	public static function _on_each_version( $updater ) {
+		self::recalc_usage_data( $updater );
+
+		$uploads_manager = Plugin::$instance->uploads_manager;
+
+		$temp_dir = $uploads_manager->get_temp_dir();
+
+		if ( file_exists( $temp_dir ) ) {
+			$uploads_manager->remove_file_or_dir( $temp_dir );
+		}
+	}
 
 	/**
 	 * Upgrade Elementor 0.3.2
@@ -809,7 +819,7 @@ class Upgrades {
 			foreach ( $colors_to_save as $index => $color ) {
 				$kit->add_repeater_row( 'custom_colors', [
 					'_id' => Utils::generate_random_string(),
-					'title' => __( 'Saved Color', 'elementor' ) . ' #' . ( $index + 1 ),
+					'title' => esc_html__( 'Saved Color', 'elementor' ) . ' #' . ( $index + 1 ),
 					'color' => $color,
 				] );
 			}
@@ -916,6 +926,15 @@ class Upgrades {
 		};
 
 		return self::move_settings_to_kit( $callback, $updater, $include_revisions );
+	}
+
+	public static function _v_3_4_8_fix_font_awesome_default_value_from_1_to_yes() {
+		// if `Icons_Manager::LOAD_FA4_SHIM_OPTION_KEY` value is '1', then set it to `yes`.
+		$load_fa4_shim_option = get_option( Icons_Manager::LOAD_FA4_SHIM_OPTION_KEY );
+
+		if ( '1' === $load_fa4_shim_option ) {
+			update_option( Icons_Manager::LOAD_FA4_SHIM_OPTION_KEY, 'yes' );
+		}
 	}
 
 	/**

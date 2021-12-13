@@ -1028,7 +1028,7 @@ function updraft_updatehistory(rescan, remotescan, debug, backup_count) {
 	}
 
 	if ('undefined' === typeof backup_count) {
-		backup_count = jQuery('#updraft-navtab-backups-content .updraft_existing_backups .updraft_existing_backups_row').length;
+		backup_count = 0;
 	}
 	
 	
@@ -3734,7 +3734,21 @@ jQuery(function($) {
 			}
 		}
 	}
-
+	
+	var original_restore_main_activity_width = $('.updraft_restore_main--activity').width();
+	jQuery('#activity-full-log').on('click', function() {
+		var activity_log_max_width = $('.updraft_restore_main').css('max-width') == '1460px' ? '860px' : '1460px';
+		var restore_main_activity_width = $('.updraft_restore_main--activity').width() == original_restore_main_activity_width ? '100%' : original_restore_main_activity_width + 'px';
+		var activity_log_max_height = $('.updraft_restore_main--activity').css('min-height') == '600px' ? '0px' : '600px';
+		var activity_log_icon_title = $('#activity-full-log').attr('title') == updraftlion.restoreactivitylogscreenexit ? updraftlion.restoreactivitylogfullscreen : updraftlion.restoreactivitylogscreenexit;
+		$('#activity-full-log').toggleClass('dashicons-fullscreen-exit-alt');
+		$('#activity-full-log').attr('title', activity_log_icon_title);
+		$('.updraft_restore_main--components').toggle('fast');
+		$('.updraft_restore_main--header').toggle('fast');
+		$('.updraft_restore_main--activity').animate({minHeight: activity_log_max_height, width: restore_main_activity_width});
+		$('.updraft_restore_main').animate({maxWidth: activity_log_max_width});
+	});
+	
 	jQuery("#updraft-iframe-modal").dialog({
 		autoOpen: false, height: 500, width: 780, modal: true
 	});
@@ -4510,11 +4524,9 @@ jQuery(function($) {
 			$(this).parent().trigger('focus');
 			$(this).dialog('option', 'width', 308);
 			if (jQuery(window).height() > 460) {
-				$(this).dialog('option', 'height', 218);
-				$(this).css('height', 'auto');
+				$(this).dialog('option', 'height', 318);
 			} else if (jQuery(window).height() > 250 && jQuery(window).height() < 461) {
 				$(this).dialog('option', 'height', 460);
-				$(this).css('height', 'auto');
 			} else {
 				$(this).dialog('option', 'height', jQuery(window).height() - 20);
 			}
@@ -4562,7 +4574,7 @@ jQuery(function($) {
 				jQuery(this).prop('checked', false);
 				jQuery(this).prop('disabled', true);
 				var label = $(this).prop("labels");
-				jQuery(label).append(' ' + updraftlion.already_uploaded);
+				jQuery(label).find('span').show();
 			}
 		});
 		jQuery('#updraft-upload-modal').dialog('open');
@@ -4597,10 +4609,14 @@ jQuery(function($) {
 		var nonce = jQuery(this).data('nonce').toString();
 		var timestamp = jQuery(this).data('timestamp').toString();
 		updraft_send_command('rawbackup_history', { timestamp: timestamp, nonce: nonce }, function (response) {
-			var textArea = document.createElement('textarea');
-			textArea.innerHTML = response;
-			updraft_html_modal(textArea.value, updraftlion.raw, 780, 500);
-		}, { type: 'POST', json_parse: false });
+			if (response.hasOwnProperty('rawbackup')) {
+				var textArea = document.createElement('textarea');
+				textArea.innerHTML = response.rawbackup;
+				updraft_html_modal(textArea.value, updraftlion.raw, 780, 500);
+			} else {
+				updraft_html_modal(updraftlion.jsonnotunderstood, updraftlion.raw, 780, 500);
+			}
+		}, { type: 'POST' });
 
 		updraft_html_modal('<div style="margin:auto;text-align:center;margin-top:150px;"><img src="' + updraftlion.ud_url + '/images/udlogo-rotating.gif" /> <br>'+ updraftlion.loading +'</div>', updraftlion.raw, 780, 500);
 	});

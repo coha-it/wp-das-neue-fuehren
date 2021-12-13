@@ -33,17 +33,17 @@ class Recipe extends JsonSchemaValue implements GetJsonData {
         }
 
         $variables = [
-            'type'                    => isset($schemaManual['_seopress_pro_rich_snippets_type']) ? $schemaManual['_seopress_pro_rich_snippets_type'] : '',
-            'name'                    => isset($schemaManual['_seopress_pro_rich_snippets_recipes_name']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_name'] : '',
-            'description'             => isset($schemaManual['_seopress_pro_rich_snippets_recipes_desc']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_desc'] : '',
-            'recipeCategory'          => isset($schemaManual['_seopress_pro_rich_snippets_recipes_cat']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_cat'] : '',
-            'image'                   => isset($schemaManual['_seopress_pro_rich_snippets_recipes_img']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_img'] : '',
-            'video'                   => isset($schemaManual['_seopress_pro_rich_snippets_recipes_video']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_video'] : '',
-            'prepTime'                => isset($schemaManual['_seopress_pro_rich_snippets_recipes_prep_time']) ? sprintf('PT%sM', $schemaManual['_seopress_pro_rich_snippets_recipes_prep_time']) : '',
-            'totalTime'               => ! empty($total) ? sprintf('PT%sM', $total) : '',
-            'recipeYield'             => isset($schemaManual['_seopress_pro_rich_snippets_recipes_yield']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_yield'] : '',
-            'keywords'                => isset($schemaManual['_seopress_pro_rich_snippets_recipes_keywords']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_keywords'] : '',
-            'recipeCuisine'           => isset($schemaManual['_seopress_pro_rich_snippets_recipes_cuisine']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_cuisine'] : '',
+            'type' => isset($schemaManual['_seopress_pro_rich_snippets_type']) ? $schemaManual['_seopress_pro_rich_snippets_type'] : '',
+            'name' => isset($schemaManual['_seopress_pro_rich_snippets_recipes_name']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_name'] : '',
+            'description' => isset($schemaManual['_seopress_pro_rich_snippets_recipes_desc']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_desc'] : '',
+            'recipeCategory' => isset($schemaManual['_seopress_pro_rich_snippets_recipes_cat']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_cat'] : '',
+            'image' => isset($schemaManual['_seopress_pro_rich_snippets_recipes_img']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_img'] : '',
+            'video' => isset($schemaManual['_seopress_pro_rich_snippets_recipes_video']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_video'] : '',
+            'prepTime' => isset($schemaManual['_seopress_pro_rich_snippets_recipes_prep_time']) ? sprintf('PT%sM', $schemaManual['_seopress_pro_rich_snippets_recipes_prep_time']) : '',
+            'totalTime' => ! empty($total) ? sprintf('PT%sM', $total) : '',
+            'recipeYield' => isset($schemaManual['_seopress_pro_rich_snippets_recipes_yield']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_yield'] : '',
+            'keywords' => isset($schemaManual['_seopress_pro_rich_snippets_recipes_keywords']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_keywords'] : '',
+            'recipeCuisine' => isset($schemaManual['_seopress_pro_rich_snippets_recipes_cuisine']) ? $schemaManual['_seopress_pro_rich_snippets_recipes_cuisine'] : '',
         ];
 
         return $variables;
@@ -61,7 +61,7 @@ class Recipe extends JsonSchemaValue implements GetJsonData {
 
         $typeSchema = isset($context['type']) ? $context['type'] : RichSnippetType::MANUAL;
 
-        $variables    = [];
+        $variables = [];
         $schemaManual = [];
         switch ($typeSchema) {
             case RichSnippetType::MANUAL:
@@ -81,7 +81,11 @@ class Recipe extends JsonSchemaValue implements GetJsonData {
 
         $data = seopress_get_service('VariablesToString')->replaceDataToString($data, $variables);
 
-        $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(Author::NAME, $context, ['remove_empty'=> true]);
+        $contextWithVariables = $context;
+        $contextWithVariables['variables'] = [
+            'name' => '%%post_author%%',
+        ];
+        $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(Author::NAME, $contextWithVariables, ['remove_empty' => true]);
 
         if (count($schema) > 1) {
             $data['author'] = $schema;
@@ -98,7 +102,7 @@ class Recipe extends JsonSchemaValue implements GetJsonData {
 
             foreach ($instructions as $key => $value) {
                 $variablesHowTo['text'] = $value;
-                $schema                 = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(HowToStep::NAME, ['variables' => $variablesHowTo], ['remove_empty'=> true]);
+                $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(HowToStep::NAME, ['variables' => $variablesHowTo], ['remove_empty' => true]);
 
                 if (count($schema) > 1) {
                     $data['recipeInstructions'][] = $schema;
@@ -107,9 +111,9 @@ class Recipe extends JsonSchemaValue implements GetJsonData {
         }
 
         if (isset($schemaManual['_seopress_pro_rich_snippets_recipes_calories'])) {
-            $schema                 = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(NutritionInformation::NAME, ['variables' => [
+            $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(NutritionInformation::NAME, ['variables' => [
                 'calories' => $schemaManual['_seopress_pro_rich_snippets_recipes_calories'],
-            ]], ['remove_empty'=> true]);
+            ]], ['remove_empty' => true]);
 
             $data['nutrition'] = $schema;
         }

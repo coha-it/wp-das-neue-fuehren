@@ -8,6 +8,7 @@ import { get, isEqual, isEmpty } from 'lodash';
 import { Component } from "@wordpress/element";
 
 import { formatMargins, getSetting, getCurrentFonts, getFontsCSS } from '@storeabill/settings';
+import { getFontSizeStyle } from '@storeabill/utils';
 
 class DocumentStylesEdit extends Component {
 
@@ -96,7 +97,7 @@ class DocumentStylesEdit extends Component {
         const { pdfAttachment, margins, fonts, fontSize, color } = this.props;
 
         if ( fontSize ) {
-            $wrapper.css( 'font-size', fontSize + 'px' );
+            $wrapper.css( 'font-size', getFontSizeStyle( fontSize ) );
         }
 
         if ( color ) {

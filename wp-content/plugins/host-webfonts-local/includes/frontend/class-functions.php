@@ -65,22 +65,22 @@ class OMGF_Frontend_Functions
 	 */
 	public function add_preloads()
 	{
-		$preloaded_fonts = apply_filters('omgf_frontend_preloaded_fonts', omgf_init()::preloaded_fonts());
+		$preloaded_fonts = apply_filters('omgf_frontend_preloaded_fonts', OMGF::preloaded_fonts());
 
 		if (!$preloaded_fonts) {
 			return;
 		}
 
-		$optimized_fonts = apply_filters('omgf_frontend_optimized_fonts', omgf_init()::optimized_fonts());
+		$optimized_fonts = apply_filters('omgf_frontend_optimized_fonts', OMGF::optimized_fonts());
 
 		/**
 		 * When OMGF Pro is enabled and set to Automatic mode, the merged handle is used to only load selected
 		 * preloads for the currently used stylesheet.
+		 * 
+		 * @since v4.5.3 Added 2nd dummy parameter, to prevent Fatal Errors after updating.
 		 */
-		$id         = get_queried_object_id();
-		$pro_handle = apply_filters('omgf_pro_merged_handle', '', $id);
-
-		$i = 0;
+		$pro_handle = apply_filters('omgf_pro_merged_handle', '', '');
+		$i          = 0;
 
 		foreach ($optimized_fonts as $stylesheet_handle => $font_faces) {
 			if ($pro_handle && $stylesheet_handle != $pro_handle) {
@@ -103,7 +103,7 @@ class OMGF_Frontend_Functions
 				);
 
 				foreach ($preload_variants as $variant) {
-					$url = $variant->woff2;
+					$url = rawurldecode($variant->woff2);
 					echo "<link id='omgf-preload-$i' rel='preload' href='$url' as='font' type='font/woff2' crossorigin />\n";
 					$i++;
 				}
@@ -129,7 +129,7 @@ class OMGF_Frontend_Functions
 				add_action('wp_print_styles', [$this, 'remove_registered_fonts'], PHP_INT_MAX - 500);
 				break;
 			default:
-				add_action('wp_print_styles', [$this, 'replace_registered_fonts'], PHP_INT_MAX - 500);
+				add_action('wp_print_styles', [$this, 'replace_registered_stylesheets'], PHP_INT_MAX - 500);
 		}
 	}
 
@@ -140,10 +140,10 @@ class OMGF_Frontend_Functions
 	{
 		global $wp_styles;
 
-		$registered = $wp_styles->registered;
-		$fonts      = apply_filters('omgf_auto_remove', $this->detect_registered_google_fonts($registered));
+		$registered  = $wp_styles->registered;
+		$stylesheets = apply_filters('omgf_remove_detected_stylesheets', $this->detect_registered_stylesheets($registered));
 
-		foreach ($fonts as $handle => $font) {
+		foreach ($stylesheets as $handle => $stylesheet) {
 			$wp_styles->registered[$handle]->src = '';
 		}
 	}
@@ -151,16 +151,16 @@ class OMGF_Frontend_Functions
 	/**
 	 * Retrieve stylesheets from Google Fonts' API and modify the stylesheet for local storage.
 	 */
-	public function replace_registered_fonts()
+	public function replace_registered_stylesheets()
 	{
 		global $wp_styles;
 
 		$registered           = $wp_styles->registered;
-		$fonts                = apply_filters('omgf_auto_replace', $this->detect_registered_google_fonts($registered));
-		$unloaded_stylesheets = omgf_init()::unloaded_stylesheets();
-		$unloaded_fonts       = omgf_init()::unloaded_fonts();
+		$stylesheets          = apply_filters('omgf_replace_detected_stylesheets', $this->detect_registered_stylesheets($registered));
+		$unloaded_stylesheets = OMGF::unloaded_stylesheets();
+		$unloaded_fonts       = OMGF::unloaded_fonts();
 
-		foreach ($fonts as $handle => $font) {
+		foreach ($stylesheets as $handle => $stylesheet) {
 			// If this stylesheet has been marked for unload, empty the src and skip out early.
 			if (in_array($handle, $unloaded_stylesheets)) {
 				$wp_styles->registered[$handle]->src = '';
@@ -171,26 +171,52 @@ class OMGF_Frontend_Functions
 			$updated_handle = $handle;
 
 			if ($unloaded_fonts) {
-				$updated_handle = omgf_init()::get_cache_key($handle);
+				$updated_handle = OMGF::get_cache_key($handle);
 			}
 
 			$cached_file = OMGF_CACHE_PATH . '/' . $updated_handle . "/$updated_handle.css";
 
+			/**
+			 * Bail early if stylesheet already exists.
+			 */
 			if (file_exists(WP_CONTENT_DIR . $cached_file)) {
 				$wp_styles->registered[$handle]->src = content_url($cached_file);
 
 				continue;
 			}
 
-			if (OMGF_OPTIMIZATION_MODE == 'auto' || (OMGF_OPTIMIZATION_MODE == 'manual' && isset($_GET['omgf_optimize']))) {
-				$api_url  = str_replace(['http:', 'https:'], '', home_url('/wp-json/omgf/v1/download/'));
-				$protocol = '';
+			/**
+			 * For future reference: this logic can't be moved to backend, because there's no other way to properly access the
+			 * 			             $wp_styles global.
+			 * 
+			 * @see $wp_styles global
+			 */
+			if (OMGF_OPTIMIZATION_MODE == 'manual' && isset($_GET['omgf_optimize'])) {
+				$request = parse_url($stylesheet->src);
+				$query   = $request['query'] ?? '';
+				$path    = $request['path'] ?? '/css';
 
-				if (substr($font->src, 0, 2) == '//') {
-					$protocol = 'https:';
+				parse_str($query, $query_array);
+
+				if (empty($query_array)) {
+					continue;
 				}
 
-				$wp_styles->registered[$handle]->src = $protocol . str_replace('//fonts.googleapis.com/', $api_url, $font->src) . "&handle=$updated_handle&original_handle=$handle";
+				$params = http_build_query(
+					array_merge(
+						$query_array,
+						[
+							'handle' => $updated_handle,
+							'original_handle' => $handle,
+							'_wpnonce' => wp_create_nonce('wp_rest')
+						]
+					)
+				);
+
+				/**
+				 * Use Home URL directly while building API request. This might prevent local development (non-SSL) issues.
+				 */
+				$wp_styles->registered[$handle]->src = home_url('/wp-json/omgf/v1/download') . $path . '?' . $params;
 			}
 		}
 	}
@@ -200,14 +226,18 @@ class OMGF_Frontend_Functions
 	 *
 	 * @return array
 	 */
-	private function detect_registered_google_fonts($registered_styles)
+	private function detect_registered_stylesheets($registered_styles)
 	{
-		return array_filter(
+		$detected_stylesheets = array_filter(
 			$registered_styles,
 			function ($contents) {
-				return strpos($contents->src, 'fonts.googleapis.com/css') !== false
-					|| strpos($contents->src, 'fonts.gstatic.com') !== false;
+				return strpos($contents->src, 'fonts.googleapis.com/css') !== false;
 			}
 		);
+
+		/**
+		 * @since v4.5.11 Added filter to allow adding additional stylesheets.
+		 */
+		return apply_filters('omgf_detected_registered_stylesheets', $detected_stylesheets, $registered_styles);
 	}
 }

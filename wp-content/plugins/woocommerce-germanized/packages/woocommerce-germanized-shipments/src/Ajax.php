@@ -280,7 +280,8 @@ class Ajax {
 		    );
 	    } elseif ( $label = $shipment->get_label() ) {
 
-	    	$order_shipment = wc_gzd_get_shipment_order( $shipment->get_order() );
+	    	$order_shipment    = wc_gzd_get_shipment_order( $shipment->get_order() );
+	    	$order_status_html = $order_shipment ? self::get_global_order_status_html( $order_shipment->get_order() ) : array();
 
 		    $response = array(
 			    'success'       => true,
@@ -291,9 +292,15 @@ class Ajax {
 				    'div#shipment-' . $shipment_id => self::get_shipment_html( $shipment ),
 				    '.order-shipping-status'       => $order_shipment ? self::get_order_status_html( $order_shipment ) : '',
 				    '.order-return-status'         => $order_shipment ? self::get_order_return_status_html( $order_shipment ) : '',
+				    '.order_data_column p.wc-order-status' => ! empty( $order_status_html ) ? $order_status_html['status'] : '',
+				    'input[name=post_status]'              => ! empty( $order_status_html ) ? $order_status_html['input'] : '',
 				    'tr#shipment-' . $shipment_id . ' td.actions .wc-gzd-shipment-action-button-generate-label' => self::label_download_button_html( $label ),
 			    ),
 		    );
+
+		    if ( empty( $response['fragments']['.order_data_column p.wc-order-status'] ) ) {
+		    	unset( $response['fragments']['.order_data_column p.wc-order-status'] );
+		    }
 	    } else {
 	    	$response = $response_error;
 	    }
@@ -518,6 +525,12 @@ class Ajax {
 	    exit;
     }
 
+    private static function get_shipment_ids( $shipments ) {
+	    return array_values( array_map( function( $s ) {
+		    return $s->get_id();
+	    }, $shipments ) );
+    }
+
     public static function remove_shipment() {
         check_ajax_referer( 'edit-shipments', 'security' );
 
@@ -545,10 +558,21 @@ class Ajax {
             wp_send_json( $response_error );
         }
 
+        $shipment_ids = self::get_shipment_ids( $order_shipment->get_shipments() );
+
         if ( $shipment->delete( true ) ) {
             $order_shipment->remove_shipment( $shipment_id );
 
-            $response['shipment_id'] = $shipment_id;
+            if ( 'return' === $shipment->get_type() ) {
+                $order_shipment->validate_shipments();
+            }
+
+            /*
+             * Check which shipments have been deleted (e.g. multiple in case a return has been removed)
+             */
+            $shipments_removed       = array_values( array_diff( $shipment_ids, self::get_shipment_ids( $order_shipment->get_shipments() ) ) );
+            $response['shipment_id'] = $shipments_removed;
+
             $response['fragments']   = array(
                 '.order-shipping-status' => self::get_order_status_html( $order_shipment ),
                 '.order-return-status'   => self::get_order_return_status_html( $order_shipment ),
@@ -832,6 +856,62 @@ class Ajax {
         return $status_html;
     }
 
+	/**
+	 * @param \WC_Order $order
+	 *
+	 * @return string[]
+	 */
+    private static function get_global_order_status_html( $order ) {
+    	$old_status = $order->get_status();
+    	$result     = array(
+            'status' => '',
+            'input'  => '',
+        );
+
+	    /**
+	     * Load a clean instance to make sure order status updates are reflected.
+	     */
+    	$order = wc_get_order( $order->get_id() );
+
+	    /**
+	     * In case the current request has not changed the status do not return html
+	     */
+    	if ( ! $order || $old_status === $order->get_status() ) {
+    		return $result;
+	    }
+    	ob_start();
+    	?>
+		<p class="form-field form-field-wide wc-order-status">
+			<label for="order_status">
+				<?php
+				_ex( 'Status:', 'shipments', 'woocommerce-germanized' );
+				if ( $order->needs_payment() ) {
+					printf(
+						'<a href="%s">%s</a>',
+						esc_url( $order->get_checkout_payment_url() ),
+						_x( 'Customer payment page &rarr;', 'shipments', 'woocommerce-germanized' )
+					);
+				}
+				?>
+			</label>
+			<select id="order_status" name="order_status" class="wc-enhanced-select">
+				<?php
+				$statuses = wc_get_order_statuses();
+				foreach ( $statuses as $status => $status_name ) {
+					echo '<option value="' . esc_attr( $status ) . '" ' . selected( $status, 'wc-' . $order->get_status( 'edit' ), false ) . '>' . esc_html( $status_name ) . '</option>';
+				}
+				?>
+			</select>
+		</p>
+		<?php
+	    $html = ob_get_clean();
+
+	    $result['status'] = $html;
+	    $result['input']  = '<input name="post_status" type="hidden" value="' . esc_attr( 'wc-' . $order->get_status( 'edit' ) ) . '" />';
+
+	    return $result;
+    }
+
 	private static function get_order_return_status_html( $order_shipment ) {
 		$status_html = '<span class="order-return-status status-' . esc_attr( $order_shipment->get_return_status() ) . '">' . wc_gzd_get_shipment_order_return_status_name( $order_shipment->get_return_status() ) . '</span>';
 
@@ -942,11 +1022,20 @@ class Ajax {
 	    include( Package::get_path() . '/includes/admin/views/html-order-shipment-list.php' );
 	    $html = ob_get_clean();
 
+	    $order_status_html = self::get_global_order_status_html( $order_shipment->get_order() );
+
         $fragments = array(
-            '#order-shipments-list'  => $html,
-            '.order-shipping-status' => self::get_order_status_html( $order_shipment ),
-            '.order-return-status'   => self::get_order_return_status_html( $order_shipment ),
+            '#order-shipments-list'                => $html,
+            '.order-shipping-status'               => self::get_order_status_html( $order_shipment ),
+            '.order-return-status'                 => self::get_order_return_status_html( $order_shipment ),
+            '.order_data_column p.wc-order-status' => $order_status_html['status'],
+            'input[name="post_status"]'            => $order_status_html['input'],
         );
+
+        if ( empty( $fragments['.order_data_column p.wc-order-status'] ) ) {
+        	unset( $fragments['.order_data_column p.wc-order-status'] );
+	        unset( $fragments['input[name="post_status"]'] );
+        }
 
         return $fragments;
     }

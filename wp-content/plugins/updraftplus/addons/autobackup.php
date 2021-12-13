@@ -13,7 +13,7 @@ if (!defined('UPDRAFTPLUS_DIR')) die('No direct access allowed');
 
 if (defined('UPDRAFTPLUS_NOAUTOBACKUPS') && UPDRAFTPLUS_NOAUTOBACKUPS) return;
 
-$updraftplus_addon_autobackup = new UpdraftPlus_Addon_Autobackup;
+new UpdraftPlus_Addon_Autobackup;
 
 class UpdraftPlus_Addon_Autobackup {
 

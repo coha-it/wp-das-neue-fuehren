@@ -6,7 +6,6 @@ import classnames from 'classnames';
 
 import {
     InspectorControls,
-    __experimentalUseColors,
     AlignmentToolbar,
     BlockControls,
     RichText,
@@ -21,6 +20,7 @@ import {PanelBody, Toolbar, RangeControl, ToggleControl} from "@wordpress/compon
 import { getPreviewItem, getItemTotalKey, getSetting, FORMAT_TYPES } from '@storeabill/settings';
 import {getBorderClasses} from "@storeabill/components/border-select";
 import { useEffect } from "@wordpress/element";
+import { getFontSizeStyle, convertFontSizeForPicker, useColors } from '@storeabill/utils';
 
 function ItemFieldEdit( {
     attributes,
@@ -37,7 +37,7 @@ function ItemFieldEdit( {
     useEffect( () => {
         setAttributes( {
             customBackgroundColor: '#f1f4ff',
-            customFontSize: 11,
+            customFontSize: '11',
             customTextColor: '#93a3dc',
         } );
     }, [] );
@@ -55,7 +55,7 @@ function ItemFieldEdit( {
         BorderColor,
         BackgroundColor,
         TextColor,
-    } = __experimentalUseColors(
+    } = useColors(
         [
             { name: 'borderColor', className: 'has-border-color' },
             { name: 'backgroundColor', className: 'has-background-color' },
@@ -69,7 +69,7 @@ function ItemFieldEdit( {
             <InspectorControls>
                 <PanelBody>
                     <FontSizePicker
-                        value={ fontSize.size }
+                        value={ convertFontSizeForPicker( fontSize.size ) }
                         onChange={ setFontSize }
                     />
                 </PanelBody>
@@ -78,7 +78,7 @@ function ItemFieldEdit( {
             <BackgroundColor>
                 <div className={ classes } style={ {
                     borderColor: borderColor.color,
-                    fontSize: fontSize.size ? fontSize.size + 'px' : undefined,
+                    fontSize: getFontSizeStyle( fontSize ),
                     color: textColor.color,
                 } }>
                     <RichText

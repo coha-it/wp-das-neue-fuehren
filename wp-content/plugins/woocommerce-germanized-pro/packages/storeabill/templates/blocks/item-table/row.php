@@ -19,7 +19,7 @@ $column_index = 0;
 	<?php foreach( $columns as $column ) :
 		$column_index++;
 		?>
-		<td class="sab-item-table-column-body <?php sab_print_html_classes( $column['classes'] ); ?>" style="width: <?php echo esc_attr( $column['width'] ); ?>;">
+		<td class="sab-item-table-column-body <?php sab_print_html_classes( $column['classes'] ); ?>" style="<?php sab_print_styles( array_merge( $column['styles'], array( 'width' => $column['width'] ) ) ); ?>">
 			<?php echo sab_render_blocks( $column['innerBlocks'] ); ?>
 
 			<?php do_action( "storeabill_{$document->get_type()}_item_table_after_column", $column, $item, $document, $column_index ); ?>

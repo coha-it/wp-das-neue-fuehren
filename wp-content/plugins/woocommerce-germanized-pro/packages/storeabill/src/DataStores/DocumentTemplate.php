@@ -53,7 +53,7 @@ class DocumentTemplate extends WC_Data_Store_WP implements WC_Object_Data_Store_
 	 */
 	public function create( &$template ) {
 
-		$template->set_date_created( current_time( 'timestamp', true ) );
+		$template->set_date_created( time() );
 
 		if ( empty( $template->get_margins() ) ) {
 			$template->set_margins( $template->get_default_margins() );
@@ -134,7 +134,7 @@ class DocumentTemplate extends WC_Data_Store_WP implements WC_Object_Data_Store_
 		$template->save_meta_data();
 
 		if ( null === $template->get_date_created( 'edit' ) ) {
-			$template->set_date_created( current_time( 'timestamp', true ) );
+			$template->set_date_created( time() );
 		}
 
 		$changes = $template->get_changes();

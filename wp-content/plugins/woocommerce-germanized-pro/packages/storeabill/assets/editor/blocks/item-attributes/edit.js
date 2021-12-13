@@ -8,13 +8,13 @@ import {
     FontSizePicker,
     InspectorControls,
     withFontSizes,
-    __experimentalUseColors,
 } from '@wordpress/block-editor';
 
 import { getPreviewItem, getSetting } from '@storeabill/settings';
 import { PanelBody, FormTokenField } from "@wordpress/components";
 import { compose } from "@wordpress/compose";
 import { withState } from '@wordpress/compose';
+import { getFontSizeStyle, convertFontSizeForPicker, useColors } from '@storeabill/utils';
 
 const ItemAttributesEdit = ( {
     attributes,
@@ -29,7 +29,7 @@ const ItemAttributesEdit = ( {
     const {
         TextColor,
         InspectorControlsColorPanel
-    } = __experimentalUseColors(
+    } = useColors(
         [
             { name: 'textColor', property: 'color' },
         ],
@@ -53,7 +53,7 @@ const ItemAttributesEdit = ( {
                 </PanelBody>
                 <PanelBody title={ _x( 'Typography', 'storeabill-core', 'storeabill' ) }>
                     <FontSizePicker
-                        value={ fontSize.size }
+                        value={ convertFontSizeForPicker( fontSize.size ) }
                         onChange={ setFontSize }
                     />
                 </PanelBody>
@@ -67,9 +67,7 @@ const ItemAttributesEdit = ( {
                             __html: item.attributes_formatted,
                         } }
                         style={ {
-                            fontSize: fontSize.size
-                                ? fontSize.size + 'px'
-                                : undefined,
+                            fontSize: getFontSizeStyle( fontSize )
                         } }
                     />
                 </TextColor>

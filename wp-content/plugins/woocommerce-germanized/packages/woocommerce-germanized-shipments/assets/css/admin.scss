@@ -495,6 +495,8 @@ table.wc-gzd-shipping-providers {
 }
 
 #woocommerce-gzd-order-shipments {
+  border-bottom: 1px solid #c3c4c7 !important;
+
   .inside {
     margin: 0;
     padding: 0;
@@ -786,7 +788,7 @@ table.wc-gzd-shipping-providers {
 
           .shipment-item-quantity {
             input {
-              width: 50px;
+              width: 60px;
               text-align: center;
             }
           }

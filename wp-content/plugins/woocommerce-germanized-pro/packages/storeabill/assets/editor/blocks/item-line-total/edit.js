@@ -8,7 +8,6 @@ import {
 	FontSizePicker,
 	InspectorControls,
 	withFontSizes,
-	__experimentalUseColors,
 	BlockControls, RichText,
 } from '@wordpress/block-editor';
 
@@ -16,7 +15,7 @@ import { PanelBody, Toolbar } from "@wordpress/components";
 import { compose } from "@wordpress/compose";
 
 import { getPreviewItem, getItemTotalKey, DISCOUNT_TOTAL_TYPES, FORMAT_TYPES } from '@storeabill/settings';
-import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview } from "@storeabill/utils";
+import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview, getFontSizeStyle, convertFontSizeForPicker, useColors } from "@storeabill/utils";
 import { DiscountTotalTypeSelect } from "@storeabill/components/discount-total-type-select";
 
 import { arrowRight, settings } from '@storeabill/icons';
@@ -37,7 +36,7 @@ function ItemLineTotalEdit( {
 	const {
 		TextColor,
 		InspectorControlsColorPanel
-	} = __experimentalUseColors(
+	} = useColors(
 		[
 			{ name: 'textColor', property: 'color' },
 		],
@@ -61,7 +60,7 @@ function ItemLineTotalEdit( {
 			<InspectorControls>
 				<PanelBody title={ _x( 'Typography', 'storeabill-core', 'storeabill' ) }>
 					<FontSizePicker
-						value={ fontSize.size }
+						value={ convertFontSizeForPicker( fontSize.size ) }
 						onChange={ setFontSize }
 					/>
 				</PanelBody>
@@ -79,9 +78,7 @@ function ItemLineTotalEdit( {
 						}
 						allowedFormats={ FORMAT_TYPES }
 						style={ {
-							fontSize: fontSize.size
-							? fontSize.size + 'px'
-							: undefined,
+							fontSize: getFontSizeStyle( fontSize )
 						} }
 					/>
 				</TextColor>

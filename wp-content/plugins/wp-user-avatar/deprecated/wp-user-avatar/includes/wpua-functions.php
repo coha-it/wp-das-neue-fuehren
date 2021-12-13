@@ -1,7 +1,7 @@
 <?php
 /**
  * Public user functions.
- * 
+ *
  *
  *
  */
@@ -27,9 +27,9 @@ function has_wp_user_avatar($id_or_email="", $has_wpua="", $user="", $user_id=""
  * @param string $alt
  * @return object get_wp_user_avatar()
  */
-function get_wp_user_avatar($id_or_email, $size="") {
+function get_wp_user_avatar($id_or_email, $size="", $original = false) {
   global $wpua_functions;
-  return $wpua_functions->get_wp_user_avatar($id_or_email, $size);
+  return $wpua_functions->get_wp_user_avatar($id_or_email, $size, $original);
 }
 
 /**
@@ -39,9 +39,9 @@ function get_wp_user_avatar($id_or_email, $size="") {
  * @param string $align
  * @return object get_wp_user_avatar_src()
  */
-function get_wp_user_avatar_src($id_or_email="", $size="") {
+function get_wp_user_avatar_src($id_or_email="", $size="", $original = false) {
   global $wpua_functions;
-  return $wpua_functions->get_wp_user_avatar_src($id_or_email, $size);
+  return $wpua_functions->get_wp_user_avatar_src($id_or_email, $size, $original);
 }
 
 /**

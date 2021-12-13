@@ -22,7 +22,17 @@ class Forms extends AbstractSettingsPage
 
     public function __construct()
     {
-        add_action('admin_menu', array($this, 'register_settings_page'));
+        add_action('ppress_register_menu_page', [$this, 'register_menu_page']);
+
+        add_action('ppress_admin_settings_page_forms', [$this, 'settings_admin_page_callback']);
+        add_action('ppress_admin_settings_page_add-new-form', [$this, 'settings_admin_page_callback']);
+        add_action('ppress_admin_settings_page_edit-shortcode-login', [$this, 'settings_admin_page_callback']);
+        add_action('ppress_admin_settings_page_edit-shortcode-registration', [$this, 'settings_admin_page_callback']);
+        add_action('ppress_admin_settings_page_edit-shortcode-password-reset', [$this, 'settings_admin_page_callback']);
+        add_action('ppress_admin_settings_page_edit-shortcode-edit-profile', [$this, 'settings_admin_page_callback']);
+        add_action('ppress_admin_settings_page_edit-shortcode-melange', [$this, 'settings_admin_page_callback']);
+        add_action('ppress_admin_settings_page_edit-shortcode-user-profile', [$this, 'settings_admin_page_callback']);
+        add_action('ppress_admin_settings_page_drag-drop-builder', [$this, 'settings_admin_page_callback']);
 
         add_filter('set-screen-option', array($this, 'set_screen'), 10, 3);
         add_filter('set_screen_option_forms_per_page', array($this, 'set_screen'), 10, 3);
@@ -55,7 +65,7 @@ class Forms extends AbstractSettingsPage
         return $page_title;
     }
 
-    public function register_settings_page()
+    public function register_menu_page()
     {
         $hook = add_submenu_page(
             PPRESS_SETTINGS_SLUG,
@@ -63,10 +73,15 @@ class Forms extends AbstractSettingsPage
             esc_html__('Forms & Profiles', 'wp-user-avatar'),
             'manage_options',
             PPRESS_FORMS_SETTINGS_SLUG,
-            array($this, 'settings_admin_page_callback')
+            array($this, 'admin_page_callback')
         );
 
         add_action("load-$hook", array($this, 'screen_option'));
+    }
+
+    public function default_header_menu()
+    {
+        return 'forms';
     }
 
     /**
@@ -196,10 +211,10 @@ class Forms extends AbstractSettingsPage
                 break;
         }
 
-        $preview_url = add_query_arg(
+        $preview_url = esc_url(add_query_arg(
             ['pp_preview_form' => absint($_GET['id']), 'type' => $form_type],
             home_url()
-        );
+        ));
 
         $html = "<a target='_blank' class=\"add-new-h2\" href=\"$preview_url\">" . esc_html__('Live Preview', 'wp-user-avatar') . '</a>';
 
@@ -235,7 +250,6 @@ class Forms extends AbstractSettingsPage
         if ( ! empty($_GET['view']) && $_GET['view'] == 'add-new-form') {
             return AddNewForm::get_instance()->settings_admin_page();
         }
-
 
         $short_circuit = apply_filters('ppress_forms_settings_admin_page_short_circuit', false);
 

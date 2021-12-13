@@ -100,18 +100,21 @@ class Article extends JsonSchemaValue implements GetJsonData {
             $contextWithVariables['variables'] = $variablesContext;
 
             $schema                            = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(Author::NAME, $contextWithVariables, ['remove_empty'=> true]);
+
             if (count($schema) > 1) {
                 $data['author'] = $schema;
             }
         } else {
             $variablesContext = [
                 'name'    => '%%post_author%%',
+                'author_url' => '%%author_url%%'
             ];
 
             $contextWithVariables              = $context;
             $contextWithVariables['variables'] = $variablesContext;
 
             $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(Author::NAME, $contextWithVariables, ['remove_empty'=> true]);
+
             if (count($schema) > 1) {
                 $data['author'] = $schema;
             }

@@ -2,17 +2,19 @@
 
 namespace ProfilePress\Core\Admin\SettingsPages\EmailSettings;
 
-use ProfilePress\Core\Admin\SettingsPages\AbstractSettingsPage;
 use ProfilePress\Core\Classes\SendEmail;
 use ProfilePress\Custom_Settings_Page_Api;
 
-class EmailSettingsPage extends AbstractSettingsPage
+class EmailSettingsPage
 {
     public $email_notification_list_table;
 
+    public $settingsPageInstance;
+
     public function __construct()
     {
-        add_filter('ppress_settings_page_screen_option', [$this, 'screen_option']);
+        add_action('ppress_admin_settings_page_email', [$this, 'admin_page']);
+        add_action('ppress_settings_page_screen_option', [$this, 'screen_option']);
         add_action('admin_init', [$this, 'handle_email_preview']);
 
         add_action('admin_enqueue_scripts', function ($hook_suffix) {
@@ -28,15 +30,37 @@ class EmailSettingsPage extends AbstractSettingsPage
 
             return $title;
         });
+
+        add_action('ppress_register_menu_page', function () {
+
+            add_filter('wp_cspa_sanitize_skip', function ($return, $fieldkey, $value) {
+
+                if (isset($_GET['type']) && $fieldkey == sanitize_text_field($_GET['type']) . '_email_content') {
+                    return stripslashes($value);
+                }
+
+                return $return;
+
+            }, 10, 3);
+
+            if (ppressGET_var('view') == 'email') {
+                $this->settingsPageInstance = Custom_Settings_Page_Api::instance('', PPRESS_SETTINGS_DB_OPTION_NAME);
+            }
+        });
     }
 
     public function screen_option()
     {
         if (isset($_GET['view']) && $_GET['view'] == 'email') {
+            add_filter('screen_options_show_screen', '__return_false');
+
             $this->email_notification_list_table = new WPListTable($this->email_notifications());
         }
     }
 
+    /**
+     * @return mixed|void
+     */
     public function email_notifications()
     {
         $site_title = ppress_site_title();
@@ -109,7 +133,6 @@ class EmailSettingsPage extends AbstractSettingsPage
         }
 
         $page_header = esc_html__('Emails', 'wp-user-avatar');
-        $instance    = Custom_Settings_Page_Api::instance();
 
         $email_settings = [
             [
@@ -173,16 +196,6 @@ class EmailSettingsPage extends AbstractSettingsPage
                 wp_safe_redirect(PPRESS_SETTINGS_SETTING_PAGE);
                 exit;
             }
-
-
-            add_filter('wp_cspa_sanitize_skip', function ($return, $fieldkey, $value) use ($key) {
-                if ($fieldkey == $key . '_email_content') {
-                    return stripslashes($value);
-                }
-
-                return $return;
-
-            }, 10, 3);
 
             $page_header = $data['title'];
 
@@ -251,14 +264,11 @@ class EmailSettingsPage extends AbstractSettingsPage
             ];
         }
 
-        $instance->option_name(PPRESS_SETTINGS_DB_OPTION_NAME);
-        $instance->page_header($page_header);
-        $this->register_core_settings($instance, true);
-        $instance->main_content($email_settings);
-        $instance->remove_white_design();
-        $instance->header_without_frills();
-        $instance->tab($this->settings_tab_args());
-        $instance->build(true);
+        $this->settingsPageInstance->page_header($page_header);
+        $this->settingsPageInstance->main_content($email_settings);
+        $this->settingsPageInstance->remove_white_design();
+        $this->settingsPageInstance->header_without_frills();
+        $this->settingsPageInstance->build(true);
 
         $this->toggle_field_js_script();
     }
@@ -282,6 +292,27 @@ class EmailSettingsPage extends AbstractSettingsPage
         $content = ppress_get_setting($key . '_email_content', $data['message'], true);
         echo (new SendEmail('', $subject, $content))->templatified_email();
         exit;
+    }
+
+    protected function placeholder_tags_table($placeholders)
+    {
+        ?>
+        <div class="ppress-placeholder-tags">
+            <table class="widefat striped">
+                <tbody>
+                <tr>
+                    <th colspan="2"><?= esc_html__('Available placeholders for subject and message body', 'wp-user-avatar'); ?></th>
+                </tr>
+                <?php foreach ($placeholders as $tag => $description) : ?>
+                    <tr>
+                        <td><?= $tag ?></td>
+                        <td><?= $description ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
     }
 
     public function toggle_field_js_script()

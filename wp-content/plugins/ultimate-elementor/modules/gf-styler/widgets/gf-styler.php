@@ -497,6 +497,8 @@ class GfStyler extends Common_Widget {
 				'default'   => '',
 				'selectors' => array(
 					'{{WRAPPER}} .uael-gf-style .gform_wrapper .gfield .gfield_description,
+					{{WRAPPER}} .uael-gf-style .ginput_container .gfield_post_tags_hint, 
+					{{WRAPPER}} .uael-gf-style .ginput_container .gform_fileupload_rules,
 					{{WRAPPER}} .uael-gf-style .ginput_container_name input + label, 
 					{{WRAPPER}} .uael-gf-style .ginput_container_creditcard input + span + label,
 					{{WRAPPER}} .uael-gf-style .ginput_container input + label,
@@ -774,6 +776,21 @@ class GfStyler extends Common_Widget {
 					{{WRAPPER}} .uael-gf-style .gfield_checkbox input[type="checkbox"] + label:before,
 					{{WRAPPER}} .uael-gf-style .ginput_container_consent input[type="checkbox"] + label:before' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
+			)
+		);
+
+		$this->add_control(
+			'enable_gforms_css_classes',
+			array(
+				'label'        => __( 'Support to CSS Ready Classes', 'uael' ),
+				/* translators: %1$s doc link, %2$s link close */
+				'description'  => sprintf( __( 'Enable this option to add support to Gravity Forms CSS Ready Classes. %1$s Learn More. %2$s', 'uael' ), '<a href="https://www.gravityforms.com/css-ready-classes/" target="_blank" rel="noopener">', '</a>' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'uael' ),
+				'label_off'    => __( 'No', 'uael' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'prefix_class' => 'uael-gf-enable-classes-',
 			)
 		);
 
@@ -1630,7 +1647,7 @@ class GfStyler extends Common_Widget {
 						),
 					),
 					'selectors'  => array(
-						'{{WRAPPER}} .uael-gf-form-desc, {{WRAPPER}} .uael-gf-style .gform_description' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+						'{{WRAPPER}} .uael-gf-form-desc, {{WRAPPER}} .uael-gf-style .gform_heading' => 'margin-bottom: {{SIZE}}{{UNIT}};',
 					),
 					'condition'  => array(
 						'form_title_option!' => 'none',
@@ -1893,6 +1910,8 @@ class GfStyler extends Common_Widget {
 					'default' => Global_Typography::TYPOGRAPHY_TEXT,
 				),
 				'selector' => '{{WRAPPER}} .uael-gf-style .gform_wrapper .gfield .gfield_description,
+				{{WRAPPER}} .uael-gf-style .ginput_container .gfield_post_tags_hint, 
+				{{WRAPPER}} .uael-gf-style .ginput_container .gform_fileupload_rules,
 				{{WRAPPER}} .uael-gf-style .ginput_container_name input + label,
 				{{WRAPPER}} .uael-gf-style .ginput_container_creditcard input + span + label,
 				{{WRAPPER}} .uael-gf-style .ginput_container input + label,

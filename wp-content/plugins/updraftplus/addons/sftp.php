@@ -22,7 +22,7 @@ This file contains the classes:
 if (!class_exists('UpdraftPlus_RemoteStorage_Addons_Base_v2')) require_once(UPDRAFTPLUS_DIR.'/methods/addon-base-v2.php');
 
 // Do not instantiate the storage object (as that is instantiated on demand), but only the helper
-$updraftplus_addons_sftp = new UpdraftPlus_Addons_RemoteStorage_sftp_helper;
+new UpdraftPlus_Addons_RemoteStorage_sftp_helper;
 
 class UpdraftPlus_Addons_RemoteStorage_sftp_helper {
 
@@ -261,6 +261,8 @@ class UpdraftPlus_Addons_RemoteStorage_sftp extends UpdraftPlus_RemoteStorage_Ad
 		if ($this->scp) {
 
 			$cdcom = empty($this->path) ? '' : "cd ".trailingslashit($this->path)." && ";
+			
+			$nosizes = false;
 
 			if (false == ($exec = $this->ssh->exec($cdcom."ls -l ${match}*"))) {
 				$nosizes = true;

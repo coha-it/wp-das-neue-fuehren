@@ -33,6 +33,18 @@ class EzoicStatistics
         return self::$instance;
     }
 
+    /**
+     * __construct function.
+     *
+     * @access public
+     * @return void
+     */
+    public function __construct()
+    {
+        add_action('borlabsCookie/cookie/edit/template/settings/EzoicStatistics', [$this, 'additionalSettingsTemplate']
+        );
+    }
+
     public function __clone()
     {
         trigger_error('Cloning is not allowed.', E_USER_ERROR);
@@ -43,14 +55,31 @@ class EzoicStatistics
         trigger_error('Unserialize is forbidden.', E_USER_ERROR);
     }
 
-    /**
-     * __construct function.
-     *
-     * @access public
-     * @return void
-     */
-    public function __construct()
+    public function additionalSettingsTemplate($data)
     {
+        ?>
+        <div class="form-group row">
+            <div class="col-sm-8 offset-4">
+                <div
+                    class="alert alert-warning mt-2"><?php
+                    $kbLink = _x(
+                        'https://borlabs.io/kb/ezoic/',
+                        'Backend / Cookie / Ezoic / Alert Message',
+                        'borlabs-cookie'
+                    );
+                    printf(
+                        _x(
+                            'Your cookie description needs to be updated. Please read <a href="%s" target="_blank" rel="nofollow noopener noreferrer">%s</a>.',
+                            'Backend / Cookie / Ezoic / Alert Message',
+                            'borlabs-cookie'
+                        ),
+                        $kbLink,
+                        $kbLink
+                    ); ?></div>
+
+            </div>
+        </div>
+        <?php
     }
 
     /**
@@ -66,8 +95,16 @@ class EzoicStatistics
             'service' => 'EzoicStatistics',
             'name' => 'Ezoic - Statistics',
             'provider' => 'Ezoic Inc.',
-            'purpose' => _x('Helping to understand how visitors interact with websites by collecting and reporting information anonymously.', 'Frontend / Cookie / Ezoic - Statistics / Text', 'borlabs-cookie'),
-            'privacyPolicyURL' => _x('https://www.ezoic.com/privacy-policy/', 'Frontend / Cookie / Ezoic - Statistics / Text', 'borlabs-cookie'),
+            'purpose' => _x(
+                'Helping to understand how visitors interact with websites by collecting and reporting information anonymously.',
+                'Frontend / Cookie / Ezoic - Statistics / Text',
+                'borlabs-cookie'
+            ),
+            'privacyPolicyURL' => _x(
+                'https://www.ezoic.com/privacy-policy/',
+                'Frontend / Cookie / Ezoic - Statistics / Text',
+                'borlabs-cookie'
+            ),
             'hosts' => [],
             'cookieName' => 'ez*, __qca, _gid, _ga, _gat, AMP_ECID_EZOIC, __utm*, _ga*',
             'cookieExpiry' => _x('1 Year', 'Frontend / Cookie / Ezoic - Statistics / Text', 'borlabs-cookie'),
@@ -100,6 +137,7 @@ if (typeof window.BorlabsEZConsentCategories == 'object') {
 }
 </script>
 EOT;
+
         return $code;
     }
 
@@ -118,6 +156,7 @@ if (typeof window.BorlabsEZConsentCategories == 'object') {
 }
 </script>
 EOT;
+
         return $code;
     }
 }

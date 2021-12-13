@@ -6,4 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Vendidero\\StoreaBill\\Vendor\\' => array($baseDir . '/packages/storeabill/lib/packages'),
 );

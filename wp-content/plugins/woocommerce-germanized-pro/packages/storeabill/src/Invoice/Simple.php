@@ -407,6 +407,7 @@ class Simple extends Invoice {
 				$cancellation->set_customer_id( $this->get_customer_id() );
 				$cancellation->set_currency( $this->get_currency() );
 				$cancellation->set_is_reverse_charge( $this->is_reverse_charge() );
+				$cancellation->set_is_oss( $this->is_oss() );
 				$cancellation->set_vat_id( $this->get_vat_id() );
 				$cancellation->set_payment_method_name( $this->get_payment_method_name() );
 				$cancellation->set_payment_method_title( $this->get_payment_method_title() );

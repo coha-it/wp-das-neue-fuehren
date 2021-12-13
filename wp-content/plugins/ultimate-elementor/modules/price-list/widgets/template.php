@@ -35,7 +35,7 @@
 			?>
 		<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'item_wrap' . $index ) ); ?>>
 
-			<?php if ( ! empty( $item['image']['url'] ) ) { ?>
+			<?php if ( 'none' !== $settings['image_position'] && ! empty( $item['image']['url'] ) ) { ?>
 				<div class="uael-price-list-image">
 					<?php $this->render_image( $item, $settings ); ?>
 				</div>
@@ -46,7 +46,7 @@
 					<?php
 					if ( empty( $link_complete_box ) || 'no' === $link_complete_box ) {
 
-						echo wp_kses_post( $this->render_item_header( $item, $settings ) );
+						echo $this->render_item_header( $item, $settings ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					} else {
 						echo '<div class="uael-price-list-title">';
 					}

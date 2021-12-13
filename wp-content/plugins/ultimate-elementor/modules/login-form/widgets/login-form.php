@@ -112,7 +112,6 @@ class LoginForm extends Common_Widget {
 	 * @access protected
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-
 		$this->register_controls();
 	}
 
@@ -123,6 +122,8 @@ class LoginForm extends Common_Widget {
 	 * @access protected
 	 */
 	protected function register_controls() {
+
+		$this->register_presets_control( 'LoginForm', $this );
 
 		$this->register_general_controls();
 
@@ -193,22 +194,6 @@ class LoginForm extends Common_Widget {
 				);
 
 				$this->add_control(
-					'user_placeholder',
-					array(
-						'label'       => __( 'Username Placeholder', 'uael' ),
-						'default'     => __( 'Username or Email Address', 'uael' ),
-						'type'        => Controls_Manager::TEXT,
-						'dynamic'     => array(
-							'active' => true,
-						),
-						'label_block' => true,
-						'condition'   => array(
-							'show_labels' => 'custom',
-						),
-					)
-				);
-
-				$this->add_control(
 					'password_label',
 					array(
 						'label'       => __( 'Password Label', 'uael' ),
@@ -225,6 +210,35 @@ class LoginForm extends Common_Widget {
 				);
 
 				$this->add_control(
+					'show_placeholder',
+					array(
+						'label'        => __( 'Field Placeholder', 'uael' ),
+						'type'         => Controls_Manager::SWITCHER,
+						'default'      => 'yes',
+						'label_off'    => __( 'Hide', 'uael' ),
+						'label_on'     => __( 'Show', 'uael' ),
+						'return_value' => 'yes',
+					)
+				);
+
+				$this->add_control(
+					'user_placeholder',
+					array(
+						'label'       => __( 'Username Placeholder', 'uael' ),
+						'default'     => __( 'Username or Email Address', 'uael' ),
+						'type'        => Controls_Manager::TEXT,
+						'dynamic'     => array(
+							'active' => true,
+						),
+						'label_block' => true,
+						'condition'   => array(
+							'show_labels'      => 'custom',
+							'show_placeholder' => 'yes',
+						),
+					)
+				);
+
+				$this->add_control(
 					'password_placeholder',
 					array(
 						'label'       => __( 'Password Placeholder', 'uael' ),
@@ -235,7 +249,8 @@ class LoginForm extends Common_Widget {
 						),
 						'label_block' => true,
 						'condition'   => array(
-							'show_labels' => 'custom',
+							'show_labels'      => 'custom',
+							'show_placeholder' => 'yes',
 						),
 					)
 				);
@@ -278,6 +293,116 @@ class LoginForm extends Common_Widget {
 				)
 			);
 
+			$this->add_control(
+				'inline_control',
+				array(
+					'label'        => __( 'Layout', 'uael' ),
+					'description'  => __( 'Enable this to make Remember Me and Login inline.', 'uael' ),
+					'type'         => Controls_Manager::SWITCHER,
+					'default'      => 'no',
+					'label_off'    => __( 'stack', 'uael' ),
+					'label_on'     => __( 'inline', 'uael' ),
+					'prefix_class' => 'uael-login-form-inline-',
+					'condition'    => array(
+						'show_remember_me' => 'yes',
+					),
+					'separator'    => 'before',
+				)
+			);
+
+			$this->add_control(
+				'fields_icon',
+				array(
+					'label'        => __( 'Fields Icon', 'uael' ),
+					'description'  => __( 'Enable icon for fields.', 'uael' ),
+					'type'         => Controls_Manager::SWITCHER,
+					'default'      => 'no',
+					'label_off'    => __( 'Hide', 'uael' ),
+					'label_on'     => __( 'Show', 'uael' ),
+					'return_value' => 'yes',
+					'render_type'  => 'template',
+					'prefix_class' => 'uael-login-form-icon-',
+				)
+			);
+
+			$this->add_control(
+				'icon_divider',
+				array(
+					'label'        => __( 'Divider', 'uael' ),
+					'type'         => Controls_Manager::SWITCHER,
+					'default'      => 'no',
+					'label_off'    => __( 'Hide', 'uael' ),
+					'label_on'     => __( 'Show', 'uael' ),
+					'return_value' => 'yes',
+					'prefix_class' => 'uael-login-form-divider-',
+					'condition'    => array(
+						'fields_icon' => 'yes',
+					),
+				)
+			);
+
+			$this->add_control(
+				'divider_style',
+				array(
+					'label'     => __( 'Style', 'uael' ),
+					'type'      => Controls_Manager::SELECT,
+					'options'   => array(
+						'solid'  => __( 'Solid', 'uael' ),
+						'dotted' => __( 'Dotted', 'uael' ),
+						'dashed' => __( 'Dashed', 'uael' ),
+					),
+					'default'   => 'solid',
+					'selectors' => array(
+						'{{WRAPPER}} .uael-fields-icon' => 'border-right-style: {{VALUE}};',
+					),
+					'condition' => array(
+						'icon_divider' => 'yes',
+						'fields_icon'  => 'yes',
+					),
+				)
+			);
+
+			$this->add_control(
+				'divider_color',
+				array(
+					'label'     => __( 'Color', 'uael' ),
+					'type'      => Controls_Manager::COLOR,
+					'default'   => '#d4d4d4',
+					'selectors' => array(
+						'{{WRAPPER}} .uael-fields-icon' => 'border-right-color: {{VALUE}};',
+					),
+					'condition' => array(
+						'icon_divider' => 'yes',
+						'fields_icon'  => 'yes',
+					),
+				)
+			);
+
+			$this->add_control(
+				'divider_weight',
+				array(
+					'label'     => __( 'Thickness', 'uael' ),
+					'type'      => Controls_Manager::SLIDER,
+					'default'   => array(
+						'size' => 1,
+						'unit' => 'px',
+					),
+					'range'     => array(
+						'px' => array(
+							'min' => 1,
+							'max' => 10,
+						),
+					),
+					'selectors' => array(
+						'{{WRAPPER}} .uael-fields-icon' => 'border-right-width: {{SIZE}}{{UNIT}};',
+					),
+					'separator' => 'after',
+					'condition' => array(
+						'icon_divider' => 'yes',
+						'fields_icon'  => 'yes',
+					),
+				)
+			);
 		$this->end_controls_section();
 	}
 
@@ -830,6 +955,62 @@ class LoginForm extends Common_Widget {
 				)
 			);
 
+		if ( UAEL_Helper::is_elementor_updated() ) {
+			$this->add_control(
+				'button_icon',
+				array(
+					'label'       => __( 'Icon', 'uael' ),
+					'type'        => Controls_Manager::ICONS,
+					'label_block' => true,
+				)
+			);
+		} else {
+			$this->add_control(
+				'button_icon',
+				array(
+					'label'       => __( 'Icon', 'uael' ),
+					'type'        => Controls_Manager::ICON,
+					'label_block' => true,
+				)
+			);
+		}
+
+				$this->add_control(
+					'button_icon_align',
+					array(
+						'label'     => __( 'Icon Position', 'uael' ),
+						'type'      => Controls_Manager::SELECT,
+						'default'   => 'left',
+						'options'   => array(
+							'left'  => __( 'Before', 'uael' ),
+							'right' => __( 'After', 'uael' ),
+						),
+						'condition' => array(
+							'button_icon[value]!' => '',
+						),
+					)
+				);
+
+				$this->add_control(
+					'button_icon_indent',
+					array(
+						'label'     => __( 'Icon Spacing', 'uael' ),
+						'type'      => Controls_Manager::SLIDER,
+						'range'     => array(
+							'px' => array(
+								'max' => 50,
+							),
+						),
+						'condition' => array(
+							'button_icon[value]!' => '',
+						),
+						'selectors' => array(
+							'{{WRAPPER}} .elementor-button .elementor-align-icon-right' => 'margin-left: {{SIZE}}{{UNIT}};',
+							'{{WRAPPER}} .elementor-button .elementor-align-icon-left' => 'margin-right: {{SIZE}}{{UNIT}};',
+						),
+					)
+				);
+
 		$this->end_controls_section();
 	}
 
@@ -1270,19 +1451,46 @@ class LoginForm extends Common_Widget {
 						'relation' => 'and',
 						'terms'    => array(
 							array(
-								'name'     => 'enable_separator',
-								'operator' => '==',
-								'value'    => 'yes',
+								'terms' => array(
+									array(
+										'name'     => 'enable_separator',
+										'operator' => '==',
+										'value'    => 'yes',
+									),
+								),
 							),
 							array(
-								'name'     => 'social_position',
-								'operator' => '==',
-								'value'    => 'bottom',
+								'terms' => array(
+									array(
+										'name'     => 'social_position',
+										'operator' => '==',
+										'value'    => 'bottom',
+									),
+								),
 							),
 							array(
-								'name'     => 'hide_custom_form',
-								'operator' => '!==',
-								'value'    => 'yes',
+								'terms' => array(
+									array(
+										'name'     => 'hide_custom_form',
+										'operator' => '!==',
+										'value'    => 'yes',
+									),
+								),
+							),
+							array(
+								'relation' => 'or',
+								'terms'    => array(
+									array(
+										'name'     => 'facebook_login',
+										'operator' => '==',
+										'value'    => 'yes',
+									),
+									array(
+										'name'     => 'google_login',
+										'operator' => '==',
+										'value'    => 'yes',
+									),
+								),
 							),
 						),
 					),
@@ -1307,19 +1515,46 @@ class LoginForm extends Common_Widget {
 						'relation' => 'and',
 						'terms'    => array(
 							array(
-								'name'     => 'enable_separator',
-								'operator' => '==',
-								'value'    => 'yes',
+								'terms' => array(
+									array(
+										'name'     => 'enable_separator',
+										'operator' => '==',
+										'value'    => 'yes',
+									),
+								),
 							),
 							array(
-								'name'     => 'social_position',
-								'operator' => '==',
-								'value'    => 'top',
+								'terms' => array(
+									array(
+										'name'     => 'social_position',
+										'operator' => '==',
+										'value'    => 'top',
+									),
+								),
 							),
 							array(
-								'name'     => 'hide_custom_form',
-								'operator' => '!==',
-								'value'    => 'yes',
+								'terms' => array(
+									array(
+										'name'     => 'hide_custom_form',
+										'operator' => '!==',
+										'value'    => 'yes',
+									),
+								),
+							),
+							array(
+								'relation' => 'or',
+								'terms'    => array(
+									array(
+										'name'     => 'facebook_login',
+										'operator' => '==',
+										'value'    => 'yes',
+									),
+									array(
+										'name'     => 'google_login',
+										'operator' => '==',
+										'value'    => 'yes',
+									),
+								),
 							),
 						),
 					),
@@ -1716,6 +1951,62 @@ class LoginForm extends Common_Widget {
 					),
 				)
 			);
+
+			$this->add_control(
+				'fields_icon_heading',
+				array(
+					'label'     => __( 'Fields Icon', 'uael' ),
+					'type'      => Controls_Manager::HEADING,
+					'separator' => 'before',
+					'condition' => array(
+						'fields_icon' => 'yes',
+					),
+				)
+			);
+
+			$this->add_control(
+				'fields_icon_color',
+				array(
+					'label'     => __( 'Color', 'uael' ),
+					'type'      => Controls_Manager::COLOR,
+					'default'   => '',
+					'selectors' => array(
+						'{{WRAPPER}} .uael-fields-icon i' => 'color: {{VALUE}};',
+					),
+					'condition' => array(
+						'fields_icon' => 'yes',
+					),
+				)
+			);
+
+			$this->add_responsive_control(
+				'fields_icon_size',
+				array(
+					'label'     => __( 'Size', 'uael' ),
+					'type'      => Controls_Manager::SLIDER,
+					'range'     => array(
+						'px' => array(
+							'min' => 15,
+							'max' => 100,
+						),
+					),
+					'selectors' => array(
+						'{{WRAPPER}} .uael-fields-icon i' => 'font-size: calc( {{SIZE}}{{UNIT}} / 4 );',
+					),
+					'condition' => array(
+						'fields_icon' => 'yes',
+					),
+				)
+			);
+
+			$this->add_control(
+				'eye_icon_heading',
+				array(
+					'label'     => __( 'Eye Icon', 'uael' ),
+					'type'      => Controls_Manager::HEADING,
+					'separator' => 'before',
+				)
+			);
 			$this->add_control(
 				'eye_color',
 				array(
@@ -1740,7 +2031,7 @@ class LoginForm extends Common_Widget {
 						),
 					),
 					'selectors' => array(
-						'{{WRAPPER}} input#password + span.field-icon.toggle-password' => 'font-size: calc( {{SIZE}}{{UNIT}} / 2 );',
+						'{{WRAPPER}} span.field-icon.toggle-password' => 'font-size: calc( {{SIZE}}{{UNIT}} / 2 );',
 					),
 				)
 			);
@@ -1891,6 +2182,31 @@ class LoginForm extends Common_Widget {
 				)
 			);
 
+		$this->add_control(
+			'button_top_spacing',
+			array(
+				'label'      => __( 'Top Spacing', 'uael' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min' => 0,
+						'max' => 100,
+					),
+					'%'  => array(
+						'min' => 0,
+						'max' => 100,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .uael-login-form .elementor-field-group.elementor-button-wrapper' => 'margin-top: {{SIZE}}{{UNIT}};',
+				),
+				'condition'  => array(
+					'inline_control!' => 'inline',
+				),
+			)
+		);
+
 			$this->add_responsive_control(
 				'button_padding',
 				array(
@@ -1920,6 +2236,7 @@ class LoginForm extends Common_Widget {
 							'default'   => '',
 							'selectors' => array(
 								'{{WRAPPER}} .elementor-button' => 'color: {{VALUE}};',
+								'{{WRAPPER}} .elementor-button svg' => 'fill: {{VALUE}};',
 							),
 						)
 					);
@@ -1983,6 +2300,7 @@ class LoginForm extends Common_Widget {
 							'type'      => Controls_Manager::COLOR,
 							'selectors' => array(
 								'{{WRAPPER}} .elementor-button:hover' => 'color: {{VALUE}};',
+								'{{WRAPPER}} .elementor-button:hover svg' => 'fill: {{VALUE}};',
 							),
 						)
 					);
@@ -2219,6 +2537,13 @@ class LoginForm extends Common_Widget {
 			$hide_custom_class = 'uael-lf-custom-form-hidden';
 		}
 
+		$user_placeholder_text     = __( 'Username or Email Address', 'uael' );
+		$password_placeholder_text = __( 'Password', 'uael' );
+
+		$user_placeholder = ( 'custom' === $settings['show_labels'] ) ? wp_kses_post( $settings['user_placeholder'] ) : $user_placeholder_text;
+
+		$pass_placeholder = ( 'custom' === $settings['show_labels'] ) ? wp_kses_post( $settings['password_placeholder'] ) : $password_placeholder_text;
+
 		$this->add_render_attribute(
 			array(
 				'wrapper'         => array(
@@ -2243,6 +2568,7 @@ class LoginForm extends Common_Widget {
 					'class' => array(
 						'elementor-field-group',
 						'elementor-column',
+						'elementor-button-wrapper',
 						'elementor-field-type-submit',
 						'elementor-col-100',
 					),
@@ -2260,7 +2586,7 @@ class LoginForm extends Common_Widget {
 					'type'        => 'text',
 					'name'        => 'username',
 					'id'          => 'user',
-					'placeholder' => wp_kses_post( $settings['user_placeholder'] ),
+					'placeholder' => ( 'yes' === $settings['show_placeholder'] ) ? $user_placeholder : '',
 					'class'       => array(
 						'elementor-field',
 						'elementor-field-textual',
@@ -2272,7 +2598,7 @@ class LoginForm extends Common_Widget {
 					'type'        => 'password',
 					'name'        => 'password',
 					'id'          => 'password',
-					'placeholder' => $settings['password_placeholder'],
+					'placeholder' => ( 'yes' === $settings['show_placeholder'] ) ? $pass_placeholder : '',
 					'class'       => array(
 						'elementor-field',
 						'elementor-field-textual',
@@ -2292,6 +2618,19 @@ class LoginForm extends Common_Widget {
 				),
 			)
 		);
+
+		if ( ! empty( $settings['button_icon'] ) ) {
+			$this->add_render_attribute(
+				'icon-align',
+				'class',
+				array(
+					empty( $settings['button_icon_align'] ) ? '' :
+							'elementor-align-icon-' . $settings['button_icon_align'],
+					'elementor-button-icon',
+				)
+			);
+			$this->add_render_attribute( 'content-wrapper', 'class', 'elementor-button-content-wrapper' );
+		}
 
 		if ( ! empty( $settings['button_size'] ) ) {
 			$this->add_render_attribute( 'button', 'class', 'elementor-size-' . $settings['button_size'] );
@@ -2358,16 +2697,21 @@ class LoginForm extends Common_Widget {
 					<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'wrapper' ) ); ?>>
 						<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'field-group' ) ); ?>>
 							<?php
-							if ( 'custom' === $settings['show_labels'] ) {
+							if ( 'custom' === $settings['show_labels'] && '' !== $settings['user_label'] ) {
 								echo '<label ' . wp_kses_post( $this->get_render_attribute_string( 'user_label' ) ) . '>' . wp_kses_post( $settings['user_label'] ) . '</label>';
 							} elseif ( 'default' === $settings['show_labels'] ) {
 								echo '<label ' . wp_kses_post( $this->get_render_attribute_string( 'user_label' ) ) . '>';
 								echo esc_attr__( 'Username or Email Address', 'uael' );
 								echo '</label>';
 							}
-
+							if ( 'yes' === $settings['fields_icon'] ) {
+								echo '<div class="uael-username-wrapper">';
+							}
 							echo '<input size="1" ' . wp_kses_post( $this->get_render_attribute_string( 'user_input' ) ) . '>';
-
+							if ( 'yes' === $settings['fields_icon'] ) {
+								echo '<span class="uael-fields-icon"><i class="fa fa-user"></i></span>';
+								echo '</div>';
+							}
 							?>
 							<?php if ( '' !== $invalid_username ) { ?>
 								<span class="uael-register-field-message"><span class="uael-loginform-error"><?php echo wp_kses_post( $invalid_username ); ?></span></span>
@@ -2376,7 +2720,7 @@ class LoginForm extends Common_Widget {
 
 						<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'field-group' ) ); ?>>
 							<?php
-							if ( 'custom' === $settings['show_labels'] ) {
+							if ( 'custom' === $settings['show_labels'] && '' !== $settings['password_label'] ) {
 								echo '<label ' . wp_kses_post( $this->get_render_attribute_string( 'password_label' ) ) . '>' . wp_kses_post( $settings['password_label'] ) . '</label>';
 							} elseif ( 'default' === $settings['show_labels'] ) {
 								echo '<label ' . wp_kses_post( $this->get_render_attribute_string( 'password_label' ) ) . '>';
@@ -2385,6 +2729,9 @@ class LoginForm extends Common_Widget {
 							}
 							echo '<div class="uael-password-wrapper">';
 							echo '<input size="1" ' . wp_kses_post( $this->get_render_attribute_string( 'password_input' ) ) . '>';
+							if ( 'yes' === $settings['fields_icon'] ) {
+								echo '<span class="uael-fields-icon"><i class="fa fa-lock"></i></span>';
+							}
 							echo '<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>';
 							echo '</div>';
 							?>
@@ -2405,8 +2752,23 @@ class LoginForm extends Common_Widget {
 
 						<div <?php echo wp_kses_post( $this->get_render_attribute_string( 'submit-group' ) ); ?>>
 							<button type="submit" <?php echo wp_kses_post( $this->get_render_attribute_string( 'button' ) ); ?>>
+								<?php if ( ( ! empty( $settings['button_icon'] ) && ! UAEL_Helper::is_elementor_updated() ) || ( '' !== $settings['button_icon']['value'] && UAEL_Helper::is_elementor_updated() ) ) { ?>
+									<span <?php echo wp_kses_post( $this->get_render_attribute_string( 'content-wrapper' ) ); ?>>
+										<span <?php echo wp_kses_post( $this->get_render_attribute_string( 'icon-align' ) ); ?>>
+											<?php
+											if ( $settings['button_icon']['value'] && UAEL_Helper::is_elementor_updated() ) {
+												\Elementor\Icons_Manager::render_icon( $settings['button_icon'], array( 'aria-hidden' => 'true' ) );
+											} elseif ( ! empty( $settings['button_icon'] ) && ! UAEL_Helper::is_elementor_updated() ) {
+												?>
+												<i class="<?php echo esc_attr( $settings['button_icon'] ); ?>" aria-hidden="true"></i>	
+											<?php } ?>
+										</span>
+								<?php } ?>
 								<?php if ( ! empty( $settings['button_text'] ) ) { ?>
 									<span class="elementor-button-text"><?php echo wp_kses_post( $settings['button_text'] ); ?></span>
+								<?php } ?>
+								<?php if ( ( ! empty( $settings['button_icon'] ) && ! UAEL_Helper::is_elementor_updated() ) || ( '' !== $settings['button_icon']['value'] && UAEL_Helper::is_elementor_updated() ) ) { ?>
+									</span>
 								<?php } ?>
 							</button>
 							<?php
@@ -2622,21 +2984,52 @@ class LoginForm extends Common_Widget {
 					<div class="elementor-form-fields-wrapper">
 						<#
 							fieldGroupClasses = 'elementor-field-type-text elementor-field-group elementor-column elementor-col-100';
+							var user_placeholder = ( 'yes' == settings.show_placeholder ) ? settings.user_placeholder : '';
+							var pass_placeholder = ( 'yes' == settings.show_placeholder ) ? settings.password_placeholder : '';
 						#>
 
 						<div class="{{ fieldGroupClasses }}">
-							<# if ( 'custom' === settings.show_labels ) { #>
+							<# if ( 'custom' === settings.show_labels && '' !== settings.user_label ) { #>
 								<label class="elementor-field-label" for="user"> {{{ settings.user_label }}} </label>
 							<# } else if ( 'default' === settings.show_labels ) { #>
 								<label class="elementor-field-label" for="user">
 									<?php echo esc_attr_e( 'Username or Email Address', 'uael' ); ?>
 								</label>
 							<# } #>
-							<input size="1" type="text" id="user" placeholder="{{ settings.user_placeholder }}" class="uael-login-form-username elementor-field elementor-field-textual elementor-size-{{ settings.input_size }}" />
+
+
+							<# if( 'yes' === settings.fields_icon ) { #>
+								<div class="uael-username-wrapper">
+							<# } #>
+
+							<# if ( 'custom' === settings.show_labels ) { #>
+
+								<input size="1" type="text" id="user" placeholder="{{ user_placeholder }}" class="uael-login-form-username elementor-field elementor-field-textual elementor-size-{{ settings.input_size }}" />
+
+							<# } else if ( 'default' === settings.show_labels || 'none' === settings.show_labels ) { #>
+
+								<# if ( 'yes' == settings.show_placeholder ) { #>
+
+									<input size="1" type="text" id="user" placeholder="<?php echo esc_attr_e( 'Username or Email Address', 'uael' ); ?>" class="uael-login-form-username elementor-field elementor-field-textual elementor-size-{{ settings.input_size }}" />
+
+								<# } else { #>
+
+									<input size="1" type="text" id="user" class="uael-login-form-username elementor-field elementor-field-textual elementor-size-{{ settings.input_size }}" />
+
+								<# } #>
+
+							<# } #>
+
+							<# if( 'yes' === settings.fields_icon ) { #>
+								<span class="uael-fields-icon"><i class="fa fa-user"></i></span>
+								</div>
+							<# } #>
+
+
 						</div>
 
 						<div class="{{ fieldGroupClasses }}">
-							<# if ( 'custom' === settings.show_labels ) { #>
+							<# if ( 'custom' === settings.show_labels && '' !== settings.password_label ) { #>
 								<label class="elementor-field-label" for="password"> {{{ settings.password_label }}} </label>
 							<# } else if ( 'default' === settings.show_labels ) { #>
 								<label class="elementor-field-label" for="password">
@@ -2644,7 +3037,28 @@ class LoginForm extends Common_Widget {
 								</label>
 							<# } #>
 							<div class="uael-password-wrapper">
-							<input size="1" type="password" id="password" placeholder="{{ settings.password_placeholder }}" class="uael-login-form-password elementor-field elementor-field-textual elementor-size-{{ settings.input_size }}" />
+
+								<# if ( 'custom' === settings.show_labels ) { #>
+
+									<input size="1" type="password" id="password" placeholder="{{ pass_placeholder }}" class="uael-login-form-password elementor-field elementor-field-textual elementor-size-{{ settings.input_size }}" />
+
+								<# } else if ( 'default' === settings.show_labels || 'none' === settings.show_labels ) { #>
+
+									<# if ( 'yes' == settings.show_placeholder ) { #>
+
+										<input size="1" type="password" id="password" placeholder="<?php echo esc_attr_e( 'Password', 'uael' ); ?>" class="uael-login-form-password elementor-field elementor-field-textual elementor-size-{{ settings.input_size }}" />
+
+									<# } else { #>
+
+										<input size="1" type="password" id="password" class="uael-login-form-password elementor-field elementor-field-textual elementor-size-{{ settings.input_size }}" />
+
+									<# } #>
+
+								<# } #>
+
+							<# if( 'yes' === settings.fields_icon ) { #>
+								<span class="uael-fields-icon"><i class="fa fa-lock"></i></span>
+							<# } #>
 							<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
 							</div>
 						</div>
@@ -2658,11 +3072,29 @@ class LoginForm extends Common_Widget {
 							</div>
 						<# } #>
 
-						<div class="elementor-field-group elementor-column elementor-field-type-submit elementor-col-100">
+						<div class="elementor-field-group elementor-button-wrapper elementor-column elementor-field-type-submit elementor-col-100">
 							<button type="submit" class="uael-login-form-submit elementor-button elementor-size-{{ settings.button_size }}" data-ajax-enable="{{ settings.enable_ajax }}">
-								<# if ( settings.button_text ) { #>
-									<span class="elementor-button-text">{{ settings.button_text }}</span>
-								<# } #>
+								<?php if ( UAEL_Helper::is_elementor_updated() ) { ?>
+									<# if ( settings.button_icon || settings.button_icon ) { #>
+										<span class="elementor-button-content-wrapper">
+											<span class="elementor-button-icon elementor-align-icon-{{ settings.button_icon_align }}">
+												<# var iconHTML = elementor.helpers.renderIcon( view, settings.button_icon, { 'aria-hidden': true }, 'i' , 'object' ); 
+												migrated = elementor.helpers.isIconMigrated( settings, 'button_icon' ); 
+												#>
+												<# if ( iconHTML && iconHTML.rendered && ( settings.button_icon || migrated ) ) { #>
+													{{{ iconHTML.value }}}
+												<# } else if( ! settings.button_icon ) { #>
+													<i class="{{ settings.button_icon }}" aria-hidden="true"></i>
+												<# } #>
+											</span>
+									<# } #>
+								<?php } ?>	
+									<# if ( settings.button_text ) { #>
+										<span class="elementor-button-text">{{ settings.button_text }}</span>
+									<# } #>
+									<# if ( settings.button_icon || settings.button_icon ) { #>
+										</span>
+									<#  } #>
 							</button>
 						</div>
 
@@ -2700,19 +3132,5 @@ class LoginForm extends Common_Widget {
 			} #>
 			</div>
 		<?php
-	}
-
-	/**
-	 * Render Login Form widgets output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 1.20.0
-	 * @access protected
-	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-		$this->content_template();
 	}
 }

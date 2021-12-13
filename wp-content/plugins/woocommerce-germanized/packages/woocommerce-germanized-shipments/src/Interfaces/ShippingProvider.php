@@ -27,6 +27,8 @@ interface ShippingProvider {
 
 	public function get_signup_link();
 
+	public function is_pro();
+
 	/**
 	 * Whether or not this instance is a manual integration.
 	 * Manual integrations are constructed dynamically from DB and do not support
@@ -66,7 +68,7 @@ interface ShippingProvider {
 
 	public function get_tracking_url( $shipment );
 
-	public function get_tracking_desc( $shipment );
+	public function get_tracking_desc( $shipment, $plain = false );
 
 	public function get_tracking_placeholders( $shipment = false );
 

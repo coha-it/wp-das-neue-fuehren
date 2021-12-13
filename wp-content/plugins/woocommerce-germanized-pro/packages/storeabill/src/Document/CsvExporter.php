@@ -24,13 +24,11 @@ abstract class CsvExporter extends \WC_CSV_Batch_Exporter implements Exporter {
 
 	protected $excluded_column_names = array(
 		'formatted_address',
-		'formatted_shipping_address',
 		'meta_data',
-        'shipping_address'
 	);
 
 	protected $spreadable_column_names = array(
-		'address'
+		'address',
 	);
 
 	protected $date_column_names = array(
@@ -294,7 +292,7 @@ abstract class CsvExporter extends \WC_CSV_Batch_Exporter implements Exporter {
 	}
 
 	protected function get_columns_with_extra_handling() {
-	    return array( 'meta', 'address', 'shipping_address' );
+	    return array( 'meta', 'address' );
 	}
 
 	protected function column_needs_extra_handling( $column_id ) {
@@ -377,7 +375,7 @@ abstract class CsvExporter extends \WC_CSV_Batch_Exporter implements Exporter {
 	}
 
 	protected function has_meta_support() {
-	    $has_meta_support = $this->get_filter( 'enable_meta' ) ? wc_string_to_bool( $this->get_filter( 'enable_meta' ) ) : false;
+	    $has_meta_support = $this->get_filter( 'enable_meta' ) ? sab_string_to_bool( $this->get_filter( 'enable_meta' ) ) : false;
 
 	    return $has_meta_support;
 	}

@@ -27,7 +27,6 @@
 namespace ProfilePress;
 
 ob_start();
-
 class Custom_Settings_Page_Api
 {
     /** @var mixed|void database saved data. */
@@ -64,6 +63,8 @@ class Custom_Settings_Page_Api
         $this->option_name         = $option_name;
         $this->main_content_config = $main_content_config;
         $this->page_header         = $page_header;
+
+        $this->persist_plugin_settings();
     }
 
     /**
@@ -418,7 +419,7 @@ class Custom_Settings_Page_Api
             $pageURL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
         }
 
-        return apply_filters('wp_cspa_main_current_page_url', $pageURL);
+        return apply_filters('wp_cspa_main_current_page_url', esc_url_raw($pageURL));
     }
 
 
@@ -1074,7 +1075,7 @@ public function _header($args)
     public function _footer($disable_submit_button = null)
     {
         return '</table>
-		<p><input class="button-primary" type="submit" name="save_' . $this->option_name . '" value="Save Changes"></p>
+		<p><input class="button-primary" type="submit" name="save_' . $this->option_name . '" value="'. esc_html__('Save Changes', 'wp-user-avatar'). '"></p>
 	</div>
 </div>';
     }
@@ -1228,12 +1229,6 @@ public function _header($args)
      */
     public static function instance($main_content_config = [], $option_name = '', $page_header = '')
     {
-        static $instance = null;
-
-        if (is_null($instance)) {
-            $instance = new self($main_content_config, $option_name, $page_header);
-        }
-
-        return $instance;
+        return new self($main_content_config, $option_name, $page_header);
     }
 }

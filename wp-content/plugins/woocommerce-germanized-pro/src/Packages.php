@@ -27,9 +27,10 @@ class Packages {
 	 * @var array Key is the package name/directory, value is the main package class which handles init.
 	 */
 	protected static $packages = [
-		'storeabill'           => '\\Vendidero\\StoreaBill\\Package',
-		'storeabill-lexoffice' => '\\Vendidero\\StoreaBill\\Lexoffice\\Package',
-        'storeabill-sevdesk'   => '\\Vendidero\\StoreaBill\\sevDesk\\Package',
+		'storeabill'                 => '\\Vendidero\\StoreaBill\\Package',
+		'storeabill-lexoffice'       => '\\Vendidero\\StoreaBill\\Lexoffice\\Package',
+        'storeabill-sevdesk'         => '\\Vendidero\\StoreaBill\\sevDesk\\Package',
+		'woocommerce-germanized-dpd' => '\\Vendidero\\Germanized\\DPD\\Package',
 	];
 
 	/**
@@ -81,7 +82,13 @@ class Packages {
 				self::missing_package( $package_name );
 				continue;
 			}
-			call_user_func( [ $package_class, 'init' ] );
+
+			/**
+			 * Prevent calling init twice in case feature plugin is installed
+			 */
+			if ( ! has_action( 'plugins_loaded', array( $package_class, 'init' ) ) ) {
+				call_user_func( [ $package_class, 'init' ] );
+			}
 		}
 	}
 

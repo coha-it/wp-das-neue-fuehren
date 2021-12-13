@@ -17,48 +17,110 @@ const settings = {
             "type": 'string',
             "default": ''
         },
-        totalType: {
-            type: "string",
-            default: "",
+        "totalType": {
+            "type": "string",
+            "default": "",
         },
-        borders: {
+        "borders": {
             "type": "array",
             "default": []
         },
-        customBorderColor : {
+        "customBorderColor" : {
             "type": "string"
         },
-        borderColor: {
+        "borderColor": {
             "type": "string"
         },
-        backgroundColor: {
+        "backgroundColor": {
             "type": "string"
         },
-        customBackgroundColor: {
+        "customBackgroundColor": {
             "type": "string"
         },
-        customTextColor : {
+        "customTextColor" : {
             "type": "string"
         },
-        textColor: {
+        "textColor": {
             "type": "string"
         },
         "fontSize": {
             "type": "string"
         },
         "customFontSize": {
-            "type": "number"
+            "type": "string"
         },
-        heading: {
-            type: "string",
-            default: "",
+        "heading": {
+            "type": "string",
+            "default": "",
         },
-        hideIfEmpty: {
-            type: "boolean",
-            default: false,
+        "hideIfEmpty": {
+            "type": "boolean",
+            "default": false,
         },
     },
-    edit
+    edit,
+    deprecated: [
+        {
+            attributes: {
+                "content": {
+                    "type": 'string',
+                    "default": ''
+                },
+                "totalType": {
+                    "type": "string",
+                    "default": "",
+                },
+                "borders": {
+                    "type": "array",
+                    "default": []
+                },
+                "customBorderColor" : {
+                    "type": "string"
+                },
+                "borderColor": {
+                    "type": "string"
+                },
+                "backgroundColor": {
+                    "type": "string"
+                },
+                "customBackgroundColor": {
+                    "type": "string"
+                },
+                "customTextColor" : {
+                    "type": "string"
+                },
+                "textColor": {
+                    "type": "string"
+                },
+                "fontSize": {
+                    "type": "string"
+                },
+                "customFontSize": {
+                    "type": "number"
+                },
+                "heading": {
+                    "type": "string",
+                    "default": "",
+                },
+                "hideIfEmpty": {
+                    "type": "boolean",
+                    "default": false,
+                },
+            },
+            isEligible( { customFontSize } ) {
+                return typeof customFontSize === 'number';
+            },
+            migrate( attributes ) {
+                return {
+                    ...attributes,
+                    customFontSize: attributes.customFontSize ? '' + attributes.customFontSize : undefined,
+                };
+            },
+            save( attributes ) {
+                return null;
+            }
+        },
+    ]
 };
 
 registerBlockType( 'storeabill/item-total-row', settings );

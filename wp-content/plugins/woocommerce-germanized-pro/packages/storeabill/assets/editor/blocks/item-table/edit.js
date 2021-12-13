@@ -16,7 +16,6 @@ import {
 	InnerBlocks,
 	BlockControls,
 	BlockVerticalAlignmentToolbar,
-	__experimentalUseColors,
 	withColors,
 	getColorClassName,
 	ContrastChecker,
@@ -28,6 +27,7 @@ import { withDispatch, useDispatch, useSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 
 import { documentTypeSupports, getDefaultInnerBlocks } from '@storeabill/settings';
+import { useColors } from '@storeabill/utils';
 import { BorderSelect, getBorderClasses } from '@storeabill/components/border-select';
 
 /**
@@ -81,7 +81,7 @@ function ColumnsEditContainer( {
 	const {
 		InspectorControlsColorPanel,
 		BorderColor,
-	} = __experimentalUseColors(
+	} = useColors(
 		[
 			{ name: 'borderColor', className: 'has-border-color' },
 		],

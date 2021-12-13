@@ -20,6 +20,9 @@ class PackingSlips {
 
 		add_action( 'storeabill_woo_gzd_shipment_item_synced', array( __CLASS__, 'sync_shipment_item_product' ), 10, 2 );
 
+		add_filter( 'storeabill_packing_slip_editor_templates', array( __CLASS__, 'register_template' ) );
+		add_filter( 'storeabill_packing_slip_shortcode_handlers', array( __CLASS__, 'register_shortcode_handler' ), 10 );
+
 		if ( self::is_enabled() ) {
 			add_filter( 'storeabill_rest_api_get_rest_namespaces', array( __CLASS__, 'register_rest_controllers' ) );
 			add_filter( 'storeabill_default_template_path', array( __CLASS__, 'register_default_template_path' ), 10, 2 );
@@ -32,11 +35,9 @@ class PackingSlips {
 			 */
 			add_action( 'woocommerce_after_shipment_object_save', array( __CLASS__, 'maybe_sync_packing_slip' ) );
 			add_action( 'woocommerce_gzd_shipment_deleted', array( __CLASS__, 'delete_packing_slip' ), 10, 2 );
-
-			add_filter( 'storeabill_packing_slip_editor_templates', array( __CLASS__, 'register_template' ) );
-			add_filter( 'storeabill_packing_slip_shortcode_handlers', array( __CLASS__, 'register_shortcode_handler' ), 10 );
-
 			add_action( 'woocommerce_gzdp_packing_slip_auto_sync_callback', array( __CLASS__, 'auto_sync_callback' ), 10 );
+
+			add_filter( 'storeabill_bundles_compatibility_document_types', array( __CLASS__, 'register_bundles_compatibility' ), 10 );
 
 			/**
 			 * WPML compatibility
@@ -66,6 +67,19 @@ class PackingSlips {
 				Ajax::init();
 			}
 		}
+	}
+
+	/**
+	 * Mark packing slips as being suitable for the bundles compatibility script.
+	 *
+	 * @param $document_types
+	 *
+	 * @return mixed
+	 */
+	public static function register_bundles_compatibility( $document_types ) {
+		$document_types[] = 'packing_slip';
+
+		return $document_types;
 	}
 
 	/**

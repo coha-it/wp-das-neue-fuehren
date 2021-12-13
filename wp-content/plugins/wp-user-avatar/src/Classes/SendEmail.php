@@ -89,7 +89,7 @@ class SendEmail
                 $message = ob_get_clean();
             }
 
-            if ( ! is_customize_preview()) {
+            if (class_exists('DOMDocument') && ! is_customize_preview()) {
                 /** @see https://github.com/MyIntervals/emogrifier/tree/v2.2.0 */
                 $emogrifier = new \Pelago\Emogrifier();
                 $emogrifier->setHtml($message);

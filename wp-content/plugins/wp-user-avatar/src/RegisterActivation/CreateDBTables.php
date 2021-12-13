@@ -31,6 +31,8 @@ class CreateDBTables
                   KEY form_id (form_id)
 				) $collate;
 				";
+        // max index length is 191 to avoid this error "Index column size too large. The maximum column size is 767 bytes."
+        // @see wp_get_db_schema()
         $sqls[] = "CREATE TABLE IF NOT EXISTS $forms_meta_table (
                   meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                   form_id bigint(20) NOT NULL,
@@ -40,7 +42,7 @@ class CreateDBTables
                   PRIMARY KEY (meta_id),
                   KEY form_id (form_id),
                   KEY form_type (form_type),
-                  KEY meta_key (meta_key)
+                  KEY meta_key (meta_key(191))
 				) $collate;
 				";
         $sqls[] = "CREATE TABLE IF NOT EXISTS $meta_data_table (

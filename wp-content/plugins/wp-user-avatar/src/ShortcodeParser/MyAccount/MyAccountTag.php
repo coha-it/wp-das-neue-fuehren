@@ -106,20 +106,12 @@ class MyAccountTag extends FormProcessor
 
     public function email_notification_callback()
     {
-        ob_start();
-
         require apply_filters('ppress_my_account_email_notification_template', dirname(__FILE__) . '/email-notifications.tmpl.php');
-
-        return ob_get_clean();
     }
 
     public function change_password_callback()
     {
-        ob_start();
-
         require apply_filters('ppress_my_account_change_password_template', dirname(__FILE__) . '/change-password.tmpl.php');
-
-        return ob_get_clean();
     }
 
     public function display_name_select_dropdown()
@@ -164,11 +156,7 @@ class MyAccountTag extends FormProcessor
 
     public function edit_profile_callback()
     {
-        ob_start();
-
         require apply_filters('ppress_my_account_edit_profile_template', dirname(__FILE__) . '/edit-profile.tmpl.php');
-
-        return ob_get_clean();
     }
 
     public function page_endpoint_title($title)
@@ -176,7 +164,7 @@ class MyAccountTag extends FormProcessor
         if (is_page() && self::is_endpoint()) {
             $endpoint       = $this->get_current_endpoint();
             $endpoint_title = $this->get_endpoint_title($endpoint);
-            $title          = ! empty($endpoint_title) ? $endpoint_title : $title;
+            $title          = ! empty($endpoint_title) ? $endpoint_title . ' - ' . get_bloginfo('name') : $title;
         }
 
         return $title;
@@ -415,9 +403,11 @@ class MyAccountTag extends FormProcessor
      *
      * @return string
      */
-    public function parse_shortcode($atts)
+    public function parse_shortcode()
     {
         add_action('wp_footer', [$this, 'js_script']);
+
+        do_action('ppress_my_account_shortcode_callback');
 
         global $wp;
 
@@ -457,6 +447,8 @@ class MyAccountTag extends FormProcessor
                 <div class="profilepress-myaccount-content">
                     <?php
 
+                    $flag = false;
+
                     if ( ! empty($wp->query_vars)) {
                         foreach ($wp->query_vars as $key => $value) {
                             // Ignore pagename param.
@@ -467,13 +459,16 @@ class MyAccountTag extends FormProcessor
                             $callback = self::get_tab_callback($key);
 
                             if (is_callable($callback)) {
-
-                                return call_user_func($callback, $key);
+                                $flag = true;
+                                call_user_func($callback, $key);
+                                break;
                             }
                         }
                     }
 
-                    require apply_filters('ppress_my_account_dashboard_template', dirname(__FILE__) . '/dashboard.tmpl.php');
+                    if ( ! $flag) {
+                        require apply_filters('ppress_my_account_dashboard_template', dirname(__FILE__) . '/dashboard.tmpl.php');
+                    }
                     ?>
                 </div>
             </div>
@@ -499,7 +494,7 @@ class MyAccountTag extends FormProcessor
 
             jQuery(document).on('pp_form_edit_profile_success', function (e, parent) {
                 parent.find('#pp-avatar, #pp-cover-image').val('');
-                parent.find('#pp-cover-image').next('.ppmyac-custom-file-label').text('<?=esc_html__('Cover Image (min. width: 1000px)', 'wp-user-avatar')?>');
+                parent.find('#pp-cover-image').next('.ppmyac-custom-file-label').text('<?=esc_html__('Cover Photo (min. width: 1000px)', 'wp-user-avatar')?>');
                 parent.find('#pp-avatar').next('.ppmyac-custom-file-label').text('<?=esc_html__('Profile Picture', 'wp-user-avatar')?>');
             });
         </script>

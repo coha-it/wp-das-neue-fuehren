@@ -31,10 +31,14 @@
 			<key name="seopress_rich_snippets_publisher_logo_meta"/>
 			<key name="seopress_rich_snippets_publisher_logo_width"/>
 			<key name="seopress_rich_snippets_publisher_logo_height"/>
+			<key name="seopress_breadcrumbs_i18n_here"/>
 			<key name="seopress_breadcrumbs_i18n_home"/>
+			<key name="seopress_breadcrumbs_i18n_author"/>
 			<key name="seopress_breadcrumbs_i18n_404"/>
 			<key name="seopress_breadcrumbs_i18n_search"/>
 			<key name="seopress_breadcrumbs_i18n_no_results"/>
+			<key name="seopress_breadcrumbs_i18n_attachments"/>
+			<key name="seopress_breadcrumbs_i18n_paged"/>
 		</key>
 	</admin-texts>
 </wpml-config>

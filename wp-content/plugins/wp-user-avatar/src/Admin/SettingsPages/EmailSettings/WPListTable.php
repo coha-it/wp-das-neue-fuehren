@@ -41,7 +41,7 @@ class WPListTable extends \WP_List_Table
 
     public function column_default($item, $column_name)
     {
-        $url = esc_url_raw(add_query_arg('type', sanitize_text_field($item['key'])));
+        $url  = esc_url(remove_query_arg(wp_removable_query_args(),add_query_arg('type', sanitize_text_field($item['key']))));
 
         if ($column_name == 'configure') {
             return '<a class="button pp-email-configure" href="' . $url . '"><span class="dashicons dashicons-admin-generic"></span></a>';
@@ -60,18 +60,18 @@ class WPListTable extends \WP_List_Table
             $class .= ' pp-is-active ';
         }
 
-        $url  = esc_url_raw(add_query_arg('type', $key));
+        $url  = esc_url_raw(remove_query_arg(wp_removable_query_args(),add_query_arg('type', $key)));
         $flag = '<span class="' . $class . '"></span>';
 
         $hint = '';
         if ( ! empty($item['description'])) {
             $hint = sprintf(
                 ' <span class="ppress-hint-tooltip hint--top hint--medium hint--bounce" aria-label="%s"><span class="dashicons dashicons-editor-help"></span></span>',
-                $item['description']
+                esc_attr($item['description'])
             );
         }
 
-        return sprintf('%s<strong><a href="%s">%s</a>%s</strong>', $flag, $url, $item['title'], $hint);
+        return sprintf('%s<strong><a href="%s">%s</a>%s</strong>', $flag, $url, esc_html($item['title']), $hint);
     }
 
     public function prepare_items()

@@ -120,8 +120,8 @@ class FormList extends \WP_List_Table
             sprintf(
                 'admin.php?page=%s&view=edit-shortcode-%s&id=%d',
                 $slug,
-                $form_type,
-                $form_id
+                sanitize_text_field($form_type),
+                absint($form_id)
             )
         );
 
@@ -131,42 +131,42 @@ class FormList extends \WP_List_Table
                 sprintf(
                     'admin.php?page=%s&view=drag-drop-builder&form-type=%s&id=%d',
                     $slug,
-                    $form_type,
-                    $form_id
+                    sanitize_text_field($form_type),
+                    absint($form_id)
                 )
             );
         }
 
-        return $url;
+        return esc_url_raw($url);
     }
 
     public static function delete_url($form_id, $form_type)
     {
-        return admin_url(
+        return esc_url_raw(admin_url(
             sprintf(
                 'admin.php?page=pp-forms&action=delete&form_type=%s&id=%d&_wpnonce=%s',
-                $form_type,
-                $form_id,
+                sanitize_text_field($form_type),
+                absint($form_id),
                 ppress_create_nonce()
             )
-        );
+        ));
     }
 
     public static function clone_url($form_id, $form_type)
     {
-        return admin_url(
+        return esc_url_raw(admin_url(
             sprintf(
                 'admin.php?page=pp-forms&action=clone&form_type=%s&id=%d&_wpnonce=%s',
-                $form_type,
-                $form_id,
+                sanitize_text_field($form_type),
+                absint($form_id),
                 ppress_create_nonce()
             )
-        );
+        ));
     }
 
     public static function preview_url($form_id, $form_type)
     {
-        return add_query_arg(['pp_preview_form' => $form_id, 'type' => $form_type], home_url());
+        return esc_url_raw(add_query_arg(['pp_preview_form' => $form_id, 'type' => $form_type], home_url()));
     }
 
     /**
@@ -229,10 +229,10 @@ class FormList extends \WP_List_Table
         $form_id       = absint($item['form_id']);
         $form_type     = sanitize_text_field($item['form_type']);
         $builder_type  = sanitize_text_field($item['builder_type']);
-        $customize_url = self::customize_url($form_id, $form_type, $builder_type);
-        $delete_url    = self::delete_url($form_id, $form_type);
-        $clone_url     = self::clone_url($form_id, $form_type);
-        $preview_url   = self::preview_url($form_id, $form_type);
+        $customize_url = esc_url(self::customize_url($form_id, $form_type, $builder_type));
+        $delete_url    = esc_url(self::delete_url($form_id, $form_type));
+        $clone_url     = esc_url(self::clone_url($form_id, $form_type));
+        $preview_url   = esc_url(self::preview_url($form_id, $form_type));
 
         $actions = array(
             'edit'         => sprintf("<a href='%s'>%s</a>", $customize_url, esc_attr__('Edit', 'wp-user-avatar')),
@@ -399,11 +399,10 @@ class FormList extends \WP_List_Table
 
         // Detect when a bulk action is being triggered...
         if ('bulk-delete' == $this->current_action()) {
-            check_admin_referer('bulk-forms');
-            $form_ids = $_POST['form_id'];
+            check_admin_referer('bulk-' . $this->_args['plural']);
+            $form_ids = array_map('absint', $_POST['form_id']);
 
             foreach ($form_ids as $form_id) {
-                $form_id   = absint($form_id);
                 $form_type = ! empty($_GET['form-type']) ? sanitize_text_field($_GET['form-type']) : FR::LOGIN_TYPE;
                 if (isset($_GET['page']) && $_GET['page'] == PPRESS_MEMBER_DIRECTORIES_SLUG) {
                     $form_type = FR::MEMBERS_DIRECTORY_TYPE;

@@ -82,7 +82,9 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		'relative_path'          => '',
 		'currency'               => '',
 		'prices_include_tax'     => false,
+		'tax_display_mode'       => 'incl',
 		'is_reverse_charge'      => false,
+		'is_oss'                 => false,
 		'is_taxable'             => true,
 		'round_tax_at_subtotal'  => null,
 		'total'                  => 0,
@@ -97,7 +99,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		'discount_total'         => 0,
 		'total_tax'              => 0,
 		'subtotal_tax'           => 0,
-	   	'product_tax'            => 0,
+		'product_tax'            => 0,
 		'shipping_tax'           => 0,
 		'fee_tax'                => 0,
 		'product_subtotal_tax'   => 0,
@@ -144,8 +146,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	public function finalize( $defer_render = false ) {
 
 		// Update date created on finalization
-		$current = current_time( 'timestamp', true );
-		$this->set_date_created( $current );
+		$this->set_date_created( time() );
 
 		// Update date due on finalization
 		if ( ! $this->get_date_due( 'edit' ) ) {
@@ -249,6 +250,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 			'postcode'   => '',
 			'country'    => '',
 			'vat_id'     => '',
+			'email'      => '',
 		), $this );
 
 		foreach( $address_fields as $field => $default_value ) {
@@ -258,6 +260,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		}
 
 		$data['formatted_shipping_address'] = $this->get_formatted_shipping_address();
+		$data['tax_rate_percentages']       = $this->get_tax_rate_percentages();
 
 		$data['tax_totals']   = $this->get_tax_totals();
 		$data['totals']       = $this->get_totals();
@@ -270,6 +273,12 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		$data['subtotal']     = $this->get_subtotal();
 		$data['subtotal_tax'] = $this->get_subtotal_tax();
 		$data['subtotal_net'] = $this->get_subtotal_net();
+
+		$data['is_oss']                     = $this->is_oss();
+		$data['is_reverse_charge']          = $this->is_reverse_charge();
+		$data['is_eu_cross_border_taxable'] = $this->is_eu_cross_border_taxable();
+		$data['taxable_country']            = $this->get_taxable_country();
+		$data['taxable_postcode']           = $this->get_taxable_postcode();
 
 		$data['discount_percentage']             = $this->get_discount_percentage();
 		$data['formatted_discount_notice']       = $this->get_formatted_discount_notice();
@@ -458,15 +467,34 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 					if ( false === $has_zero_rate || ! isset( $document_totals[ $has_zero_rate ] ) ) {
 						$document_totals[] = new Total( $this, array(
 							'total'        => $net_total_zero_rate,
+							'type'         => 'nets',
 							'placeholders' => array(
 								'{rate}'           => '0',
 								'{formatted_rate}' => sab_format_tax_rate_percentage( 0 ),
 							),
-							'type'         => 'nets',
 						) );
 					} else {
 						$document_totals[ $has_zero_rate ]->set_total( $document_totals[ $has_zero_rate ]->get_total() + $net_total_zero_rate );
 					}
+				}
+			} if ( 'gross_tax_shares' === $total_type ) {
+				$taxes = $this->get_tax_totals();
+
+				foreach ( $taxes as $tax_total ) {
+					$total = $tax_total->get_total_net( false ) + $tax_total->get_total_tax( false );
+
+					if ( $total <= 0 ) {
+						$total = 0;
+					}
+
+					$document_totals[] = new Total( $this, array(
+						'total'        => sab_format_decimal( $total, '' ),
+						'type'         => 'gross_tax_shares',
+						'placeholders' => array(
+							'{rate}'           => $tax_total->get_tax_rate()->get_percent(),
+							'{formatted_rate}' => $tax_total->get_tax_rate()->get_formatted_percentage(),
+						),
+					) );
 				}
 			} elseif( 'taxes' === $total_type ) {
 				$taxes = $this->get_tax_totals();
@@ -517,9 +545,17 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 					$net_total = $this->get_total_net( $net_type );
 				}
 
+				$placeholders = array();
+
+				if ( in_array( $total_type, array( 'discount_net' ) ) ) {
+					$placeholders['{notice}']        = $this->get_formatted_discount_notice();
+					$placeholders['{discount_type}'] = $this->get_discount_type_title();
+				}
+
 				$document_totals[] = new Total( $this, array(
-					'total' => $net_total,
-					'type'  => $total_type,
+					'total'        => $net_total,
+					'type'         => $total_type,
+					'placeholders' => $placeholders,
 				) );
 			} else {
 				$getter         = 'get_' . $total_type . '_total';
@@ -539,7 +575,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 
 				$placeholders = array();
 
-				if ( in_array( $total_type, array( 'discount', 'discount_net' ) ) ) {
+				if ( in_array( $total_type, array( 'discount' ) ) ) {
 					$placeholders['{notice}']        = $this->get_formatted_discount_notice();
 					$placeholders['{discount_type}'] = $this->get_discount_type_title();
 				}
@@ -637,15 +673,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	}
 
 	public function is_oss() {
-		if ( Countries::base_country_supports_oss_procedure() && $this->is_eu_cross_border_taxable() ) {
-			foreach( $this->get_tax_items() as $item ) {
-				if ( $item->get_tax_rate()->is_oss() ) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return apply_filters( "{$this->get_general_hook_prefix()}is_oss", $this->get_is_oss(), $this );
 	}
 
 	public function is_eu_cross_border_taxable() {
@@ -846,7 +874,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	}
 
 	/**
-	 * Returns voucher total.
+	 * Returns voucher total incl taxes.
 	 *
 	 * @param string $context
 	 *
@@ -987,7 +1015,14 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	}
 
 	public function get_formatted_discount_notice() {
-		$notice = trim( sprintf( $this->get_discount_notice() . ' (%s)', $this->get_discount_type_title() ) );
+		$notice = trim( sprintf( _x( '%1$s (%2$s)', 'storeabill-discount-notice', 'woocommerce-germanized-pro' ), $this->get_discount_notice(), $this->get_discount_type_title() ) );
+
+		/**
+		 * Clean up empty notices
+		 */
+		if ( '()' === $notice ) {
+			$notice = '';
+		}
 
 		return apply_filters( "{$this->get_hook_prefix()}formatted_discount_notice", $notice, $this );
 	}
@@ -1069,11 +1104,11 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	 */
 	public function get_shipping_address( $context = 'view' ) {
 		$address = $this->get_prop( 'shipping_address', $context );
-		
+
 		if ( 'view' === $context && empty( $address ) ) {
 			$address = $this->get_address();
 		}
-		
+
 		return $address;
 	}
 
@@ -1102,7 +1137,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	}
 
 	public function has_differing_shipping_address() {
-		$fields_excluded  = apply_filters( "{$this->get_general_hook_prefix()}has_shipping_address_comparison_excluded_fields", array( 'title' ), $this );
+		$fields_excluded  = apply_filters( "{$this->get_general_hook_prefix()}has_shipping_address_comparison_excluded_fields", array( 'title', 'email', 'phone', 'vat_id' ), $this );
 
 		/**
 		 * This callback is being used to remove certain data from addresses
@@ -1388,6 +1423,28 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	}
 
 	/**
+	 * Returns the tax display mode
+	 *
+	 * @param string $context
+	 *
+	 * @return string excl or incl
+	 */
+	public function get_tax_display_mode( $context = 'view' ) {
+		return $this->get_prop( 'tax_display_mode', $context );
+	}
+
+	/**
+	 * Returns whether this invoice is part of the OSS rule.
+	 *
+	 * @param string $context
+	 *
+	 * @return bool True if OSS.
+	 */
+	public function get_is_oss( $context = 'view' ) {
+		return $this->get_prop( 'is_oss', $context );
+	}
+
+	/**
 	 * Returns whether this invoice is taxable or not.
 	 *
 	 * @param string $context
@@ -1400,6 +1457,28 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 
 	public function has_voucher( $context = 'view' ) {
 		return ( $this->get_voucher_total() > 0 );
+	}
+
+	/**
+	 * Returns the net total amount excluding vouchers.
+	 *
+	 * @return float
+	 */
+	public function get_net_total_ex_voucher() {
+		$net_total = $this->get_total_net();
+
+		if ( $this->has_voucher() ) {
+			/**
+			 * In case the tax display mode is set to excl,
+			 */
+			if ( 'excl' === $this->get_tax_display_mode() ) {
+				$net_total -= ( $this->get_voucher_total() - $this->get_voucher_tax() );
+			} else {
+				$net_total -= $this->get_voucher_total();
+			}
+		}
+
+		return max( 0, $net_total );
 	}
 
 	/**
@@ -1694,7 +1773,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	}
 
 	protected function set_shipping_address_prop( $prop, $data ) {
-		$address          = $this->get_shipping_address();
+		$address          = $this->get_shipping_address( 'edit' );
 		$address[ $prop ] = $data;
 
 		$this->set_prop( 'shipping_address', $address );
@@ -1706,7 +1785,20 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	 * @param bool|string $value Either bool or string (yes/no).
 	 */
 	public function set_prices_include_tax( $value ) {
-		$this->set_prop( 'prices_include_tax', wc_string_to_bool( $value ) );
+		$this->set_prop( 'prices_include_tax', sab_string_to_bool( $value ) );
+	}
+
+	/**
+	 * Set the tax display mode.
+	 *
+	 * @param string $value Either incl or excl.
+	 */
+	public function set_tax_display_mode( $value ) {
+		if ( ! in_array( $value, array( 'incl', 'excl' ) ) ) {
+			$value = 'incl';
+		}
+
+		$this->set_prop( 'tax_display_mode', $value );
 	}
 
 	/**
@@ -1715,13 +1807,22 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	 * @param bool|string $value Either bool or string (yes/no).
 	 */
 	public function set_is_reverse_charge( $value ) {
-		$is_reverse_charge = wc_string_to_bool( $value );
+		$is_reverse_charge = sab_string_to_bool( $value );
 
 		if ( $is_reverse_charge ) {
 			$this->set_is_taxable( false );
 		}
 
 		$this->set_prop( 'is_reverse_charge', $is_reverse_charge );
+	}
+
+	/**
+	 * Set whether invoice is part of the One Stop Shop rule.
+	 *
+	 * @param bool|string $value Either bool or string (yes/no).
+	 */
+	public function set_is_oss( $value ) {
+		$this->set_prop( 'is_oss', sab_string_to_bool( $value ) );
 	}
 
 	/**
@@ -1767,7 +1868,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	 * @param bool|string $value Either bool or string (yes/no).
 	 */
 	public function set_is_taxable( $value ) {
-		$this->set_prop( 'is_taxable', wc_string_to_bool( $value ) );
+		$this->set_prop( 'is_taxable', sab_string_to_bool( $value ) );
 	}
 
 	/**
@@ -1776,7 +1877,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 	 * @param bool|string $value Either bool or string (yes/no).
 	 */
 	public function set_round_tax_at_subtotal( $value ) {
-		$this->set_prop( 'round_tax_at_subtotal', wc_string_to_bool( $value ) );
+		$this->set_prop( 'round_tax_at_subtotal', sab_string_to_bool( $value ) );
 	}
 
 	public function set_order_id( $value ) {
@@ -2340,6 +2441,13 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		 */
 		if ( $this->has_voucher() && in_array( $getter_total, array( 'get_total', 'get_product_total' ) ) ) {
 			$total += $this->get_voucher_total();
+
+			/**
+			 * Only the total amount includes voucher taxes
+			 */
+			if ( 'get_total' !== $getter_total && ! $this->prices_include_tax() ) {
+				$total -= $this->get_voucher_tax();
+			}
 		}
 
 		// Total is stored incl tax
@@ -2373,8 +2481,8 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 				$total    = sab_add_number_precision( $item->get_total(), false );
 				$subtotal = sab_add_number_precision( $item->get_subtotal(), false );
 
-				$totals[ $item->get_item_type() ]    += ( ! $this->round_tax_at_subtotal() ) ? Numbers::round( $total ) : $total;
-				$subtotals[ $item->get_item_type() ] += ( ! $this->round_tax_at_subtotal() ) ? Numbers::round( $subtotal ) : $subtotal;
+				$totals[ $item->get_item_type() ]    += ( ! $item->round_tax_at_subtotal() ) ? Numbers::round( $total ) : $total;
+				$subtotals[ $item->get_item_type() ] += ( ! $item->round_tax_at_subtotal() ) ? Numbers::round( $subtotal ) : $subtotal;
 			}
 
 			if ( is_a( $item, '\Vendidero\StoreaBill\Interfaces\TaxContainable' ) && array_key_exists( $item->get_tax_type(), $tax_totals ) ) {
@@ -2481,14 +2589,14 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 		 * reflect the voucher amount. There is no other way to calculate
 		 * the amount based on pure item discounts.
 		 */
-		if ( $this->has_voucher() && ! $this->prices_include_tax() ) {
+		if ( $this->has_voucher() && ! $this->prices_include_tax() && 'incl' === $this->get_tax_display_mode() ) {
 			$discount_item_taxes = 0;
 
 			foreach( $this->get_items( $this->get_item_types_for_totals() ) as $item ) {
 				$discount_item_total = $item->get_discount_total();
 				$discount_item_tax   = sab_add_number_precision( array_sum( Tax::calc_tax( $discount_item_total, $item->get_tax_rates(), false ) ), false );
 
-				$discount_item_taxes += ( $this->round_tax_at_subtotal() ? $discount_item_tax : Numbers::round( $discount_item_tax ) );
+				$discount_item_taxes += ( $item->round_tax_at_subtotal() ? $discount_item_tax : Numbers::round( $discount_item_tax ) );
 			}
 
 			if ( $discount_item_taxes > 0 ) {
@@ -2496,7 +2604,7 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 
 				$discount_total += $discount_item_taxes;
 
-				$voucher_total = $this->get_voucher_total();
+				$voucher_total = $this->get_voucher_total() - $this->get_voucher_tax();
 				$voucher_total += $discount_item_taxes;
 
 				$this->set_voucher_total( $voucher_total );
@@ -2645,6 +2753,20 @@ abstract class Invoice extends Document implements \Vendidero\StoreaBill\Interfa
 
 		// Reset tax totals
 		$this->tax_totals = null;
+	}
+
+	public function get_tax_rate_percentages() {
+		$tax_percentages = array();
+
+		foreach( $this->get_tax_totals() as $total ) {
+			$percent = $total->get_tax_rate()->get_percent();
+
+			if ( ! in_array( $percent, $tax_percentages ) ) {
+				$tax_percentages[] = $percent;
+			}
+		}
+
+		return $tax_percentages;
 	}
 
 	/**

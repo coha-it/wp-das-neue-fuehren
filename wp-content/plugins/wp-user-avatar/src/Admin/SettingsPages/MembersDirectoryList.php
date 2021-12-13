@@ -8,7 +8,7 @@ class MembersDirectoryList extends FormList
     {
         printf(
             esc_html__('No members directory is currently available. %sConsider creating one%s', 'wp-user-avatar'),
-            '<a href="' . add_query_arg('view', 'add-new', PPRESS_MEMBER_DIRECTORIES_SETTINGS_PAGE) . '">',
+            '<a href="' . esc_url(add_query_arg('view', 'add-new', PPRESS_MEMBER_DIRECTORIES_SETTINGS_PAGE)) . '">',
             '</a>'
         );
     }

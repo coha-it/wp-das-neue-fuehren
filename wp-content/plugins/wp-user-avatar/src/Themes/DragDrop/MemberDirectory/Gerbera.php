@@ -134,7 +134,8 @@ class Gerbera extends AbstractMemberDirectoryTheme
     grid-template-columns: 1fr 1fr;
 }
 
-.ppressui500 .pppress_md_gerbera_members {
+.ppressui500 .pppress_md_gerbera_members,
+.ppressui340 .pppress_md_gerbera_members {
     grid-template-columns: 1fr;
 }
 

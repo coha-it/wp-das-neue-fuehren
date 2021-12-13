@@ -1,5 +1,30 @@
 *** WooCommerce Memberships Changelog ***
 
+2021.11.22 - version 1.22.9
+ * Fix - Show profile fields for product variations when the parent product has associated profile fields
+
+2021.11.15 - version 1.22.8
+ * Fix - Hide rules belonging to trashed membership plans from all meta boxes
+
+2021.10.07 - version 1.22.7
+ * Dev - Adds a filter to help third party code handle product discounts when a product is on sale
+
+2021.10.01 - version 1.22.6
+ * Fix - When using the `wcm_product_discount` shortcode, ensure that the percentage discount amount is not miscalculated while a member is logged in
+
+2021.09.09 - version 1.22.5
+ * Tweak - Pass the full product instance to `wc_memberships_exclude_product_from_member_discounts` filter instead of product ID when checking cart item member discounts
+ * Fix - Update usage of deprecated `block_categories` filter to address notices since WP 5.8
+
+2021.08.10 - version 1.22.4
+ * Tweak - Strip HTML tags in product names dropdown in plan access settings
+ * Fix - Admins updating an order that triggers Sensei auto-enrollment to courses shouldn't be redirected to the posts edit screen
+ * Dev - Add filter hook to toggle duplicating a product's memberships data when cloning products
+
+2021.07.05 - version 1.22.3
+ * Fix - Address an issue with plans with fixed dates and some timezone configurations
+ * Misc - Drop the `woo-includes` folder and move plugin classes from `includes` to `src` folder
+
 2021.06.23 - version 1.22.2
  * Fix - Display the correct cart item subtotal when a customer adds more than a discounted subscription product to cart
  * Fix - Address a potential issue in the shipping handler

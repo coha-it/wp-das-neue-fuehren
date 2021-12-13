@@ -11,7 +11,7 @@ Latest Change: 1.14.5
 
 if (!defined('UPDRAFTPLUS_DIR')) die('No direct access allowed');
 
-$updraftplus_addon_incremental = new UpdraftPlus_Addons_Incremental;
+new UpdraftPlus_Addons_Incremental;
 
 class UpdraftPlus_Addons_Incremental {
 
@@ -378,10 +378,18 @@ class UpdraftPlus_Addons_Incremental {
 	}
 
 	/**
-	 * This function will setup and check that an incremental backup can be started.
+	 * This function will setup and check that an incremental backup can be started. It is called by the WP action updraft_backup_increments (which gets scheduled)
 	 */
 	public function backup_increments() {
 		global $updraftplus;
+		
+		$selected_interval = UpdraftPlus_Options::get_updraft_option('updraft_interval_increments', 'none');
+		
+		if ('none' === $selected_interval) {
+			// Handle WP-Cron being inconsistent with the saved options
+			$updraftplus->log("No incremental backup is configured in the saved settings; will not run");
+			return;
+		}
 		
 		$running = $updraftplus->is_backup_running();
 		if ($running) {

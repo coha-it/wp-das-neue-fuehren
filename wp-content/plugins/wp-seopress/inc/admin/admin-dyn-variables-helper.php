@@ -1,6 +1,7 @@
 <?php
 
-function seopress_get_dyn_variables() {
+function seopress_get_dyn_variables()
+{
     return [
         '%%sep%%'                           => 'Separator',
         '%%sitetitle%%'                     => __('Site Title', 'wp-seopress'),
@@ -29,6 +30,7 @@ function seopress_get_dyn_variables() {
         '%%archive_date%%'                  => __('Archive date', 'wp-seopress'),
         '%%archive_date_day%%'              => __('Day Archive date', 'wp-seopress'),
         '%%archive_date_month%%'            => __('Month Archive title', 'wp-seopress'),
+        '%%archive_date_month_name%%'       => __('Month name Archive title', 'wp-seopress'),
         '%%archive_date_year%%'             => __('Year Archive title', 'wp-seopress'),
         '%%_cf_your_custom_field_name%%'    => __('Custom fields from post, page or post type', 'wp-seopress'),
         '%%_ct_your_custom_taxonomy_slug%%' => __('Custom term taxonomy from post, page or post type', 'wp-seopress'),
@@ -60,12 +62,13 @@ function seopress_get_dyn_variables() {
  *
  * @return string
  */
-function seopress_render_dyn_variables($classes) {
-    $html = sprintf('<span class="seopress-tag-single-all seopress-tag-dropdown %s"><span class="dashicons dashicons-arrow-down-alt2"></span></span>', $classes);
-    if ( ! empty(seopress_get_dyn_variables())) {
+function seopress_render_dyn_variables($classes)
+{
+    $html = sprintf('<button type="button" class="'.seopress_btn_secondary_classes().' seopress-tag-single-all seopress-tag-dropdown %s"><span class="dashicons dashicons-arrow-down-alt2"></span></button>', $classes);
+    if (! empty(seopress_get_dyn_variables())) {
         $html .= '<div class="sp-wrap-tag-variables-list"><ul class="sp-tag-variables-list">';
         foreach (seopress_get_dyn_variables() as $key => $value) {
-            $html .= '<li data-value=' . $key . '><span>' . $value . '</span></li>';
+            $html .= '<li data-value=' . $key . ' tabindex="0"><span>' . $value . '</span></li>';
         }
         $html .= '</ul></div>';
     }

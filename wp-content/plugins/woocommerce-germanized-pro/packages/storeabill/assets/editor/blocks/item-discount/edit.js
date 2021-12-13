@@ -8,7 +8,6 @@ import {
 	FontSizePicker,
 	InspectorControls,
 	withFontSizes,
-	__experimentalUseColors,
 	RichText,
 	BlockControls,
 } from '@wordpress/block-editor';
@@ -20,7 +19,7 @@ import { arrowRight, settings } from '@storeabill/icons';
 import { isEmpty } from 'lodash';
 
 import { getPreviewItem, getItemTotalKey, FORMAT_TYPES } from '@storeabill/settings';
-import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview } from "@storeabill/utils";
+import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview, getFontSizeStyle, convertFontSizeForPicker, useColors } from "@storeabill/utils";
 import { withSelect } from "@wordpress/data";
 
 const DISCOUNT_TYPES = [
@@ -48,7 +47,7 @@ function ItemDiscountEdit( {
 	const {
 		TextColor,
 		InspectorControlsColorPanel
-	} = __experimentalUseColors(
+	} = useColors(
 		[
 			{ name: 'textColor', property: 'color' },
 		],
@@ -93,7 +92,7 @@ function ItemDiscountEdit( {
 				</PanelBody>
 				<PanelBody title={ _x( 'Typography', 'storeabill-core', 'storeabill' ) }>
 					<FontSizePicker
-						value={ fontSize.size }
+						value={ convertFontSizeForPicker( fontSize.size ) }
 						onChange={ setFontSize }
 					/>
 				</PanelBody>
@@ -111,9 +110,7 @@ function ItemDiscountEdit( {
 						}
 						allowedFormats={ FORMAT_TYPES }
 						style={ {
-							fontSize: fontSize.size
-								? fontSize.size + 'px'
-								: undefined,
+							fontSize: getFontSizeStyle( fontSize )
 						} }
 					/>
 				</TextColor>

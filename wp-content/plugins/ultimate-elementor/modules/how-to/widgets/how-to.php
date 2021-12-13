@@ -1935,21 +1935,13 @@ class HowTo extends Common_Widget {
 									<?php
 									if ( ! empty( $item['steps_item_url']['url'] ) ) {
 
-											$title = $item['steps_item_title'];
+										$title = $item['steps_item_title'];
 
-											$this->add_render_attribute( 'step_url_' . $index, 'href', $item['steps_item_url']['url'] );
+										$this->add_link_attributes( 'step_url_' . $index, $item['steps_item_url'] );
 
-										if ( $item['steps_item_url']['is_external'] ) {
-											$this->add_render_attribute( 'step_url_' . $index, 'target', '_blank' );
-										}
+										$title = sprintf( '<a %1$s>%2$s</a>', $this->get_render_attribute_string( 'step_url_' . $index ), $title );
 
-										if ( ! empty( $item['steps_item_url']['nofollow'] ) ) {
-											$this->add_render_attribute( 'step_url_' . $index, 'rel', 'nofollow' );
-										}
-
-											$title = sprintf( '<a %1$s>%2$s</a>', $this->get_render_attribute_string( 'step_url_' . $index ), $title );
-
-											echo wp_kses_post( $title );
+										echo $title; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 									} else {
 										?>
@@ -2070,19 +2062,4 @@ class HowTo extends Common_Widget {
 	 * @access protected
 	 */
 	protected function content_template() {}
-
-	/**
-	 * Render HowTo widget widgets output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 1.23.0
-	 * @access protected
-	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-		$this->content_template();
-	}
-
 }

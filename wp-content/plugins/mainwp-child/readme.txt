@@ -5,13 +5,13 @@ Author: mainwp
 Author URI: https://mainwp.com
 Plugin URI: https://mainwp.com
 Requires at least: 5.4
-Tested up to: 5.7.2
+Tested up to: 5.8.1
 Requires PHP: 7.0
-Stable tag: 4.1.7
+Stable tag: 4.1.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Securely connects unlimited sites to your MainWP WordPress Manager. The MainWP WordPress Management System is both open source and private. 
+Securely connects unlimited sites to your MainWP WordPress Manager. The MainWP WordPress Management System is both open source and private.
 
 == Description ==
 
@@ -27,7 +27,7 @@ First, Install and Activate the  [MainWP WordPress Manager Dashboard](https://wo
 
 Next, Install and Activate the MainWP Child plugin (this plugin) on a WordPress site you want to connect to your MainWP Dashboard.  WordPress sites connected to your Dashboard are referred to as Child sites.
 
-Lastly, you securely connect your child site to your MainWP Dashboard.  Once connected, your Dashboard can control most aspects of the Child site. 
+Lastly, you securely connect your child site to your MainWP Dashboard.  Once connected, your Dashboard can control most aspects of the Child site.
 
 Still not sure how MainWP works? [Review these detailed steps on installing your Dashboard and connecting your first Child site.](https://mainwp.com/getting-started-with-mainwp/)
 
@@ -61,7 +61,7 @@ Still not sure how MainWP works? [Review these detailed steps on installing your
 
 == Frequently Asked Questions ==
 = Do I need any other plugins for MainWP? =
-Yes, you need to install the [MainWP WordPress Manager Dashboard](https://wordpress.org/plugins/mainwp/) on a new WordPress site or subdomain.  
+Yes, you need to install the [MainWP WordPress Manager Dashboard](https://wordpress.org/plugins/mainwp/) on a new WordPress site or subdomain.
 
 = Do you have any documentation? =
 Yes, please review the [documentation site](https://kb.mainwp.com).
@@ -73,16 +73,16 @@ Yes, please read the [Quick Start – Setting up your MainWP](https://kb.mainwp.
 Please post in the [MainWP Community](https://meta.mainwp.com)
 
 = What is the difference between ManageWP and MainWP? =
-Essentially MainWP and ManageWP provide the same type of service but with different philosophies on WordPress management.  
+Essentially MainWP and ManageWP provide the same type of service but with different philosophies on WordPress management.
 
 ManageWP is a Service as a Solution (SaaS) property owned by Godaddy.  The SaaS system makes ManageWP a type of "Walled Garden" with limited customization options.
 
-MainWP follows the tradition of WordPress and is [open source](https://github.com/mainwp/mainwp-child/), [private](https://mainwp.com/protect-your-data/), and [fully extendable](https://mainwp.dev/). .   The fact that MainWP is open source and extendable means you have almost unlimited customization option, this allows you to run your WordPress management business as you see fit. 
+MainWP follows the tradition of WordPress and is [open source](https://github.com/mainwp/mainwp-child/), [private](https://mainwp.com/protect-your-data/), and [fully extendable](https://mainwp.dev/). .   The fact that MainWP is open source and extendable means you have almost unlimited customization option, this allows you to run your WordPress management business as you see fit.
 
-= How do I know my sites are secure using MainWP? = 
-We take security very seriously at MainWP. We welcome any peer review of our [100% open source code](https://github.com/mainwp/mainwp-child/) to ensure nobody's MainWP management system is ever compromised or hacked.  
+= How do I know my sites are secure using MainWP? =
+We take security very seriously at MainWP. We welcome any peer review of our [100% open source code](https://github.com/mainwp/mainwp-child/) to ensure nobody's MainWP management system is ever compromised or hacked.
 
-We also participate in the [HackerOne](https://www.hackerone.com) bug bounty program; this allows ethical hackers to review MainWP code and directly share any vulnerability information with us in return for a monetary reward. 
+We also participate in the [HackerOne](https://www.hackerone.com) bug bounty program; this allows ethical hackers to review MainWP code and directly share any vulnerability information with us in return for a monetary reward.
 
 = How do I customize MainWP for my needs? =
 If you want to make some basic changes to the look of your Dashboard, you can use our prebuilt [Custom Dashbboard](https://mainwp.com/extension/mainwp-custom-dashboard-extension/) Extension, or if you want to dig in and build Extensions, you can learn all about Extension creation at [MainWP.dev](https://mainwp.dev/)
@@ -106,6 +106,22 @@ Sure we have a quick FAQ with a lot more questions and answers [here](https://ma
 9. Global Dashboard Screen
 
 == Changelog ==
+
+= 4.1.8 - 10-21-2021 =
+* Fixed: An error with missing metadata in the posting process
+* Fixed: An error with logging Wordfence scans
+* Fixed: New iThemes Security version compatibility problems
+* Fixed: New WP Staging version compatibility problems
+* Added: Support to define MAINWP_CHILD_UNIQUEID constant
+* Added: Custom CSS classes to the White Label support form elements
+* Added: 'mainwp_child_before_update' action to hook in before the update process starts
+* Added: 'mainwp_child_after_update' action to hook in after the update process completes
+* Updated: Disconnected site warning message style
+* Updated: Reworded error messages
+* Preventative: Multiple security improvements
+
+= 4.1.7.1 - 10-1-2021 =
+* Updated: OpenSSL version requirement to 1.1.0 or greater
 
 = 4.1.7 - 6-29-21 =
 * Added: Support for the new Vulnerability Checker API

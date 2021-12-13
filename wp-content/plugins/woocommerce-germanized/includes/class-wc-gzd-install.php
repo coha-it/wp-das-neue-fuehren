@@ -39,7 +39,8 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 			'3.1.9' => 'updates/woocommerce-gzd-update-3.1.9.php',
 			'3.3.4' => 'updates/woocommerce-gzd-update-3.3.4.php',
 			'3.3.5' => 'updates/woocommerce-gzd-update-3.3.5.php',
-			'3.4.0' => 'updates/woocommerce-gzd-update-3.4.0.php'
+			'3.4.0' => 'updates/woocommerce-gzd-update-3.4.0.php',
+			'3.7.0' => 'updates/woocommerce-gzd-update-3.7.0.php'
 		);
 
 		/**
@@ -58,12 +59,12 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 		public static function redirect() {
 			if ( get_option( '_wc_gzd_setup_wizard_redirect' ) ) {
 
-				// Bail if activating from network, or bulk, or within an iFrame
-				if ( is_network_admin() || isset( $_GET['activate-multi'] ) || defined( 'IFRAME_REQUEST' ) ) {
+				// Bail if activating from network, or bulk, or within an iFrame, or AJAX (e.g. plugins screen)
+				if ( is_network_admin() || isset( $_GET['activate-multi'] ) || defined( 'IFRAME_REQUEST' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 					return;
 				}
 
-				if ( ( isset( $_GET['action'] ) && 'upgrade-plugin' == $_GET['action'] ) && ( isset( $_GET['plugin'] ) && strstr( $_GET['plugin'], 'woocommerce-germanized.php' ) ) ) {
+				if ( ( isset( $_REQUEST['action'] ) && 'upgrade-plugin' == $_REQUEST['action'] ) && ( isset( $_REQUEST['plugin'] ) && strstr( $_REQUEST['plugin'], 'woocommerce-germanized.php' ) ) ) {
 					return;
 				}
 
@@ -81,12 +82,12 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 					return;
 				}
 
-				// Bail if activating from network, or bulk, or within an iFrame
-				if ( is_network_admin() || isset( $_GET['activate-multi'] ) || defined( 'IFRAME_REQUEST' ) ) {
+				// Bail if activating from network, or bulk, or within an iFrame, or AJAX (e.g. plugins screen)
+				if ( is_network_admin() || isset( $_GET['activate-multi'] ) || defined( 'IFRAME_REQUEST' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 					return;
 				}
 
-				if ( ( isset( $_GET['action'] ) && 'upgrade-plugin' == $_GET['action'] ) && ( isset( $_GET['plugin'] ) && strstr( $_GET['plugin'], 'woocommerce-germanized.php' ) ) ) {
+				if ( ( isset( $_REQUEST['action'] ) && 'upgrade-plugin' == $_REQUEST['action'] ) && ( isset( $_REQUEST['plugin'] ) && strstr( $_REQUEST['plugin'], 'woocommerce-germanized.php' ) ) ) {
 					return;
 				}
 
@@ -153,7 +154,7 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 
 			load_textdomain( 'woocommerce-germanized', $mofile );
 
-			if ( ! wc_gzd_get_dependencies()->is_woocommerce_activated() ) {
+			if ( ! wc_gzd_get_dependencies()->is_woocommerce_activated() || ! function_exists( 'WC' ) ) {
 				deactivate_plugins( WC_GERMANIZED_PLUGIN_FILE );
 				wp_die( sprintf( __( 'Please install <a href="%s" target="_blank">WooCommerce</a> before installing WooCommerce Germanized. Thank you!', 'woocommerce-germanized' ), 'http://wordpress.org/plugins/woocommerce/' ) );
 			}
@@ -304,9 +305,13 @@ if ( ! class_exists( 'WC_GZD_Install' ) ) :
 		/**
 		 * Update DB version to current
 		 */
-		private static function update_db_version( $version = null ) {
+		public static function update_db_version( $version = null ) {
 			delete_option( 'woocommerce_gzd_db_version' );
 			add_option( 'woocommerce_gzd_db_version', is_null( $version ) ? WC_germanized()->version : $version );
+		}
+
+		public static function get_db_update_callbacks() {
+			return self::$db_updates;
 		}
 
 		/**

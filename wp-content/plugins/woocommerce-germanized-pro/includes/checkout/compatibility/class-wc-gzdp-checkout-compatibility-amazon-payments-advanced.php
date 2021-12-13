@@ -13,6 +13,29 @@ class WC_GZDP_Checkout_Compatibility_Amazon_Payments_Advanced {
         add_action( 'wc_amazon_pa_scripts_enqueued', array( $this, 'localize_sca_script' ), 10, 2 );
 
         add_action( 'woocommerce_gzdp_checkout_scripts', array( $this, 'set_scripts' ), 10, 2 );
+
+        add_action( 'woocommerce_checkout_billing', array( $this, 'billing_fields_placeholder' ), 500 );
+		add_action( 'woocommerce_checkout_shipping', array( $this, 'shipping_fields_placeholder' ), 500 );
+
+		add_action( 'admin_init', array( $this, 'maybe_disable_notice' ) );
+	}
+
+	/**
+	 * Disable the legacy notice added by Amazon Pay regarding cancellations in Germanized
+	 */
+	public function maybe_disable_notice() {
+		if ( ! get_option( 'amazon_pay_dismiss_germanized_notice' ) ) {
+			update_option( 'amazon_pay_dismiss_germanized_notice', 'no' );
+		}
+	}
+
+	public function billing_fields_placeholder() {
+		echo '<div class="wc-gzdp-amazon-billing-fields-wrapper"></div>';
+	}
+
+	public function shipping_fields_placeholder() {
+		echo '<div class="wc-gzdp-amazon-shipping-fields-wrapper"></div>';
+		echo '<div class="wc-gzdp-amazon-additional-fields-wrapper"></div>';
 	}
 
 	public function localize_sca_script( $type, $params ) {
@@ -25,13 +48,12 @@ class WC_GZDP_Checkout_Compatibility_Amazon_Payments_Advanced {
         // Multistep Checkout
         wp_register_script( 'wc-gzdp-amazon-multistep-helper', WC_germanized_pro()->plugin_url() . '/assets/js/checkout-multistep-amazon-helper' . $assets->suffix . '.js', array( 'wc-gzdp-checkout-multistep' ), WC_GERMANIZED_PRO_VERSION, true );
 
-        wp_localize_script( 'wc-gzdp-amazon-multistep-helper', 'amazon_helper', array(
+        wp_localize_script( 'wc-gzdp-amazon-multistep-helper', 'wc_gzdp_multistep_amazon_helper_params', array(
             'managed_by' => _x( 'Managed by Amazon', 'multistep', 'woocommerce-germanized-pro' ),
         ) );
 
         wp_enqueue_script( 'wc-gzdp-amazon-multistep-helper' );
     }
-
 
 	public function set_sca_scripts() {
 	    $suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
@@ -54,5 +76,4 @@ class WC_GZDP_Checkout_Compatibility_Amazon_Payments_Advanced {
 			remove_all_filters( 'woocommerce_cart_needs_payment' );
 		}
 	}
-
 }

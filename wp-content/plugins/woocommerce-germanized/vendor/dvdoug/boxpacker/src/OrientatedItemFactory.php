@@ -36,9 +36,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
     protected $singlePassMode = false;
 
     /**
-     * @var OrientatedItem[]
+     * @var bool[]
      */
-    protected static $emptyBoxCache = [];
+    protected static $emptyBoxStableItemOrientationCache = [];
 
     public function __construct(Box $box)
     {
@@ -132,45 +132,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
-     * @return OrientatedItem[]
-     */
-    public function getPossibleOrientationsInEmptyBox(Item $item): array
-    {
-        $cacheKey = $item->getWidth() .
-            '|' .
-            $item->getLength() .
-            '|' .
-            $item->getDepth() .
-            '|' .
-            ($item->getKeepFlat() ? '2D' : '3D') .
-            '|' .
-            $this->box->getInnerWidth() .
-            '|' .
-            $this->box->getInnerLength() .
-            '|' .
-            $this->box->getInnerDepth();
-
-        if (isset(static::$emptyBoxCache[$cacheKey])) {
-            $orientations = static::$emptyBoxCache[$cacheKey];
-        } else {
-            $orientations = $this->getPossibleOrientations(
-                $item,
-                null,
-                $this->box->getInnerWidth(),
-                $this->box->getInnerLength(),
-                $this->box->getInnerDepth(),
-                0,
-                0,
-                0,
-                new PackedItemList()
-            );
-            static::$emptyBoxCache[$cacheKey] = $orientations;
-        }
-
-        return $orientations;
-    }
-
-    /**
      * @param  OrientatedItem[] $possibleOrientations
      * @return OrientatedItem[]
      */
@@ -197,12 +158,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
             return $stableOrientations;
         }
 
-        if (count($unstableOrientations) > 0) {
-            $stableOrientationsInEmptyBox = $this->getStableOrientationsInEmptyBox($item);
-
-            if (count($stableOrientationsInEmptyBox) === 0) {
-                return $unstableOrientations;
-            }
+        if ((count($unstableOrientations) > 0) && !$this->hasStableOrientationsInEmptyBox($item)) {
+            return $unstableOrientations;
         }
 
         return [];
@@ -211,16 +168,47 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Return the orientations for this item if it were to be placed into the box with nothing else.
      */
-    protected function getStableOrientationsInEmptyBox(Item $item): array
+    protected function hasStableOrientationsInEmptyBox(Item $item): bool
     {
-        $orientationsInEmptyBox = $this->getPossibleOrientationsInEmptyBox($item);
+        $cacheKey = $item->getWidth() .
+            '|' .
+            $item->getLength() .
+            '|' .
+            $item->getDepth() .
+            '|' .
+            ($item->getKeepFlat() ? '2D' : '3D') .
+            '|' .
+            $this->box->getInnerWidth() .
+            '|' .
+            $this->box->getInnerLength() .
+            '|' .
+            $this->box->getInnerDepth();
 
-        return array_filter(
-            $orientationsInEmptyBox,
-            function (OrientatedItem $orientation) {
+        if (isset(static::$emptyBoxStableItemOrientationCache[$cacheKey])) {
+            return static::$emptyBoxStableItemOrientationCache[$cacheKey];
+        }
+
+        $orientations = $this->getPossibleOrientations(
+            $item,
+            null,
+            $this->box->getInnerWidth(),
+            $this->box->getInnerLength(),
+            $this->box->getInnerDepth(),
+            0,
+            0,
+            0,
+            new PackedItemList()
+        );
+
+        $stableOrientations = array_filter(
+            $orientations,
+            static function (OrientatedItem $orientation) {
                 return $orientation->isStable();
             }
         );
+        static::$emptyBoxStableItemOrientationCache[$cacheKey] = count($stableOrientations) > 0;
+
+        return static::$emptyBoxStableItemOrientationCache[$cacheKey];
     }
 
     private function generatePermutations(Item $item, ?OrientatedItem $prevItem): array
@@ -236,15 +224,15 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $d = $item->getDepth();
 
         //simple 2D rotation
-        $permutations[$w . $l . $d] = [$w, $l, $d];
-        $permutations[$l . $w . $d] = [$l, $w, $d];
+        $permutations[$w . '|' . $l . '|' . $d] = [$w, $l, $d];
+        $permutations[$l . '|' . $w . '|' . $d] = [$l, $w, $d];
 
         //add 3D rotation if we're allowed
         if (!$item->getKeepFlat()) {
-            $permutations[$w . $d . $l] = [$w, $d, $l];
-            $permutations[$l . $d . $w] = [$l, $d, $w];
-            $permutations[$d . $w . $l] = [$d, $w, $l];
-            $permutations[$d . $l . $w] = [$d, $l, $w];
+            $permutations[$w . '|' . $d . '|' . $l] = [$w, $d, $l];
+            $permutations[$l . '|' . $d . '|' . $w] = [$l, $d, $w];
+            $permutations[$d . '|' . $w . '|' . $l] = [$d, $w, $l];
+            $permutations[$d . '|' . $l . '|' . $w] = [$d, $l, $w];
         }
 
         return $permutations;

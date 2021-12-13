@@ -41,10 +41,51 @@ const settings = {
             "type": "string",
         },
         "customFontSize": {
-            "type": "number"
+            "type": "string"
         },
     },
-    edit
+    edit,
+    deprecated: [
+        {
+            supports: {
+                html: false
+            },
+            attributes: {
+                "blockName": {
+                    "type": 'string',
+                    "default": ''
+                },
+                "align": {
+                    "type": 'string',
+                    "default": 'left'
+                },
+                "textColor": {
+                    "type": "string"
+                },
+                "customTextColor": {
+                    "type": "string"
+                },
+                "fontSize": {
+                    "type": "string",
+                },
+                "customFontSize": {
+                    "type": "number"
+                },
+            },
+            isEligible( { customFontSize } ) {
+                return typeof customFontSize === 'number';
+            },
+            migrate( attributes ) {
+                return {
+                    ...attributes,
+                    customFontSize: attributes.customFontSize ? '' + attributes.customFontSize : undefined,
+                };
+            },
+            save( attributes ) {
+                return null;
+            }
+        },
+    ]
 };
 
 for ( const [ blockName, blockSettings ] of Object.entries( getSetting( 'dynamicContentBlocks' ) ) ) {

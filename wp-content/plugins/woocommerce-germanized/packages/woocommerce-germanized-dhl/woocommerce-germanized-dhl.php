@@ -5,7 +5,7 @@
  * Description: The Germanized DHL integration, installed as a feature plugin for development and testing purposes.
  * Author: vendidero
  * Author URI: https://vendidero.de
- * Version: 1.5.8
+ * Version: 1.6.4
  * Requires PHP: 5.6
  * License: GPLv3
  *
@@ -68,5 +68,5 @@ if ( is_readable( $autoloader ) ) {
     return;
 }
 
-register_activation_hook( __FILE__, array( 'Vendidero\Germanized\DHL\Package', 'install' ) );
-add_action( 'plugins_loaded', array( 'Vendidero\Germanized\DHL\Package', 'init' ) );
+register_activation_hook( __FILE__, array( '\Vendidero\Germanized\DHL\Package', 'install' ) );
+add_action( 'plugins_loaded', array( '\Vendidero\Germanized\DHL\Package', 'init' ) );

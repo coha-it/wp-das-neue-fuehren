@@ -24,7 +24,7 @@ const settings = {
             "type": "string"
         },
         "customFontSize": {
-            "type": "number"
+            "type": "string"
         },
         "discountType": {
             "type": "string",
@@ -45,7 +45,57 @@ const settings = {
         },
     },
     edit,
-    save
+    save,
+    deprecated: [
+        {
+            supports: {
+                html: false,
+            },
+            attributes: {
+                "textColor": {
+                    "type": "string"
+                },
+                "customTextColor": {
+                    "type": "string"
+                },
+                "fontSize": {
+                    "type": "string"
+                },
+                "customFontSize": {
+                    "type": "number"
+                },
+                "discountType": {
+                    "type": "string",
+                    "default": "absolute"
+                },
+                "hideIfEmpty": {
+                    "type": "boolean",
+                    "default": false,
+                },
+                "showPricesIncludingTax": {
+                    "type": "boolean",
+                },
+                "content": {
+                    "type": 'string',
+                    "source": 'html',
+                    "selector": 'p.sab-block-item-content',
+                    "default": ''
+                },
+            },
+            isEligible( { customFontSize } ) {
+                return typeof customFontSize === 'number';
+            },
+            migrate( attributes ) {
+                return {
+                    ...attributes,
+                    customFontSize: attributes.customFontSize ? '' + attributes.customFontSize : undefined,
+                };
+            },
+            save( attributes ) {
+                return save( attributes );
+            }
+        },
+    ]
 };
 
 registerBlockType( 'storeabill/item-discount', settings );

@@ -1,4 +1,5 @@
 {
     "@type": "Person",
-    "name": "[[name]]"
+    "name": "[[name]]",
+    "url": "%%author_url%%"
 }

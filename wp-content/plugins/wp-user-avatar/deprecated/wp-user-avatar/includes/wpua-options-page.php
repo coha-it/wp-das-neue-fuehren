@@ -26,7 +26,7 @@ $hide_resize = (bool)$wpua_resize_upload != 1 ? ' style="display:none;"' : "";
 
                     echo '<tr valign="top">
             <th scope="row">
-                <label for="wp_user_cover_upload_size_limit">' . __('Cover Image Maximum File Size', 'wp-user-avatar') . '
+                <label for="wp_user_cover_upload_size_limit">' . __('Cover Photo Maximum File Size', 'wp-user-avatar') . '
                 </label>
             </th>
             <td>
@@ -44,13 +44,13 @@ $hide_resize = (bool)$wpua_resize_upload != 1 ? ' style="display:none;"' : "";
 
                     echo '<tr valign="top">
             <th scope="row">
-                <label for="wp_user_cover_upload_size_limit">' . __('Default Cover Image', 'wp-user-avatar') . '
+                <label for="wp_user_cover_upload_size_limit">' . __('Default Cover Photo', 'wp-user-avatar') . '
                 </label>
             </th>
             <td>
                 <fieldset>
                     <input name="wp_user_cover_default_image_url" type="text" id="wp_user_cover_default_image_url" value="' . $default_cover_image_url . '" class="regular-text" />
-                    <br><span class="description">' . __('Please make sure that the default cover is large enough (min. 1000px in width) and respects the ratio you are using for cover images.', 'wp-user-avatar') . '</span>
+                    <br><span class="description">' . __('Please make sure that the default cover is large enough (min. 1000px in width) and respects the ratio you are using for cover photos.', 'wp-user-avatar') . '</span>
                 </fieldset>
             </td>
         </tr>';

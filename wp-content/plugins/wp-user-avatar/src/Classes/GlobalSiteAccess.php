@@ -32,7 +32,7 @@ class GlobalSiteAccess
 
         if ('login' != $access) return;
 
-        $redirect_url        = ppress_get_setting('global_site_access_redirect_page');
+        $redirect_url        = $redirect_url_page_id = ppress_get_setting('global_site_access_redirect_page');
         $custom_redirect_url = ppress_get_setting('global_site_access_custom_redirect_page');
 
         $excluded_pages = ppress_get_setting('global_site_access_exclude_pages', [], true);
@@ -49,7 +49,12 @@ class GlobalSiteAccess
         $allow_homepage = ppress_get_setting('global_site_access_allow_homepage');
 
         if ( ! empty($redirect_url)) {
+
             $redirect_url = get_permalink(absint($redirect_url));
+
+            if (ppress_get_setting('set_login_url') == $redirect_url_page_id) {
+                $redirect_url = add_query_arg('redirect_to', ppress_get_current_url_query_string(), $redirect_url);
+            }
         }
 
         if ( ! empty($custom_redirect_url)) {

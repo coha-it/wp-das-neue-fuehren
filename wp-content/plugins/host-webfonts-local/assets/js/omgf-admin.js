@@ -15,9 +15,13 @@
 
 jQuery(document).ready(function ($) {
     var omgf_admin = {
+        ticker_items: document.querySelectorAll('.ticker-item'),
+        ticker_index: 0,
         empty_cache_directory_xhr: false,
         optimize_xhr: false,
-        cache_prefix: '-ul-',
+        cache_prefix: '-mod-',
+        cache_section: $('.omgf-empty').data('cache-section'),
+        nonce: $('.omgf-empty').data('nonce'),
 
         /**
          * Initialize all on click events.
@@ -26,7 +30,7 @@ jQuery(document).ready(function ($) {
             // Settings
             $('input[name="omgf_optimization_mode"]').on('click', this.toggle_optimization_mode_content);
             $('.omgf-optimize-fonts-manage .unload').on('change', this.unload_stylesheets);
-            $('.omgf-optimize-fonts-manage .unload').on('change', this.generate_cache_key);
+            $('.omgf-optimize-fonts-manage .unload, .omgf-optimize-fonts-manage .fallback-font-stack select').on('change', this.generate_cache_key);
             $('.omgf-optimize-fonts-manage .unload').on('change', this.toggle_preload);
             $('.omgf-optimize-fonts-manage .preload').on('change', this.toggle_unload);
             $('.omgf-optimize-fonts-manage .unload-italics').on('click', this.unload_italics);
@@ -36,6 +40,28 @@ jQuery(document).ready(function ($) {
             // Buttons
             $('.omgf-empty').on('click', this.empty_cache_directory);
             $('#omgf-optimize-settings-form').submit(this.show_loader_before_submit);
+
+            // Ticker
+            setInterval(this.loop_ticker_items, 4000);
+        },
+
+        /**
+         * 
+         */
+        loop_ticker_items: function () {
+            omgf_admin.ticker_items.forEach(function (item, index) {
+                if (index == omgf_admin.ticker_index) {
+                    $(item).fadeIn(500);
+                } else {
+                    $(item).hide(0);
+                }
+            });
+
+            omgf_admin.ticker_index++;
+
+            if (omgf_admin.ticker_index == omgf_admin.ticker_items.length) {
+                omgf_admin.ticker_index = 0;
+            }
         },
 
         /**
@@ -98,7 +124,7 @@ jQuery(document).ready(function ($) {
             /**
              * If no or all boxes are checked, (re-)set cache key to default (without random string).
              */
-            if (checked === 0 || checked === total) {
+            if (this.nodeName !== 'SELECT' && (checked === 0 || checked === total)) {
                 cache_keys[cache_key_index] = current_handle;
 
                 no_cache_key = true;
@@ -114,9 +140,8 @@ jQuery(document).ready(function ($) {
              * Generate a unique cache key if some of this stylesheet's fonts are unloaded.
              */
             if (cache_key_index !== -1) {
-                var current_cache_key = cache_keys[cache_key_index];
-
-                var cache_key = omgf_admin.cache_prefix + Math.random().toString(36).substring(2, 7);
+                var current_cache_key = cache_keys[cache_key_index],
+                    cache_key = omgf_admin.cache_prefix + Math.random().toString(36).substring(2, 7);
 
                 if (current_cache_key.indexOf(omgf_admin.cache_prefix) !== -1) {
                     var parts = current_cache_key.split(omgf_admin.cache_prefix),
@@ -202,7 +227,7 @@ jQuery(document).ready(function ($) {
          */
         toggle: function (elem, option) {
             var this_option = $(elem);
-            var other_option = $('.' + option + '-' + this_option.data('handle') + '-' + this_option.data('font-id') + '-' + this_option.val() + ' .' + option);
+            var other_option = $('.' + option + '-' + this_option.data('font-id') + '-' + this_option.val() + ' .' + option);
 
             if (elem.checked) {
                 other_option.attr('disabled', true);
@@ -232,7 +257,9 @@ jQuery(document).ready(function ($) {
                 type: 'POST',
                 url: ajaxurl,
                 data: {
-                    action: 'omgf_ajax_empty_dir'
+                    action: 'omgf_ajax_empty_dir',
+                    nonce: omgf_admin.nonce,
+                    section: omgf_admin.cache_section
                 },
                 beforeSend: function () {
                     omgf_admin.show_loader();
@@ -255,13 +282,7 @@ jQuery(document).ready(function ($) {
         }
     };
 
-    omgf_admin.init();
+    omgf_show_loader = omgf_admin.show_loader;
 
-    $('#omgf_relative_url').click(function () {
-        if (this.checked === true) {
-            $('#omgf_cdn_url').prop('disabled', true);
-        } else {
-            $('#omgf_cdn_url').prop('disabled', false);
-        }
-    });
+    omgf_admin.init();
 });

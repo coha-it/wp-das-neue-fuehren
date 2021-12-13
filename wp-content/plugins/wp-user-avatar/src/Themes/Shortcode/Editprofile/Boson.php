@@ -63,7 +63,7 @@ class Boson implements EditProfileThemeInterface
             </p>
           
             <p>
-                <label for="cover-image">Cover Image</label>
+                <label for="cover-image">Cover Photo</label>
                 [edit-profile-cover-image id="cover-image"]
             </p>
 

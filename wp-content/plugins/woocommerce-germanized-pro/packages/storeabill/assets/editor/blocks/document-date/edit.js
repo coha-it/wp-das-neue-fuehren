@@ -8,7 +8,6 @@ import {
 	FontSizePicker,
 	InspectorControls,
 	withFontSizes,
-	__experimentalUseColors,
 	RichText,
 	BlockControls,
 	AlignmentToolbar,
@@ -18,7 +17,7 @@ import { Component } from "@wordpress/element";
 import { PanelBody, TextControl, Toolbar, DropdownMenu, ToolbarGroup } from "@wordpress/components";
 import { compose } from "@wordpress/compose";
 import { FORMAT_TYPES, getPreview, getSetting, getShortcodePreview, getDateTypes, getDateTypeTitle } from '@storeabill/settings';
-import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview } from "@storeabill/utils";
+import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview, getFontSizeStyle, convertFontSizeForPicker, useColors } from "@storeabill/utils";
 import { settings, arrowRight } from '@storeabill/icons';
 
 import LazyTextControl from '@storeabill/components/lazy-textcontrol';
@@ -91,7 +90,7 @@ function DocumentDateEdit( {
 	const {
 		TextColor,
 		InspectorControlsColorPanel,
-	} = __experimentalUseColors(
+	} = useColors(
 		[
 			{ name: 'textColor', property: 'color' },
 		],
@@ -134,7 +133,7 @@ function DocumentDateEdit( {
 				</PanelBody>
 				<PanelBody title={ _x( 'Typography', 'storeabill-core', 'storeabill' ) }>
 					<FontSizePicker
-						value={ fontSize.size }
+						value={ convertFontSizeForPicker( fontSize.size ) }
 						onChange={ setFontSize }
 					/>
 				</PanelBody>
@@ -151,9 +150,7 @@ function DocumentDateEdit( {
 					}
 					allowedFormats={ FORMAT_TYPES }
 					style={ {
-						fontSize: fontSize.size
-							? fontSize.size + 'px'
-							: undefined,
+						fontSize: getFontSizeStyle( fontSize )
 					} }
 				/>
 			</TextColor>

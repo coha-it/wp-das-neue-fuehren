@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress session managment.
+ * WordPress session management.
  *
  * Standardizes WordPress session data using database-backed options for storage.
  * for storing user session information.
@@ -103,7 +103,6 @@ final class WP_Session extends Recursive_ArrayAccess implements Iterator, Counta
 		$this->read_data();
 
 		$this->set_cookie();
-
 	}
 
 	/**

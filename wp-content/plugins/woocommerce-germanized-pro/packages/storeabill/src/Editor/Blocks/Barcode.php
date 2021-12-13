@@ -53,10 +53,8 @@ class Barcode extends DynamicBlock {
 		$document         = $GLOBALS['document'];
 		$this->attributes = $this->parse_attributes( $attributes );
 		$this->content    = $content;
-
-
-		$code         = '';
-		$barcode_type = $this->attributes['barcodeType'];
+		$code             = '';
+		$barcode_type     = $this->attributes['barcodeType'];
 
 		/**
 		 * Support EPC QR Code: https://en.wikipedia.org/wiki/EPC_QR_code

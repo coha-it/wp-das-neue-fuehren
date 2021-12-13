@@ -36,6 +36,8 @@ class Module_Manager {
 		$all_modules = array(
 			/* Control */
 			'query-post',
+			'control-query',
+			'presets-select',
 			/* Widgets */
 			'headings',
 			'hotspot',
@@ -76,6 +78,9 @@ class Module_Manager {
 			'ff-styler',
 			'social-share',
 			'display-conditions',
+			'welcome-music',
+			'party-propz-extension',
+			'section-divider',
 		);
 
 		foreach ( $all_modules as $module_name ) {

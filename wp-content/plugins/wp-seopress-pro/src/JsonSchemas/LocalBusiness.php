@@ -45,14 +45,14 @@ class LocalBusiness extends JsonSchemaValue implements GetJsonData {
      */
     protected function getKeysForOptionLocalBusiness() {
         return [
-           'type'           => '%%local_business_type%%',
-           'image'          => '%%social_knowledge_image%%',
-           'id'             => '%%siteurl%%',
-           'name'           => '%%social_knowledge_name%%',
-           'url'            => '%%local_business_url%%',
-           'telephone'      => '%%local_business_phone%%',
-           'priceRange'     => '%%local_business_price_range%%',
-           'servesCuisines' => '%%local_business_cuisine%%',
+            'type' => '%%local_business_type%%',
+            'image' => '%%social_knowledge_image%%',
+            'id' => '%%siteurl%%',
+            'name' => '%%social_knowledge_name%%',
+            'url' => '%%local_business_url%%',
+            'telephone' => '%%local_business_phone%%',
+            'priceRange' => '%%local_business_price_range%%',
+            'servesCuisines' => '%%local_business_cuisine%%',
         ];
     }
 
@@ -63,28 +63,28 @@ class LocalBusiness extends JsonSchemaValue implements GetJsonData {
      */
     protected function getKeysForSchemaManual() {
         return [
-            'type'                   => '_seopress_pro_rich_snippets_lb_type',
-            'image'                  => '_seopress_pro_rich_snippets_lb_img',
-            'url'                    => '_seopress_pro_rich_snippets_lb_website',
-            'telephone'              => '_seopress_pro_rich_snippets_lb_tel',
-            'priceRange'             => '_seopress_pro_rich_snippets_lb_price',
-            'country'                => '_seopress_pro_rich_snippets_lb_country',
-            'postalCode'             => '_seopress_pro_rich_snippets_lb_pc',
-            'state'                  => '_seopress_pro_rich_snippets_lb_state',
-            'city'                   => '_seopress_pro_rich_snippets_lb_city',
-            'address'                => '_seopress_pro_rich_snippets_lb_street_addr',
-            'menu'                   => '_seopress_pro_rich_snippets_lb_menu',
-            'acceptsReservations'    => '_seopress_pro_rich_snippets_lb_accepts_reservations',
-            'servesCuisines'         => '_seopress_pro_rich_snippets_lb_cuisine',
-            'name'                   => [
-                'value'  => '_seopress_pro_rich_snippets_lb_name',
-                'default'=> '%%sitetitle%%',
+            'type' => '_seopress_pro_rich_snippets_lb_type',
+            'image' => '_seopress_pro_rich_snippets_lb_img',
+            'url' => '_seopress_pro_rich_snippets_lb_website',
+            'telephone' => '_seopress_pro_rich_snippets_lb_tel',
+            'priceRange' => '_seopress_pro_rich_snippets_lb_price',
+            'country' => '_seopress_pro_rich_snippets_lb_country',
+            'postalCode' => '_seopress_pro_rich_snippets_lb_pc',
+            'state' => '_seopress_pro_rich_snippets_lb_state',
+            'city' => '_seopress_pro_rich_snippets_lb_city',
+            'address' => '_seopress_pro_rich_snippets_lb_street_addr',
+            'menu' => '_seopress_pro_rich_snippets_lb_menu',
+            'acceptsReservations' => '_seopress_pro_rich_snippets_lb_accepts_reservations',
+            'servesCuisines' => '_seopress_pro_rich_snippets_lb_cuisine',
+            'name' => [
+                'value' => '_seopress_pro_rich_snippets_lb_name',
+                'default' => '%%sitetitle%%',
             ],
             'id' => [
                 'default' => '%%schema_article_canonical%%',
             ],
             'openingHours' => '_seopress_pro_rich_snippets_lb_opening_hours',
-         ];
+        ];
     }
 
     /**
@@ -141,7 +141,7 @@ class LocalBusiness extends JsonSchemaValue implements GetJsonData {
         $typeSchema = isset($context['type']) ? $context['type'] : RichSnippetType::OPTION_LOCAL_BUSINESS;
 
         $openingHours = [];
-        $variables    = $this->getVariablesByType($typeSchema, $context);
+        $variables = $this->getVariablesByType($typeSchema, $context);
 
         if (RichSnippetType::OPTION_LOCAL_BUSINESS === $typeSchema) {
             $openingHours = seopress_pro_get_service('OptionPro')->getLocalBusinessOpeningHours();
@@ -151,13 +151,13 @@ class LocalBusiness extends JsonSchemaValue implements GetJsonData {
 
         $data = seopress_get_service('VariablesToString')->replaceDataToString($data, $variables);
 
-        $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(PostalAddress::NAME, $context, ['remove_empty'=> true]);
+        $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(PostalAddress::NAME, $context, ['remove_empty' => true]);
 
         if (count($schema) > 1) {
             $data['address'] = $schema;
         }
 
-        $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(Geo::NAME, $context, ['remove_empty'=> true]);
+        $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(Geo::NAME, $context, ['remove_empty' => true]);
 
         if (count($schema) > 1) {
             $data['geo'] = $schema;
@@ -176,11 +176,11 @@ class LocalBusiness extends JsonSchemaValue implements GetJsonData {
 
                     $variablesOpeningHours = [
                         'dayOfWeek' => $this->getDayByKey($key),
-                        'opens'     => \sprintf('%s:%s:00', $halfDay['start']['hours'], $halfDay['start']['mins']),
-                        'closes'    => \sprintf('%s:%s:00', $halfDay['end']['hours'], $halfDay['end']['mins']),
+                        'opens' => \sprintf('%s:%s:00', $halfDay['start']['hours'], $halfDay['start']['mins']),
+                        'closes' => \sprintf('%s:%s:00', $halfDay['end']['hours'], $halfDay['end']['mins']),
                     ];
 
-                    $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(OpeningHours::NAME, ['variables' => $variablesOpeningHours], ['remove_empty'=> true]);
+                    $schema = seopress_get_service('JsonSchemaGenerator')->getJsonFromSchema(OpeningHours::NAME, ['variables' => $variablesOpeningHours], ['remove_empty' => true]);
                     if (count($schema) > 1) {
                         $data['openingHoursSpecification'][] = $schema;
                     }

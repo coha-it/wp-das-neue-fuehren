@@ -109,7 +109,7 @@
 	display: flex;
 	padding: 0 12px 0 12px;
 	border: 0;
-	width: 97px;
+	width: 135px;
 	justify-content: space-between;
 	align-items: center;
 	font-weight: 500;
@@ -143,7 +143,7 @@
 	box-sizing: content-box;
 	border: 1px solid #e4e4e4;
 	margin-top: 10px;
-	min-width: 70px;
+	min-width: 135px;
     background-color: #fff;
     border-radius: 6px;
     box-shadow: 0 3px 6px rgba(0,0,0,.1);
@@ -219,10 +219,7 @@
     border-left: 1px solid #DDDDDD;
     box-shadow: none;
 }
-.appearance_page_starter-templates .search-form:hover,
-.appearance_page_starter-templates .search-form:focus {
-    box-shadow: 0 1px 4px 0 rgba(32,33,36,0.18);
-}
+
 #astra-sites-filters .ui-widget.ui-widget-content {
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
@@ -248,7 +245,7 @@
     text-transform: capitalize;
 }
 #astra-sites-filters .ui-autocomplete li:hover {
-	background-color: #eeeeee; 
+	background-color: #eeeeee;
 }
 .appearance_page_starter-templates .wp-filter .search-form.searching #astra-sites__category-filter {
 	border-bottom-left-radius: 0;
@@ -256,11 +253,7 @@
 .searching #wp-filter-search-input {
 	border-bottom-right-radius: 0;
 }
-#astra-sites-filters .ui-autocomplete .ui-state-active {
-    background: #c0c0c0;
-    border-color: #c0c0c0;
-    margin: 0;
-}
+
 #wp-filter-search-input.has-input + .search-icon {
 	display: none;
 }
@@ -1399,7 +1392,7 @@ body.loading-content .select-page-builder {
 
 .astra-previewing-single-pages #astra-sites-admin {
     margin-top: 58px;
-} 
+}
 
 #astra-sites-welcome-form-inline select {
     text-align-last: right;
@@ -1616,9 +1609,10 @@ body.loading-content .select-page-builder {
 }
 
 .agency-ribbons {
-	color: #ffffff;
+	color: #000;
 	text-align: center;
-	display: inline-block;
+	display: flex;
+	align-items: center;
 	position: absolute;
 	z-index: 9;
 	top: -7px;
@@ -1629,9 +1623,16 @@ body.loading-content .select-page-builder {
 	right: -7px;
 	border-radius: 2px;
 	line-height: 15px;
-	padding: 5px 9px;
-	background-color: #007cba;
+	padding: 4px 7px;
+	background-color: #FCAF2A;
 	cursor: default;
+
+}
+
+.premium-crown-icon {
+	height: auto;
+	width: 17px;
+	margin-right: 5px;
 }
 
 .theme-browser .theme:hover .theme-actions,
@@ -1801,7 +1802,11 @@ body.loading-content .select-page-builder {
 
 .site-action-buttons-wrap {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+}
+
+.site-action-buttons-wrap .site-preview-button {
+	margin-right: 5px;
 }
 
 .single-site-pages-header {
@@ -1869,7 +1874,7 @@ body.loading-content .select-page-builder {
 }
 
 .site-action-buttons-wrap .dashicons {
-    vertical-align: sub;
+    vertical-align: middle;
     font-size: 1rem;
     margin-left: .2em;
 }
@@ -2128,7 +2133,7 @@ body.loading-content .select-page-builder {
 }
 
 .astra-previewing-single-pages .astra-sites-menu-page-wrapper > .notice.astra-sites-sync-library-message {
-   
+
     width: calc( 100% - 250px );
 }
 
@@ -2418,7 +2423,7 @@ body.loading-content .select-page-builder {
 	    background: #fff;
 	    padding: 10px;
 	}
-	
+
 	#astra-sites-menu-page .form {
 	    flex: 1;
 	}
@@ -2450,7 +2455,7 @@ body.loading-content .select-page-builder {
 	.astra-previewing-single-pages #wpbody-content {
 		position: relative;
 	}
-	
+
 	.astra-sites-no-sites .content, .astra-sites-no-favorites .content {
 	    flex-direction: column;
 	}
@@ -3084,6 +3089,11 @@ body.loading-content .select-page-builder {
     height: 285px;
 }
 
+.highlighted-note {
+    font-size: 14px;
+    font-weight: 500;
+}
+
 @media screen and (max-width: 768px) {
     .wp-core-ui .astra-sites-result-preview .subscription-actions .button.button-hero {
         height: auto;
@@ -3113,10 +3123,9 @@ body.loading-content .select-page-builder {
 }
 
 @media screen and (min-width: 768px) {
-    
+
     .subscription-fields .subscription-field-wrap:first-child {
         padding-right: 20px;
     }
 
 }
-

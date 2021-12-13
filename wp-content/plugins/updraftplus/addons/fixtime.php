@@ -11,7 +11,7 @@ Latest Change: 1.12.3
 
 if (!defined('UPDRAFTPLUS_DIR')) die('No direct access allowed');
 
-$updraftplus_addon_fixtime = new UpdraftPlus_AddOn_FixTime;
+new UpdraftPlus_AddOn_FixTime;
 
 class UpdraftPlus_AddOn_FixTime {
 

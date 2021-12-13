@@ -7,7 +7,6 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 import {
-	__experimentalUseColors,
 	AlignmentToolbar,
 	BlockControls,
 	InspectorControls,
@@ -21,7 +20,7 @@ import { PanelBody, RangeControl, Slot, ToggleControl, ToolbarButton } from '@wo
 import { __, _x } from '@wordpress/i18n';
 
 import { BorderSelect, getBorderClasses } from '@storeabill/components/border-select';
-import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview } from "@storeabill/utils";
+import { replacePreviewWithPlaceholder, replacePlaceholderWithPreview, getFontSizeStyle, convertFontSizeForPicker, useColors } from "@storeabill/utils";
 
 /**
  * External dependencies
@@ -94,7 +93,7 @@ function TotalRowEdit( {
 
 	let innerHeading = heading ? heading : getItemTotalTypeDefaultTitle( totalType );
 
-	if ( 'taxes' === totalType || 'nets' === totalType ) {
+	if ( 'taxes' === totalType || 'nets' === totalType || 'gross_tax_shares' === totalType ) {
 		innerHeading = innerHeading.replace( '%s', '<span class="document-shortcode sab-tooltip" data-tooltip="' + _x( 'Tax Rate', 'storeabill-core', 'storeabill' ) + '" contenteditable="false" data-shortcode="document_total?data=rate&total_type=' + totalType + '"><span class="editor-placeholder"></span>' + getPreviewTaxRate() + '</span>' ).replace( '%%', '%' );
 	} else if ( 'fees' === totalType ) {
 		innerHeading = innerHeading.replace( '%s', '<span class="document-shortcode sab-tooltip" data-tooltip="' + _x( 'Fee name', 'storeabill-core', 'storeabill' ) + '" contenteditable="false" data-shortcode="document_total?data=name&total_type=' + totalType + '"><span class="editor-placeholder"></span>' + getPreviewFeeName() + '</span>' ).replace( '%%', '%' );
@@ -112,7 +111,7 @@ function TotalRowEdit( {
 		InspectorControlsColorPanel,
 		BorderColor,
 		TextColor
-	} = __experimentalUseColors(
+	} = useColors(
 		[
 			{ name: 'borderColor', className: 'has-border-color' },
 			{ name: 'textColor', property: 'color' },
@@ -127,7 +126,7 @@ function TotalRowEdit( {
 	return (
 		<div className={ classes } style={ {
 			borderColor: borderColor.color,
-			fontSize: fontSize.size ? fontSize.size + 'px' : undefined,
+			fontSize: getFontSizeStyle( fontSize ),
 		} }>
 			<BlockControls>
 				<TypeSelect
@@ -155,7 +154,7 @@ function TotalRowEdit( {
 						onChange={ () => setAttributes( { hideIfEmpty: ! hideIfEmpty } ) }
 					/>
 					<FontSizePicker
-						value={ fontSize.size }
+						value={ convertFontSizeForPicker( fontSize.size ) }
 						onChange={ setFontSize }
 					/>
 				</PanelBody>

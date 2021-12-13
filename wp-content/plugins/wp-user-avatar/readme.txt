@@ -1,11 +1,11 @@
-﻿=== User Registration, User Profiles, Login & Membership – ProfilePress (Formerly WP User Avatar) ===
+﻿=== User Registration, Login Form, User Profile & Membership – ProfilePress (Formerly WP User Avatar) ===
 Contributors: properfraction, collizo4sky
 Donate link: https://profilepress.net/pricing/
 Tags: user registration, user profile, registration form, membership, login form, login, registration, password reset, members, users, profile, front-end profile, edit profile, avatar, profile picture
 Requires at least: 4.7
-Requires PHP: 5.6
-Tested up to: 5.7
-Stable tag: 3.1.8
+Requires PHP: 5.6.0
+Tested up to: 5.9
+Stable tag: 3.2.4
 License: GPLv2 or later
 
 Modern membership plugin for user registration, login form, user profile, member directories & content restriction.
@@ -14,9 +14,9 @@ Modern membership plugin for user registration, login form, user profile, member
 
 = The Modern WordPress Membership & User Profile Plugin =
 
-[ProfilePress](https://profilepress.net/?utm_source=wprepo&utm_medium=link&utm_campaign=liteversion) (formerly WP User Avatar) is a lightweight membership plugin that lets you create beautiful user profiles, member directories and frontend forms for user registration, login, password reset and editing profile information. It also allows you to protect sensitive content and control user access.
+[ProfilePress](https://profilepress.net/?utm_source=wprepo&utm_medium=link&utm_campaign=liteversion) (formerly WP User Avatar) is a lightweight membership plugin that lets you create beautiful user profiles, member directories and frontend user registration form, login form, password reset and editing profile information. It also allows you to protect sensitive content and control user access.
 
-[ProfilePress](https://profilepress.net/?utm_source=wprepo&utm_medium=link&utm_campaign=liteversion) is the perfect solution for creating online communities and membership sites where users can easily register or signup to become members.
+Our Drag-and-Drop form builder makes building forms easy. It is the perfect solution for creating online communities and membership sites where users can easily register or signup to become members.
 
 [Website](https://profilepress.net/?utm_source=wprepo&utm_medium=link&utm_campaign=liteversion) | [Addons](https://profilepress.net/addons/?utm_source=wprepo&utm_medium=link&utm_campaign=liteversion) | [Documentation](https://profilepress.net/docs/?utm_source=wprepo&utm_medium=link&utm_campaign=liteversion) | [Support](https://profilepress.net/support/?utm_source=wprepo&utm_medium=link&utm_campaign=liteversion)
 
@@ -117,20 +117,17 @@ No. You can create and manage your forms, user profiles and member directories w
 
 == Changelog ==
 
-= 3.1.8 =
-* Fixed issue with global site access not correctly working.
-* Added success color to registration form notice.
-* Fixed bug admin bar control wasn't working.
-* Fixed bug where specifying custom roles for registration forms didn't work.
-* Improved sanitization and escaping of data in settings pages.
-* Auto paragraphed form custom messages.
+= 3.2.4 =
+* Fixed bug where user role selection on registration wasn't working.
+* Fixed responsiveness issue in Gerbera member directory theme.
 
-= 3.1.7 =
-* Enhancement: JS scripts are now conditionally loaded.
-* Fixed display issue in perfecto lite themes.
-* Added custom message when logged in users view a login and signup page.
-* Added compatibility with peters login redirect.
-* Fixed incorrect avatar size retrieval.
-* Fixed Warning: array_reduce() expects parameter 1 to be array, null given.
+= 3.2.3 =
+* Fixed bug where custom content protection message wasn't properly formatted.
+* Escaped html attributes in html response returned on ajax form request.
+* Removed display-name as title for user profile in member directory.
+
+= 3.2.2 =
+* Added a new admin page header.
+* Add redirect_to query parameter when Global Access redirects to a login page.
 
 See the [changelog file](https://plugins.svn.wordpress.org/wp-user-avatar/trunk/changelog.txt) for full change log information.

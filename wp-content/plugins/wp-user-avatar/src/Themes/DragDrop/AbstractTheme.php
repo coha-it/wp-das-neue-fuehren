@@ -65,7 +65,7 @@ abstract class AbstractTheme implements ThemeInterface
      */
     public function disallowed_settings_fields()
     {
-        return ['pp-custom-html', 'pp-recaptcha', 'pp-user-avatar', 'pp-user-cover-image'];
+        return ['pp-custom-html', 'pp-recaptcha', 'pp-user-avatar', 'pp-user-cover-image', $this->tag_name . '-cpf-agreeable'];
     }
 
     public function minified_form_css()
@@ -433,14 +433,13 @@ abstract class AbstractTheme implements ThemeInterface
 
     public static function get_instance($form_id, $form_type)
     {
-        static $instance = false;
+        static $instance = [];
 
-        $class = get_called_class();
-
-        if ( ! $instance) {
-            $instance = new $class($form_id, $form_type);
+        if ( ! isset($instance[$form_id])) {
+            $class              = get_called_class();
+            $instance[$form_id] = new $class($form_id, $form_type);
         }
 
-        return $instance;
+        return $instance[$form_id];
     }
 }

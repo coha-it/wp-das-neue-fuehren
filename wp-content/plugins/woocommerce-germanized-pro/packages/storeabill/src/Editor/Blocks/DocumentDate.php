@@ -26,7 +26,6 @@ class DocumentDate extends DynamicBlock {
 
 	public function get_attributes() {
 		return array(
-			'textSize'  => $this->get_schema_number( sab_get_document_default_font_size() ),
 			'align'     => $this->get_schema_align(),
 			'format'    => $this->get_schema_string( sab_date_format() ),
 			'dateType'  => $this->get_schema_string( 'date' ),

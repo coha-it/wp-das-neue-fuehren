@@ -96,6 +96,7 @@ class Advanced_Heading extends Common_Widget {
 	 * @access protected
 	 */
 	protected function register_controls() {
+		$this->register_presets_control( 'Advanced_Heading', $this );
 
 		$this->register_general_content_controls();
 		$this->register_separator_content_controls();
@@ -131,17 +132,31 @@ class Advanced_Heading extends Common_Widget {
 				'dynamic' => array(
 					'active' => true,
 				),
-				'default' => __( 'Design is a funny word', 'uael' ),
+				'default' => __( 'Your Attractive Heading', 'uael' ),
+			)
+		);
+		$this->add_control(
+			'show_sub_heading',
+			array(
+				'label'        => __( 'Show Sub Heading', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'default'      => 'yes',
+				'label_off'    => __( 'No', 'uael' ),
+				'label_on'     => __( 'Yes', 'uael' ),
+				'return_value' => 'yes',
 			)
 		);
 		$this->add_control(
 			'sub_heading',
 			array(
-				'label'   => __( 'Sub Heading', 'uael' ),
-				'type'    => Controls_Manager::TEXTAREA,
-				'rows'    => '1',
-				'dynamic' => array(
+				'label'     => __( 'Sub Heading', 'uael' ),
+				'type'      => Controls_Manager::TEXTAREA,
+				'rows'      => '1',
+				'dynamic'   => array(
 					'active' => true,
+				),
+				'condition' => array(
+					'show_sub_heading' => 'yes',
 				),
 			)
 		);
@@ -158,7 +173,8 @@ class Advanced_Heading extends Common_Widget {
 					'bottom' => __( 'Below Heading', 'uael' ),
 				),
 				'condition'   => array(
-					'sub_heading!' => '',
+					'sub_heading!'     => '',
+					'show_sub_heading' => 'yes',
 				),
 			)
 		);
@@ -176,24 +192,55 @@ class Advanced_Heading extends Common_Widget {
 				),
 			)
 		);
+
+		$this->add_control(
+			'show_description',
+			array(
+				'label'        => __( 'Show Description', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'default'      => 'yes',
+				'label_off'    => __( 'No', 'uael' ),
+				'label_on'     => __( 'Yes', 'uael' ),
+				'return_value' => 'yes',
+			)
+		);
+
 		$this->add_control(
 			'heading_description',
 			array(
-				'label'   => __( 'Description', 'uael' ),
-				'type'    => Controls_Manager::TEXTAREA,
-				'dynamic' => array(
+				'label'     => __( 'Description', 'uael' ),
+				'type'      => Controls_Manager::TEXTAREA,
+				'dynamic'   => array(
 					'active' => true,
 				),
+				'condition' => array(
+					'show_description' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'show_bg_text',
+			array(
+				'label'        => __( 'Background Text', 'uael' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'default'      => 'yes',
+				'label_off'    => __( 'No', 'uael' ),
+				'label_on'     => __( 'Yes', 'uael' ),
+				'return_value' => 'yes',
 			)
 		);
 		$this->add_control(
 			'bg_text',
 			array(
-				'label'   => __( 'Background Text', 'uael' ),
-				'type'    => Controls_Manager::TEXTAREA,
-				'rows'    => '1',
-				'dynamic' => array(
+				'label'     => __( 'Background Text', 'uael' ),
+				'type'      => Controls_Manager::TEXTAREA,
+				'rows'      => '1',
+				'dynamic'   => array(
 					'active' => true,
+				),
+				'condition' => array(
+					'show_bg_text' => 'yes',
 				),
 			)
 		);
@@ -201,7 +248,7 @@ class Advanced_Heading extends Common_Widget {
 		$this->add_control(
 			'size',
 			array(
-				'label'   => __( 'Size', 'uael' ),
+				'label'   => __( 'Heading Size', 'uael' ),
 				'type'    => Controls_Manager::SELECT,
 				'default' => 'default',
 				'options' => array(
@@ -353,7 +400,7 @@ class Advanced_Heading extends Common_Widget {
 			array(
 				'label'     => __( 'Enter Text', 'uael' ),
 				'type'      => Controls_Manager::TEXT,
-				'default'   => __( 'Ultimate', 'uael' ),
+				'default'   => __( 'Separator Text', 'uael' ),
 				'condition' => array(
 					'heading_separator_style' => 'line_text',
 				),
@@ -566,7 +613,8 @@ class Advanced_Heading extends Common_Widget {
 				'label'     => __( 'Sub Heading', 'uael' ),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => array(
-					'sub_heading!' => '',
+					'sub_heading!'     => '',
+					'show_sub_heading' => 'yes',
 				),
 			)
 		);
@@ -580,7 +628,8 @@ class Advanced_Heading extends Common_Widget {
 				),
 				'selector'  => '{{WRAPPER}} .uael-sub-heading',
 				'condition' => array(
-					'sub_heading!' => '',
+					'sub_heading!'     => '',
+					'show_sub_heading' => 'yes',
 				),
 			)
 		);
@@ -594,7 +643,8 @@ class Advanced_Heading extends Common_Widget {
 				),
 				'default'   => '',
 				'condition' => array(
-					'sub_heading!' => '',
+					'sub_heading!'     => '',
+					'show_sub_heading' => 'yes',
 				),
 				'selectors' => array(
 					'{{WRAPPER}} .uael-sub-heading' => 'color: {{VALUE}};',
@@ -616,7 +666,8 @@ class Advanced_Heading extends Common_Widget {
 					'isLinked' => false,
 				),
 				'condition'  => array(
-					'sub_heading!' => '',
+					'sub_heading!'     => '',
+					'show_sub_heading' => 'yes',
 				),
 				'selectors'  => array(
 					'{{WRAPPER}} .uael-sub-heading' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -641,6 +692,7 @@ class Advanced_Heading extends Common_Widget {
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => array(
 					'heading_description!' => '',
+					'show_description'     => 'yes',
 				),
 			)
 		);
@@ -655,6 +707,7 @@ class Advanced_Heading extends Common_Widget {
 				'selector'  => '{{WRAPPER}} .uael-subheading',
 				'condition' => array(
 					'heading_description!' => '',
+					'show_description'     => 'yes',
 				),
 			)
 		);
@@ -669,6 +722,7 @@ class Advanced_Heading extends Common_Widget {
 				'default'   => '',
 				'condition' => array(
 					'heading_description!' => '',
+					'show_description'     => 'yes',
 				),
 				'selectors' => array(
 					'{{WRAPPER}} .uael-subheading' => 'color: {{VALUE}};',
@@ -691,6 +745,7 @@ class Advanced_Heading extends Common_Widget {
 				),
 				'condition'  => array(
 					'heading_description!' => '',
+					'show_description'     => 'yes',
 				),
 				'selectors'  => array(
 					'{{WRAPPER}} .uael-subheading' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -716,7 +771,8 @@ class Advanced_Heading extends Common_Widget {
 				'label'     => __( 'Background Text', 'uael' ),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => array(
-					'bg_text!' => '',
+					'bg_text!'     => '',
+					'show_bg_text' => 'yes',
 				),
 			)
 		);
@@ -1497,7 +1553,7 @@ class Advanced_Heading extends Common_Widget {
 	 * @param object $dynamic_settings for dynamic settings.
 	 */
 	public function render_subheading( $pos, $settings, $dynamic_settings ) {
-		if ( '' !== $dynamic_settings['sub_heading'] && $pos === $settings['subheading_position'] ) {
+		if ( 'yes' === $dynamic_settings['show_sub_heading'] && '' !== $dynamic_settings['sub_heading'] && $pos === $settings['subheading_position'] ) {
 			?>
 				<div class="uael-sub-heading elementor-inline-editing" data-elementor-setting-key="sub_heading" data-elementor-inline-editing-toolbar="advanced" ><?php echo wp_kses_post( $this->get_settings_for_display( 'sub_heading' ) ); ?></div>
 			<?php
@@ -1623,20 +1679,11 @@ class Advanced_Heading extends Common_Widget {
 		}
 
 		if ( ! empty( $dynamic_settings['heading_link']['url'] ) ) {
-			$this->add_render_attribute( 'url', 'href', $dynamic_settings['heading_link']['url'] );
-
-			if ( $dynamic_settings['heading_link']['is_external'] ) {
-				$this->add_render_attribute( 'url', 'target', '_blank' );
-			}
-
-			if ( ! empty( $dynamic_settings['heading_link']['nofollow'] ) ) {
-				$this->add_render_attribute( 'url', 'rel', 'nofollow' );
-			}
-			$link = $this->get_render_attribute_string( 'url' );
+			$this->add_link_attributes( 'url', $dynamic_settings['heading_link'] );
 		}
 
 		$this->add_render_attribute( 'uael-heading-wrapper', 'class', 'uael-module-content uael-heading-wrapper' );
-		if ( ! empty( $settings['bg_text'] ) ) {
+		if ( 'yes' === $settings['show_bg_text'] && ! empty( $settings['bg_text'] ) ) {
 			$this->add_render_attribute( 'uael-heading-wrapper', 'data-bg-text', $settings['bg_text'] );
 		}
 
@@ -1654,7 +1701,7 @@ class Advanced_Heading extends Common_Widget {
 
 			<<?php echo esc_attr( $heading_size_tag ); ?> class="uael-heading">
 				<?php if ( ! empty( $dynamic_settings['heading_link']['url'] ) ) { ?>
-					<a <?php echo wp_kses_post( $link ); ?> >
+					<a <?php echo wp_kses_post( $this->get_render_attribute_string( 'url' ) ); ?> >
 				<?php } ?>
 						<span class="uael-heading-text elementor-inline-editing uael-size--<?php echo esc_attr( $settings['size'] ); ?>" data-elementor-setting-key="heading_title" data-elementor-inline-editing-toolbar="basic"><?php echo wp_kses_post( $this->get_settings_for_display( 'heading_title' ) ); ?></span>
 				<?php if ( ! empty( $dynamic_settings['heading_link']['url'] ) ) { ?>
@@ -1666,7 +1713,7 @@ class Advanced_Heading extends Common_Widget {
 
 			<?php $this->render_separator( 'center', $settings ); ?>
 
-			<?php if ( '' !== $dynamic_settings['heading_description'] ) { ?>
+			<?php if ( 'yes' === $dynamic_settings['show_description'] && '' !== $dynamic_settings['heading_description'] ) { ?>
 				<div class="uael-subheading elementor-inline-editing" data-elementor-setting-key="heading_description" data-elementor-inline-editing-toolbar="advanced" >
 					<?php echo wp_kses_post( $this->get_settings_for_display( 'heading_description' ) ); ?>
 				</div>
@@ -1732,7 +1779,7 @@ class Advanced_Heading extends Common_Widget {
 
 		<#
 		function render_subheading( pos ) {
-			if ( '' != settings.sub_heading && pos == settings.subheading_position ) {
+			if ( 'yes' == settings.show_sub_heading && '' != settings.sub_heading && pos == settings.subheading_position ) {
 			#>
 				<div class="uael-sub-heading elementor-inline-editing" data-elementor-setting-key="sub_heading" data-elementor-inline-editing-toolbar="advanced" >{{{ settings.sub_heading }}}</div>
 			<#
@@ -1819,7 +1866,7 @@ class Advanced_Heading extends Common_Widget {
 		}
 
 		view.addRenderAttribute( 'uael-heading-wrapper', 'class', 'uael-module-content uael-heading-wrapper' );
-		if ( '' != settings.bg_text ) {
+		if ( 'yes' == settings.show_bg_text && '' != settings.bg_text ) {
 			view.addRenderAttribute( 'uael-heading-wrapper', 'data-bg-text', settings.bg_text );
 		}
 
@@ -1849,7 +1896,7 @@ class Advanced_Heading extends Common_Widget {
 
 			<# render_separator( 'center' ); #>
 
-			<# if ( '' != settings.heading_description ) { #>
+			<# if ( 'yes' == settings.show_description && '' != settings.heading_description ) { #>
 				<div class="uael-subheading elementor-inline-editing" data-elementor-setting-key="heading_description" data-elementor-inline-editing-toolbar="basic" >
 					{{{ settings.heading_description }}}
 				</div>
@@ -1859,17 +1906,4 @@ class Advanced_Heading extends Common_Widget {
 		<?php
 	}
 
-	/**
-	 * Render Heading widgets output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * Remove this after Elementor v3.3.0
-	 *
-	 * @since 0.0.1
-	 * @access protected
-	 */
-	protected function _content_template() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-		$this->content_template();
-	}
 }

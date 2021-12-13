@@ -22,7 +22,6 @@ class VD_Admin {
 	}
 
 	public function plugins_api_filter( $result, $action, $args ) {
-
 		$products = VD()->get_products();
 		$product  = false;
 
@@ -31,7 +30,6 @@ class VD_Admin {
         }
 
 		foreach ( $products as $product_item ) {
-
 			if ( ! $product_item->is_theme() && $args->slug === $product_item->slug ) {
 				$product = $product_item;
             }
@@ -64,9 +62,7 @@ class VD_Admin {
 	}
 
 	public function set_upgrade_notice() {
-
 		if ( 'update-core' === get_current_screen()->id ) {
-			
 			$transient        = get_site_transient( 'update_plugins' );
 			$transient_themes = get_site_transient( 'update_themes' );
 			$products         = VD()->get_products();
@@ -78,7 +74,7 @@ class VD_Admin {
 						$product = $products[ $plugin ];
 						$product->refresh_expiration_date();
 
-						if ( $product->has_expired() ) {
+						if ( $product->has_expired() && $product->supports_renewals() ) {
 							echo '<div class="vd-upgrade-notice" data-for="' . md5( $product->Name ) .'" style="display: none"><span class="vd-inline-upgrade-expire-notice">' . sprintf( __( 'Seems like your update- and support flat has expired. Please %s your license before updating.', 'vendidero-helper' ), '<a href="' . admin_url( 'index.php?page=vendidero' ) . '">' . __( 'check', 'vendidero-helper' ) . '</a>' ) . '</span></div>';
 						}
 					}
@@ -92,7 +88,7 @@ class VD_Admin {
 						$product = $products[ $data['theme'] ];
                         $product->refresh_expiration_date();
 	
-						if ( $product->has_expired() ) {
+						if ( $product->has_expired() && $product->supports_renewals() ) {
                             echo '<div class="vd-upgrade-notice" data-for="' . md5( $product->Name ) .'" style="display: none"><span class="vd-inline-upgrade-expire-notice">' . sprintf( __( 'Seems like your update- and support flat has expired. Please %s your license before updating.', 'vendidero-helper' ), '<a href="' . admin_url( 'index.php?page=vendidero' ) . '">' . __( 'check', 'vendidero-helper' ) . '</a>' ) . '</span></div>';
 						}
 					}
@@ -102,7 +98,7 @@ class VD_Admin {
 	}
 
 	public function add_menu() {
-		$hook = add_dashboard_page( 'vendidero', 'Vendidero', 'manage_options', 'vendidero', array( $this, 'screen' ) );
+		$hook = add_dashboard_page( 'vendidero', 'vendidero', 'manage_options', 'vendidero', array( $this, 'screen' ) );
 
 		add_action( 'load-' . $hook, array( $this, 'process' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -119,7 +115,6 @@ class VD_Admin {
                 $result = $product->refresh_expiration_date();
 
                 if ( is_wp_error( $result ) ) {
-
                     foreach( $result->get_error_messages( $result->get_error_code() ) as $message ) {
                         $errors[] = $message;
                     }
@@ -146,7 +141,6 @@ class VD_Admin {
 		$admin_url = is_multisite() ? network_admin_url( 'index.php?page=vendidero' ) : admin_url( 'index.php?page=vendidero' );
 
 		foreach ( VD()->get_products( false ) as $product ) {
-
 		    if ( is_multisite() ) {
 			    $blog_id = get_current_blog_id();
 
@@ -157,11 +151,11 @@ class VD_Admin {
 
 			if ( ! $product->is_registered() ) { ?>
 				<div class="error">
-			        <p><?php printf( __( 'Your %s license doesn\'t seem to be registered. Please %s', 'vendidero-helper' ), $product->Name, '<a style="margin-left: 5px;" class="button button-secondary" href="' . $admin_url . '">' . __( 'manage your licenses', 'vendidero-helper' ) . '</a>' ); ?></p>
+			        <p><?php printf( __( 'Your %s license doesn\'t seem to be registered. Please %s', 'vendidero-helper' ), esc_attr( $product->Name ), '<a style="margin-left: 5px;" class="button button-secondary" href="' . esc_url( $admin_url ) . '">' . __( 'manage your licenses', 'vendidero-helper' ) . '</a>' ); ?></p>
 			    </div>
-            <?php } elseif( $product->has_expired() ) { ?>
+            <?php } elseif( $product->has_expired() && $product->supports_renewals() ) { ?>
                 <div class="error">
-                    <p><?php printf( __( 'Your %s license seems to have expired. Please %s', 'vendidero-helper' ), $product->Name, '<a style="margin-left: 5px;" class="button button-secondary" href="' . $admin_url . '">' . __( 'manage your licenses', 'vendidero-helper' ) . '</a>' ); ?></p>
+                    <p><?php printf( __( 'Your %1$s license has expired on %2$s. %3$s', 'vendidero-helper' ), '<strong>' . esc_attr( $product->Name ) . '</strong>', $product->get_expiration_date( get_option( 'date_format' ) ), '<a style="margin-left: 5px;" class="button button-primary wc-gzd-button" target="_blank" href="' . esc_url( $product->get_renewal_url() ) . '">' . __( 'renew now', 'vendidero-helper' ) . '</a>' ); ?></p>
                 </div>
 			<?php }
 		}
@@ -169,13 +163,12 @@ class VD_Admin {
 
 	public function screen() {
 		?>
-
         <div class="vd-wrapper">
 			<div class="wrap about-wrap vendidero-wrap">
 				<div class="col-wrap">
-					<h1><?php _e( 'Welcome to Vendidero', 'vendidero-helper' ); ?></h1>
+					<h1><?php _e( 'Welcome to vendidero', 'vendidero-helper' ); ?></h1>
 					<div class="about-text vendidero-updater-about-text">
-						<?php _e( 'Easily manage your licenses for Vendidero Products and enjoy automatic updates.', 'vendidero-helper' ); ?>
+						<?php _e( 'Easily manage your licenses for vendidero Products and enjoy automatic updates & more.', 'vendidero-helper' ); ?>
                     </div>
 
 					<?php do_action( 'vd_admin_notices' ); ?>
@@ -188,13 +181,11 @@ class VD_Admin {
                 <?php require_once( VD()->plugin_path() . '/screens/screen-api-unavailable.php' ); ?>
             <?php endif; ?>
         </div>
-
 		<?php
 	}
 
 	public function get_action( $actions = array() ) {
 		foreach ( $actions as $action ) {
-
 		    if ( ( isset( $_GET['action'] ) && $_GET['action'] == $action ) || ( isset( $_POST['action'] ) && $_POST['action'] == $action ) ) {
 				return str_replace( "vd_", "", $action );
             }
@@ -206,9 +197,11 @@ class VD_Admin {
 	public function process() {
 		$action = $this->get_action( array( 'vd_register', 'vd_unregister' ) );
 
-		if ( $action && wp_verify_nonce( ( isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : $_POST['_wpnonce'] ), 'bulk_licenses' ) ) {
-			do_action( 'vd_process_' . $action );
-        }
+		if ( current_user_can( 'manage_options' ) ) {
+			if ( $action && wp_verify_nonce( ( isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : $_POST['_wpnonce'] ), 'bulk_licenses' ) ) {
+				do_action( 'vd_process_' . $action );
+			}
+		}
 	}
 
 	public function process_register() {
@@ -235,6 +228,8 @@ class VD_Admin {
 		if ( ! empty( $errors ) ) {
 			$this->add_notice( $errors, 'error' );
         }
+
+		VD()->api->flush_cache();
 	}
 
 	public function process_unregister() {
@@ -251,6 +246,8 @@ class VD_Admin {
 		if ( ! empty( $errors ) ) {
 			$this->add_notice( $errors, 'error' );
         }
+
+		VD()->api->flush_cache();
 	}
 
 	public function add_notice( $msg = array(), $type = 'error' ) {

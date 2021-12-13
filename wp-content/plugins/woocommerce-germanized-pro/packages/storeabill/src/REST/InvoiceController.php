@@ -959,6 +959,15 @@ class InvoiceController extends DocumentController {
 					'label'       => _x( 'Total amount paid', 'storeabill-core', 'woocommerce-germanized-pro' ),
 					'context'     => array( 'view', 'edit' ),
 				),
+				'tax_rate_percentages' => array(
+					'description' => _x( 'Tax rate percentages.', 'storeabill-core', 'woocommerce-germanized-pro' ),
+					'label'       => _x( 'List of tax rate percentages.', 'storeabill-core', 'woocommerce-germanized-pro' ),
+					'type'        => 'array',
+					'context'     => array( 'view', 'edit' ),
+					'items'       => array(
+						'type' => 'number',
+					),
+				),
 				'prices_include_tax'   => array(
 					'description' => _x( 'True in case prices include tax.', 'storeabill-core', 'woocommerce-germanized-pro' ),
 					'type'        => 'boolean',
@@ -1150,6 +1159,19 @@ class InvoiceController extends DocumentController {
 							'context'     => array( 'view', 'edit' ),
 						),
 					),
+				),
+				'taxable_country' => array(
+					'description' => _x( 'Taxable country code in ISO 3166-1 alpha-2 format.', 'storeabill-core', 'woocommerce-germanized-pro' ),
+					'label'       => _x( 'Taxable country code', 'storeabill-core', 'woocommerce-germanized-pro' ),
+					'type'        => 'string',
+					'readonly'    => true,
+					'context'     => array( 'view', 'edit' ),
+				),
+				'taxable_postcode' => array(
+					'description' => _x( 'Taxable postcode.', 'storeabill-core', 'woocommerce-germanized-pro' ),
+					'type'        => 'string',
+					'readonly'    => true,
+					'context'     => array( 'view', 'edit' ),
 				),
 				'meta_data'        => array(
 					'description' => _x( 'Meta data.', 'storeabill-core', 'woocommerce-germanized-pro' ),

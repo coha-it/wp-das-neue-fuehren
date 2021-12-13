@@ -102,14 +102,8 @@ class ImWarenpostIntRest extends Rest {
 			) );
 		}
 
-		$is_return = 'return' === $label->get_type();
-
-		if ( $is_return ) {
-			$sender_name = ( $shipment->get_sender_company() ? $shipment->get_sender_company() . ' ' : '' ) . $shipment->get_formatted_sender_full_name();
-		} else {
-			$sender_name = ( Package::get_setting( 'shipper_company' ) ? Package::get_setting( 'shipper_company' ) . ' ' : '' ) . Package::get_setting( 'shipper_name' );
-		}
-
+		$is_return      = 'return' === $label->get_type();
+		$sender_name    = ( $shipment->get_sender_company() ? $shipment->get_sender_company() . ' ' : '' ) . $shipment->get_formatted_sender_full_name();
 		$recipient_name = $shipment->get_formatted_full_name();
 		$recipient      = $recipient_name;
 
@@ -135,26 +129,26 @@ class ImWarenpostIntRest extends Rest {
 					'id'                  => 0,
 					'product'             => $label->get_product_id(),
 					'serviceLevel'        => apply_filters( 'woocommerce_gzd_deutsche_post_label_api_customs_shipment_service_level', 'STANDARD', $label ),
-					'recipient'           => substr( $recipient, 0, 30 ),
+					'recipient'           => mb_substr( $recipient, 0, 30 ),
 					'recipientPhone'      => $shipment->get_phone(),
 					'recipientEmail'      => $shipment->get_email(),
-					'addressLine1'        => substr( $shipment->get_address_1(), 0, 30 ),
-					'addressLine2'        => substr( $shipment->get_address_2(), 0, 30 ),
+					'addressLine1'        => mb_substr( $shipment->get_address_1(), 0, 30 ),
+					'addressLine2'        => mb_substr( $shipment->get_address_2(), 0, 30 ),
 					'city'                => $shipment->get_city(),
-					'state'               => wc_gzd_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() ),
+					'state'               => mb_substr( wc_gzd_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() ), 0, 20 ),
 					'postalCode'          => $shipment->get_postcode(),
 					'destinationCountry'  => $shipment->get_country(),
 					'shipmentAmount'      => wc_format_decimal( $shipment->get_total() + $shipment->get_additional_total(), 2 ),
 					'shipmentCurrency'    => get_woocommerce_currency(),
 					'shipmentGrossWeight' => wc_get_weight( $label->get_weight(), 'g', 'kg' ),
-					'senderName'          => substr( $sender_name, 0, 40 ),
-					'senderAddressLine1'  => substr( ( $is_return ? $shipment->get_sender_address_1() : Package::get_setting( 'shipper_address' ) ), 0, 35 ),
-					'senderAddressLine2'  => substr( ( $is_return ? $shipment->get_sender_address_2() : '' ), 0, 35 ),
-					'senderCountry'       => $is_return ? $shipment->get_sender_country() : Package::get_setting( 'shipper_country' ),
-					'senderCity'          => $is_return ? $shipment->get_sender_city() : Package::get_setting( 'shipper_city' ),
-					'senderPostalCode'    => $is_return ? $shipment->get_sender_postcode() : Package::get_setting( 'shipper_postcode' ),
-					'senderPhone'         => $is_return ? $shipment->get_sender_phone() : Package::get_setting( 'shipper_phone' ),
-					'senderEmail'         => $is_return ? $shipment->get_sender_email() : Package::get_setting( 'shipper_email' ),
+					'senderName'          => mb_substr( $sender_name, 0, 40 ),
+					'senderAddressLine1'  => mb_substr( $shipment->get_sender_address_1(), 0, 35 ),
+					'senderAddressLine2'  => mb_substr( $shipment->get_sender_address_2(), 0, 35 ),
+					'senderCountry'       => $shipment->get_sender_country(),
+					'senderCity'          => $shipment->get_sender_city(),
+					'senderPostalCode'    => $shipment->get_sender_postcode(),
+					'senderPhone'         => $shipment->get_sender_phone(),
+					'senderEmail'         => $shipment->get_sender_email(),
 					'returnItemWanted'    => false,
 					'shipmentNaturetype'  => strtoupper( apply_filters( 'woocommerce_gzd_deutsche_post_label_api_customs_shipment_nature_type', ( $is_return ? 'RETURN_GOODS' : 'SALE_GOODS' ), $label ) ),
 					'contents'            => array()
@@ -169,12 +163,12 @@ class ImWarenpostIntRest extends Rest {
 				'pickupLocation'  => null,
 				'pickupDate'      => null,
 				'pickupTimeSlot'  => null,
-				'telephoneNumber' => null
+				'telephoneNumber' => $shipment->get_sender_phone()
 			)
 		);
 
 		// Do only add customs data in case it is a non-EU shipment
-		if ( Package::is_crossborder_shipment( $shipment->get_country() ) ) {
+		if ( Package::is_crossborder_shipment( $shipment->get_country(), $shipment->get_postcode() ) ) {
 			$request_data['items'][0]['contents'] = $positions;
 
 			/**

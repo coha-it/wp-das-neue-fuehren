@@ -4,6 +4,8 @@ class WC_GZDP_Assets {
 
 	public $suffix = '';
 
+	protected $localized_scripts = array();
+
 	public function __construct() {
 
 		$this->suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
@@ -11,17 +13,30 @@ class WC_GZDP_Assets {
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_admin_assets' ), 15 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_frontend_scripts' ), 20 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_frontend_styles' ), 21 );
+
+		add_action( 'wp_print_scripts', array( $this, 'localize_scripts' ), 5 );
+		add_action( 'wp_print_footer_scripts', array( $this, 'localize_scripts' ), 5 );
 	}
 
 	public function add_frontend_styles() {
 		do_action( 'woocommerce_gzdp_frontend_styles', $this );
 	}
 
+	public function localize_scripts() {
+		if ( wp_script_is( 'wc-gzdp-checkout' ) && ! in_array( 'wc-gzdp-checkout', $this->localized_scripts ) ) {
+			$this->localized_scripts[] = 'wc-gzdp-checkout';
+
+			wp_localize_script( 'wc-gzdp-checkout', 'wc_gzdp_checkout_params', apply_filters( 'wc_gzdp_checkout_params', array(
+				'vat_exempt_postcodes' => Vendidero\StoreaBill\Countries::get_eu_vat_postcode_exemptions(),
+			) ) );
+		}
+	}
+
 	public function add_frontend_scripts() {
 		// Checkout general
 		wp_register_script( 'wc-gzdp-checkout', WC_germanized_pro()->plugin_url() . '/assets/js/checkout' . $this->suffix . '.js', array( 'wc-checkout' ), WC_GERMANIZED_PRO_VERSION, true );
 		
-		if ( is_checkout() ) {
+		if ( is_checkout() && 'yes' === get_option( 'woocommerce_gzdp_enable_vat_check' ) ) {
 			wp_enqueue_script( 'wc-gzdp-checkout' );
 		}
 

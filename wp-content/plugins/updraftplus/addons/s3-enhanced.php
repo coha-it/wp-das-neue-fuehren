@@ -14,7 +14,7 @@ if (!defined('UPDRAFTPLUS_DIR')) die('No direct access allowed');
 
 use Aws\Iam\IamClient;
 
-$updraftplus_addon_s3_enhanced = new UpdraftPlus_Addon_S3_Enhanced;
+new UpdraftPlus_Addon_S3_Enhanced;
 
 class UpdraftPlus_Addon_S3_Enhanced {
 
@@ -182,7 +182,6 @@ class UpdraftPlus_Addon_S3_Enhanced {
 		$location = @$storage->getBucketLocation($bucket);// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
 		if ($location) {
 			$bucket_exists = true;
-			$bucket_verb = __('Region', 'updraftplus').": $location: ";// phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		}
 		
 		if (!isset($bucket_exists)) {
@@ -191,7 +190,6 @@ class UpdraftPlus_Addon_S3_Enhanced {
 			if (false !== $gb) {
 				$bucket_exists = true;
 				$location = '';
-				$bucket_verb = '';
 			}
 		}
 		
@@ -205,7 +203,6 @@ class UpdraftPlus_Addon_S3_Enhanced {
 			}
 			$storage->setExceptions(false);
 			if ($try_to_create_bucket) {
-				$bucket_verb = '';
 				$gb = $try_to_create_bucket;
 			} else {
 				$msg = __("Failure: We could not successfully access or create such a bucket. Please check your access credentials, and if those are correct then try another bucket name (as another AWS user may already have taken your name).", 'updraftplus');

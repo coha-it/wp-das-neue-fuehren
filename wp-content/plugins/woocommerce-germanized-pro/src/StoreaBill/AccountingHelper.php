@@ -2,9 +2,9 @@
 
 namespace Vendidero\Germanized\Pro\StoreaBill;
 
+use Vendidero\OneStopShop\Package;
 use Vendidero\StoreaBill\Countries;
 use Vendidero\StoreaBill\Document\Document;
-use Vendidero\StoreaBill\Interfaces\Previewable;
 use Vendidero\StoreaBill\Invoice\Invoice;
 use Vendidero\StoreaBill\Invoice\ProductItem;
 use Vendidero\StoreaBill\WooCommerce\Order;
@@ -59,11 +59,15 @@ class AccountingHelper {
 		 */
 		add_filter( 'storeabill_woo_order_voucher_total', array( __CLASS__, 'order_voucher_total' ), 10, 2 );
 		add_filter( 'storeabill_woo_order_voucher_tax', array( __CLASS__, 'order_voucher_tax' ), 10, 2 );
+		add_filter( 'storeabill_woo_order_tax_display_mode', array( __CLASS__, 'order_voucher_tax_display_mode' ), 10, 2 );
 
 		/**
 		 * OSS Check
 		 */
 		add_filter( 'storeabill_woo_order_tax_is_oss', array( __CLASS__, 'order_tax_is_moss' ), 10, 3 );
+		add_filter( 'storeabill_invoice_is_oss', array( __CLASS__, 'invoice_legacy_is_oss' ), 10, 2 );
+		add_filter( 'storeabill_invoice_cancellation_is_oss', array( __CLASS__, 'invoice_legacy_is_oss' ), 10, 2 );
+		add_filter( 'storeabill_woo_order_is_oss', array( __CLASS__, 'order_is_oss' ), 10, 2 );
 
 		/**
 		 * WC_GZD_Emails template name compatibility
@@ -89,6 +93,7 @@ class AccountingHelper {
 		 * Maybe allow additional cost tax rounding
 		 */
 		add_filter( 'storeabill_woo_order_item_type_includes_tax', array( __CLASS__, 'maybe_treat_additional_costs_including_tax' ), 10, 3 );
+		add_filter( 'storeabill_woo_order_item_type_round_tax_at_subtotal', array( __CLASS__, 'maybe_round_additional_costs_tax_at_subtotal' ), 10, 3 );
 		add_filter( 'storeabill_woo_order_allow_round_split_taxes_at_subtotal', array( __CLASS__, 'maybe_allow_round_split_taxes_at_subtotal' ), 10, 2 );
 
 		add_filter( 'storeabill_document_template_editor_asset_whitelist_paths', array( __CLASS__, 'register_asset_whitelist_paths' ), 10 );
@@ -106,7 +111,62 @@ class AccountingHelper {
 
 		// Whitelist shipment emails
 		add_filter( 'storeabill_woo_order_transactional_email_ids_whitelist', array( __CLASS__, 'register_additional_emails' ), 10 );
+
+		/**
+         * TM Product Options
+         */
+		add_filter( 'storeabill_woo_order_item_before_retrieve_attributes', array( __CLASS__, 'set_tm_admin_filter' ), 20 );
+		add_filter( 'storeabill_woo_shipment_item_before_retrieve_attributes', array( __CLASS__, 'set_tm_admin_filter' ), 20 );
+
+		add_filter( 'storeabill_woo_order_item_after_retrieve_attributes', array( __CLASS__, 'remove_tm_admin_filter' ), 20 );
+		add_filter( 'storeabill_woo_shipment_item_after_retrieve_attributes', array( __CLASS__, 'remove_tm_admin_filter' ), 20 );
 	}
+
+	public static function set_tm_admin_filter() {
+	    if ( apply_filters( 'woocommerce_gzdp_suppress_epo_admin_filter', true ) ) {
+		    add_filter( 'wc_epo_admin_in_shop_order', '__return_false', 99 );
+        }
+    }
+
+	public static function remove_tm_admin_filter() {
+		if ( apply_filters( 'woocommerce_gzdp_suppress_epo_admin_filter', true ) ) {
+			remove_filter( 'wc_epo_admin_in_shop_order', '__return_false', 99 );
+		}
+	}
+
+	/**
+	 * @param $is_oss
+	 * @param Invoice $invoice
+	 */
+	public static function invoice_legacy_is_oss( $is_oss, $invoice ) {
+		/**
+		 * This invoice version did not yet store the OSS status within it's dataset.
+		 */
+	    if ( version_compare( $invoice->get_version(), '1.7.1', '<' ) ) {
+	        if ( class_exists( '\Vendidero\OneStopShop\Package' ) && Package::oss_procedure_is_enabled() && $invoice->is_eu_cross_border_taxable() ) {
+	            $is_oss = true;
+            }
+        }
+
+	    return $is_oss;
+    }
+
+	/**
+	 * @param $is_oss
+	 * @param \WC_Order $order
+	 */
+    public static function order_is_oss( $is_oss, $order ) {
+	    /**
+	     * In case the OSS procedure is enabled, allow this invoice to be part of the OSS regulation.
+	     */
+	    if ( $is_oss && class_exists( '\Vendidero\OneStopShop\Package' ) && Package::oss_procedure_is_enabled() ) {
+	        $is_oss = true;
+        } else {
+	        $is_oss = false;
+        }
+
+	    return $is_oss;
+    }
 
 	public static function register_additional_emails( $emails ) {
 		$emails[] = 'customer_shipment';
@@ -231,6 +291,26 @@ class AccountingHelper {
 		$enable_split_tax = function_exists( 'wc_gzd_enable_additional_costs_split_tax_calculation' ) ? wc_gzd_enable_additional_costs_split_tax_calculation() : 'yes' === get_option( 'woocommerce_gzd_shipping_tax' );
 
 		return $enable_split_tax;
+	}
+
+	/**
+     * Make sure to mark shipping costs to be tax-rounded at subtotal e.g. in case the overall
+     * tax settings are set to excluded but additional costs do still include taxes due to a filter.
+     *
+	 * @param boolean $round_tax_at_subtotal
+	 * @param string $order_item_type
+	 * @param Order $order
+	 *
+	 * @return bool
+	 */
+	public static function maybe_round_additional_costs_tax_at_subtotal( $round_tax_at_subtotal, $order_item_type, $order ) {
+		if ( in_array( $order_item_type, array( 'shipping', 'fee' ) ) && self::enable_split_tax_calculation() ) {
+            if ( self::maybe_treat_additional_costs_including_tax( true, $order_item_type, $order ) ) {
+                $round_tax_at_subtotal = true;
+            }
+		}
+
+		return $round_tax_at_subtotal;
 	}
 
 	/**
@@ -385,6 +465,27 @@ class AccountingHelper {
 	 */
 	public static function order_voucher_tax( $total, $order ) {
 		return self::get_order_voucher_tax( $order );
+	}
+
+	/**
+	 * @param $tax_display_mode
+	 * @param \WC_Order $order
+	 */
+	public static function order_voucher_tax_display_mode( $tax_display_mode, $order ) {
+		if ( ! $order ) {
+			return $tax_display_mode;
+		}
+
+		if ( $coupons = $order->get_items( 'coupon' ) ) {
+			foreach ( $coupons as $coupon ) {
+				if ( $coupon->get_meta( 'tax_display_mode', true ) ) {
+					$tax_display_mode = $coupon->get_meta( 'tax_display_mode', true );
+					break;
+				}
+			}
+		}
+
+		return $tax_display_mode;
 	}
 
 	/**

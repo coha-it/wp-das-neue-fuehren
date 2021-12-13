@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
 			} else if (clean_hash[1] =='4') { //Robots Tab
 				$('#tab_seopress_robots-tab').addClass("nav-tab-active");
 				$('#tab_seopress_robots').addClass("active");
-			} else if (clean_hash[1] =='5') { //Google Page Speed Tab
+			} else if (clean_hash[1] =='5') { //Google News Tab
 				$('#tab_seopress_news-tab').addClass("nav-tab-active");
 				$('#tab_seopress_news').addClass("active");
 			} else if (clean_hash[1] =='6') { //404 Tab
@@ -57,7 +57,7 @@ jQuery(document).ready(function($) {
 			} else if (seopress_tab_session_storage) {
 				$('#seopress-tabs').find('.nav-tab.nav-tab-active').removeClass("nav-tab-active");
 				$('#seopress-tabs').find('.seopress-tab.active').removeClass("active");
-				
+
 				$('#'+seopress_tab_session_storage.split('#tab=')+'-tab').addClass("nav-tab-active");
 				$('#'+seopress_tab_session_storage.split('#tab=')).addClass("active");
 			} else {
@@ -73,7 +73,7 @@ jQuery(document).ready(function($) {
 
     	$('#seopress-tabs').find('.nav-tab.nav-tab-active').removeClass("nav-tab-active");
     	$('#'+hash+'-tab').addClass("nav-tab-active");
-    	
+
     	if (clean_hash[1]==1) {
     		sessionStorage.setItem("seopress_woocommerce_tab", 'tab_seopress_woocommerce');
     	} else if (clean_hash[1]==2) {
@@ -104,8 +104,8 @@ jQuery(document).ready(function($) {
             sessionStorage.setItem("seopress_white_label", 'tab_seopress_white_label');
         } else {
     		sessionStorage.setItem("seopress_woocommerce_tab", hash);
-    	}    	 
-    	
+    	}
+
     	$('#seopress-tabs').find('.seopress-tab.active').removeClass("active");
     	$('#'+hash).addClass("active");
     });
@@ -117,7 +117,7 @@ jQuery(document).ready(function($) {
     $('#seopress-tag-breadcrumbs-1, #seopress-tag-breadcrumbs-2, #seopress-tag-breadcrumbs-3, #seopress-tag-breadcrumbs-4, #seopress-tag-breadcrumbs-5').click(function() {
         $(".seopress_breadcrumbs_sep").val($(".seopress_breadcrumbs_sep").val() +'\n'+ $(this).attr('data-tag'));
     });
-    
+
     //Rich Snippets Media Uploader
 	var mediaUploader;
   	$('#seopress_rich_snippets_publisher_logo_upload').click(function(e) {

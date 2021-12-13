@@ -664,18 +664,20 @@ class UAEL_Helper {
 	public static function get_integrations_options( $name = '' ) {
 
 		$integrations_default = array(
-			'google_api'             => '',
-			'developer_mode'         => false,
-			'language'               => '',
-			'google_places_api'      => '',
-			'yelp_api'               => '',
-			'recaptcha_v3_key'       => '',
-			'recaptcha_v3_secretkey' => '',
-			'recaptcha_v3_score'     => '0.5',
-			'google_client_id'       => '',
-			'facebook_app_id'        => '',
-			'facebook_app_secret'    => '',
-			'uael_share_button'      => '',
+			'google_api'                           => '',
+			'developer_mode'                       => false,
+			'language'                             => '',
+			'google_places_api'                    => '',
+			'yelp_api'                             => '',
+			'recaptcha_v3_key'                     => '',
+			'recaptcha_v3_secretkey'               => '',
+			'recaptcha_v3_score'                   => '0.5',
+			'google_client_id'                     => '',
+			'facebook_app_id'                      => '',
+			'facebook_app_secret'                  => '',
+			'uael_share_button'                    => '',
+			'uael_maxmind_geolocation_license_key' => '',
+			'uael_maxmind_geolocation_db_path'     => '',
 		);
 
 		$integrations = self::get_admin_settings_option( '_uael_integration', array(), true );
@@ -824,6 +826,10 @@ class UAEL_Helper {
 	public static function display_conditions_compare( $left_value, $right_value, $operator ) {
 		switch ( $operator ) {
 			case 'is':
+			case 'less':
+			case 'greater':
+			case 'less_than_equal':
+			case 'greater_than_equal':
 				return $left_value === $right_value;
 			case 'not':
 				return $left_value !== $right_value;
@@ -1364,21 +1370,23 @@ class UAEL_Helper {
 	 */
 	public static function get_active_widget_stylesheet() {
 
-		$saved_blocks             = self::get_admin_settings_option( '_uael_widgets' );
-		$combined                 = array();
-		$is_already_heading       = false;
-		$is_already_buttons       = false;
-		$is_already_wc            = false;
-		$is_already_widget_common = false;
-		$is_already_fancybox      = false;
-		$folder                   = self::get_css_folder();
-		$suffix                   = self::get_css_suffix();
+		$saved_blocks                     = self::get_admin_settings_option( '_uael_widgets' );
+		$combined                         = array();
+		$is_already_heading               = false;
+		$is_already_buttons               = false;
+		$is_already_wc                    = false;
+		$is_already_widget_common         = false;
+		$is_already_fancybox              = false;
+		$is_already_party_propz_extension = false;
+		$is_already_welcome_music         = false;
+		$folder                           = self::get_css_folder();
+		$suffix                           = self::get_css_suffix();
 
 		foreach ( UAEL_Config::$widget_list as $key => $block ) {
 
 			$block_name = str_replace( 'uael/', '', $key );
 
-			if ( isset( $saved_blocks[ $block_name ] ) && 'disabled' === $saved_blocks[ $block_name ] || 'DisplayConditions' === $block_name ) {
+			if ( isset( $saved_blocks[ $block_name ] ) && ( 'disabled' === $saved_blocks[ $block_name ] && ! is_multisite() ) || 'DisplayConditions' === $block_name || 'Presets' === $block_name || 'SectionDivider' === $block_name ) {
 				continue;
 			}
 
@@ -1450,6 +1458,31 @@ class UAEL_Helper {
 					$combined = self::get_active_skins_stylesheet( $saved_blocks, $combined );
 
 					break;
+
+				case 'PartyPropzExtension':
+					if ( ! $is_already_party_propz_extension ) {
+						$combined['uael-party-propz-extension'] = array(
+							'path'     => 'assets/' . $folder . '/modules/party-propz-extension' . $suffix . '.css',
+							'path-rtl' => 'assets/min-css/modules/party-propz-extension-rtl.min.css',
+							'dep'      => array(),
+						);
+						$is_already_party_propz_extension       = true;
+
+					}
+					break;
+
+				case 'Welcome_Music':
+					if ( ! $is_already_welcome_music ) {
+						$combined['uael-welcome-music'] = array(
+							'path'     => 'assets/' . $folder . '/modules/welcome-music' . $suffix . '.css',
+							'path-rtl' => 'assets/min-css/modules/welcome-music-rtl.min.css',
+							'dep'      => array(),
+						);
+						$is_already_welcome_music       = true;
+
+					}
+					break;
+
 				default:
 					if ( 'uael-cross-domain-copy-paste' !== $block['slug'] && 'uael-retina-image' !== $block['slug'] ) {
 
@@ -1508,6 +1541,27 @@ class UAEL_Helper {
 	}
 
 	/**
+	 * Provide Widget Name
+	 *
+	 * @param string $slug Module slug.
+	 * @return string
+	 * @since 1.33.0
+	 */
+	public static function get_widget_presets( $slug = '' ) {
+		if ( ! isset( self::$widget_list ) ) {
+			self::$widget_list = self::get_widget_list();
+		}
+
+		$widget_preset = '';
+
+		if ( isset( self::$widget_list[ $slug ] ) ) {
+			$widget_preset = self::$widget_list[ $slug ]['preset'];
+		}
+
+		return apply_filters( 'uael_widget_preset', $widget_preset );
+	}
+
+	/**
 	 * Validate an HTML tag against a safe allowed list.
 	 *
 	 * @since 1.30.0
@@ -1522,5 +1576,21 @@ class UAEL_Helper {
 		} else {
 			return in_array( strtolower( $tag ), self::ALLOWED_HTML_WRAPPER_TAGS, true ) ? $tag : 'div';
 		}
+	}
+
+	/**
+	 * Output the ld+json schema markup.
+	 *
+	 * @since  1.33.1
+	 *
+	 * @param  array $schema_data Array to be converted to json markup.
+	 */
+	public static function print_json_schema( $schema_data ) {
+		$schema_output = '';
+		if ( ! empty( $schema_data ) && is_array( $schema_data ) ) {
+			$encoded_data   = wp_json_encode( $schema_data, self::is_script_debug() ? JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES : JSON_UNESCAPED_SLASHES );
+			$schema_output .= '<script type="application/ld+json">' . $encoded_data . '</script>';
+		}
+		echo $schema_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

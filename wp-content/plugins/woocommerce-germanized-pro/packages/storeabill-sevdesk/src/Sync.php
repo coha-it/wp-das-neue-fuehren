@@ -142,6 +142,13 @@ class Sync extends SyncHandler {
 
 		if ( ! $this->get_api()->has_failed( $results ) ) {
 			foreach( $results['objects'] as $customer ) {
+				/**
+				 * Exclude companies from searching.
+				 */
+			    if ( isset( $customer['name'] ) && ! empty( $customer['name'] ) ) {
+			        continue;
+                }
+
 				$customer_number = ! empty( $customer['customerNumber'] ) ? $customer['customerNumber'] : $customer['id'];
 				/* translators: 1: customer first name 2: customer last name 3: customer number */
 				$response[ $customer['id'] ] = esc_html( sprintf( _x( '%1$s %2$s (%3$s)', 'sevdesk', 'woocommerce-germanized-pro' ), $customer['surename'], $customer['familyname'], $customer_number ) );
@@ -346,13 +353,15 @@ class Sync extends SyncHandler {
 						$item_tax_data['comment'] = $item_tax_data['comment'] . ' | ' . $tax->get_tax_rate()->get_formatted_percentage();
 					}
 
-					$items[] = $item_tax_data;
+					$items[] = apply_filters( "{$this->get_hook_prefix()}voucher_taxable_item", $item_tax_data, $item, $invoice, $tax );
 				}
 			} else {
-				$items[] = array_merge( $item_data, array(
-					'sum'     => $item->get_total(),
-					'taxRate' => 0,
-				) );
+			    $item_data = array_merge( $item_data, array(
+				    'sum'     => $item->get_total(),
+				    'taxRate' => 0,
+			    ) );
+
+				$items[] = apply_filters( "{$this->get_hook_prefix()}voucher_non_taxable_item", $item_data, $item, $invoice );
 			}
 		}
 

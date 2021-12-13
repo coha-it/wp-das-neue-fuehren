@@ -17,9 +17,24 @@ class SettingsPage extends AbstractSettingsPage
 
     function __construct()
     {
-        add_action('admin_menu', array($this, 'register_cpf_settings_page'));
+        add_action('ppress_register_menu_page', [$this, 'register_cpf_settings_page']);
+        add_action('ppress_admin_settings_page_content-protection', [$this, 'settings_page_function']);
+
         add_filter('set-screen-option', [__CLASS__, 'set_screen'], 10, 3);
         add_filter('set_screen_option_rules_per_page', [__CLASS__, 'set_screen'], 10, 3);
+
+        add_action('admin_init', function () {
+            if (ppressGET_var('page') == PPRESS_CONTENT_PROTECTION_SETTINGS_SLUG) {
+
+                if (isset($_GET['add']) && $_GET['add'] == 'new') {
+                    $this->save_rule('add');
+                }
+
+                if (isset($_GET['action']) && $_GET['action'] == 'edit') {
+                    $this->save_rule('edit');
+                }
+            }
+        });
     }
 
     public function admin_page_title()
@@ -45,9 +60,14 @@ class SettingsPage extends AbstractSettingsPage
             esc_html__('Content Protection', 'wp-user-avatar'),
             'manage_options',
             PPRESS_CONTENT_PROTECTION_SETTINGS_SLUG,
-            array($this, 'settings_page_function'));
+            array($this, 'admin_page_callback'));
 
         add_action("load-$hook", array($this, 'add_options'));
+    }
+
+    public function default_header_menu()
+    {
+        return 'content-protection';
     }
 
     public static function set_screen($status, $option, $value)
@@ -65,6 +85,8 @@ class SettingsPage extends AbstractSettingsPage
 
         add_screen_option('per_page', $args);
 
+        add_filter('screen_options_show_screen', '__return_false');
+
         $this->myListTable = new WPListTable();
     }
 
@@ -81,7 +103,11 @@ class SettingsPage extends AbstractSettingsPage
             if (is_array($data[$key])) {
                 $sanitized_data[$key] = self::sanitize_data($data[$key]);
             } else {
-                $sanitized_data[$key] = sanitize_text_field($data[$key]);
+                if ($key == 'noaccess_action_message_custom') {
+                    $sanitized_data[$key] = wp_kses_post($data[$key]);
+                } else {
+                    $sanitized_data[$key] = sanitize_textarea_field($data[$key]);
+                }
             }
         }
 
@@ -139,13 +165,12 @@ class SettingsPage extends AbstractSettingsPage
 
     public function settings_page_function()
     {
-        add_action('wp_cspa_main_content_area', array($this, 'admin_page_callback'), 10, 2);
+        add_action('wp_cspa_main_content_area', array($this, 'admin_settings_page_callback'), 10, 2);
         add_action('wp_cspa_before_closing_header', [$this, 'add_new_button']);
 
         $instance = Custom_Settings_Page_Api::instance();
         $instance->option_name('ppview'); // adds ppview css class to #poststuff
         $instance->page_header($this->admin_page_title());
-        $this->register_core_settings($instance, true);
         $instance->build(true);
     }
 
@@ -157,17 +182,9 @@ class SettingsPage extends AbstractSettingsPage
         }
     }
 
-    public function admin_page_callback()
+    public function admin_settings_page_callback()
     {
         $this->myListTable->prepare_items(); // has to be here.
-
-        if (isset($_GET['add']) && $_GET['add'] == 'new') {
-            $this->save_rule('add');
-        }
-
-        if (isset($_GET['action']) && $_GET['action'] == 'edit') {
-            $this->save_rule('edit');
-        }
 
         if (isset($_GET['add']) || isset($_GET['action'])) {
             $this->admin_notices();

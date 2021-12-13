@@ -42,7 +42,7 @@ class FormPreviewHandler
 
         $form_title = FormRepository::get_name($this->_form_id, $this->_form_type);
 
-        return $form_title . " " . esc_html__('Preview', 'wp-user-avatar');
+        return esc_html($form_title) . " " . esc_html__('Preview', 'wp-user-avatar');
     }
 
     /**
